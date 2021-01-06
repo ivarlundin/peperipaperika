@@ -3,6 +3,8 @@
 }
 body {
     font-family: 'Lato', sans-serif;
+    height: 100%; 
+    overflow: hidden
 
 }
 .container {
@@ -10,22 +12,51 @@ body {
     height: 100vh;
 
     display: flex;
+    flex-direction: column;
+
     justify-content: center;
     align-items: center;
 
-    background-color: salmon;
+    background-color: rgb(228, 228, 228);
 }
-h2 {
-    font-weight: 300;
+.container h2 {
+    font-weight: 600;
     font-size: 3em;
-    color: white;
+    color: rgb(38, 38, 38);
     text-align: center;
+    
 }
-h2:hover {
-    font-size: 3.5em;
-};
+
 
 p {
     font-size: 1em;
     text-align: center;
+}
+
+#trigger {
+    display: inline-block;
+
+    margin-top: 10vh;
+    width: 24vh;
+    height: 24vh;
+    border: none;
+    border-radius: 6em;
+    
+    background-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0px 0px 20px rgba(0, 0 , 0, 0.1);
+
+    text-decoration: none;
+    outline: none;
+    text-align: center;
+    font-size: 1.65em;
+
+    color: rgb(62, 62, 62);
+ 
+    transition: 0.2s ease-in-out;
+}
+#trigger:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    /*color: rgb(225, 81, 65);*/
+    box-shadow: 0px 0px 20px rgba(0, 0 , 0, 0.25);
+    
 }
