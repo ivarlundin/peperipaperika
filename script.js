@@ -4,7 +4,7 @@ var buttonState = 0;
 
 function styleButton(){
     if (buttonState == 1) {
-        document.getElementById("trigger").style.backgroundColor = "rgba(255, 255, 255, 0.8)";
+        document.getElementById("trigger").style.backgroundColor = "rgba(234, 255, 234, 0.8)";
         document.getElementById("trigger").style.color = "rgb(77, 176, 15)";
     } else {
         document.getElementById("trigger").style.backgroundColor = "rgba(255, 255, 255, 0.2)";
