@@ -1,0 +1,31 @@
+* {
+    margin: 0;
+}
+body {
+    font-family: 'Lato', sans-serif;
+
+}
+.container {
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: salmon;
+}
+h2 {
+    font-weight: 300;
+    font-size: 3em;
+    color: white;
+    text-align: center;
+}
+h2:hover {
+    font-size: 3.5em;
+};
+
+p {
+    font-size: 1em;
+    text-align: center;
+}
