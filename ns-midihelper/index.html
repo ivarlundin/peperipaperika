@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nord Stage MIDI-helper</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Outfit:wght@100..900&display=swap" rel="stylesheet"> 
+    <style>
+        body {
+            opacity: 1;
+            transition: opacity 1s ease-in-out;
+        }
+        body.hidden {
+            opacity: 0;
+        }
+    </style>
+</head>
+<body class="hidden">
+    <main>
+        <h1>Nord Stage Midi-helper</h1>
+        <div class="wrapper">
+           <form id="patch-form" class="midi-form">
+                <div class="input-area-wrapper">
+                    <div class="input-area">
+                        <input type="text" id="letter-input" maxlength="1" autocomplete="off" placeholder="X" required>
+                        <label for="letter-input">Bank</label>
+                    </div>
+                    <div class="input-area">
+                        <input type="text" id="number-input" maxlength="2" autocomplete="off" placeholder="00" required>
+                        <label for="number-input">Program</label>
+                    </div>
+                </div>
+
+                <button id="submit-button" type="submit">Get MIDI Variables</button>
+            </form>
+
+
+            <section id="midi-variables">
+            <h2>MIDI Variables</h2>
+            <div class="variables-wrapper">
+                <div class="midi-item">
+                    <input type="text" id="program-value" class="midi-value" placeholder="00" readonly>
+                    <label class="midi-label" for="program-value">Program change</label>
+                </div>
+
+                <div class="midi-item">
+                    <input type="text" id="msp-value" class="midi-value" placeholder="00" readonly>
+                    <label class="midi-label" for="msp-value">MSP</label>
+                </div>
+
+                <div class="midi-item">
+                    <input type="text" id="lsp-value" class="midi-value" placeholder="00" readonly>
+                    <label class="midi-label" for="lsp-value">LSB</label>
+                </div>
+            </div>
+        </section>
+
+
+            <!-- Error message section -->
+            <div class="error-wrapper">
+                <section id="error-message"></section>
+            </div>
+        </div>
+        <p class="credits">@ivarlundin</h1>
+    </main>
+    <footer>
+        <script src="app.js"></script>
+    </footer>
+</body>
+</html>

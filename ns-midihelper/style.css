@@ -1,0 +1,260 @@
+:root {
+    --text-color: #000000;
+    --text-accent-color: #7d150c;
+    --background-color: #ffffff;
+    --tile-background-color: #00000007;
+    --border-color: #00000050;
+    --gui-color: #7d150c;
+    --gui-text-color: #ffffff;
+    --placeholder-opacity: 0.05;
+}
+
+/* Automatically applies if user prefers dark mode 
+@media (prefers-color-scheme: dark) {
+    :root {
+        --text-color: #ffffff;
+        --text-accent-color: #ffcc00;
+        --background-color: #1e1e1e;
+        --border-color: #555555;
+        --gui-color: #ffffff;
+        --gui-text-color: #ffffff;
+    }
+}
+*/
+
+/* Example usage */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+#error-message {
+    display: none; /* hidden by default */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--gui-color);
+    color: var(--gui-text-color);
+    padding: 1rem 2rem;
+    border-radius: 0.5rem;
+    font-size: 1.5rem;
+    z-index: 10000; /* ensure it appears above other content */
+}
+.error-wrapper:has(.active)::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(255,255,255,0.8);
+    z-index: 5;
+    border-radius: 0;
+}
+#error-message.active {
+    display: block; /* shown when active */
+}
+
+body {
+    font-family: "Outfit", sans-serif;
+    
+    background-color: var(--background-color);
+    color: var(--text-color);
+
+    position: relative;
+}
+h1, h2, h3 {
+    text-transform: uppercase;
+}
+main {
+    width: 100%;
+    max-width: 1000px;
+}
+main .wrapper {
+    position: relative;
+    max-width: 1440px;
+    width: 100%;
+    margin: 0 auto;
+
+    display: flex;
+    flex-direction: column;
+}
+#patch-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 3rem;
+}
+#patch-form .input-area-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem; /* spacing between the two input areas */
+    margin-bottom: 3rem;
+}
+
+#patch-form .input-area {
+    width: 50%; /* explicitly set 50% width */
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.5rem;
+}
+#patch-form .input-area input::placeholder {
+    color: var(--text-color);
+    font-weight: 400;
+    opacity: var(--placeholder-opacity);
+}
+#patch-form .input-area input {
+    border: none;
+    background: transparent;
+    color: var(--text-accent-color);
+    font-size: 7rem;
+    font-weight: 700;
+    padding: 0;
+    outline: none;
+}
+button {
+    border: none;
+    background-color: var(--gui-color);
+    color: var(--gui-text-color);
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    width: 100%;
+}
+
+#midi-variables {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
+}
+.variables-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    gap: 1rem;
+    box-sizing: border-box;
+}
+
+.midi-item {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 0;
+    flex-grow: 1;
+    padding: 1rem;
+    background-color: var(--tile-background-color);
+    box-sizing: border-box;
+    overflow: hidden;
+    border-radius: 8px;
+}
+.midi-item .midi-value {
+    border: none;
+    background: transparent;
+    color: var(--text-accent-color);
+    font-weight: 700;
+}
+.midi-item input::placeholder {
+    color: var(--text-color);
+    font-weight: 400;
+    opacity: var(--placeholder-opacity);
+}
+
+@media screen and (max-width: 999px) {
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: start;
+        height: 100vh;
+        margin: 0;
+        padding: 0 1.5rem;
+    }
+    main {
+        width: 100%;
+        margin-top: 1rem
+    }
+    h1 {
+        left: 2rem;
+        top: 1rem;
+        font-size: 1.5rem;
+        margin-bottom: 3rem;
+    }
+    h2 {
+        font-size: 1.25rem;
+        font-weight: 400;
+        opacity: 0.5;
+
+        border-bottom: 2px solid var(--border-color);
+        padding-bottom: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    .credits {
+        position: absolute;
+        left: 2rem;
+        bottom: 1rem;
+        font-size: 1rem;
+    }
+    #patch-form .input-area input {
+        font-size: 4rem;
+    }
+    #patch-form .input-area label {
+        font-size: 1.25rem
+    }
+     .midi-item .midi-label {
+        font-size: 1rem;
+    }
+    .midi-item .midi-value {
+        font-size: 2rem;;
+        margin-bottom: 1rem;
+    }
+
+}
+@media screen and (min-width: 1000px) {
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+    }
+    #submit-button {
+        display: none;
+    }
+    h1 {
+        position: absolute;
+        left: 2rem;
+        top: 1rem;
+        font-size: 1.5rem;
+    }
+    h2 {
+        font-size: 1.25rem;
+        font-weight: 400;
+        opacity: 0.5;
+
+        border-bottom: 2px solid var(--border-color);
+        padding-bottom: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    .credits {
+        position: absolute;
+        left: 2rem;
+        bottom: 1rem;
+        font-size: 1.25rem;
+    }
+    #patch-form .input-area input {
+        font-size: 7rem;
+    }
+    #patch-form .input-area label {
+        font-size: 1.75rem
+    }
+    .midi-item .midi-label {
+        font-size: 1.25rem;
+    }
+    .midi-item .midi-value {
+        font-size: 3rem;;
+        margin-bottom: 0.5rem;
+    }
+}
