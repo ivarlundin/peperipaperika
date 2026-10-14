@@ -874,7 +874,7 @@ def write_pages():
         body="""    <header class="page-hero compact">
       <div class="page-hero-copy">
         <h1>Coverband från Växjö sedan 2018</h1>
-        <p class="lead">Ett partyband med rötter i Växjö och musiker över södra Sverige. Namnet kommer från att vi började som sju - halva fjorton. Idag är vi åtta musiker med egen blåssektion.</p>
+        <p class="lead">Ett partyband med rötter i Växjö och musiker över södra Sverige. Namnet kommer från att vi började som sju, alltså halva fjorton. Idag är vi åtta musiker med egen blåssektion.</p>
       </div>
     </header>
     <section class="section">
