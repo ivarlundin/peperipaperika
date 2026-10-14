@@ -2110,7 +2110,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
   .alt-offers__grid {
     grid-template-columns: 1fr;
-    gap: 1.1rem;
+    gap: 1.65rem;
   }
 
   .alt-offer-card {
@@ -2136,9 +2136,18 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
     grid-column: 1;
     grid-row: 1;
     width: 100%;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 1 / 1;
     border-radius: 8px;
     align-self: start;
+    overflow: hidden;
+  }
+
+  .alt-offer-card__img {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+    object-position: center;
   }
 
   .alt-offer-card__body {

@@ -22,7 +22,17 @@ def assert_home_offers(page) -> None:
     box = media.bounding_box()
     assert box, "offer media wrapper missing box"
     ratio = box["width"] / box["height"]
-    assert 1.2 < ratio < 1.45, f"expected ~4:3 media frame, got {ratio:.2f}"
+    assert 0.94 < ratio < 1.06, f"expected 1:1 media frame, got {ratio:.2f}"
+
+    img_fit = page.locator(".alt-offer-card__img").first.evaluate(
+        "el => getComputedStyle(el).objectFit"
+    )
+    assert img_fit == "cover", f"offer image should use object-fit cover, got {img_fit}"
+
+    gap_px = page.evaluate(
+        """() => parseFloat(getComputedStyle(document.querySelector('.alt-offers__grid')).rowGap)"""
+    )
+    assert gap_px >= 24, f"expected larger row gap on mobile, got {gap_px}px"
 
     card = page.locator(".alt-offer-card").first
     styles = card.evaluate(
