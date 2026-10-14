@@ -450,7 +450,7 @@ body.alt-page > main {
     display: block;
     position: fixed;
     inset: 0;
-    z-index: 46;
+    z-index: 99998;
     background: rgba(0, 0, 0, 0.55);
   }
 
@@ -458,41 +458,100 @@ body.alt-page > main {
     display: none;
   }
 
+  /* Full-viewport overlay: backdrop-filter on header traps fixed children in ~84px box (Safari/iOS). */
   .alt-page .alt-header.is-open {
-    z-index: 60;
-    background: #000;
-    border-bottom-color: var(--alt-line);
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    max-width: 100%;
+    height: 100dvh;
+    min-height: 100dvh;
+    max-height: none;
+    z-index: 99999;
+    background: #0a0a0b;
+    border-bottom-color: transparent;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    overflow: hidden;
+  }
+
+  .alt-page .alt-header.is-open .nav-backdrop {
+    display: none !important;
   }
 
   .alt-page .alt-header.is-open .alt-header__inner {
     position: relative;
-    z-index: 61;
-    background: #000;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-areas:
+      "brand toggle"
+      "nav nav";
+    align-items: stretch;
+    width: 100%;
+    height: 100%;
+    min-height: 100dvh;
+    max-height: 100dvh;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background: #0a0a0b;
+  }
+
+  .alt-page .alt-header.is-open .alt-brand {
+    grid-area: brand;
+    align-self: center;
+    padding: calc(0.65rem + env(safe-area-inset-top, 0px)) var(--alt-pad-right) 0.65rem var(--alt-pad-left);
   }
 
   .alt-page .alt-header.is-open .alt-brand,
   .alt-page .alt-header.is-open .alt-brand .brand-mark {
     position: relative;
-    z-index: 63;
+    z-index: 2;
     color: var(--alt-ink);
   }
 
   .alt-page .alt-header.is-open .nav-toggle {
-    z-index: 63;
+    grid-area: toggle;
+    align-self: center;
+    z-index: 2;
+    margin: 0;
+    padding: calc(0.65rem + env(safe-area-inset-top, 0px)) var(--alt-pad-right) 0.65rem 0;
+  }
+
+  .alt-page .alt-header.is-open .alt-header__inner > .alt-nav {
+    grid-area: nav;
+    position: relative;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
   }
 
   .alt-page .alt-header.is-open .alt-nav__links.nav-list {
     display: flex !important;
-    position: fixed;
-    inset: 0;
-    z-index: 50;
+    position: relative;
+    inset: auto;
+    z-index: 1;
+    flex: 1 1 auto;
     flex-direction: column;
     align-items: stretch;
     gap: 0;
+    width: 100%;
+    min-height: 0;
+    max-height: none;
     margin: 0;
-    padding: calc(var(--alt-header) + 0.5rem) 1.25rem calc(4.75rem + env(safe-area-inset-bottom, 0px));
-    background: #000;
+    padding: 0.35rem var(--alt-pad-right) calc(5.5rem + env(safe-area-inset-bottom, 0px)) var(--alt-pad-left);
+    background: #0a0a0b;
+    overflow-x: hidden;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
   }
 
   .alt-page .nav-list > li:not(.alt-nav__cta-mobile-wrap) {
@@ -561,14 +620,27 @@ body.alt-page > main {
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 52;
+    z-index: 100000;
     display: flex;
     justify-content: center;
     margin: 0;
-    padding: 0.65rem 1.25rem calc(0.75rem + env(safe-area-inset-bottom, 0px));
+    padding: 0.65rem var(--alt-pad-right) calc(0.75rem + env(safe-area-inset-bottom, 0px)) var(--alt-pad-left);
     border: 0;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000 28%);
+    background: linear-gradient(180deg, rgba(10, 10, 11, 0) 0%, #0a0a0b 32%);
     list-style: none;
+  }
+
+  .alt-page .alt-header.is-open .alt-nav__cta-mobile-wrap {
+    position: sticky;
+    bottom: 0;
+    left: auto;
+    right: auto;
+    z-index: 3;
+    width: 100%;
+    margin-top: auto;
+    flex-shrink: 0;
+    padding-top: 1.25rem;
+    background: linear-gradient(180deg, rgba(10, 10, 11, 0) 0%, #0a0a0b 40%);
   }
 
   .alt-page .alt-nav__cta-mobile-wrap > a.alt-nav__cta-mobile {
@@ -590,6 +662,14 @@ body.alt-page > main {
 
 body.alt-page.nav-open {
   overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+body.alt-page.nav-open .alt-header-scroll-sentinel {
+  pointer-events: none;
 }
 
 /* Hero */
