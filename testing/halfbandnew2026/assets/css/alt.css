@@ -74,7 +74,7 @@
   .contact-offert__lead,
   .alt-hero__lead,
   .aeo-answer,
-  .contact-offert__alt,
+  .contact-offert__mail,
   .alt-offer-card p,
   .alt-intro p,
   .alt-voices blockquote,
@@ -1213,12 +1213,8 @@ body.alt-page.nav-open {
   background: var(--alt-ink);
 }
 
-.alt-page .contact-offert__alt {
-  color: var(--alt-muted);
-}
-
-.alt-page .contact-offert__alt a {
-  color: var(--alt-ink);
+.alt-page .contact-offert__mail {
+  margin: 0.25rem 0 0;
 }
 
 .alt-page .tally-card {
