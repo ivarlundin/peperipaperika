@@ -1076,10 +1076,12 @@ def write_pages():
         ),
     ]
     faq_items = "\n".join(
-        f"""        <article class="faq-item">
-          <h3>{q}</h3>
-          <p>{a}</p>
-        </article>"""
+        f"""          <details class="alt-faq__item">
+            <summary class="alt-faq__question">{esc(q)}</summary>
+            <div class="alt-faq__answer">
+              <p>{esc(a)}</p>
+            </div>
+          </details>"""
         for q, a in faqs
     )
     faq_ld_entities = ",\n".join(
@@ -1117,12 +1119,17 @@ def write_pages():
       <div class="page-hero-copy">
         <p class="eyebrow">FAQ</p>
         <h1>Vanliga frågor</h1>
-        <p class="lead">Korta svar för par, företag och eventbolag. Saknas er fråga finns den i mejlen.</p>
+        <p class="lead">Korta svar för par, företag och eventbolag.</p>
       </div>
     </header>
     <section class="section">
-      <div class="wrap faq-grid">
+      <div class="wrap alt-faq">
+        <div class="alt-faq__list" data-faq>
 {faq_items}
+        </div>
+        <div class="alt-faq__cta">
+          <a class="alt-btn alt-btn--ghost" href="/kontakt/">Frågor? Kontakta oss</a>
+        </div>
       </div>
     </section>
 """,
