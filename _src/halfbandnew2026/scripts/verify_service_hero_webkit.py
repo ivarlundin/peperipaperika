@@ -8,10 +8,24 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[3]
-OUT = Path("/opt/cursor/artifacts/screenshots")
 BASE = "http://127.0.0.1:8771/testing/halfbandnew2026"
 MOBILE = {"width": 390, "height": 844}
 DESKTOP = {"width": 1280, "height": 900}
+MOBILE_MIN_HERO = min(844 * 0.7, 560) - 8
+SAFE_AREA_INIT = """
+(() => {
+  const style = document.createElement('style');
+  style.id = 'verify-safe-area';
+  style.textContent = `
+    @supports (padding: env(safe-area-inset-top)) {
+      .alt-page {
+        --alt-header-total: calc(var(--alt-header) + max(env(safe-area-inset-top), 47px));
+      }
+    }
+  `;
+  document.documentElement.appendChild(style);
+})();
+"""
 
 PAGES = {
     "brollop": {
@@ -94,7 +108,8 @@ def assert_service_hero(page, slug: str, label: str) -> None:
     assert "alt-page--service-banner" in data["bodyClass"], f"{slug}/{label}: service-banner class"
     assert data["heroCount"] == 1, f"{slug}/{label}: expected one service hero"
     assert not data["hasOldHero"], f"{slug}/{label}: legacy page hero still present"
-    assert data["heroH"] >= 170, f"{slug}/{label}: hero too short ({data['heroH']})"
+    min_h = MOBILE_MIN_HERO if label == "iphone" else 240
+    assert data["heroH"] >= min_h, f"{slug}/{label}: hero too short ({data['heroH']} < {min_h})"
     assert data["seoH1"] == spec["h1"], f"{slug}/{label}: SEO h1 mismatch"
     assert data["hasTypewriterScript"], f"{slug}/{label}: typewriter script missing"
     assert spec["img_stem"] in data["imgSrc"], (
@@ -123,6 +138,58 @@ def assert_service_hero(page, slug: str, label: str) -> None:
         assert intro_styles["borderLeftWidth"] == "0px", intro_styles
         assert intro_styles["boxShadow"] == "none", intro_styles
         assert "inter" in intro_styles["fontFamily"].lower(), intro_styles
+
+
+def assert_service_hero_layout_top(page, slug: str, label: str) -> None:
+    assert page.evaluate("window.scrollY") < 5, f"{slug}/{label}: expected top scroll"
+    data = page.evaluate(
+        """() => {
+          const header = document.querySelector('.alt-header');
+          const hero = document.querySelector('.alt-service-hero');
+          const h1 = document.querySelector('.alt-service-hero h1');
+          const cta = document.querySelector('.alt-service-hero__actions a.alt-btn--primary');
+          const img = document.querySelector('.alt-service-hero__img');
+          if (!header || !hero || !h1 || !cta) return null;
+          const hr = header.getBoundingClientRect();
+          const heroR = hero.getBoundingClientRect();
+          const h1R = h1.getBoundingClientRect();
+          const ctaR = cta.getBoundingClientRect();
+          const heroStyle = getComputedStyle(hero);
+          const before = getComputedStyle(header, '::before');
+          const backdrop = before.backdropFilter || before.webkitBackdropFilter || '';
+          return {
+            heroPadTop: parseFloat(heroStyle.paddingTop) || 0,
+            heroH: heroR.height,
+            headerBottom: hr.bottom,
+            h1Top: h1R.top,
+            h1Bottom: h1R.bottom,
+            ctaTop: ctaR.top,
+            ctaBottom: ctaR.bottom,
+            heroBottom: heroR.bottom,
+            imgH: img ? img.getBoundingClientRect().height : 0,
+            solid: header.classList.contains('is-solid'),
+            backdrop,
+          };
+        }"""
+    )
+    assert data, f"{slug}/{label}: layout probe failed"
+    assert data["heroPadTop"] >= 84, (
+        f"{slug}/{label}: hero padding-top {data['heroPadTop']}"
+    )
+    assert data["h1Top"] >= data["headerBottom"] - 2, (
+        f"{slug}/{label}: h1 under header (h1Top={data['h1Top']}, headerBottom={data['headerBottom']})"
+    )
+    assert data["ctaBottom"] <= data["heroBottom"] + 2, (
+        f"{slug}/{label}: CTA outside hero"
+    )
+    assert data["imgH"] >= data["heroH"] * 0.85, (
+        f"{slug}/{label}: hero image strip (imgH={data['imgH']}, heroH={data['heroH']})"
+    )
+    if label == "iphone":
+        assert not data["solid"], f"{slug}/{label}: header should not be solid at top"
+        assert data["backdrop"] in ("none", ""), (
+            f"{slug}/{label}: blur at top ({data['backdrop']})"
+        )
 
 
 def assert_typewriter_motion(page, slug: str, label: str) -> None:
@@ -185,6 +252,8 @@ def run_viewport(browser, viewport: dict, mobile: bool, tag: str) -> None:
             has_touch=mobile,
         )
         page = ctx.new_page()
+        if mobile:
+            page.add_init_script(SAFE_AREA_INIT)
         page.goto(f"{BASE}{PAGES[slug]['path']}", wait_until="networkidle")
         page.wait_for_timeout(350)
         page.evaluate(
@@ -193,21 +262,13 @@ def run_viewport(browser, viewport: dict, mobile: bool, tag: str) -> None:
             }"""
         )
         assert_service_hero(page, slug, tag)
+        assert_service_hero_layout_top(page, slug, tag)
         if mobile and slug == "brollop":
             assert_typewriter_motion(page, slug, tag)
-            page.screenshot(
-                path=str(OUT / "service-typewriter-brollop-iphone.png"),
-                full_page=False,
-            )
-        page.screenshot(
-            path=str(OUT / f"service-hero-{slug}-{tag}.png"),
-            full_page=False,
-        )
         ctx.close()
 
 
 def main() -> int:
-    OUT.mkdir(parents=True, exist_ok=True)
     server = subprocess.Popen(
         [sys.executable, "-m", "http.server", "8771", "--bind", "127.0.0.1"],
         cwd=str(ROOT),

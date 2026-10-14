@@ -23,6 +23,7 @@ html {
   --alt-pad-right: max(var(--alt-gutter), env(safe-area-inset-right, 0px));
   --alt-radius: 12px;
   --alt-header: 84px;
+  --alt-header-total: calc(var(--alt-header) + env(safe-area-inset-top, 0px));
   --font-display: "Outfit", "Segoe UI", sans-serif;
   --font-sans: "Inter", "Segoe UI", sans-serif;
   --font-body-weight: 330;
@@ -3256,15 +3257,16 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   justify-content: flex-end;
   width: 100%;
   max-width: none;
-  margin: calc(-1 * var(--alt-header)) 0 0;
+  margin: 0;
   box-sizing: border-box;
-  min-height: clamp(10.5rem, 30svh, 21rem);
+  padding-top: var(--alt-header-total);
+  min-height: clamp(20rem, 52svh, 32rem);
   overflow: hidden;
 }
 
 @media (max-width: 900px) {
   .alt-service-hero {
-    min-height: clamp(9.5rem, 28svh, 15.5rem);
+    min-height: min(70svh, 560px);
   }
 }
 
@@ -3304,7 +3306,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   max-width: min(var(--alt-max), 100%);
   width: 100%;
   margin: 0 auto;
-  padding: calc(var(--alt-header) + 0.5rem) var(--alt-pad-right) 0.75rem var(--alt-pad-left);
+  padding: 0.85rem var(--alt-pad-right) clamp(1.35rem, 4.5vw, 2rem) var(--alt-pad-left);
   box-sizing: border-box;
 }
 

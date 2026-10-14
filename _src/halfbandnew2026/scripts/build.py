@@ -541,7 +541,7 @@ def write_redirect_page(path: str, target: str, link_label: str = "Lyssna") -> N
 <html lang="sv">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta http-equiv="refresh" content="0; url={target}">
   <link rel="canonical" href="{canonical}">
   <title>Repertoar | omdirigering</title>
@@ -673,7 +673,7 @@ def wedding_page_body(wedding_video_block: str) -> str:
           <p>Spellistan håller tempot uppe hela kvällen. Vi byter stil efter hur golvet ser ut. Era låtar tar vi med om de passar live.</p>
         </div>
         <div class="alt-wedding-split__media">
-{wedding_figure("halvfjorton-03", "Fest med guldkonfetti och trummor bland gäster vid bord", "(max-width: 900px) 100vw, 44vw")}
+{wedding_figure("halvfjorton-06", "Sång och slagverk på scen, svartvit bild i dramatiskt ljus", "(max-width: 900px) 100vw, 44vw", height=2400, width=1600)}
         </div>
       </div>
     </section>
@@ -974,7 +974,7 @@ def page(
 <html lang="sv">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="format-detection" content="telephone=no, date=no, email=no, address=no">
   <title>{esc(title)}</title>
   <meta name="description" content="{esc(description)}">
@@ -1784,6 +1784,10 @@ def write_home_jsonld():
 def patch_home_page():
     home_path = OUT_ROOT / "index.html"
     html = home_path.read_text(encoding="utf-8")
+    html = html.replace(
+        '<meta name="viewport" content="width=device-width, initial-scale=1">',
+        '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">',
+    )
     logo = "\n".join("        " + line for line in brand_logo_markup().splitlines())
     html = re.sub(
         r'<img src="/assets/img/logo-mark\.png"[^>]*>\s*',
@@ -2048,6 +2052,40 @@ def assert_offert_bullet_cap(target: Path, max_items: int = 3) -> None:
         )
 
 
+_GALLERY_IMG_SRC_STEM = re.compile(
+    r'<img[^>]*\ssrc="[^"]*/assets/img/gallery/(halvfjorton-\d+)-\d+w\.webp"',
+    re.IGNORECASE,
+)
+
+
+def assert_no_duplicate_gallery_images_on_page(target: Path) -> None:
+    offenders: list[str] = []
+    for file_path in target.rglob("*.html"):
+        if not file_path.is_file():
+            continue
+        text = file_path.read_text(encoding="utf-8")
+        if "alt-service-hero" not in text:
+            continue
+        stems = _GALLERY_IMG_SRC_STEM.findall(text)
+        if not stems:
+            continue
+        seen: set[str] = set()
+        dupes: set[str] = set()
+        for stem in stems:
+            if stem in seen:
+                dupes.add(stem)
+            seen.add(stem)
+        if dupes:
+            offenders.append(
+                f"{file_path.relative_to(target)} ({', '.join(sorted(dupes))})"
+            )
+    if offenders:
+        sample = "\n".join(f"  - {line}" for line in offenders[:20])
+        raise SystemExit(
+            "Build check failed: duplicate gallery image on same page:\n" + sample
+        )
+
+
 def assert_no_eyebrows_in_build(target: Path) -> None:
     offenders: list[str] = []
     for file_path in target.rglob("*.html"):
@@ -2154,6 +2192,7 @@ def run_build(output_dir: Path | None = None, subpath: str = "") -> None:
     rewrite_root_relative_urls(OUT_ROOT, subpath)
     assert_no_ai_dashes_in_build(OUT_ROOT)
     assert_no_eyebrows_in_build(OUT_ROOT)
+    assert_no_duplicate_gallery_images_on_page(OUT_ROOT)
     assert_offert_bullet_cap(OUT_ROOT)
     assert_labs_asset_urls(OUT_ROOT, subpath)
     assert_hidden_services_excluded(OUT_ROOT)
