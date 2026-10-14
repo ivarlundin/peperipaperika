@@ -51,6 +51,42 @@
   outline-offset: 3px;
 }
 
+/* Text wrapping (site-wide on alt pages) */
+.alt-page :is(h1, h2, h3, h4, h5, h6) {
+  text-wrap: balance;
+}
+
+.alt-page .eyebrow,
+.alt-page .alt-facts__items > span,
+.alt-page .alt-offer-card__arrow,
+.alt-page :is(.alt-btn, a.alt-btn, button.alt-btn, .btn, a.btn, button.btn),
+.alt-page .nav-list a,
+.alt-page .nav-dropdown__trigger,
+.alt-page .alt-nav__cta-desktop,
+.alt-page .alt-nav__cta-mobile {
+  text-wrap: balance;
+}
+
+.alt-page :where(
+  p,
+  li,
+  .lead,
+  .contact-offert__lead,
+  .alt-hero__lead,
+  .aeo-answer,
+  .contact-offert__alt,
+  .alt-offer-card p,
+  .alt-intro p,
+  .alt-voices blockquote,
+  .alt-voice__quote,
+  figcaption,
+  .alt-footer__inner p,
+  .alt-footer__links a,
+  .small.muted
+) {
+  text-wrap: pretty;
+}
+
 /* Header */
 .alt-header {
   position: fixed;
@@ -703,10 +739,14 @@ body.alt-page.nav-open {
 
 .alt-hero__typewriter {
   white-space: nowrap;
+  text-wrap: nowrap;
 }
 
 .alt-hero__typewriter-text {
+  display: inline-block;
+  min-width: 14.25ch;
   letter-spacing: 0;
+  text-wrap: nowrap;
 }
 
 .alt-hero__caret {
