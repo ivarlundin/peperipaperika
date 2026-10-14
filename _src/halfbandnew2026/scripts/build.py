@@ -13,7 +13,7 @@ SITE = "https://halvfjorton.se"
 OG = f"{SITE}/assets/img/og.jpg"
 ORGANIZATION_JSON = ROOT / "assets/schema/organization.json"
 H14_LOGO = ROOT / "assets/img/h14-logo.svg"
-BRAND_TITLE = "Halv Fjorton – coverband & bröllopsband i Småland och Skåne"
+BRAND_TITLE = "Halv Fjorton | coverband & bröllopsband i Småland och Skåne"
 WEDDING_VIDEO_ID = "V2Nb8jMKUCk"
 WEDDING_VIDEO_TITLE = "Signed Sealed Delivered - Halv Fjorton"
 TALLY_EMBED_SRC = (
@@ -24,16 +24,16 @@ OFFERT_URL = f"{SITE}/kontakt/#offert"
 
 CONTACT_USPS = [
     "Vi svarar inom 24 timmar",
-    "Offert som PDF – tydlig och utan dolda kostnader",
+    "Offert som PDF, tydlig och utan dolda kostnader",
     "En kontakt hela vägen från förfrågan till sista låten",
     "8 musiker med egen blåssektion",
-    "Spelar i Småland och Skåne – Växjö, Kalmar, Jönköping, Malmö, Lund, Helsingborg",
+    "Spelar i Småland och Skåne: Växjö, Kalmar, Jönköping, Malmö, Lund, Helsingborg",
     "Sedan 2018",
 ]
 
 HOME_CONTACT_USPS = [
     "Vi svarar inom 24 timmar",
-    "Offert som PDF – tydlig och utan dolda kostnader",
+    "Offert som PDF, tydlig och utan dolda kostnader",
     "8 musiker med egen blåssektion",
 ]
 
@@ -121,7 +121,7 @@ def contact_page_ld() -> str:
         "@type": "ContactPage",
         "url": f"{SITE}/kontakt/",
         "name": "Kontakta Halv Fjorton",
-        "description": "Begär offert till Halv Fjorton – coverband för bröllop, företag och fest i södra Sverige.",
+        "description": "Begär offert till Halv Fjorton | coverband för bröllop, företag och fest i södra Sverige.",
         "mainEntity": {
             "@type": "Organization",
             "name": "Halv Fjorton",
@@ -384,7 +384,7 @@ def page(
     extra_scripts: str = "",
 ):
     canonical = f"{SITE}{path}"
-    crumb_label = breadcrumb_name or title.split(" | ")[0].split(" – ")[0]
+    crumb_label = breadcrumb_name or title.split(" | ")[0].split(", ")[0]
     graphs = [music_group_ld(), breadcrumb_ld([("/", "Hem")] + ([] if path == "/" else [(path, crumb_label)]))]
     if extra_ld:
         graphs.extend(extra_ld)
@@ -475,7 +475,6 @@ def write_pages():
         ],
         body=f"""    <header class="page-hero">
       <div class="page-hero-copy">
-        <p class="eyebrow">Bröllop</p>
         <h1>Bröllopsband med dans, blås och svenska klassiker</h1>
 {aeo_answer("Halv Fjorton är ett åtta man starkt bröllopsband från Växjö med egen blåssektion. På festen spelar vi två set partymusik med soul, funk, rock och svenska favoriter.")}
         <p class="lead">Tillval: mingel, vigselmusik med solist, helband eller komp till solist. En kontakt från offert till spelning.</p>
@@ -531,7 +530,6 @@ def write_pages():
         ],
         body=f"""    <header class="page-hero">
       <div class="page-hero-copy">
-        <p class="eyebrow">Företag och fest</p>
         <h1>Festband till personalfest och kickoff</h1>
 {aeo_answer("Halv Fjorton levererar musikunderhållning med åtta musiker och egen blåssektion till företagsfester i Skåne och Småland. Vanligt upplägg är två set festmusik, ofta efter mingel.")}
         <p class="lead">Vi komponerar kvällen med er: mingel, tal, dans. Artistkomp och specialmusik för event går att boka.</p>
@@ -605,7 +603,6 @@ def write_pages():
         ],
         body="""    <header class="page-hero">
       <div class="page-hero-copy">
-        <p class="eyebrow">Mingel</p>
         <h1>Musik som fyller rummet utan att ta över samtalet</h1>
         <p class="lead">Vi erbjuder spelning vid mingel med blandad repertoar. Allt från traditionell jazz till svenska klassiker. Upplägget passar konferensmiddagar, bröllopsmottagningar och andra sammankomster där gästerna ska kunna prata - och ändå känna att det händer något.</p>
       </div>
@@ -649,7 +646,6 @@ def write_pages():
         ],
         body=f"""    <header class="page-hero compact">
       <div class="page-hero-copy">
-        <p class="eyebrow">Kompband</p>
         <h1>Kompband för solist och artist</h1>
 {aeo_answer("Halv Fjorton fungerar som kompband när ni vill att en solist, gäst eller inhyrd artist ska framföras med fullt liveband. Samma åtta musiker och egen blåssektion som på våra vanliga gig.")}
         <p class="lead">Vanligt vid vigsel, psalmer, gästsång eller när eventbolag tar in en artist som behöver professionellt komp.</p>
@@ -692,7 +688,6 @@ def write_pages():
         ],
         body=f"""    <header class="page-hero compact">
       <div class="page-hero-copy">
-        <p class="eyebrow">Privatfest</p>
         <h1>Liveband till 50-årsfest och privatfest</h1>
 {aeo_answer("Vi spelar 50-årsfester och andra privata tillställningar med samma sättning som till bröllop och företag: två set med dans, blås och igenkännbara låtar.")}
         <p class="lead">Lokal, loge eller hembygdsgård i Småland eller Skåne. Hör av er med datum och ort.</p>
@@ -724,7 +719,6 @@ def write_pages():
         ],
         body="""    <header class="page-hero compact">
       <div class="page-hero-copy">
-        <p class="eyebrow">Julkonsert</p>
         <h1>A Soulful Christmas i Växjö</h1>
         <p class="aeo-answer">Sedan 2018 arrangerar Halv Fjorton en egen julkonsert med egna låtar och jultolkningar i soul och funk. Sedan 2023 spelar vi på Nygatan 6 i Växjö, nästan varje år.</p>
         <p class="lead">Det här är bandets egna konsert, inte en bokningstjänst. Följ datum via <a href="/lyssna/">Lyssna</a> och sociala medier.</p>
@@ -745,7 +739,6 @@ def write_pages():
         breadcrumb_name="Konserter",
         body="""    <header class="page-hero compact">
       <div class="page-hero-copy">
-        <p class="eyebrow">På scen</p>
         <h1>Konserter</h1>
         <p class="lead">Här samlar vi kommande spelningar där ni kan se hela bandet live.</p>
       </div>
@@ -754,8 +747,8 @@ def write_pages():
       <div class="wrap">
         <h2>Kommande</h2>
         <ul class="list-check">
-          <li><strong>Nygatan 6, Växjö</strong> – datum meddelas (TBA).</li>
-          <li><strong>Julkonsert (A Soulful Christmas)</strong> – datum meddelas (TBA).</li>
+          <li><strong>Nygatan 6, Växjö</strong>, datum meddelas (TBA).</li>
+          <li><strong>Julkonsert (A Soulful Christmas)</strong>, datum meddelas (TBA).</li>
         </ul>
         <p class="small muted">Följ <a href="https://www.instagram.com/halvfjorton/">Instagram @halvfjorton</a> eller sidan <a href="/lyssna/">Lyssna</a> för uppdateringar.</p>
       </div>
@@ -766,11 +759,10 @@ def write_pages():
     page(
         "/repertoar/",
         f"Repertoar | {BRAND_TITLE}",
-        "Repertoar för Halv Fjorton – soul, funk, rock och svenska klassiker med åtta musiker och egen blåssektion.",
+        "Repertoar för Halv Fjorton: soul, funk, rock och svenska klassiker med åtta musiker och egen blåssektion.",
         breadcrumb_name="Repertoar",
         body="""    <header class="page-hero compact">
       <div class="page-hero-copy">
-        <p class="eyebrow">Låtlista</p>
         <h1>Repertoar</h1>
         <p class="lead">En kuraterad lista med soul, funk, rock och svenska klassiker publiceras här.</p>
       </div>
@@ -785,7 +777,7 @@ def write_pages():
 
     page(
         "/brollopsband-smaland/",
-        f"Bröllopsband Småland – Växjö, Kalmar, Älmhult | {BRAND_TITLE}",
+        f"Bröllopsband Småland, Växjö, Kalmar, Älmhult | {BRAND_TITLE}",
         "Bröllopsband i Småland: Växjö, Kalmar, Älmhult och Jönköping. Två set partymusik, mingel och vigselmusik. Egen blåssektion.",
         breadcrumb_name="Bröllopsband Småland",
         extra_ld=[
@@ -797,7 +789,6 @@ def write_pages():
         ],
         body=f"""    <header class="page-hero compact">
       <div class="page-hero-copy">
-        <p class="eyebrow">Småland</p>
         <h1>Bröllopsband i Småland</h1>
 {aeo_answer("Halv Fjorton är hemmahörande i Växjö och spelar bröllop i hela Småland, från Kalmar och Älmhult till Jönköping. Två set dansmusik med egen blåssektion.")}
         <p class="lead">Samma band till mingel, vigsel och fest. Andra orter utanför listan kan fungera - fråga i mejlet.</p>
@@ -817,7 +808,7 @@ def write_pages():
 
     page(
         "/coverband-skane-malmo/",
-        f"Coverband Skåne – Malmö, Lund, Helsingborg | {BRAND_TITLE}",
+        f"Coverband Skåne, Malmö, Lund, Helsingborg | {BRAND_TITLE}",
         "Coverband och festband i Skåne: Malmö, Lund och Helsingborg. Bröllop, företagsfest och privatfest med åtta musiker.",
         breadcrumb_name="Coverband Skåne",
         extra_ld=[
@@ -829,7 +820,6 @@ def write_pages():
         ],
         body=f"""    <header class="page-hero compact">
       <div class="page-hero-copy">
-        <p class="eyebrow">Skåne</p>
         <h1>Coverband i Malmö och Skåne</h1>
 {aeo_answer("Vi spelar regelbundet i Skåne med bas i södra Sverige: Malmö, Lund och Helsingborg är vanliga orter. Samma åtta mannasband med soul, funk och svenska klassiker.")}
         <p class="lead">Personalfest, bröllop eller privatfest. Spelningar utanför Skåne och Småland går att diskutera.</p>
@@ -850,7 +840,6 @@ def write_pages():
         breadcrumb_name="Om oss",
         body="""    <header class="page-hero compact">
       <div class="page-hero-copy">
-        <p class="eyebrow">Om oss</p>
         <h1>Coverband från Växjö sedan 2018</h1>
         <p class="lead">Ett partyband med rötter i Växjö och musiker över södra Sverige. Namnet kommer från att vi började som sju - halva fjorton. Idag är vi åtta musiker med egen blåssektion.</p>
       </div>
@@ -883,7 +872,6 @@ def write_pages():
         "Se Halv Fjorton live: Signed Sealed Delivered 2025, reel 2022 och julkonserterna A Soulful Christmas.",
         body="""    <header class="page-hero compact">
       <div class="page-hero-copy">
-        <p class="eyebrow">Media</p>
         <h1>Lyssna på oss</h1>
         <p class="lead">Filmer från scen och julkonserter. Samma band som ni bokar till bröllop, företag och mingel.</p>
       </div>
@@ -951,7 +939,6 @@ def write_pages():
         ],
         body=f"""    <header class="page-hero compact">
       <div class="page-hero-copy">
-        <p class="eyebrow">För eventbolag och bookers</p>
         <h1>Ett komplett partyband ni kan sätta i offerten utan att gissa</h1>
         <p class="lead">Halv Fjorton är åtta musiker med egen blåssektion. Rötter i Växjö, spelningar i södra Sverige. Soul, funk, rock och svenska klassiker.</p>
       </div>
@@ -1117,7 +1104,6 @@ def write_pages():
         ],
         body=f"""    <header class="page-hero compact">
       <div class="page-hero-copy">
-        <p class="eyebrow">FAQ</p>
         <h1>Vanliga frågor</h1>
         <p class="lead">Korta svar för par, företag och eventbolag.</p>
       </div>
@@ -1143,9 +1129,8 @@ def write_pages():
         extra_scripts='  <script src="/assets/js/tally-embed.js" defer></script>\n',
         body=f"""    <header class="page-hero compact">
       <div class="page-hero-copy">
-        <p class="eyebrow">Kontakt</p>
         <h1>Hör av er</h1>
-        <p class="lead">Fyll i formuläret så återkommer vi – oftast inom 24 timmar.</p>
+        <p class="lead">Fyll i formuläret så återkommer vi, oftast inom 24 timmar.</p>
       </div>
     </header>
 {contact_offert_section(
@@ -1392,6 +1377,27 @@ _ROOT_RELATIVE_URL = re.compile(
 )
 
 
+_DASH_CHARS = ("\u2013", "\u2014")  # en dash, em dash
+
+
+def assert_no_ai_dashes_in_build(target: Path) -> None:
+    """Fail the build if typographic dashes remain in shipped site files."""
+    extensions = {".html", ".xml", ".txt", ".css", ".js"}
+    offenders: list[str] = []
+    for file_path in target.rglob("*"):
+        if not file_path.is_file() or file_path.suffix not in extensions:
+            continue
+        text = file_path.read_text(encoding="utf-8")
+        for ch in _DASH_CHARS:
+            if ch in text:
+                offenders.append(f"{file_path.relative_to(target)} ({ch!r})")
+                break
+    if offenders:
+        sample = "\n".join(f"  - {line}" for line in offenders[:20])
+        extra = f"\n  ... and {len(offenders) - 20} more" if len(offenders) > 20 else ""
+        raise SystemExit(f"Build check failed: en/em dash found in output:\n{sample}{extra}")
+
+
 def rewrite_root_relative_urls(target: Path, subpath: str) -> None:
     prefix = normalize_subpath(subpath)
     if not prefix:
@@ -1436,6 +1442,7 @@ def run_build(output_dir: Path | None = None, subpath: str = "") -> None:
     write_home_jsonld()
     patch_home_page()
     rewrite_root_relative_urls(OUT_ROOT, subpath)
+    assert_no_ai_dashes_in_build(OUT_ROOT)
 
 
 if __name__ == "__main__":

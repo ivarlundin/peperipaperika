@@ -379,15 +379,6 @@ a:hover {
   z-index: -1;
 }
 
-.eyebrow {
-  display: inline-block;
-  color: var(--accent);
-  font-weight: 650;
-  font-size: 0.92rem;
-  letter-spacing: 0;
-  margin: 0 0 0.65rem;
-}
-
 h1,
 h2,
 h3,
