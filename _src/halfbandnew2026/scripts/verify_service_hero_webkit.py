@@ -54,11 +54,29 @@ def assert_service_hero(page, slug: str, label: str) -> None:
             hasDash: text.includes('–') || text.includes('—'),
             headerCount: document.querySelectorAll('.alt-header').length,
             footerCount: document.querySelectorAll('.site-footer').length,
+            introInHero: hero ? hero.querySelectorAll('.aeo-answer, .lead').length : -1,
+            introBlock: !!document.querySelector('.alt-service-intro'),
+            aeoInIntro: document.querySelector('.alt-service-intro .aeo-answer'),
             expectedStem,
             expectedH1,
           };
         }""",
         [spec["img_stem"], spec["h1"]],
+    )
+    intro_styles = page.evaluate(
+        """() => {
+          const el = document.querySelector('.alt-service-intro .aeo-answer')
+            || document.querySelector('.alt-service-intro .lead');
+          if (!el) return null;
+          const s = getComputedStyle(el);
+          return {
+            paddingTop: s.paddingTop,
+            borderLeftWidth: s.borderLeftWidth,
+            backgroundColor: s.backgroundColor,
+            boxShadow: s.boxShadow,
+            fontFamily: s.fontFamily,
+          };
+        }"""
     )
     assert "alt-page--service-banner" in data["bodyClass"], f"{slug}/{label}: service-banner class"
     assert data["heroCount"] == 1, f"{slug}/{label}: expected one service hero"
@@ -77,6 +95,13 @@ def assert_service_hero(page, slug: str, label: str) -> None:
     assert data["headerCount"] == 1 and data["footerCount"] == 1, (
         f"{slug}/{label}: header/footer count"
     )
+    assert data["introInHero"] == 0, f"{slug}/{label}: ingress must not sit in hero"
+    assert data["introBlock"], f"{slug}/{label}: missing alt-service-intro"
+    if intro_styles:
+        assert intro_styles["paddingTop"] == "0px", intro_styles
+        assert intro_styles["borderLeftWidth"] == "0px", intro_styles
+        assert intro_styles["boxShadow"] == "none", intro_styles
+        assert "inter" in intro_styles["fontFamily"].lower(), intro_styles
 
 
 def run_viewport(browser, viewport: dict, mobile: bool, tag: str) -> None:
