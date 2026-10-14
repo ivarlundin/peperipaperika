@@ -168,7 +168,9 @@ def contact_offert_section(
 {lead_html}          <ul class="contact-usps">
 {usp_items}
           </ul>
-          <p class="contact-offert__alt">Alternativt: <a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a></p>
+          <p class="contact-offert__mail">
+            <a class="alt-btn alt-btn--primary" href="mailto:halvfjorton@gmail.com">Mejla oss</a>
+          </p>
         </div>
         <div class="contact-offert__form tally-card">
           <noscript>
