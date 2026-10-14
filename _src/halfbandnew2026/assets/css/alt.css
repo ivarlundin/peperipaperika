@@ -2,6 +2,10 @@
 
 @import url("fonts.css");
 
+html {
+  overflow-x: clip;
+}
+
 .alt-page {
   --alt-bg: #0a0a0b;
   --alt-bg-elevated: #121214;
@@ -829,9 +833,16 @@ body.alt-page > main {
   }
 }
 
-html.alt-page-nav-lock,
+html.alt-page-nav-lock {
+  overflow-x: clip;
+  overflow-y: hidden;
+  touch-action: none;
+  overscroll-behavior: none;
+}
+
 html.alt-page-nav-lock body {
-  overflow: hidden;
+  overflow-x: clip;
+  overflow-y: hidden;
   touch-action: none;
   overscroll-behavior: none;
 }
@@ -1426,14 +1437,17 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   padding: 0 0 4rem;
   content-visibility: auto;
   contain-intrinsic-size: auto 13rem;
+  overflow-x: clip;
 }
 
 .alt-gallery__marquee {
   position: relative;
-  overflow: hidden;
-  width: 100vw;
-  max-width: 100vw;
-  margin-left: calc(50% - 50vw);
+  overflow-x: clip;
+  overflow-y: hidden;
+  width: 100%;
+  max-width: 100%;
+  margin-left: 0;
+  margin-right: 0;
   height: clamp(10rem, 38vw, 12.5rem);
   box-sizing: border-box;
 }
@@ -1795,12 +1809,14 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
     --offert-surface: #eeebe6;
     --offert-ink: #1a1816;
     --offert-muted: #4a4540;
-    width: 100vw;
-    max-width: 100vw;
-    margin-left: calc(50% - 50vw);
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
     padding: 2.75rem 0 4.25rem;
     background: var(--offert-surface);
     box-sizing: border-box;
+    overflow-x: clip;
   }
 
   .alt-page .contact-offert__grid {
