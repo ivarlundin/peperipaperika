@@ -25,6 +25,34 @@ def header_logo_width(page) -> float:
     )
 
 
+def assert_menu_cta_full_width(page, label: str) -> None:
+    vp = page.viewport_size
+    assert vp, f"{label}: no viewport"
+    cta_w = float(page.locator(".mobile-menu__cta").evaluate(
+        "el => el.getBoundingClientRect().width"
+    ))
+    foot = page.locator(".mobile-menu__foot")
+    foot_styles = foot.evaluate(
+        """el => {
+          const r = el.getBoundingClientRect();
+          const s = getComputedStyle(el);
+          return { width: r.width, padL: parseFloat(s.paddingLeft), padR: parseFloat(s.paddingRight) };
+        }"""
+    )
+    inner_w = foot_styles["width"] - foot_styles["padL"] - foot_styles["padR"]
+    assert cta_w >= inner_w * 0.98, (
+        f"{label}: CTA width {cta_w} should fill menu foot inner {inner_w}"
+    )
+
+
+def assert_logo_in_viewport(page, label: str) -> None:
+    box = page.locator(".alt-header .brand-mark").bounding_box()
+    assert box, f"{label}: logo missing box"
+    assert box["width"] >= LOGO_LARGE_MIN, f"{label}: logo too small ({box['width']}px)"
+    assert -8 < box["y"] < 180, f"{label}: logo top {box['y']} outside viewport band"
+    assert box["x"] >= -4, f"{label}: logo left {box['x']} clipped"
+
+
 def assert_menu_fullscreen(page, label: str) -> None:
     menu = page.locator("[data-mobile-menu]")
     assert menu.evaluate("el => el.classList.contains('mobile-menu--open')"), (
@@ -96,6 +124,8 @@ def assert_menu_opens_with_motion(page, label: str, expect_large_logo: bool) -> 
     page.wait_for_timeout(MENU_MOTION_MS)
     assert_menu_fullscreen(page, label)
     assert_single_scaled_header_logo(page, label, expect_large_logo)
+    assert_logo_in_viewport(page, label)
+    assert_menu_cta_full_width(page, label)
 
 
 def assert_home_hero_logo_at_top(page, label: str) -> None:
@@ -178,6 +208,7 @@ def main() -> int:
 
             assert_menu_opens_with_motion(page, "scrollY=0", True)
             assert_tjanster_dropdown_animates(page, "scrollY=0")
+            page.screenshot(path=str(OUT / "mobile-menu-open-iphone.png"), full_page=False)
             page.screenshot(path=str(OUT / "mobile-menu-webkit-top.png"), full_page=False)
 
             page.locator("[data-nav-close]").click()
