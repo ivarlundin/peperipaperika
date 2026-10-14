@@ -22,7 +22,7 @@
   <link rel="apple-touch-icon" href="/testing/halfbandnew2026/assets/img/favicon.png">
   <link rel="preload" href="/testing/halfbandnew2026/assets/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/testing/halfbandnew2026/assets/fonts/Outfit-Variable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/testing/halfbandnew2026/assets/css/style.css">
+  <link rel="stylesheet" href="/testing/halfbandnew2026/assets/css/alt.css">
   <script type="application/ld+json">
     {
     "@context": "https://schema.org",
@@ -259,11 +259,11 @@
   }
   </script>
 </head>
-<body class="">
+<body class="alt-page alt-page--inner">
   <a class="skip-link" href="#innehall">Hoppa till innehållet</a>
-  <header class="site-header" data-nav>
-    <div class="header-inner">
-      <a class="brand" href="/testing/halfbandnew2026/" aria-label="Halv Fjorton">
+  <header class="alt-header site-header is-solid" data-nav>
+    <div class="alt-header__inner header-inner">
+      <a class="alt-brand brand" href="/testing/halfbandnew2026/" aria-label="Halv Fjorton">
 <svg class="brand-mark" focusable="false" width="56" height="56" viewBox="0 0 593 596" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 <g clip-path="url(#clip0_h14_logo)">
 <mask id="mask0_h14_logo" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="593" height="596">
@@ -286,13 +286,12 @@
 
         <span>Halv Fjorton</span>
       </a>
-      <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="meny" aria-label="Öppna meny">
-        <span class="nav-toggle__bars" aria-hidden="true"></span>
+      <button class="nav-toggle alt-nav-toggle" type="button" data-nav-toggle alt-nav-toggle aria-expanded="false" aria-controls="alt-meny" aria-label="Öppna meny">
+        <span class="nav-toggle alt-nav-toggle__bars" aria-hidden="true"></span>
       </button>
       <div class="nav-backdrop" data-nav-backdrop hidden></div>
-      <nav id="meny" aria-label="Huvudmeny">
-        <ul class="nav-list" data-nav-panel>
-          <li><a href="/testing/halfbandnew2026/">Hem</a></li>
+      <nav class="alt-nav" aria-label="Huvudmeny">
+        <ul class="alt-nav__links nav-list" id="alt-meny" data-nav-panel>
           <li class="nav-item nav-item--dropdown" data-nav-dropdown>
             <button type="button" class="nav-dropdown__trigger" data-nav-dropdown-trigger aria-expanded="true" aria-controls="nav-tjanster" id="nav-tjanster-btn">
               Tjänster
@@ -307,16 +306,18 @@
               <li role="none"><a role="menuitem" href="/testing/halfbandnew2026/coverband-skane-malmo/">Coverband Skåne & Malmö</a></li>
             </ul>
           </li>
-          <li><a href="/testing/halfbandnew2026/for-eventbolag/">Eventbolag</a></li>
-          <li><a href="/testing/halfbandnew2026/om-oss/">Om oss</a></li>
-          <li><a href="/testing/halfbandnew2026/lyssna/">Lyssna</a></li>
+          <li><a href="/testing/halfbandnew2026/konserter/">Konserter</a></li>
+          <li><a href="/testing/halfbandnew2026/repertoar/">Repertoar</a></li>
           <li><a href="/testing/halfbandnew2026/faq/">FAQ</a></li>
+          <li><a href="/testing/halfbandnew2026/lyssna/">Lyssna</a></li>
           <li><a href="/testing/halfbandnew2026/kontakt/">Kontakt</a></li>
+          <li class="alt-nav__cta-mobile-wrap"><a class="alt-btn alt-btn--primary alt-nav__cta-mobile" href="/testing/halfbandnew2026/#offert">Begär offert</a></li>
         </ul>
+        <a class="alt-btn alt-btn--primary alt-nav__cta-desktop" href="/testing/halfbandnew2026/#offert">Begär offert</a>
       </nav>
     </div>
   </header>
-  <main id="innehall">
+  <main id="innehall" class="alt-inner-main">
     <header class="page-hero compact">
       <div class="page-hero-copy">
         <p class="eyebrow">Privatfest</p>
@@ -336,44 +337,32 @@
     </section>
 
   </main>
-  <footer class="site-footer">
-    <div class="wrap footer-grid">
+  <footer class="alt-footer">
+    <div class="alt-footer__inner">
       <div>
         <p><strong>Halv Fjorton EK. FÖR.</strong></p>
-        <p class="small">Coverband och partyband från Växjö, med medlemmar över södra Sverige.</p>
-        <p class="small">Organisationsnummer 769641-5418</p>
+        <p>Coverband från Växjö, spelar i södra Sverige.</p>
+        <p>Org.nr 769641-5418</p>
       </div>
       <div>
         <p><strong>Kontakt</strong></p>
-        <ul class="small">
-          <li><a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a></li>
-          <li><a href="https://www.instagram.com/halvfjorton/" rel="noopener noreferrer">Instagram @halvfjorton</a></li>
-          <li><a href="https://www.youtube.com/@halvfjorton9292" rel="noopener noreferrer">YouTube</a></li>
-        </ul>
+        <p><a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a></p>
+        <p><a href="https://www.instagram.com/halvfjorton/" rel="noopener noreferrer">Instagram @halvfjorton</a></p>
       </div>
       <div>
-        <p><strong>Tjänster</strong></p>
-        <ul class="small">
+        <p><strong>Sidor</strong></p>
+        <ul class="alt-footer__links">
           <li><a href="/testing/halfbandnew2026/brollop/">Bröllop</a></li>
           <li><a href="/testing/halfbandnew2026/foretag/">Företag</a></li>
-          <li><a href="/testing/halfbandnew2026/kompband/">Kompband för artist</a></li>
-          <li><a href="/testing/halfbandnew2026/50-arsfest/">50-årsfest</a></li>
-          <li><a href="/testing/halfbandnew2026/julkonsert/">Julkonsert</a></li>
-          <li><a href="/testing/halfbandnew2026/for-eventbolag/">För eventbolag</a></li>
-        </ul>
-      </div>
-      <div>
-        <p><strong>Områden</strong></p>
-        <ul class="small">
-          <li><a href="/testing/halfbandnew2026/brollopsband-smaland/">Bröllopsband Småland</a></li>
-          <li><a href="/testing/halfbandnew2026/coverband-skane-malmo/">Coverband Skåne</a></li>
-          <li><a href="/testing/halfbandnew2026/faq/">Vanliga frågor</a></li>
-          <li><a href="/testing/halfbandnew2026/kontakt/">Hör av er</a></li>
+          <li><a href="/testing/halfbandnew2026/konserter/">Konserter</a></li>
+          <li><a href="/testing/halfbandnew2026/repertoar/">Repertoar</a></li>
+          <li><a href="/testing/halfbandnew2026/faq/">FAQ</a></li>
         </ul>
       </div>
     </div>
   </footer>
   <script src="/testing/halfbandnew2026/assets/js/nav.js"></script>
+  <script src="/testing/halfbandnew2026/assets/js/alt-nav.js" defer></script>
   <script src="/testing/halfbandnew2026/assets/js/video-facade.js" defer></script>
 </body>
 </html>

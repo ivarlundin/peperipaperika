@@ -56,6 +56,8 @@ SITEMAP_PATHS = [
     "/kompband/",
     "/50-arsfest/",
     "/julkonsert/",
+    "/konserter/",
+    "/repertoar/",
     "/mingel/",
     "/om-oss/",
     "/lyssna/",
@@ -64,6 +66,14 @@ SITEMAP_PATHS = [
     "/kontakt/",
     "/brollopsband-smaland/",
     "/coverband-skane-malmo/",
+]
+
+HOME_NAV_LINKS = [
+    ("/konserter/", "Konserter"),
+    ("/repertoar/", "Repertoar"),
+    ("/faq/", "FAQ"),
+    ("/lyssna/", "Lyssna"),
+    ("/kontakt/", "Kontakt"),
 ]
 
 LOKAL_TEKNIK_COPY = (
@@ -216,24 +226,52 @@ def render_nav_list(current_path: str, prefix: str = "", include_home: bool = Tr
     return "\n".join(items)
 
 
-def home_nav_list_markup() -> str:
-    items = [nav_services_dropdown("/", "", "nav-tjanster")]
-    for href, label in (("/faq/", "FAQ"), ("/lyssna/", "Lyssna"), ("/kontakt/", "Kontakt")):
-        items.append(f'          <li><a href="{href}">{label}</a></li>')
+def home_nav_list_markup(current_path: str = "/", offert_href: str = "#offert") -> str:
+    items = [nav_services_dropdown(current_path, "", "nav-tjanster")]
+    for href, label in HOME_NAV_LINKS:
+        current = ' aria-current="page"' if href == current_path else ""
+        items.append(f'          <li><a href="{href}"{current}>{label}</a></li>')
     items.append(
-        '          <li class="alt-nav__cta-mobile-wrap"><a class="alt-btn alt-btn--primary alt-nav__cta-mobile" '
-        'href="#offert">Begär offert</a></li>'
+        f'          <li class="alt-nav__cta-mobile-wrap"><a class="alt-btn alt-btn--primary alt-nav__cta-mobile" '
+        f'href="{offert_href}">Begär offert</a></li>'
     )
     return "\n".join(items)
 
 
-def home_nav_block() -> str:
+def home_nav_block(current_path: str = "/", offert_href: str = "#offert") -> str:
     return f"""      <nav class="alt-nav" aria-label="Huvudmeny">
         <ul class="alt-nav__links nav-list" id="alt-meny" data-nav-panel>
-{home_nav_list_markup()}
+{home_nav_list_markup(current_path, offert_href)}
         </ul>
-        <a class="alt-btn alt-btn--primary alt-nav__cta-desktop" href="#offert">Begär offert</a>
+        <a class="alt-btn alt-btn--primary alt-nav__cta-desktop" href="{offert_href}">Begär offert</a>
       </nav>"""
+
+
+def modern_footer_markup() -> str:
+    return """  <footer class="alt-footer">
+    <div class="alt-footer__inner">
+      <div>
+        <p><strong>Halv Fjorton EK. FÖR.</strong></p>
+        <p>Coverband från Växjö, spelar i södra Sverige.</p>
+        <p>Org.nr 769641-5418</p>
+      </div>
+      <div>
+        <p><strong>Kontakt</strong></p>
+        <p><a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a></p>
+        <p><a href="https://www.instagram.com/halvfjorton/" rel="noopener noreferrer">Instagram @halvfjorton</a></p>
+      </div>
+      <div>
+        <p><strong>Sidor</strong></p>
+        <ul class="alt-footer__links">
+          <li><a href="/brollop/">Bröllop</a></li>
+          <li><a href="/foretag/">Företag</a></li>
+          <li><a href="/konserter/">Konserter</a></li>
+          <li><a href="/repertoar/">Repertoar</a></li>
+          <li><a href="/faq/">FAQ</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>"""
 
 
 def brand_logo_markup() -> str:
@@ -333,12 +371,16 @@ def page(
     extra_scripts: str = "",
 ):
     canonical = f"{SITE}{path}"
-    nav = render_nav_list(path)
     crumb_label = breadcrumb_name or title.split(" | ")[0].split(" – ")[0]
     graphs = [music_group_ld(), breadcrumb_ld([("/", "Hem")] + ([] if path == "/" else [(path, crumb_label)]))]
     if extra_ld:
         graphs.extend(extra_ld)
     jsonld = ",\n  ".join(graphs)
+    body_class = "alt-page alt-page--inner"
+    if page_class:
+        body_class = f"{body_class} {page_class}"
+    nav_block = home_nav_block(path, "/#offert")
+    toggle = nav_toggle_markup("alt-meny").replace("nav-toggle", "nav-toggle alt-nav-toggle")
     html = f"""<!DOCTYPE html>
 <html lang="sv">
 <head>
@@ -362,69 +404,30 @@ def page(
   <link rel="icon" href="/assets/img/favicon.png" type="image/png">
   <link rel="apple-touch-icon" href="/assets/img/favicon.png">
 {font_preloads('/assets')}
-  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/alt.css">
   <script type="application/ld+json">
   {jsonld}
   </script>
 </head>
-<body class="{page_class}">
+<body class="{body_class}">
   <a class="skip-link" href="#innehall">Hoppa till innehållet</a>
-  <header class="site-header" data-nav>
-    <div class="header-inner">
-      <a class="brand" href="/" aria-label="Halv Fjorton">
+  <header class="alt-header site-header is-solid" data-nav>
+    <div class="alt-header__inner header-inner">
+      <a class="alt-brand brand" href="/" aria-label="Halv Fjorton">
 {brand_logo_markup()}
         <span>Halv Fjorton</span>
       </a>
-{nav_toggle_markup()}
+{toggle}
       <div class="nav-backdrop" data-nav-backdrop hidden></div>
-      <nav id="meny" aria-label="Huvudmeny">
-        <ul class="nav-list" data-nav-panel>
-{nav}
-        </ul>
-      </nav>
+{nav_block}
     </div>
   </header>
-  <main id="innehall">
+  <main id="innehall" class="alt-inner-main">
 {body}
   </main>
-  <footer class="site-footer">
-    <div class="wrap footer-grid">
-      <div>
-        <p><strong>Halv Fjorton EK. FÖR.</strong></p>
-        <p class="small">Coverband och partyband från Växjö, med medlemmar över södra Sverige.</p>
-        <p class="small">Organisationsnummer 769641-5418</p>
-      </div>
-      <div>
-        <p><strong>Kontakt</strong></p>
-        <ul class="small">
-          <li><a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a></li>
-          <li><a href="https://www.instagram.com/halvfjorton/" rel="noopener noreferrer">Instagram @halvfjorton</a></li>
-          <li><a href="https://www.youtube.com/@halvfjorton9292" rel="noopener noreferrer">YouTube</a></li>
-        </ul>
-      </div>
-      <div>
-        <p><strong>Tjänster</strong></p>
-        <ul class="small">
-          <li><a href="/brollop/">Bröllop</a></li>
-          <li><a href="/foretag/">Företag</a></li>
-          <li><a href="/kompband/">Kompband för artist</a></li>
-          <li><a href="/50-arsfest/">50-årsfest</a></li>
-          <li><a href="/julkonsert/">Julkonsert</a></li>
-          <li><a href="/for-eventbolag/">För eventbolag</a></li>
-        </ul>
-      </div>
-      <div>
-        <p><strong>Områden</strong></p>
-        <ul class="small">
-          <li><a href="/brollopsband-smaland/">Bröllopsband Småland</a></li>
-          <li><a href="/coverband-skane-malmo/">Coverband Skåne</a></li>
-          <li><a href="/faq/">Vanliga frågor</a></li>
-          <li><a href="/kontakt/">Hör av er</a></li>
-        </ul>
-      </div>
-    </div>
-  </footer>
+{modern_footer_markup()}
   <script src="/assets/js/nav.js"></script>
+  <script src="/assets/js/alt-nav.js" defer></script>
   <script src="/assets/js/video-facade.js" defer></script>
 {extra_scripts}</body>
 </html>
@@ -718,6 +721,51 @@ def write_pages():
     <section class="section">
       <div class="wrap">
         <p>Vill ni boka bandet till er egen julfest eller företagsjul? Se <a href="/foretag/">företag</a> eller <a href="/kontakt/">kontakt</a>.</p>
+      </div>
+    </section>
+""",
+    )
+
+    page(
+        "/konserter/",
+        f"Konserter | {BRAND_TITLE}",
+        "Kommande konserter med Halv Fjorton i Växjö och södra Sverige, inklusive spelningar på Nygatan 6 och julkonserten.",
+        breadcrumb_name="Konserter",
+        body="""    <header class="page-hero compact">
+      <div class="page-hero-copy">
+        <p class="eyebrow">På scen</p>
+        <h1>Konserter</h1>
+        <p class="lead">Här samlar vi kommande spelningar där ni kan se hela bandet live.</p>
+      </div>
+    </header>
+    <section class="section">
+      <div class="wrap">
+        <h2>Kommande</h2>
+        <ul class="list-check">
+          <li><strong>Nygatan 6, Växjö</strong> – datum meddelas (TBA).</li>
+          <li><strong>Julkonsert (A Soulful Christmas)</strong> – datum meddelas (TBA).</li>
+        </ul>
+        <p class="small muted">Följ <a href="https://www.instagram.com/halvfjorton/">Instagram @halvfjorton</a> eller sidan <a href="/lyssna/">Lyssna</a> för uppdateringar.</p>
+      </div>
+    </section>
+""",
+    )
+
+    page(
+        "/repertoar/",
+        f"Repertoar | {BRAND_TITLE}",
+        "Repertoar för Halv Fjorton – soul, funk, rock och svenska klassiker med åtta musiker och egen blåssektion.",
+        breadcrumb_name="Repertoar",
+        body="""    <header class="page-hero compact">
+      <div class="page-hero-copy">
+        <p class="eyebrow">Låtlista</p>
+        <h1>Repertoar</h1>
+        <p class="lead">En kuraterad lista med soul, funk, rock och svenska klassiker publiceras här.</p>
+      </div>
+    </header>
+    <section class="section">
+      <div class="wrap">
+        <p>Platshållare tills listan är klar. Mejla <a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a> om ni vill diskutera låtönskemål inför bokning.</p>
       </div>
     </section>
 """,
@@ -1160,6 +1208,8 @@ Kärnregion: Växjö, Älmhult, Kalmar, Jönköping, Lund, Malmö, Helsingborg (
 - Företag: {SITE}/foretag/
 - FAQ: {SITE}/faq/
 - Kontakt: {SITE}/kontakt/
+- Konserter: {SITE}/konserter/
+- Repertoar: {SITE}/repertoar/
 - Bröllopsband Småland: {SITE}/brollopsband-smaland/
 - Coverband Skåne: {SITE}/coverband-skane-malmo/
 """
@@ -1228,7 +1278,7 @@ def patch_home_page():
         )
     html = re.sub(
         r'^[ \t]*<nav class="alt-nav" aria-label="Huvudmeny">[\s\S]*?</nav>',
-        home_nav_block(),
+        home_nav_block("/", "#offert"),
         html,
         count=1,
         flags=re.MULTILINE,
