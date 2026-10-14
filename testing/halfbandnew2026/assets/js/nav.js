@@ -78,6 +78,7 @@
     mobileMenu.setAttribute("aria-hidden", "true");
     unlockPageScroll();
     closeDropdowns(mobileMenu);
+    window.dispatchEvent(new CustomEvent("alt-nav-closed"));
   }
 
   function setOpen(open) {

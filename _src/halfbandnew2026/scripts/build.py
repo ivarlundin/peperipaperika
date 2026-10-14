@@ -312,18 +312,11 @@ def mobile_menu_block(
     offert_href: str = "#offert",
     prefix: str = "",
 ) -> str:
-    logo = "\n".join("        " + line for line in brand_logo_markup().splitlines())
     return f"""  <div class="mobile-menu" id="mobile-menu" data-mobile-menu hidden aria-hidden="true">
     <div class="mobile-menu__bar">
-      <span class="mobile-menu__bar-spacer" aria-hidden="true"></span>
 {mobile_menu_close_markup()}
     </div>
     <nav class="mobile-menu__nav" aria-label="Mobilmeny">
-      <div class="mobile-menu__intro">
-        <a class="mobile-menu__brand mobile-menu__brand--feature" href="{nav_path("/", prefix)}" aria-label="Halv Fjorton">
-{logo}
-        </a>
-      </div>
       <ul class="mobile-menu__list nav-list" data-nav-panel>
 {mobile_nav_links_markup(current_path, prefix, "mobile-nav-tjanster")}
       </ul>
@@ -522,6 +515,7 @@ def page(
 {modern_footer_markup()}
   <script src="/assets/js/nav.js"></script>
   <script src="/assets/js/alt-nav.js" defer></script>
+  <script src="/assets/js/alt-header-logo.js" defer></script>
   <script src="/assets/js/footer-year.js" defer></script>
   <script src="/assets/js/video-facade.js" defer></script>
 {extra_scripts}</body>
