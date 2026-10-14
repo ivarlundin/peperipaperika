@@ -7,6 +7,7 @@
   }
 
   function updateFromScroll() {
+    if (header.classList.contains("is-open")) return;
     setSolid(window.scrollY > 12);
   }
 

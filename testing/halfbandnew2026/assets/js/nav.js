@@ -6,6 +6,31 @@
   if (!nav || !toggle || !panel) return;
 
   var mqDesktop = window.matchMedia("(min-width: 901px)");
+  var scrollLockY = 0;
+
+  function isMobileNav() {
+    return !mqDesktop.matches;
+  }
+
+  function lockPageScroll() {
+    if (!isMobileNav()) return;
+    scrollLockY = window.scrollY || window.pageYOffset || 0;
+    document.body.style.top = "-" + scrollLockY + "px";
+    document.body.style.left = "0";
+    document.body.style.right = "0";
+    document.body.style.width = "100%";
+    document.body.classList.add("nav-open");
+  }
+
+  function unlockPageScroll() {
+    if (!document.body.classList.contains("nav-open")) return;
+    document.body.classList.remove("nav-open");
+    document.body.style.top = "";
+    document.body.style.left = "";
+    document.body.style.right = "";
+    document.body.style.width = "";
+    window.scrollTo(0, scrollLockY);
+  }
 
   function closeDropdowns() {
     document.querySelectorAll("[data-nav-dropdown]").forEach(function (dd) {
@@ -16,12 +41,20 @@
   }
 
   function setOpen(open) {
+    var isOpen = nav.classList.contains("is-open");
+    if (open === isOpen) return;
+
     nav.classList.toggle("is-open", open);
     toggle.setAttribute("aria-expanded", open ? "true" : "false");
     toggle.setAttribute("aria-label", open ? "Stäng meny" : "Öppna meny");
-    document.body.classList.toggle("nav-open", open);
     if (backdrop) backdrop.hidden = !open;
-    if (!open) closeDropdowns();
+
+    if (open) {
+      lockPageScroll();
+    } else {
+      unlockPageScroll();
+      closeDropdowns();
+    }
   }
 
   toggle.addEventListener("click", function () {
@@ -77,6 +110,12 @@
     if (event.key !== "Escape") return;
     if (nav.classList.contains("is-open")) setOpen(false);
     else closeDropdowns();
+  });
+
+  mqDesktop.addEventListener("change", function () {
+    if (mqDesktop.matches && nav.classList.contains("is-open")) {
+      setOpen(false);
+    }
   });
 
   if ("IntersectionObserver" in window) {
