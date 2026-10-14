@@ -656,6 +656,29 @@ def wedding_figure(
           </figure>"""
 
 
+def wedding_bleed_figure(
+    stem: str,
+    alt: str,
+    modifier: str = "",
+    width: int = 2400,
+    height: int = 1600,
+) -> str:
+    base = f"/assets/img/gallery/{stem}"
+    mod_class = f" alt-wedding-bleed--{modifier}" if modifier else ""
+    return f"""      <figure class="alt-wedding-bleed{mod_class}">
+        <img
+          src="{base}-1200w.webp"
+          srcset="{base}-480w.webp 480w, {base}-800w.webp 800w, {base}-1200w.webp 1200w, {base}-1920w.webp 1920w"
+          sizes="100vw"
+          alt="{esc(alt)}"
+          width="{width}"
+          height="{height}"
+          loading="lazy"
+          decoding="async"
+        >
+      </figure>"""
+
+
 def wedding_page_body(wedding_video_block: str) -> str:
     hero = service_hero_banner(
         "brollop",
@@ -666,66 +689,56 @@ def wedding_page_body(wedding_video_block: str) -> str:
         ),
     )
     return f"""{hero}
-    <section class="alt-wedding-band section alt-wedding-band--opener" data-reveal>
-      <div class="alt-wedding-wrap alt-wedding-split alt-wedding-split--text-first alt-wedding-split--feature">
-        <div class="alt-wedding-split__text">
-          <h2>När dansen börjar</h2>
+    <section class="alt-wedding-opener section" data-reveal>
+      <div class="alt-wedding-wrap alt-wedding-opener__grid">
+        <div class="alt-wedding-opener__copy">
+          <h2 class="alt-wedding-display">När dansen börjar</h2>
           <p>Spellistan håller tempot uppe hela kvällen. Vi byter stil efter hur golvet ser ut. Era låtar tar vi med om de passar live.</p>
-        </div>
-        <div class="alt-wedding-split__media">
-{wedding_figure("halvfjorton-06", "Sång och slagverk på scen, svartvit bild i dramatiskt ljus", "(max-width: 900px) 100vw, 44vw", height=2400, width=1600)}
         </div>
       </div>
     </section>
-    <section class="alt-wedding-sound section alt-wedding-sound--shade alt-wedding-band--inset" data-reveal>
-      <div class="alt-wedding-wrap alt-wedding-split alt-wedding-split--media-first alt-wedding-split--tight">
-        <div class="alt-wedding-split__media alt-wedding-split__media--tall">
-{wedding_figure("halvfjorton-02", "Keyboard och blåssektion på scen i blått ljus", "(max-width: 900px) 100vw, 44vw", height=2400, width=1600)}
+{wedding_bleed_figure("halvfjorton-06", "Sång och slagverk på scen, svartvit bild i dramatiskt ljus", "mono", height=2400, width=1600)}
+    <section class="alt-wedding-sound section alt-wedding-sound--ink" data-reveal>
+      <div class="alt-wedding-wrap alt-wedding-sound__layout">
+        <div class="alt-wedding-sound__media">
+{wedding_figure("halvfjorton-02", "Keyboard och blåssektion på scen i blått ljus", "(max-width: 900px) 100vw, min(42vw, 520px)", height=2400, width=1600, figure_class="alt-wedding-figure alt-wedding-figure--portrait")}
         </div>
-        <div class="alt-wedding-split__text">
-          <h2>Ljud och ljus</h2>
+        <div class="alt-wedding-sound__copy">
+          <h2 class="alt-wedding-display alt-wedding-display--sm">Ljud och ljus</h2>
           <p>Eget ljud och ljus ingår. Ni behöver ingen extra teknik för festen.</p>
-          <h2>Mingel och vigsel</h2>
+          <h2 class="alt-wedding-display alt-wedding-display--sm">Mingel och vigsel</h2>
           <p>Under mingel spelar vi lugnare, med eget litet ljud så pratet håller. Till vigseln komp till solist; låtar bestämmer vi med er. Alla åtta till ceremonin går om tid och plats räcker.</p>
         </div>
       </div>
     </section>
-    <section class="alt-wedding-mosaic section alt-wedding-mosaic--bleed" data-reveal>
-      <div class="alt-wedding-wrap alt-wedding-mosaic__frame">
-        <div class="alt-wedding-mosaic__grid" aria-hidden="false">
-{wedding_figure("halvfjorton-04", "Två sångare framför mikrofoner på träscen", "(max-width: 900px) 94vw, 32vw", width=1280, height=853, figure_class="alt-wedding-figure alt-wedding-figure--wide")}
-{wedding_figure("halvfjorton-01", "Hela bandet på scen i festsal med publik", "(max-width: 900px) 94vw, 32vw", figure_class="alt-wedding-figure alt-wedding-figure--tall")}
-{wedding_figure("halvfjorton-05", "Band i rustik lokal med publik i silhuett", "(max-width: 900px) 94vw, 32vw", width=1280, height=853, figure_class="alt-wedding-figure alt-wedding-figure--mono")}
-        </div>
-      </div>
-    </section>
+{wedding_bleed_figure("halvfjorton-01", "Hela bandet på scen i festsal med publik", "wide")}
     <section class="alt-wedding-story section alt-wedding-story--editorial" data-reveal>
       <div class="alt-wedding-wrap alt-wedding-story__inner">
         <div class="alt-wedding-story__block">
           <h2>Första dansen</h2>
           <p>Live eller er inspelning genom vårt ljud. Önskemål tar vi via e-post; nya låtar lär vi in om arrangemanget passar.</p>
         </div>
-        <div class="alt-wedding-story__block">
+        <div class="alt-wedding-story__block alt-wedding-story__block--offset">
           <h2>Inför spelningen</h2>
           <p>Tid i lokalen innan gästerna och plats för oss på golvet eller scenen. Resten avtalar vi i förväg.</p>
         </div>
         <div class="alt-wedding-venues">
-          <h2>Platser vi brukar spela på</h2>
-          <ul class="alt-wedding-venues__list" aria-hidden="true">
+          <h2 class="alt-wedding-display">Platser vi brukar spela på</h2>
+          <ul class="alt-wedding-venues__list">
             <li>Asa Herrgård</li>
             <li>Norraby gård</li>
             <li>Kronovalls slott</li>
             <li>Bäckaskog slott</li>
           </ul>
-          <p>Vi har spelat där och på liknande ställen. Vi utgår från Växjö och åker till bröllop i Småland och Skåne, till exempel runt Kalmar och Älmhult eller vidare söderut när det passar er dag.</p>
+          <p class="alt-wedding-venues__note">Vi har spelat där och på liknande ställen. Vi utgår från Växjö och åker till bröllop i Småland och Skåne, till exempel runt Kalmar och Älmhult eller vidare söderut när det passar er dag.</p>
         </div>
       </div>
     </section>
-    <section class="alt-wedding-video section alt-wedding-sound--shade alt-wedding-video--cinema" data-reveal>
-      <div class="alt-wedding-wrap alt-wedding-video__layout">
-        <div class="alt-wedding-video__head">
-          <h2>Smakprov från scen</h2>
-        </div>
+    <section class="alt-wedding-video section alt-wedding-video--full" data-reveal>
+      <div class="alt-wedding-wrap alt-wedding-video__intro">
+        <h2 class="alt-wedding-display">Smakprov från scen</h2>
+      </div>
+      <div class="alt-wedding-video__stage">
         <div class="alt-wedding-video__player">
 {wedding_video_block}
         </div>
@@ -734,15 +747,23 @@ def wedding_page_body(wedding_video_block: str) -> str:
     </section>
     <section class="alt-wedding-faq section alt-wedding-faq--closing" data-reveal>
       <div class="alt-wedding-wrap">
-        <h2>Innan ni bokar</h2>
-        <div class="faq-grid alt-wedding-faq__grid">
-          <article><h3>Första dansen</h3><p>Live eller inspelning.</p></article>
-          <article><h3>Mingel och fest</h3><p>Samma kväll, lugnare först.</p></article>
-          <article><h3>Komp till solist</h3><p>Psalmer och vigsel. Se <a href="/kompband/">kompband för artist</a>.</p></article>
+        <h2 class="alt-wedding-display">Innan ni bokar</h2>
+        <div class="alt-wedding-faq__list">
+          <article>
+            <h3>Första dansen</h3>
+            <p>Live eller inspelning.</p>
+          </article>
+          <article>
+            <h3>Mingel och fest</h3>
+            <p>Samma kväll, lugnare först.</p>
+          </article>
+          <article>
+            <h3>Komp till solist</h3>
+            <p>Psalmer och vigsel. Se <a href="/kompband/">kompband för artist</a>.</p>
+          </article>
         </div>
         <div class="actions alt-wedding-actions">
           <a class="btn btn-primary" href="/kontakt/#offert">Begär offert</a>
-          <a class="btn btn-ghost" href="/brollopsband-smaland/">Bröllop i Småland</a>
         </div>
       </div>
     </section>"""

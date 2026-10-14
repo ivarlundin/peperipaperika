@@ -137,7 +137,10 @@ def assert_service_hero(page, slug: str, label: str) -> None:
         assert intro_styles["paddingTop"] == "0px", intro_styles
         assert intro_styles["borderLeftWidth"] == "0px", intro_styles
         assert intro_styles["boxShadow"] == "none", intro_styles
-        assert "inter" in intro_styles["fontFamily"].lower(), intro_styles
+        if slug == "brollop":
+            assert "outfit" in intro_styles["fontFamily"].lower(), intro_styles
+        else:
+            assert "inter" in intro_styles["fontFamily"].lower(), intro_styles
 
 
 def assert_service_hero_layout_top(page, slug: str, label: str) -> None:

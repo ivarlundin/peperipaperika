@@ -19,16 +19,19 @@ def assert_layout(page, label: str) -> None:
           const main = document.querySelector('main#innehall');
           const hero = document.querySelector('.alt-service-hero');
           const venues = document.querySelector('.alt-wedding-venues__list');
-          const mosaic = document.querySelector('.alt-wedding-mosaic--bleed');
-          const cinema = document.querySelector('.alt-wedding-video__layout');
+          const bleed = document.querySelector('.alt-wedding-bleed');
+          const fullVideo = document.querySelector('.alt-wedding-video--full');
+          const faqList = document.querySelector('.alt-wedding-faq__list');
           const text = main ? main.innerText : '';
           return {
             bodyClass: document.body.className,
             hasHero: !!hero,
             heroH: hero ? hero.getBoundingClientRect().height : 0,
             venueCount: venues ? venues.querySelectorAll('li').length : 0,
-            hasMosaicBleed: !!mosaic,
-            hasCinemaLayout: !!cinema,
+            bleedCount: document.querySelectorAll('.alt-wedding-bleed').length,
+            hasFullVideo: !!fullVideo,
+            hasFaqList: !!faqList,
+            hasFaqGrid: !!document.querySelector('.alt-wedding-faq__grid'),
             docSW: document.documentElement.scrollWidth,
             docCW: document.documentElement.clientWidth,
             hasEyebrow: !!document.querySelector('.eyebrow'),
@@ -42,8 +45,9 @@ def assert_layout(page, label: str) -> None:
     assert data["hasHero"], f"{label}: missing wedding hero"
     assert data["heroH"] >= 170, f"{label}: hero too short ({data['heroH']})"
     assert data["venueCount"] == 4, f"{label}: venue list count"
-    assert data["hasMosaicBleed"], f"{label}: mosaic bleed section"
-    assert data["hasCinemaLayout"], f"{label}: cinema video layout"
+    assert data["bleedCount"] >= 2, f"{label}: full-bleed images"
+    assert data["hasFullVideo"], f"{label}: full-width video section"
+    assert data["hasFaqList"] and not data["hasFaqGrid"], f"{label}: faq list layout"
     assert data["docSW"] <= data["docCW"] + 1, (
         f"{label}: horizontal overflow {data['docSW']} > {data['docCW']}"
     )
@@ -57,9 +61,13 @@ def assert_layout(page, label: str) -> None:
     fit = hero_img.evaluate("el => getComputedStyle(el).objectFit")
     assert fit == "cover", f"{label}: hero image must use cover, got {fit}"
 
-    img = page.locator(".alt-wedding-figure img").first
-    fit = img.evaluate("el => getComputedStyle(el).objectFit")
-    assert fit == "cover", f"{label}: images must use cover, got {fit}"
+    bleed_img = page.locator(".alt-wedding-bleed img").first
+    fit = bleed_img.evaluate("el => getComputedStyle(el).objectFit")
+    assert fit == "cover", f"{label}: bleed image must use cover, got {fit}"
+
+    display = page.locator(".alt-wedding-display").first
+    fs = display.evaluate("el => parseFloat(getComputedStyle(el).fontSize)")
+    assert fs >= 28, f"{label}: display type too small ({fs}px)"
 
 
 def run_viewport(browser, viewport: dict, mobile: bool, tag: str) -> None:
