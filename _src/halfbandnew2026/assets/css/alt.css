@@ -2594,6 +2594,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   font-size: 0.9375rem;
   text-decoration: none;
   border: 1px solid transparent;
+  box-sizing: border-box;
 }
 
 .alt-page--inner .btn-primary,
@@ -2633,6 +2634,8 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   overflow: hidden;
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+  min-width: 0;
+  max-width: 100%;
 }
 
 .alt-page--inner .event-ticket__poster {
@@ -2689,6 +2692,11 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 .alt-page--inner .event-ticket__grid {
   display: grid;
   grid-template-columns: 1fr;
+  min-width: 0;
+}
+
+.alt-page--inner .event-ticket__grid > * {
+  min-width: 0;
 }
 
 .alt-page--inner .event-ticket__poster {
@@ -2708,6 +2716,8 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 .alt-page--inner .event-ticket__main {
   padding: 1.2rem 1.25rem 1.45rem;
   min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .alt-page--inner .event-ticket__title {
@@ -2776,10 +2786,15 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
 .alt-page--inner .event-ticket__actions {
   margin-top: 0.25rem;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .alt-page--inner .event-ticket__cta {
+  box-sizing: border-box;
   width: 100%;
+  max-width: 100%;
   text-align: center;
 }
 
