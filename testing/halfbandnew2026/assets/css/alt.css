@@ -1051,7 +1051,8 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   box-sizing: border-box;
 }
 
-.alt-hero h1 {
+.alt-hero h1,
+.alt-service-hero h1 {
   position: relative;
   font-family: var(--font-display);
   /* Mobile: ~11vw so longest line (≈14 chars) fits in 80vw at Outfit 800, tracking 0 */
@@ -1063,10 +1064,21 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   margin: 0 0 1.35rem;
 }
 
+.alt-service-hero h1 {
+  margin-bottom: 0;
+  max-width: min(80vw, 100%);
+  text-wrap: balance;
+}
+
 @media (min-width: 901px) {
-  .alt-hero h1 {
+  .alt-hero h1,
+  .alt-service-hero h1 {
     font-size: clamp(2.85rem, calc(0.85rem + 10vw), 6.5rem);
     max-width: 100%;
+  }
+
+  .alt-service-hero h1 {
+    font-size: clamp(2.25rem, calc(0.65rem + 5.5vw), 4.25rem);
   }
 }
 
@@ -2275,7 +2287,8 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
     opacity: 1;
   }
 
-  .alt-hero__slide img {
+  .alt-hero__slide img,
+  .alt-service-hero__img {
     animation: none;
     transform: none;
   }
@@ -3035,7 +3048,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   padding: clamp(3rem, 8vw, 5.5rem) 0;
 }
 
-/* Shared full-width hero on Bröllop, Företag, Fest och mingel */
+/* Service pages: home-hero look, shorter static band (no carousel / typewriter) */
 .alt-page--service-banner .alt-inner-main {
   padding-top: 0;
 }
@@ -3043,21 +3056,19 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 .alt-service-hero {
   position: relative;
   display: flex;
-  align-items: flex-end;
+  flex-direction: column;
+  justify-content: flex-end;
   width: 100%;
   max-width: none;
-  margin: 0;
+  margin: calc(-1 * var(--alt-header)) 0 0;
   box-sizing: border-box;
-  min-height: clamp(18rem, 58vh, 38rem);
-  margin-top: calc(-1 * var(--alt-header));
-  padding: calc(var(--alt-header) + 2.25rem) var(--alt-pad-right) clamp(2rem, 6vw, 3.5rem)
-    var(--alt-pad-left);
+  min-height: clamp(13.5rem, 40svh, 31rem);
   overflow: hidden;
 }
 
 @media (max-width: 900px) {
   .alt-service-hero {
-    min-height: clamp(15.5rem, 46vh, 22rem);
+    min-height: clamp(11.5rem, 36svh, 19rem);
   }
 }
 
@@ -3065,45 +3076,41 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   position: absolute;
   inset: 0;
   z-index: 0;
+  overflow: hidden;
 }
 
 .alt-service-hero__img {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
-  max-width: none;
-  aspect-ratio: auto;
+  min-width: 100%;
+  min-height: 100%;
   object-fit: cover;
   object-position: center;
+  transform: scale(1.08) translateZ(0);
 }
 
-.alt-service-hero__shade {
+.alt-service-hero__scrim {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: linear-gradient(
-    180deg,
-    rgba(10, 10, 11, 0.25) 0%,
-    rgba(10, 10, 11, 0.5) 42%,
-    rgba(10, 10, 11, 0.94) 100%
-  );
+  background:
+    linear-gradient(180deg, rgba(10, 10, 11, 0.5) 0%, transparent 38%),
+    linear-gradient(180deg, rgba(10, 10, 11, 0.2) 35%, rgba(10, 10, 11, 0.94) 100%);
   pointer-events: none;
 }
 
-.alt-service-hero__copy {
+.alt-service-hero__content {
   position: relative;
   z-index: 2;
+  max-width: min(var(--alt-max), 100%);
   width: 100%;
-  max-width: 40rem;
-}
-
-.alt-service-hero h1 {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 5.8vw, 3.4rem);
-  font-weight: 800;
-  letter-spacing: 0;
-  line-height: 1.04;
-  margin: 0;
+  margin: 0 auto;
+  padding: calc(var(--alt-header) + var(--alt-gutter)) var(--alt-pad-right) var(--alt-gutter)
+    var(--alt-pad-left);
+  box-sizing: border-box;
 }
 
 .alt-page--service-banner .alt-service-intro {
