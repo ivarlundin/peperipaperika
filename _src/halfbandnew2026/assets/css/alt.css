@@ -78,6 +78,7 @@
   .contact-offert__mail,
   .alt-offer-card p,
   .alt-intro p,
+  .alt-about p,
   .alt-voices blockquote,
   .alt-voice__quote,
   figcaption,
@@ -866,6 +867,44 @@ body.alt-page.nav-open {
   letter-spacing: 0;
   font-weight: 400;
   color: rgba(154, 149, 144, 0.85);
+}
+
+/* About (home) */
+.alt-about {
+  padding: clamp(2.75rem, 6vw, 3.75rem) 0 clamp(1.5rem, 4vw, 2rem);
+  content-visibility: auto;
+  contain-intrinsic-size: auto 220px;
+}
+
+.alt-about__inner {
+  max-width: min(var(--alt-max), 44rem);
+  margin: 0 auto;
+  padding-left: var(--alt-gutter);
+  padding-right: var(--alt-gutter);
+  box-sizing: border-box;
+}
+
+.alt-about h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.1;
+  text-wrap: balance;
+  margin: 0 0 1.1rem;
+  color: var(--alt-ink);
+}
+
+.alt-about p {
+  margin: 0 0 1rem;
+  color: var(--alt-muted);
+  font-weight: var(--font-body-weight);
+  line-height: 1.62;
+  text-wrap: pretty;
+}
+
+.alt-about p:last-child {
+  margin-bottom: 0;
 }
 
 /* Offer cards */
