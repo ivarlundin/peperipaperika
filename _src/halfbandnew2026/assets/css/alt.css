@@ -154,14 +154,18 @@ body.alt-page > main {
 
 .alt-header.is-solid {
   background: rgba(10, 10, 11, 0.97);
+  -webkit-backdrop-filter: blur(18px) saturate(120%);
   backdrop-filter: blur(18px) saturate(120%);
   border-bottom-color: var(--alt-line);
 }
 
-.alt-page--inner .alt-header {
-  background: rgba(10, 10, 11, 0.97);
-  backdrop-filter: blur(18px) saturate(120%);
-  border-bottom-color: var(--alt-line);
+@media (min-width: 901px) {
+  .alt-page--inner .alt-header {
+    background: rgba(10, 10, 11, 0.97);
+    -webkit-backdrop-filter: blur(18px) saturate(120%);
+    backdrop-filter: blur(18px) saturate(120%);
+    border-bottom-color: var(--alt-line);
+  }
 }
 
 .alt-header-scroll-sentinel {
@@ -796,18 +800,28 @@ body.alt-page > main {
   }
 
   body.alt-page:not(.nav-open) .alt-header::before {
+    content: none;
+    display: none;
+  }
+
+  body.alt-page:not(.nav-open) .alt-header.is-solid::before {
     content: "";
+    display: block;
     position: absolute;
     inset: 0;
     z-index: 0;
-    background: rgba(10, 10, 11, 0.45);
-    -webkit-backdrop-filter: blur(36px) saturate(160%);
-    backdrop-filter: blur(36px) saturate(160%);
+    background: rgba(10, 10, 11, 0.55);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    backdrop-filter: blur(16px) saturate(140%);
     pointer-events: none;
+    transition:
+      background 0.35s var(--alt-ease),
+      -webkit-backdrop-filter 0.35s var(--alt-ease),
+      backdrop-filter 0.35s var(--alt-ease),
+      opacity 0.35s var(--alt-ease);
   }
 
-  body.alt-page:not(.nav-open) .alt-header.is-solid,
-  body.alt-page:not(.nav-open).alt-page--inner .alt-header {
+  body.alt-page:not(.nav-open) .alt-header.is-solid {
     background: transparent;
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
