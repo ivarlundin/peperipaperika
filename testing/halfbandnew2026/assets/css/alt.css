@@ -1475,7 +1475,6 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   box-sizing: border-box;
   border-top: 1px solid var(--alt-line);
   padding: 2.5rem 0 3rem;
-  margin-top: auto;
 }
 
 .alt-footer__inner {
