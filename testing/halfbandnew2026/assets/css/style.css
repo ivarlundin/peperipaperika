@@ -122,10 +122,21 @@ a:hover {
 }
 
 .brand-mark {
-  width: 38px;
-  height: 38px;
+  width: 42px;
+  height: 42px;
+  max-width: 48px;
+  max-height: 48px;
   flex-shrink: 0;
   display: block;
+}
+
+@media (max-width: 768px) {
+  .brand-mark {
+    width: 34px;
+    height: 34px;
+    max-width: 36px;
+    max-height: 36px;
+  }
 }
 
 .nav-toggle {
