@@ -14,6 +14,7 @@
   --alt-btn-primary-ink: #0a0a0b;
   --alt-line: rgba(242, 240, 236, 0.1);
   --alt-max: 75rem;
+  --alt-gutter: 1.25rem;
   --alt-radius: 12px;
   --alt-header: 84px;
   --font-display: "Outfit", "Segoe UI", sans-serif;
@@ -56,7 +57,6 @@
   text-wrap: balance;
 }
 
-.alt-page .eyebrow,
 .alt-page .alt-facts__items > span,
 .alt-page .alt-offer-card__arrow,
 .alt-page :is(.alt-btn, a.alt-btn, button.alt-btn, .btn, a.btn, button.btn),
@@ -107,6 +107,13 @@
 
 .alt-header.is-solid {
   background: rgba(10, 10, 11, 0.97);
+  backdrop-filter: blur(18px) saturate(120%);
+  border-bottom-color: var(--alt-line);
+}
+
+.alt-page--inner .alt-header {
+  background: rgba(10, 10, 11, 0.97);
+  backdrop-filter: blur(18px) saturate(120%);
   border-bottom-color: var(--alt-line);
 }
 
@@ -117,15 +124,26 @@
   pointer-events: none;
 }
 
+.alt-site-shell {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--alt-max);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--alt-gutter);
+  padding-right: var(--alt-gutter);
+}
+
 .alt-header__inner {
   max-width: var(--alt-max);
   height: 100%;
   margin: 0 auto;
-  padding: 0.65rem 1.25rem 0;
+  padding: 0.65rem var(--alt-gutter) 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+  box-sizing: border-box;
 }
 
 .alt-brand {
@@ -387,8 +405,8 @@
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
-    padding-left: 1.25rem;
-    padding-right: 1.25rem;
+    padding-left: var(--alt-gutter);
+    padding-right: var(--alt-gutter);
   }
 
   .alt-header__inner > .alt-nav {
@@ -720,7 +738,7 @@ body.alt-page.nav-open {
   max-width: min(var(--alt-max), 100%);
   width: 100%;
   margin: 0 auto;
-  padding: calc(var(--alt-header) + 1.25rem) 1.25rem 1.25rem;
+  padding: calc(var(--alt-header) + var(--alt-gutter)) var(--alt-gutter) var(--alt-gutter);
   box-sizing: border-box;
 }
 
@@ -750,13 +768,15 @@ body.alt-page.nav-open {
 }
 
 .alt-hero__typewriter {
+  display: inline-block;
+  max-width: 100%;
   white-space: nowrap;
   text-wrap: nowrap;
+  vertical-align: bottom;
 }
 
 .alt-hero__typewriter-text {
-  display: inline-block;
-  min-width: 14.25ch;
+  display: inline;
   letter-spacing: 0;
   text-wrap: nowrap;
 }
@@ -811,7 +831,7 @@ body.alt-page.nav-open {
   max-width: min(var(--alt-max), 100%);
   width: 100%;
   margin: 0 auto;
-  padding: 0.85rem 1.25rem;
+  padding: 0.85rem var(--alt-gutter);
   box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
@@ -841,7 +861,7 @@ body.alt-page.nav-open {
 
 /* Offer cards */
 .alt-offers {
-  padding: 4rem 1.25rem 5rem;
+  padding: 4rem 0 5rem;
   content-visibility: auto;
   contain-intrinsic-size: auto 720px;
 }
@@ -849,6 +869,9 @@ body.alt-page.nav-open {
 .alt-offers__grid {
   max-width: var(--alt-max);
   margin: 0 auto;
+  padding-left: var(--alt-gutter);
+  padding-right: var(--alt-gutter);
+  box-sizing: border-box;
   display: grid;
   grid-template-columns: 1.15fr 0.925fr 0.925fr;
   gap: 1rem;
@@ -908,12 +931,15 @@ body.alt-page.nav-open {
 
 /* Intro */
 .alt-intro {
-  padding: 0 1.25rem 5rem;
+  padding: 0 0 5rem;
 }
 
 .alt-intro__inner {
-  max-width: 720px;
+  max-width: min(var(--alt-max), 720px);
   margin: 0 auto;
+  padding-left: var(--alt-gutter);
+  padding-right: var(--alt-gutter);
+  box-sizing: border-box;
   text-align: left;
 }
 
@@ -936,7 +962,7 @@ body.alt-page.nav-open {
 
 /* Gallery */
 .alt-gallery {
-  padding: 0 1.25rem 6rem;
+  padding: 0 0 6rem;
   content-visibility: auto;
   contain-intrinsic-size: auto 80vh;
 }
@@ -944,6 +970,9 @@ body.alt-page.nav-open {
 .alt-gallery__head {
   max-width: var(--alt-max);
   margin: 0 auto 2rem;
+  padding-left: var(--alt-gutter);
+  padding-right: var(--alt-gutter);
+  box-sizing: border-box;
 }
 
 .alt-gallery__head h2 {
@@ -958,6 +987,9 @@ body.alt-page.nav-open {
   max-width: var(--alt-max);
   margin: 0 auto;
   width: 100%;
+  padding-left: var(--alt-gutter);
+  padding-right: var(--alt-gutter);
+  box-sizing: border-box;
 }
 
 .alt-gallery__grid {
@@ -1054,7 +1086,7 @@ body.alt-page.nav-open {
 
 /* Testimonials */
 .alt-voices {
-  padding: 0 1.25rem 5rem;
+  padding: 0 0 5rem;
   border-top: 1px solid var(--alt-line);
   content-visibility: auto;
   contain-intrinsic-size: auto 480px;
@@ -1063,7 +1095,8 @@ body.alt-page.nav-open {
 .alt-voices__inner {
   max-width: var(--alt-max);
   margin: 0 auto;
-  padding-top: 4rem;
+  padding: 4rem var(--alt-gutter) 0;
+  box-sizing: border-box;
 }
 
 .alt-voices h2 {
@@ -1115,12 +1148,15 @@ body.alt-page.nav-open {
 }
 
 .alt-contact-offert {
-  padding: 0 1.25rem 6rem;
+  padding: 0 0 6rem;
 }
 
 .alt-contact-offert__wrap {
   max-width: var(--alt-max);
   margin: 0 auto;
+  padding-left: var(--alt-gutter);
+  padding-right: var(--alt-gutter);
+  box-sizing: border-box;
 }
 
 .alt-page .contact-offert__grid {
@@ -1236,12 +1272,15 @@ body.alt-page.nav-open {
   width: 100%;
   box-sizing: border-box;
   border-top: 1px solid var(--alt-line);
-  padding: 2.5rem 1.25rem 3rem;
+  padding: 2.5rem 0 3rem;
 }
 
 .alt-footer__inner {
   max-width: var(--alt-max);
   margin: 0 auto;
+  padding-left: var(--alt-gutter);
+  padding-right: var(--alt-gutter);
+  box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -1449,12 +1488,13 @@ body.alt-page.nav-open {
 }
 
 .alt-page--inner .page-hero-copy,
-.alt-page--inner .wrap {
+.alt-page--inner .wrap,
+.alt-page--inner .alt-faq {
   width: 100%;
   max-width: var(--alt-max);
   margin: 0 auto;
-  padding-left: 1.25rem;
-  padding-right: 1.25rem;
+  padding-left: var(--alt-gutter);
+  padding-right: var(--alt-gutter);
   box-sizing: border-box;
 }
 
@@ -1649,7 +1689,7 @@ body.alt-page.nav-open {
 }
 
 .alt-page--inner .alt-faq {
-  max-width: 40rem;
+  max-width: min(40rem, 100%);
 }
 
 .alt-page--inner .alt-faq__list {
