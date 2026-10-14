@@ -737,12 +737,12 @@ body.alt-page > main {
     display: inline-block;
     transform-origin: top left;
     transition: transform var(--mobile-menu-motion, 320ms) var(--alt-ease);
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
   }
 
   body.nav-open .alt-header .alt-brand {
     transform: scale(var(--alt-logo-scale));
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
 
   body.nav-open .alt-header .brand-mark {
@@ -773,13 +773,51 @@ body.alt-page > main {
     backdrop-filter: none;
   }
 
-  body.alt-page:not(.nav-open) .alt-header.is-solid,
-  body.alt-page:not(.nav-open).alt-page--inner .alt-header {
-    background: rgba(10, 10, 11, 0.65);
-    -webkit-backdrop-filter: blur(14px) saturate(120%);
-    backdrop-filter: blur(14px) saturate(120%);
+  body.alt-page.nav-open .alt-header::before {
+    display: none;
+  }
+
+  /* Keep horizontal clip on main only so Safari can sample hero behind fixed header. */
+  body.alt-page {
+    overflow-x: visible;
+  }
+
+  body.alt-page > main {
+    overflow-x: clip;
+  }
+
+  body.alt-page:not(.nav-open) .alt-header {
+    background: transparent;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
     border-bottom-color: transparent;
     border-bottom-width: 0;
+    isolation: isolate;
+  }
+
+  body.alt-page:not(.nav-open) .alt-header::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: rgba(10, 10, 11, 0.5);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    backdrop-filter: blur(20px) saturate(140%);
+    pointer-events: none;
+  }
+
+  body.alt-page:not(.nav-open) .alt-header.is-solid,
+  body.alt-page:not(.nav-open).alt-page--inner .alt-header {
+    background: transparent;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    border-bottom-color: transparent;
+    border-bottom-width: 0;
+  }
+
+  body.alt-page:not(.nav-open) .alt-header__inner {
+    position: relative;
+    z-index: 1;
   }
 
   .alt-header {

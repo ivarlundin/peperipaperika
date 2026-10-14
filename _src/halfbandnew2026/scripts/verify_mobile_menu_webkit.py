@@ -39,7 +39,7 @@ def assert_logo_size(page, label: str, mode: str) -> None:
         )
 
 
-def assert_frosted_header_scrolled_closed(page, label: str) -> None:
+def assert_frosted_header_closed(page, label: str, require_solid: bool = False) -> None:
     assert not page.evaluate("document.body.classList.contains('nav-open')"), (
         f"{label}: menu should be closed"
     )
@@ -48,29 +48,66 @@ def assert_frosted_header_scrolled_closed(page, label: str) -> None:
           const el = document.querySelector('.alt-header');
           if (!el) return null;
           const s = getComputedStyle(el);
-          const backdrop = s.backdropFilter || s.webkitBackdropFilter || '';
-          const m = s.backgroundColor.match(/rgba?\\(([^)]+)\\)/);
+          const before = getComputedStyle(el, '::before');
+          const backdrop = before.backdropFilter || before.webkitBackdropFilter
+            || s.backdropFilter || s.webkitBackdropFilter || '';
+          const bg = before.backgroundColor;
+          const m = bg.match(/rgba?\\(([^)]+)\\)/);
           let alpha = 1;
           if (m) {
             const parts = m[1].split(',').map((p) => p.trim());
             if (parts.length === 4) alpha = parseFloat(parts[3]);
           }
+          let breaker = '';
+          let node = el.parentElement;
+          while (node) {
+            const ps = getComputedStyle(node);
+            if (ps.filter && ps.filter !== 'none') {
+              breaker = node.tagName + '.' + node.className + ' filter';
+              break;
+            }
+            if (ps.transform && ps.transform !== 'none') {
+              breaker = node.tagName + '.' + node.className + ' transform';
+              break;
+            }
+            if (parseFloat(ps.opacity) < 0.999) {
+              breaker = node.tagName + '.' + node.className + ' opacity';
+              break;
+            }
+            node = node.parentElement;
+          }
+          const bodyOverflowX = getComputedStyle(document.body).overflowX;
+          const mainOverflowX = document.querySelector('main')
+            ? getComputedStyle(document.querySelector('main')).overflowX
+            : '';
           return {
             solid: el.classList.contains('is-solid'),
             alpha,
             backdrop,
             borderWidth: s.borderBottomWidth,
+            breaker,
+            bodyOverflowX,
+            mainOverflowX,
+            heroBehind: !!document.querySelector('.alt-hero'),
           };
         }"""
     )
     assert data, f"{label}: header missing"
-    assert data["solid"], f"{label}: header should be solid after scroll"
-    assert 0.55 <= data["alpha"] <= 0.75, (
-        f"{label}: header bg alpha {data['alpha']}"
+    if require_solid:
+        assert data["solid"], f"{label}: header should be solid after scroll"
+    assert 0.45 <= data["alpha"] <= 0.55, (
+        f"{label}: frosted layer alpha {data['alpha']}"
     )
-    assert "blur(" in data["backdrop"], f"{label}: backdrop {data['backdrop']}"
+    assert "blur(20px)" in data["backdrop"], f"{label}: backdrop {data['backdrop']}"
     assert data["borderWidth"] in ("0px", "0"), (
         f"{label}: header border {data['borderWidth']}"
+    )
+    assert not data["breaker"], f"{label}: backdrop breaker {data['breaker']}"
+    assert data["bodyOverflowX"] not in ("hidden", "clip"), (
+        f"{label}: body overflow-x {data['bodyOverflowX']}"
+    )
+    assert data["mainOverflowX"] in ("clip", "hidden"), (
+        f"{label}: main overflow-x {data['mainOverflowX']}"
     )
 
 
@@ -355,6 +392,11 @@ def main() -> int:
             page.wait_for_timeout(120)
 
             assert_home_header_logo_normal(page, "home-top-closed")
+            assert_frosted_header_closed(page, "home-top-over-hero")
+            page.screenshot(
+                path=str(OUT / "mobile-header-frost-over-hero-iphone.png"),
+                full_page=False,
+            )
 
             assert_menu_opens_with_motion(page, "scrollY=0")
             assert_tjanster_dropdown_animates(page, "scrollY=0")
@@ -368,7 +410,7 @@ def main() -> int:
             page.wait_for_timeout(80)
             assert page.evaluate("window.scrollY") >= SCROLL_Y - 20
             assert_home_header_logo_scrolled(page, "home-scrolled-closed")
-            assert_frosted_header_scrolled_closed(page, "home-scrolled-closed")
+            assert_frosted_header_closed(page, "home-scrolled-closed", require_solid=True)
             page.screenshot(
                 path=str(OUT / "mobile-header-closed-scrolled-iphone.png"),
                 full_page=False,
