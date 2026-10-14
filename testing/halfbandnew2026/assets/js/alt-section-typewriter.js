@@ -5,6 +5,14 @@
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var charMs = 85;
 
+  function lockTypewriterHeight(root, ghost) {
+    if (!ghost) return;
+    var h = ghost.offsetHeight;
+    if (h > 0) {
+      root.style.minHeight = h + "px";
+    }
+  }
+
   function runTypewriter(root) {
     var ghost = root.querySelector(".alt-section-typewriter__ghost");
     var textEl = root.querySelector("[data-section-typewriter-text]");
@@ -12,9 +20,11 @@
     if (!ghost || !textEl) return;
 
     var full = ghost.textContent || "";
+    lockTypewriterHeight(root, ghost);
 
     if (reduceMotion) {
       textEl.textContent = full;
+      root.classList.add("is-complete");
       if (caret) caret.hidden = true;
       return;
     }
@@ -29,11 +39,27 @@
         window.setTimeout(tick, charMs);
         return;
       }
+      root.classList.add("is-complete");
+      lockTypewriterHeight(root, ghost);
       if (caret) caret.hidden = true;
     }
 
     tick();
   }
+
+  function prepare(node) {
+    var ghost = node.querySelector(".alt-section-typewriter__ghost");
+    if (!ghost) return;
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () {
+        lockTypewriterHeight(node, ghost);
+      });
+    } else {
+      lockTypewriterHeight(node, ghost);
+    }
+  }
+
+  nodes.forEach(prepare);
 
   if (reduceMotion || typeof IntersectionObserver === "undefined") {
     nodes.forEach(runTypewriter);

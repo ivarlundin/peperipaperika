@@ -2,6 +2,7 @@
   var root = document.querySelector("[data-alt-typewriter]");
   if (!root) return;
 
+  var ghost = root.querySelector(".alt-hero__typewriter-ghost");
   var textEl = root.querySelector("[data-typewriter-text]");
   var caret = root.querySelector(".alt-hero__caret");
   if (!textEl) return;
@@ -17,8 +18,23 @@
   var holdMs = 2800;
   var deleteMs = 48;
 
+  var longestPhrase = phrases.reduce(function (a, b) {
+    return a.length >= b.length ? a : b;
+  }, phrases[0]);
+
+  if (ghost) {
+    ghost.textContent = longestPhrase;
+  }
+
+  function setPhraseText(value) {
+    textEl.textContent = value;
+    if (caret) {
+      caret.hidden = value.length === 0;
+    }
+  }
+
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    textEl.textContent = phrases[0];
+    setPhraseText(phrases[0]);
     if (caret) caret.hidden = true;
     return;
   }
@@ -39,7 +55,7 @@
     if (!deleting) {
       if (charIndex < phrase.length) {
         charIndex += 1;
-        textEl.textContent = phrase.slice(0, charIndex);
+        setPhraseText(phrase.slice(0, charIndex));
         return sleep(charMs).then(tick);
       }
       return sleep(holdMs).then(function () {
@@ -50,16 +66,17 @@
 
     if (charIndex > 0) {
       charIndex -= 1;
-      textEl.textContent = phrase.slice(0, charIndex);
+      setPhraseText(phrase.slice(0, charIndex));
       return sleep(deleteMs).then(tick);
     }
 
     deleting = false;
     phraseIndex = (phraseIndex + 1) % phrases.length;
+    setPhraseText("");
     return sleep(charMs).then(tick);
   }
 
-  textEl.textContent = phrases[0];
+  setPhraseText(phrases[0]);
   charIndex = phrases[0].length;
   sleep(holdMs).then(function () {
     deleting = true;
