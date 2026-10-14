@@ -652,10 +652,18 @@ body.alt-page.nav-open {
   display: block;
 }
 
+.alt-hero h1 br {
+  display: block;
+  margin-bottom: -0.22em;
+  line-height: 0;
+  content: "";
+}
+
 .alt-hero__typewriter {
   display: block;
   min-height: 1.02em;
   white-space: nowrap;
+  margin-top: -0.08em;
 }
 
 .alt-hero__typewriter-text {
