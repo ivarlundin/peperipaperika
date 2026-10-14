@@ -1,4 +1,2 @@
 User-agent: *
-Allow: /
-
-Sitemap: https://halvfjorton.se/sitemap.xml
+Disallow: /
