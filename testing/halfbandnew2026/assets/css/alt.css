@@ -186,15 +186,16 @@
   }
 }
 
-.alt-nav__links a {
-  color: var(--alt-muted);
+.alt-page .alt-header .alt-nav__links a:not([class*="alt-btn"]) {
+  color: #fff;
   text-decoration: none;
   font-size: 0.9375rem;
   font-weight: 500;
 }
 
-.alt-nav__links a:hover {
-  color: var(--alt-ink);
+.alt-page .alt-header .alt-nav__links a:not([class*="alt-btn"]):hover,
+.alt-page .alt-header .alt-nav__links a:not([class*="alt-btn"])[aria-current="page"] {
+  color: #fff;
 }
 
 .alt-btn {
@@ -308,23 +309,23 @@
   position: relative;
 }
 
-.alt-page .nav-dropdown__trigger {
+.alt-page .alt-header .nav-dropdown__trigger {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
   padding: 0.15rem 0;
   border: 0;
   background: transparent;
-  color: var(--alt-muted);
+  color: #fff;
   font: inherit;
   font-size: 0.9375rem;
   font-weight: 500;
   cursor: pointer;
 }
 
-.alt-page .nav-dropdown__trigger:hover,
-.alt-page .nav-item--dropdown.is-open .nav-dropdown__trigger {
-  color: var(--alt-ink);
+.alt-page .alt-header .nav-dropdown__trigger:hover,
+.alt-page .alt-header .nav-item--dropdown.is-open .nav-dropdown__trigger {
+  color: #fff;
 }
 
 .alt-page .nav-dropdown__chevron {
@@ -465,16 +466,23 @@
   }
 
   .alt-page .nav-list > li > a,
-  .alt-page .nav-dropdown__trigger {
+  .alt-page .alt-header .nav-dropdown__trigger {
     display: flex;
     align-items: center;
     width: 100%;
     padding: 0.45rem 0;
     font-size: clamp(1.375rem, 4.2vw, 1.625rem);
     font-weight: 600;
-    color: var(--alt-ink);
+    color: #fff;
     text-align: left;
     letter-spacing: 0;
+  }
+
+  .alt-page .nav-list > li > a:hover,
+  .alt-page .nav-list > li > a[aria-current="page"],
+  .alt-page .alt-header .nav-dropdown__trigger:hover,
+  .alt-page .alt-header .nav-item--dropdown.is-open .nav-dropdown__trigger {
+    color: #fff;
   }
 
   .alt-page .nav-item--dropdown {
@@ -503,8 +511,13 @@
     padding: 0.45rem 0 0.45rem 0.25rem;
     font-size: clamp(1.05rem, 4vw, 1.2rem);
     font-weight: 500;
-    color: var(--alt-muted);
+    color: #fff;
     letter-spacing: 0;
+  }
+
+  .alt-page .nav-dropdown__menu a:hover,
+  .alt-page .nav-dropdown__menu a[aria-current="page"] {
+    color: #fff;
   }
 
   .alt-page .alt-nav__cta-mobile-wrap {
