@@ -18,7 +18,7 @@ def assert_layout(page, label: str) -> None:
     data = page.evaluate(
         """() => {
           const main = document.querySelector('main#innehall');
-          const hero = document.querySelector('.alt-wedding-hero');
+          const hero = document.querySelector('.alt-service-hero');
           const venues = document.querySelector('.alt-wedding-venues__list');
           const text = main ? main.innerText : '';
           return {
@@ -47,6 +47,10 @@ def assert_layout(page, label: str) -> None:
     assert data["headerCount"] == 1 and data["footerCount"] == 1, (
         f"{label}: header/footer count"
     )
+
+    hero_img = page.locator(".alt-service-hero__img")
+    fit = hero_img.evaluate("el => getComputedStyle(el).objectFit")
+    assert fit == "cover", f"{label}: hero image must use cover, got {fit}"
 
     img = page.locator(".alt-wedding-figure img").first
     fit = img.evaluate("el => getComputedStyle(el).objectFit")

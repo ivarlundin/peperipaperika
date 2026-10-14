@@ -3035,41 +3035,49 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   padding: clamp(3rem, 8vw, 5.5rem) 0;
 }
 
-.alt-wedding-hero {
+/* Shared full-width hero on Bröllop, Företag, Fest och mingel */
+.alt-page--service-banner .alt-inner-main {
+  padding-top: 0;
+}
+
+.alt-service-hero {
   position: relative;
   display: flex;
   align-items: flex-end;
-  min-height: clamp(22rem, 72vh, 38rem);
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  box-sizing: border-box;
+  min-height: clamp(18rem, 58vh, 38rem);
   margin-top: calc(-1 * var(--alt-header));
-  padding-top: calc(var(--alt-header) + 2.25rem);
-  padding-bottom: clamp(2rem, 6vw, 3.5rem);
+  padding: calc(var(--alt-header) + 2.25rem) var(--alt-pad-right) clamp(2rem, 6vw, 3.5rem)
+    var(--alt-pad-left);
   overflow: hidden;
 }
 
-.alt-wedding-hero__media {
+@media (max-width: 900px) {
+  .alt-service-hero {
+    min-height: clamp(15.5rem, 46vh, 22rem);
+  }
+}
+
+.alt-service-hero__media {
   position: absolute;
   inset: 0;
   z-index: 0;
 }
 
-.alt-wedding-hero__media .alt-wedding-figure {
-  margin: 0;
-  height: 100%;
-  width: 100%;
-  border: 0;
-  border-radius: 0;
-}
-
-.alt-wedding-hero__media img {
+.alt-service-hero__img {
+  display: block;
   width: 100%;
   height: 100%;
   max-width: none;
   aspect-ratio: auto;
   object-fit: cover;
-  object-position: center 32%;
+  object-position: center;
 }
 
-.alt-wedding-hero__shade {
+.alt-service-hero__shade {
   position: absolute;
   inset: 0;
   z-index: 1;
@@ -3082,13 +3090,14 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   pointer-events: none;
 }
 
-.alt-wedding-hero__copy {
+.alt-service-hero__copy {
   position: relative;
   z-index: 2;
+  width: 100%;
   max-width: 40rem;
 }
 
-.alt-wedding-hero h1 {
+.alt-service-hero h1 {
   font-family: var(--font-display);
   font-size: clamp(2rem, 5.8vw, 3.4rem);
   font-weight: 800;
@@ -3097,12 +3106,18 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   margin: 0 0 1rem;
 }
 
-.alt-wedding-hero .aeo-answer {
+.alt-service-hero .aeo-answer,
+.alt-service-hero .lead {
   margin: 0;
   color: var(--alt-muted);
   font-size: clamp(1rem, 2.4vw, 1.125rem);
   line-height: 1.55;
   max-width: 38ch;
+}
+
+.alt-service-hero .lead + .lead,
+.alt-service-hero .aeo-answer + .lead {
+  margin-top: 0.75rem;
 }
 
 .alt-wedding-figure {
