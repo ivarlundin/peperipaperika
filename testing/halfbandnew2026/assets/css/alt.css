@@ -659,10 +659,18 @@ body.alt-page.nav-open {
 .alt-hero__content {
   position: relative;
   z-index: 2;
-  max-width: var(--alt-max);
+  max-width: min(var(--alt-max), 100%);
   width: 100%;
   margin: 0 auto;
   padding: calc(var(--alt-header) + 1.25rem) 1.25rem 1.25rem;
+  box-sizing: border-box;
+}
+
+.alt-hero h1,
+.alt-hero__lead,
+.alt-hero__actions {
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .alt-hero h1 {
@@ -718,7 +726,7 @@ body.alt-page.nav-open {
 .alt-hero__lead {
   color: rgba(242, 240, 236, 0.82);
   font-size: clamp(0.98rem, 2vw, 1.15rem);
-  max-width: 38ch;
+  max-width: min(38ch, 100%);
   margin: 0 0 1.1rem;
 }
 
@@ -739,9 +747,11 @@ body.alt-page.nav-open {
 }
 
 .alt-facts__inner {
-  max-width: var(--alt-max);
+  max-width: min(var(--alt-max), 100%);
+  width: 100%;
   margin: 0 auto;
   padding: 0.85rem 1.25rem;
+  box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
