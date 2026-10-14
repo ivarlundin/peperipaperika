@@ -544,6 +544,121 @@ def write_redirect_page(path: str, target: str, link_label: str = "Lyssna") -> N
     print("wrote", dest.relative_to(OUT_ROOT), "(redirect)")
 
 
+def wedding_figure(
+    stem: str,
+    alt: str,
+    sizes: str,
+    width: int = 2400,
+    height: int = 1600,
+    figure_class: str = "alt-wedding-figure",
+    loading: str = "lazy",
+) -> str:
+    base = f"/assets/img/gallery/{stem}"
+    return f"""          <figure class="{figure_class}">
+            <img
+              src="{base}-800w.webp"
+              srcset="{base}-480w.webp 480w, {base}-800w.webp 800w, {base}-1200w.webp 1200w, {base}-1920w.webp 1920w"
+              sizes="{sizes}"
+              alt="{esc(alt)}"
+              width="{width}"
+              height="{height}"
+              loading="{loading}"
+              decoding="async"
+            >
+          </figure>"""
+
+
+def wedding_page_body(wedding_video_block: str) -> str:
+    return f"""    <header class="alt-wedding-hero" data-reveal>
+      <div class="alt-wedding-hero__media" aria-hidden="true">
+{wedding_figure("halvfjorton-01", "Hela bandet på scen i festsal med publik", "100vw", loading="eager")}
+      </div>
+      <div class="alt-wedding-hero__shade" aria-hidden="true"></div>
+      <div class="alt-wedding-wrap alt-wedding-hero__copy">
+        <h1>Bröllopsband med helband, blås och dans</h1>
+{aeo_answer("Halv Fjorton är ett åttamannaband från Växjö med komplett liveband och egen blåssektion. Repertoaren går från soul, funk och rock till schlager och popklassiker, och vi håller igång dansgolvet när festen tar fart.")}
+      </div>
+    </header>
+    <section class="alt-wedding-band section" data-reveal>
+      <div class="alt-wedding-wrap alt-wedding-split alt-wedding-split--text-first">
+        <div class="alt-wedding-split__text">
+          <h2>Hela bandet på er fest</h2>
+          <p>Vi kommer som ett färdigt band med egen blåssektion. Repertoaren är samlad för bröllop, fest och dans. Säg till om låtar som betyder något för er, så plockar vi in dem där de passar bäst.</p>
+        </div>
+        <div class="alt-wedding-split__media">
+{wedding_figure("halvfjorton-03", "Fest med guldkonfetti och trummor bland gäster vid bord", "(max-width: 900px) 100vw, 44vw")}
+        </div>
+      </div>
+    </section>
+    <section class="alt-wedding-sound section alt-wedding-sound--shade" data-reveal>
+      <div class="alt-wedding-wrap alt-wedding-split alt-wedding-split--media-first">
+        <div class="alt-wedding-split__media alt-wedding-split__media--tall">
+{wedding_figure("halvfjorton-02", "Keyboard och blåssektion på scen i blått ljus", "(max-width: 900px) 100vw, 44vw", height=2400, width=1600)}
+        </div>
+        <div class="alt-wedding-split__text">
+          <h2>Ljud och ljus</h2>
+          <p>Eget komplett ljud och ljus ingår. Ni behöver inte ordna extra utrustning för att vi ska höras och synas på dansgolvet.</p>
+          <h2>Mingel och vigsel</h2>
+          <p>Före middagen eller under minglet kan vi spela lugnare med jazzigare repertoar. Då har vi eget, separat ljud så det inte stör när kvällens fest ska ta vid.</p>
+          <p>Till vigseln spelar vi med solist och komp. Upplägg och repertoar planerar vi tillsammans med er. Helband till ceremonin går att diskutera om det passar er.</p>
+        </div>
+      </div>
+    </section>
+    <section class="alt-wedding-mosaic section" data-reveal>
+      <div class="alt-wedding-wrap">
+        <div class="alt-wedding-mosaic__grid" aria-hidden="false">
+{wedding_figure("halvfjorton-04", "Två sångare framför mikrofoner på träscen", "(max-width: 900px) 94vw, 32vw", width=1280, height=853, figure_class="alt-wedding-figure alt-wedding-figure--wide")}
+{wedding_figure("halvfjorton-01", "Hela bandet på scen i festsal med publik", "(max-width: 900px) 94vw, 32vw", figure_class="alt-wedding-figure alt-wedding-figure--tall")}
+{wedding_figure("halvfjorton-05", "Band i rustik lokal med publik i silhuett", "(max-width: 900px) 94vw, 32vw", width=1280, height=853, figure_class="alt-wedding-figure alt-wedding-figure--mono")}
+        </div>
+      </div>
+    </section>
+    <section class="alt-wedding-story section" data-reveal>
+      <div class="alt-wedding-wrap alt-wedding-story__inner">
+        <div class="alt-wedding-story__block">
+          <h2>Första dansen och önskemål</h2>
+          <p>Första dansen spelar vi gärna live efter önskemål. Vill ni hellre använda en inspelning spelar vi den genom vårt ljudsystem.</p>
+          <p>Vi tar gärna emot önskemål inför bokning. Om en låt inte redan finns i repertoaren kan vi ofta lära in den när den funkar live med bandet.</p>
+        </div>
+        <div class="alt-wedding-story__block">
+          <h2>Inför spelningen</h2>
+          <p>Vi behöver lite tid i lokalen innan gästerna kommer för att rigga, och en naturlig plats för bandet. Resten av det praktiska stämmer vi av i god tid, så ni kan lägga energin på kvällen.</p>
+        </div>
+        <div class="alt-wedding-venues">
+          <h2>Platser vi brukar spela på</h2>
+          <ul class="alt-wedding-venues__list" aria-hidden="true">
+            <li>Asa Herrgård</li>
+            <li>Norraby gård</li>
+            <li>Kronovalls slott</li>
+            <li>Bäckaskog slott</li>
+          </ul>
+          <p>Vi har spelat bröllop på bland annat Asa Herrgård, Norraby gård, Kronovalls slott och Bäckaskog slott. Hemmaplan är Växjö, Kalmar, Älmhult och Jönköping, och vi är ofta i Lund, Malmö och Helsingborg.</p>
+        </div>
+      </div>
+    </section>
+    <section class="alt-wedding-video section alt-wedding-sound--shade" data-reveal>
+      <div class="alt-wedding-wrap">
+        <h2>Smakprov från scen</h2>
+{wedding_video_block}
+        <p class="small muted alt-wedding-video__caption">Signed Sealed Delivered, inspelat live med bandet.</p>
+      </div>
+    </section>
+    <section class="alt-wedding-faq section" data-reveal>
+      <div class="alt-wedding-wrap">
+        <h2>Vanliga önskemål</h2>
+        <div class="faq-grid alt-wedding-faq__grid">
+          <article><h3>Första dansen</h3><p>Första dansen spelar vi gärna live efter önskemål. Vill ni hellre använda en inspelning spelar vi den genom vårt ljudsystem.</p></article>
+          <article><h3>Mingel och fest</h3><p>Samma kväll, samma band: mingel i lugnare tempo och sedan full fart på dansgolvet.</p></article>
+          <article><h3>Komp till solist</h3><p>Psalmer, vigsel eller gästsång? Se <a href="/kompband/">kompband för artist</a>.</p></article>
+        </div>
+        <div class="actions alt-wedding-actions">
+          <a class="btn btn-primary" href="/kontakt/#offert">Begär offert</a>
+          <a class="btn btn-ghost" href="/brollopsband-smaland/">Bröllop i Småland</a>
+        </div>
+      </div>
+    </section>"""
+
+
 def gallery_img(
     stem: str,
     alt: str,
@@ -843,79 +958,8 @@ def write_pages():
             ),
             wedding_video_ld(),
         ],
-        body=f"""    <header class="page-hero">
-      <div class="page-hero-copy">
-        <h1>Bröllopsband med helband, blås och dans</h1>
-{aeo_answer("Halv Fjorton är ett åttamannaband från Växjö med komplett liveband och egen blåssektion. Repertoaren går från soul, funk och rock till schlager och popklassiker, och vi håller igång dansgolvet när festen tar fart.")}
-      </div>
-    </header>
-    <section class="section">
-      <div class="wrap split">
-        <div>
-          <h2>Hela bandet på er fest</h2>
-          <p>Vi kommer som ett färdigt band med egen blåssektion. Repertoaren är samlad för bröllop, fest och dans. Säg till om låtar som betyder något för er, så plockar vi in dem där de passar bäst.</p>
-        </div>
-        <div>
-{gallery_img("halvfjorton-03", "Fest med guldkonfetti och trummor bland gäster vid bord")}
-        </div>
-      </div>
-    </section>
-    <section class="section section-alt">
-      <div class="wrap split">
-        <div>
-{gallery_img("halvfjorton-02", "Keyboard och blåssektion på scen i blått ljus", extra_class=" content-photo--tall")}
-        </div>
-        <div>
-          <h2>Ljud och ljus</h2>
-          <p>Eget komplett ljud och ljus ingår. Ni behöver inte ordna extra utrustning för att vi ska höras och synas på dansgolvet.</p>
-          <h2>Mingel och vigsel</h2>
-          <p>Före middagen eller under minglet kan vi spela lugnare med jazzigare repertoar. Då har vi eget, separat ljud så det inte stör när kvällens fest ska ta vid.</p>
-          <p>Till vigseln spelar vi med solist och komp. Upplägg och repertoar planerar vi tillsammans med er. Helband till ceremonin går att diskutera om det passar er.</p>
-        </div>
-      </div>
-    </section>
-    <section class="section">
-      <div class="wrap">
-        <div class="wedding-photos" aria-hidden="false">
-{gallery_img("halvfjorton-04", "Två sångare framför mikrofoner på träscen", sizes="(max-width: 900px) 100vw, 30vw", width=1280, height=853)}
-{gallery_img("halvfjorton-01", "Hela bandet på scen i festsal med publik", sizes="(max-width: 900px) 100vw, 30vw")}
-{gallery_img("halvfjorton-05", "Band i rustik lokal med publik i silhuett", sizes="(max-width: 900px) 100vw, 30vw", width=1280, height=853)}
-        </div>
-      </div>
-    </section>
-    <section class="section section-alt">
-      <div class="wrap">
-        <h2>Första dansen och önskemål</h2>
-        <p>Första dansen spelar vi gärna live efter önskemål. Vill ni hellre använda en inspelning spelar vi den genom vårt ljudsystem.</p>
-        <p>Vi tar gärna emot önskemål inför bokning. Om en låt inte redan finns i repertoaren kan vi ofta lära in den när den funkar live med bandet.</p>
-        <h2>Inför spelningen</h2>
-        <p>Vi behöver lite tid i lokalen innan gästerna kommer för att rigga, och en naturlig plats för bandet. Resten av det praktiska stämmer vi av i god tid, så ni kan lägga energin på kvällen.</p>
-        <h2>Platser vi brukar spela på</h2>
-        <p>Vi har spelat bröllop på bland annat Asa Herrgård, Norraby gård, Kronovalls slott och Bäckaskog slott. Hemmaplan är Växjö, Kalmar, Älmhult och Jönköping, och vi är ofta i Lund, Malmö och Helsingborg.</p>
-      </div>
-    </section>
-    <section class="section">
-      <div class="wrap">
-        <h2>Smakprov från scen</h2>
-{wedding_video_block}
-        <p class="small muted" style="margin-top:0.75rem">Signed Sealed Delivered, inspelat live med bandet.</p>
-      </div>
-    </section>
-    <section class="section section-alt">
-      <div class="wrap">
-        <h2>Vanliga önskemål</h2>
-        <div class="faq-grid">
-          <article><h3>Första dansen</h3><p>Första dansen spelar vi gärna live efter önskemål. Vill ni hellre använda en inspelning spelar vi den genom vårt ljudsystem.</p></article>
-          <article><h3>Mingel och fest</h3><p>Samma kväll, samma band: mingel i lugnare tempo och sedan full fart på dansgolvet.</p></article>
-          <article><h3>Komp till solist</h3><p>Psalmer, vigsel eller gästsång? Se <a href="/kompband/">kompband för artist</a>.</p></article>
-        </div>
-        <div class="actions">
-          <a class="btn btn-primary" href="/kontakt/#offert">Begär offert</a>
-          <a class="btn btn-ghost" href="/brollopsband-smaland/">Bröllop i Småland</a>
-        </div>
-      </div>
-    </section>
-""",
+        body=wedding_page_body(wedding_video_block),
+        page_class="alt-page--wedding",
     )
 
     page(

@@ -3002,6 +3002,311 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   }
 }
 
+/* Bröllop page (editorial layout, scoped) */
+.alt-page--wedding .alt-inner-main {
+  padding-top: 0;
+}
+
+.alt-page--wedding .alt-wedding-wrap {
+  width: 100%;
+  max-width: var(--alt-max);
+  margin: 0 auto;
+  padding-left: var(--alt-pad-left);
+  padding-right: var(--alt-pad-right);
+  box-sizing: border-box;
+}
+
+.alt-page--wedding .section {
+  padding: clamp(3rem, 8vw, 5.5rem) 0;
+}
+
+.alt-wedding-hero {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: clamp(22rem, 72vh, 38rem);
+  margin-top: calc(-1 * var(--alt-header));
+  padding-top: calc(var(--alt-header) + 2.25rem);
+  padding-bottom: clamp(2rem, 6vw, 3.5rem);
+  overflow: hidden;
+}
+
+.alt-wedding-hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.alt-wedding-hero__media .alt-wedding-figure {
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  border: 0;
+  border-radius: 0;
+}
+
+.alt-wedding-hero__media img {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  aspect-ratio: auto;
+  object-fit: cover;
+  object-position: center 32%;
+}
+
+.alt-wedding-hero__shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    180deg,
+    rgba(10, 10, 11, 0.25) 0%,
+    rgba(10, 10, 11, 0.5) 42%,
+    rgba(10, 10, 11, 0.94) 100%
+  );
+  pointer-events: none;
+}
+
+.alt-wedding-hero__copy {
+  position: relative;
+  z-index: 2;
+  max-width: 40rem;
+}
+
+.alt-wedding-hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5.8vw, 3.4rem);
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.04;
+  margin: 0 0 1rem;
+}
+
+.alt-wedding-hero .aeo-answer {
+  margin: 0;
+  color: var(--alt-muted);
+  font-size: clamp(1rem, 2.4vw, 1.125rem);
+  line-height: 1.55;
+  max-width: 38ch;
+}
+
+.alt-wedding-figure {
+  margin: 0;
+  border-radius: var(--alt-radius);
+  overflow: hidden;
+  border: 1px solid var(--alt-line);
+}
+
+.alt-wedding-figure img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.alt-wedding-split {
+  display: grid;
+  gap: clamp(1.75rem, 5vw, 3rem);
+  align-items: start;
+}
+
+.alt-wedding-split__text h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3.2vw, 2rem);
+  font-weight: 700;
+  margin: 0 0 0.75rem;
+}
+
+.alt-wedding-split__text h2 + h2 {
+  margin-top: 2rem;
+}
+
+.alt-wedding-split__text p {
+  margin: 0 0 1rem;
+  color: var(--alt-muted);
+  line-height: 1.6;
+}
+
+.alt-wedding-split__text p:last-child {
+  margin-bottom: 0;
+}
+
+.alt-wedding-split__media--tall .alt-wedding-figure img {
+  aspect-ratio: 4 / 5;
+  object-position: center top;
+}
+
+.alt-wedding-sound--shade {
+  background: var(--alt-bg-elevated);
+  border-block: 1px solid var(--alt-line);
+}
+
+.alt-wedding-mosaic__grid {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: 1fr;
+}
+
+.alt-wedding-figure--wide img {
+  aspect-ratio: 3 / 2;
+}
+
+.alt-wedding-figure--tall img {
+  aspect-ratio: 3 / 4;
+  object-position: center 20%;
+}
+
+.alt-wedding-figure--mono img {
+  filter: grayscale(1);
+}
+
+.alt-wedding-story__inner {
+  display: grid;
+  gap: clamp(2.5rem, 6vw, 4rem);
+}
+
+.alt-wedding-story__block h2,
+.alt-wedding-venues h2,
+.alt-wedding-video h2,
+.alt-wedding-faq h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3.2vw, 2rem);
+  font-weight: 700;
+  margin: 0 0 1rem;
+}
+
+.alt-wedding-story__block p {
+  margin: 0 0 1rem;
+  color: var(--alt-muted);
+  line-height: 1.6;
+}
+
+.alt-wedding-venues__list {
+  list-style: none;
+  margin: 0.5rem 0 1.5rem;
+  padding: 0;
+}
+
+.alt-wedding-venues__list li {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 4.5vw, 1.85rem);
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.2;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--alt-line);
+}
+
+.alt-wedding-venues p {
+  margin: 0;
+  color: var(--alt-muted);
+  line-height: 1.6;
+  max-width: 52ch;
+}
+
+.alt-wedding-video__caption {
+  margin-top: 0.75rem;
+}
+
+.alt-wedding-faq__grid {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 0.5rem;
+}
+
+.alt-wedding-faq__grid article {
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--alt-line);
+}
+
+.alt-wedding-faq__grid h3 {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 650;
+  margin: 0 0 0.45rem;
+}
+
+.alt-wedding-faq__grid p {
+  margin: 0;
+  color: var(--alt-muted);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.alt-wedding-actions {
+  margin-top: 2rem;
+}
+
+@media (min-width: 901px) {
+  .alt-wedding-split {
+    grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+    gap: 3rem 4rem;
+  }
+
+  .alt-wedding-split--media-first .alt-wedding-split__media {
+    order: -1;
+  }
+
+  .alt-wedding-split--media-first {
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  }
+
+  .alt-wedding-mosaic__grid {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr) minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .alt-wedding-mosaic__grid .alt-wedding-figure--wide {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+
+  .alt-wedding-mosaic__grid .alt-wedding-figure--tall {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .alt-wedding-mosaic__grid .alt-wedding-figure--mono {
+    grid-column: 2 / span 2;
+    grid-row: 2;
+  }
+
+  .alt-wedding-story__inner {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 3rem 4rem;
+  }
+
+  .alt-wedding-venues {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    gap: 2rem 4rem;
+    align-items: start;
+  }
+
+  .alt-wedding-venues h2 {
+    grid-column: 1 / -1;
+  }
+
+  .alt-wedding-venues__list {
+    margin: 0;
+  }
+
+  .alt-wedding-faq__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem 2rem;
+  }
+
+  .alt-wedding-faq__grid article {
+    border-top: 0;
+    padding: 0;
+  }
+}
+
 .visually-hidden {
   position: absolute !important;
   width: 1px !important;
