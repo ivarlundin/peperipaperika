@@ -2953,16 +2953,19 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   pointer-events: none;
 }
 
+.alt-page .aeo-answer,
 .alt-page--inner .aeo-answer {
-  font-size: 1.125rem;
-  line-height: 1.55;
-  color: var(--alt-ink);
   margin: 0 0 1.25rem;
-  padding: 1rem 1.1rem;
-  border-left: 3px solid rgba(255, 255, 255, 0.35);
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 0 var(--alt-radius) var(--alt-radius) 0;
-  max-width: 52ch;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  max-width: none;
+  font-size: 1.125rem;
+  font-weight: var(--font-body-weight);
+  line-height: 1.62;
+  color: var(--alt-muted);
 }
 
 .alt-page--inner .alt-faq {
@@ -3226,22 +3229,6 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   margin: 0 auto;
   padding: 0.75rem var(--alt-pad-right) 0.35rem var(--alt-pad-left);
   box-sizing: border-box;
-}
-
-.alt-page--service-banner .alt-service-intro .aeo-answer,
-.alt-page--service-banner .alt-service-intro .lead {
-  margin: 0 0 1rem;
-  padding: 0;
-  border: 0;
-  background: none;
-  border-radius: 0;
-  box-shadow: none;
-  max-width: none;
-  font-family: var(--font-sans);
-  font-weight: var(--font-body-weight);
-  font-size: 1.125rem;
-  line-height: 1.62;
-  color: var(--alt-muted);
 }
 
 .alt-page--service-banner .alt-service-intro .aeo-answer:last-child,

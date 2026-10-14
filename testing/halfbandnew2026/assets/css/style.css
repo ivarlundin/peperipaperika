@@ -614,15 +614,15 @@ p {
 }
 
 .aeo-answer {
-  font-size: 1.2rem;
-  line-height: 1.55;
-  color: var(--ink);
-  max-width: 52ch;
-  margin: 0 0 1.5rem;
-  padding: 1rem 1.15rem;
-  border-left: 3px solid var(--accent);
-  background: rgba(243, 235, 227, 0.04);
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 1.125rem;
+  line-height: 1.62;
+  color: var(--muted);
+  max-width: none;
+  margin: 0 0 1.25rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  border-radius: 0;
 }
 
 .video-facade__play {
