@@ -791,7 +791,8 @@ body.alt-page.nav-open {
   text-wrap: nowrap;
 }
 
-.alt-hero__caret {
+.alt-hero__caret,
+.alt-section-typewriter__caret {
   display: inline-block;
   width: 0.06em;
   height: 0.92em;
@@ -802,6 +803,40 @@ body.alt-page.nav-open {
   animation: alt-hero-caret-blink 1s step-end infinite;
 }
 
+.alt-section-typewriter__caret[hidden] {
+  display: none;
+}
+
+.alt-section-heading {
+  margin: 0;
+}
+
+.alt-section-typewriter {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  vertical-align: top;
+}
+
+.alt-section-typewriter__ghost {
+  display: block;
+  visibility: hidden;
+  text-wrap: balance;
+}
+
+.alt-section-typewriter__live {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  text-wrap: balance;
+}
+
+.alt-section-typewriter__text {
+  letter-spacing: 0;
+}
+
 @keyframes alt-hero-caret-blink {
   50% {
     opacity: 0;
@@ -809,7 +844,8 @@ body.alt-page.nav-open {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .alt-hero__caret {
+  .alt-hero__caret,
+  .alt-section-typewriter__caret {
     display: none;
     animation: none;
   }
@@ -877,25 +913,25 @@ body.alt-page.nav-open {
 }
 
 .alt-about__inner {
-  max-width: min(var(--alt-max), 44rem);
+  max-width: var(--alt-max);
   margin: 0 auto;
   padding-left: var(--alt-gutter);
   padding-right: var(--alt-gutter);
   box-sizing: border-box;
+  display: grid;
+  gap: 1.35rem;
 }
 
-.alt-about h2 {
+.alt-about__heading h2 {
   font-family: var(--font-display);
   font-size: clamp(1.75rem, 3.5vw, 2.5rem);
   font-weight: 700;
   letter-spacing: 0;
   line-height: 1.1;
-  text-wrap: balance;
-  margin: 0 0 1.1rem;
   color: var(--alt-ink);
 }
 
-.alt-about p {
+.alt-about__body p {
   margin: 0 0 1rem;
   color: var(--alt-muted);
   font-weight: var(--font-body-weight);
@@ -903,8 +939,16 @@ body.alt-page.nav-open {
   text-wrap: pretty;
 }
 
-.alt-about p:last-child {
+.alt-about__body p:last-child {
   margin-bottom: 0;
+}
+
+@media (min-width: 900px) {
+  .alt-about__inner {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    gap: 2.5rem 3.5rem;
+    align-items: start;
+  }
 }
 
 /* Offer cards */
@@ -1028,6 +1072,7 @@ body.alt-page.nav-open {
   font-size: clamp(1.75rem, 3.5vw, 2.75rem);
   font-weight: 800;
   letter-spacing: 0;
+  text-wrap: balance;
   margin: 0;
 }
 

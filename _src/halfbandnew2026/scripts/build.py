@@ -1322,6 +1322,11 @@ def patch_home_page():
             '  <script src="/assets/js/alt-nav.js" defer></script>',
             '  <script src="/assets/js/alt-nav.js" defer></script>\n  <script src="/assets/js/alt-hero-typewriter.js" defer></script>',
         )
+    if 'alt-section-typewriter.js' not in html:
+        html = html.replace(
+            '  <script src="/assets/js/alt-hero-typewriter.js" defer></script>',
+            '  <script src="/assets/js/alt-hero-typewriter.js" defer></script>\n  <script src="/assets/js/alt-section-typewriter.js" defer></script>',
+        )
     toggle = alt_nav_toggle_markup("alt-meny")
     html = re.sub(
         r'<button class="(?:alt-nav-toggle )?nav-toggle"[^>]*>.*?</button>',
