@@ -632,13 +632,13 @@ def service_hero_banner(service_key: str, h1: str, intro_html: str) -> str:
     </div>"""
 
 
-def wedding_figure(
+def service_figure(
     stem: str,
     alt: str,
     sizes: str,
     width: int = 2400,
     height: int = 1600,
-    figure_class: str = "alt-wedding-figure",
+    figure_class: str = "alt-svc-figure",
     loading: str = "lazy",
 ) -> str:
     base = f"/assets/img/gallery/{stem}"
@@ -656,7 +656,7 @@ def wedding_figure(
           </figure>"""
 
 
-def wedding_bleed_figure(
+def service_bleed_figure(
     stem: str,
     alt: str,
     modifier: str = "",
@@ -664,8 +664,8 @@ def wedding_bleed_figure(
     height: int = 1600,
 ) -> str:
     base = f"/assets/img/gallery/{stem}"
-    mod_class = f" alt-wedding-bleed--{modifier}" if modifier else ""
-    return f"""      <figure class="alt-wedding-bleed{mod_class}">
+    mod_class = f" alt-svc-bleed--{modifier}" if modifier else ""
+    return f"""      <figure class="alt-svc-bleed{mod_class}">
         <img
           src="{base}-1200w.webp"
           srcset="{base}-480w.webp 480w, {base}-800w.webp 800w, {base}-1200w.webp 1200w, {base}-1920w.webp 1920w"
@@ -679,6 +679,104 @@ def wedding_bleed_figure(
       </figure>"""
 
 
+def service_opener(display: str, body_paragraph: str = "") -> str:
+    body_line = f"          <p>{body_paragraph}</p>\n" if body_paragraph else ""
+    return f"""    <section class="alt-svc-opener section" data-reveal>
+      <div class="alt-svc-wrap alt-svc-opener__grid">
+        <div class="alt-svc-opener__copy">
+          <h2 class="alt-svc-display">{esc(display)}</h2>
+{body_line}        </div>
+      </div>
+    </section>"""
+
+
+def service_split(
+    stem: str,
+    alt: str,
+    copy_html: str,
+    *,
+    media_first: bool = True,
+    portrait: bool = True,
+) -> str:
+    fig_class = "alt-svc-figure alt-svc-figure--portrait" if portrait else "alt-svc-figure"
+    order = "alt-svc-split__layout--media-first" if media_first else "alt-svc-split__layout--copy-first"
+    height = 2400 if portrait else 1600
+    width = 1600 if portrait else 2400
+    figure = service_figure(
+        stem,
+        alt,
+        "(max-width: 900px) 100vw, min(42vw, 520px)",
+        height=height,
+        width=width,
+        figure_class=fig_class,
+    )
+    return f"""    <section class="alt-svc-split section alt-svc-split--shade" data-reveal>
+      <div class="alt-svc-wrap alt-svc-split__layout {order}">
+        <div class="alt-svc-split__media">
+{figure}
+        </div>
+        <div class="alt-svc-split__copy">
+{copy_html}
+        </div>
+      </div>
+    </section>"""
+
+
+def service_story(blocks: list[tuple[str, str]], extra_html: str = "") -> str:
+    parts = []
+    for i, (title, para) in enumerate(blocks):
+        off = " alt-svc-story__block--offset" if i == 1 else ""
+        parts.append(
+            f"""        <div class="alt-svc-story__block{off}">
+          <h2>{title}</h2>
+          <p>{para}</p>
+        </div>"""
+        )
+    inner = "\n".join(parts)
+    if extra_html:
+        inner = f"{inner}\n{extra_html}"
+    return f"""    <section class="alt-svc-story section alt-svc-story--editorial" data-reveal>
+      <div class="alt-svc-wrap alt-svc-story__inner">
+{inner}
+      </div>
+    </section>"""
+
+
+def service_faq_closing(title: str, items: list[tuple[str, str]], cta_href: str, cta_label: str) -> str:
+    articles = "\n".join(
+        f"""          <article>
+            <h3>{h}</h3>
+            <p>{p}</p>
+          </article>"""
+        for h, p in items
+    )
+    return f"""    <section class="alt-svc-faq section alt-svc-faq--closing" data-reveal>
+      <div class="alt-svc-wrap">
+        <h2 class="alt-svc-display">{esc(title)}</h2>
+        <div class="alt-svc-faq__list">
+{articles}
+        </div>
+        <div class="actions alt-svc-actions">
+          <a class="btn btn-primary" href="{cta_href}">{esc(cta_label)}</a>
+        </div>
+      </div>
+    </section>"""
+
+
+def service_video_section(video_html: str, caption: str) -> str:
+    return f"""    <section class="alt-svc-video section alt-svc-video--full" data-reveal>
+      <div class="alt-svc-wrap alt-svc-video__intro">
+        <h2 class="alt-svc-display">Smakprov från scen</h2>
+      </div>
+      <div class="alt-svc-video__stage">
+        <div class="alt-svc-video__player">
+{video_html}
+        </div>
+        <p class="small muted alt-svc-video__caption">{caption}</p>
+      </div>
+    </section>"""
+
+
 def wedding_page_body(wedding_video_block: str) -> str:
     hero = service_hero_banner(
         "brollop",
@@ -688,85 +786,138 @@ def wedding_page_body(wedding_video_block: str) -> str:
             "Blåsen sitter i när det ska svänga."
         ),
     )
-    return f"""{hero}
-    <section class="alt-wedding-opener section" data-reveal>
-      <div class="alt-wedding-wrap alt-wedding-opener__grid">
-        <div class="alt-wedding-opener__copy">
-          <h2 class="alt-wedding-display">När dansen börjar</h2>
-          <p>Spellistan håller tempot uppe hela kvällen. Vi byter stil efter hur golvet ser ut. Era låtar tar vi med om de passar live.</p>
-        </div>
-      </div>
-    </section>
-{wedding_bleed_figure("halvfjorton-06", "Sång och slagverk på scen, svartvit bild i dramatiskt ljus", "mono", height=2400, width=1600)}
-    <section class="alt-wedding-sound section alt-wedding-sound--ink" data-reveal>
-      <div class="alt-wedding-wrap alt-wedding-sound__layout">
-        <div class="alt-wedding-sound__media">
-{wedding_figure("halvfjorton-02", "Keyboard och blåssektion på scen i blått ljus", "(max-width: 900px) 100vw, min(42vw, 520px)", height=2400, width=1600, figure_class="alt-wedding-figure alt-wedding-figure--portrait")}
-        </div>
-        <div class="alt-wedding-sound__copy">
-          <h2 class="alt-wedding-display alt-wedding-display--sm">Ljud och ljus</h2>
-          <p>Eget ljud och ljus ingår. Ni behöver ingen extra teknik för festen.</p>
-          <h2 class="alt-wedding-display alt-wedding-display--sm">Mingel och vigsel</h2>
-          <p>Under mingel spelar vi lugnare, med eget litet ljud så pratet håller. Till vigseln komp till solist; låtar bestämmer vi med er. Alla åtta till ceremonin går om tid och plats räcker.</p>
-        </div>
-      </div>
-    </section>
-{wedding_bleed_figure("halvfjorton-01", "Hela bandet på scen i festsal med publik", "wide")}
-    <section class="alt-wedding-story section alt-wedding-story--editorial" data-reveal>
-      <div class="alt-wedding-wrap alt-wedding-story__inner">
-        <div class="alt-wedding-story__block">
-          <h2>Första dansen</h2>
-          <p>Live eller er inspelning genom vårt ljud. Önskemål tar vi via e-post; nya låtar lär vi in om arrangemanget passar.</p>
-        </div>
-        <div class="alt-wedding-story__block alt-wedding-story__block--offset">
-          <h2>Inför spelningen</h2>
-          <p>Tid i lokalen innan gästerna och plats för oss på golvet eller scenen. Resten avtalar vi i förväg.</p>
-        </div>
-        <div class="alt-wedding-venues">
-          <h2 class="alt-wedding-display">Platser vi brukar spela på</h2>
-          <ul class="alt-wedding-venues__list">
+    venues = """        <div class="alt-svc-venues">
+          <h2 class="alt-svc-display">Platser vi brukar spela på</h2>
+          <ul class="alt-svc-venues__list">
             <li>Asa Herrgård</li>
             <li>Norraby gård</li>
             <li>Kronovalls slott</li>
             <li>Bäckaskog slott</li>
           </ul>
-          <p class="alt-wedding-venues__note">Vi har spelat där och på liknande ställen. Vi utgår från Växjö och åker till bröllop i Småland och Skåne, till exempel runt Kalmar och Älmhult eller vidare söderut när det passar er dag.</p>
-        </div>
-      </div>
-    </section>
-    <section class="alt-wedding-video section alt-wedding-video--full" data-reveal>
-      <div class="alt-wedding-wrap alt-wedding-video__intro">
-        <h2 class="alt-wedding-display">Smakprov från scen</h2>
-      </div>
-      <div class="alt-wedding-video__stage">
-        <div class="alt-wedding-video__player">
-{wedding_video_block}
-        </div>
-        <p class="small muted alt-wedding-video__caption">Signed Sealed Delivered, live med bandet.</p>
-      </div>
-    </section>
-    <section class="alt-wedding-faq section alt-wedding-faq--closing" data-reveal>
-      <div class="alt-wedding-wrap">
-        <h2 class="alt-wedding-display">Innan ni bokar</h2>
-        <div class="alt-wedding-faq__list">
-          <article>
-            <h3>Första dansen</h3>
-            <p>Live eller inspelning.</p>
-          </article>
-          <article>
-            <h3>Mingel och fest</h3>
-            <p>Samma kväll, lugnare först.</p>
-          </article>
-          <article>
-            <h3>Komp till solist</h3>
-            <p>Psalmer och vigsel. Se <a href="/kompband/">kompband för artist</a>.</p>
-          </article>
-        </div>
-        <div class="actions alt-wedding-actions">
-          <a class="btn btn-primary" href="/kontakt/#offert">Begär offert</a>
-        </div>
-      </div>
-    </section>"""
+          <p class="alt-svc-venues__note">Vi har spelat där och på liknande ställen. Vi utgår från Växjö och åker till bröllop i Småland och Skåne, till exempel runt Kalmar och Älmhult eller vidare söderut när det passar er dag.</p>
+        </div>"""
+    split_copy = """          <h2 class="alt-svc-display alt-svc-display--sm">Ljud och ljus</h2>
+          <p>Eget ljud och ljus ingår. Ni behöver ingen extra teknik för festen.</p>
+          <h2 class="alt-svc-display alt-svc-display--sm">Mingel och vigsel</h2>
+          <p>Under mingel spelar vi lugnare, med eget litet ljud så pratet håller. Till vigseln komp till solist; låtar bestämmer vi med er. Alla åtta till ceremonin går om tid och plats räcker.</p>"""
+    return f"""{hero}
+{service_opener("När dansen börjar", "Spellistan håller tempot uppe hela kvällen. Vi byter stil efter hur golvet ser ut. Era låtar tar vi med om de passar live.")}
+{service_bleed_figure("halvfjorton-06", "Sång och slagverk på scen, svartvit bild i dramatiskt ljus", "mono", height=2400, width=1600)}
+{service_split("halvfjorton-02", "Keyboard och blåssektion på scen i blått ljus", split_copy)}
+{service_bleed_figure("halvfjorton-01", "Hela bandet på scen i festsal med publik", "wide")}
+{service_story(
+        [
+            ("Första dansen", "Live eller er inspelning genom vårt ljud. Önskemål tar vi via e-post; nya låtar lär vi in om arrangemanget passar."),
+            ("Inför spelningen", "Tid i lokalen innan gästerna och plats för oss på golvet eller scenen. Resten avtalar vi i förväg."),
+        ],
+        venues,
+    )}
+{service_video_section(wedding_video_block, "Signed Sealed Delivered, live med bandet.")}
+{service_faq_closing(
+        "Innan ni bokar",
+        [
+            ("Första dansen", "Live eller inspelning."),
+            ("Mingel och fest", "Samma kväll, lugnare först."),
+            ("Komp till solist", "Psalmer och vigsel. Hör av er om komp till solist eller gästsång."),
+        ],
+        "/kontakt/#offert",
+        "Begär offert",
+    )}"""
+
+
+def foretag_page_body() -> str:
+    hero = service_hero_banner(
+        "foretag",
+        "Personalfest, kickoff och jubileum",
+        aeo_answer(
+            "Halv Fjorton levererar musikunderhållning med åtta musiker och egen blåssektion till företagsfester i Skåne och Småland. "
+            "Vanligt upplägg är två set festmusik, ofta efter mingel."
+        )
+        + '        <p class="lead">Vi komponerar kvällen med er: mingel, tal, dans. Artistkomp och specialmusik för event går att boka.</p>\n',
+    )
+    split_copy = f"""          <h2 class="alt-svc-display alt-svc-display--sm">Det som ofta spelar roll</h2>
+          <ul class="list-check alt-svc-split__list">
+            <li><strong>Blåssektion.</strong> Trumpet, sax och kör - mer än gitarr, bas och trummor i ett hörn.</li>
+            <li><strong>Lokal och logistik.</strong> {LOKAL_TEKNIK_COPY}</li>
+            <li><strong>Bred repertoar.</strong> Från Stevie Wonder till Björn Skifs. Det gör att både vd och sommarjobbare känner igen något.</li>
+            <li><strong>Södra Sverige som hemmaplan.</strong> Växjö i botten, medlemmar i bland annat Malmö och Skåne. Rimliga restider i södern.</li>
+            <li><strong>En motpart.</strong> Ekonomisk förening med organisationsnummer, faktura och en bokningskontakt.</li>
+          </ul>
+          <h2 class="alt-svc-display alt-svc-display--sm">Ett typiskt upplägg</h2>
+          <p>Mingel 45-90 minuter medan gästerna kommer in. Paus under middag och tal. Därefter ett längre dansblock. Tider justeras efter er agenda - inte tvärtom.</p>
+          <p>Vill ni ha fanfar, extra akt eller bakgrund under mingelmat? Säg till. Vi tar fram ett konkret förslag när vi vet datum, plats, antal gäster och ungefärlig sluttid.</p>"""
+    quote = """        <div class="alt-svc-story__block alt-svc-story__block--note">
+          <p><strong>Citat från arrangörer | läggs till</strong></p>
+          <p>Här kan referenser från företag och eventbyråer publiceras när de finns. Inga påhittade omdömen.</p>
+        </div>"""
+    return f"""{hero}
+{service_opener("När företag hör av sig")}
+{service_bleed_figure("halvfjorton-04", "Två sångare framför mikrofoner på träscen", "", width=1280, height=853)}
+{service_split("halvfjorton-02", "Keyboard och blåssektion på scen i blått ljus", split_copy, media_first=False)}
+{service_bleed_figure("halvfjorton-05", "Band i rustik lokal med publik i silhuett", "wide", width=1280, height=853)}
+{service_story(
+        [
+            (
+                "Vad som följer med",
+                f"Band och liveupplevelse med trumpet, saxofon och kör när det behövs. {LOKAL_TEKNIK_COPY}",
+            ),
+            (
+                "Vad vi behöver av er",
+                "Datum, adress, ungefärligt antal, om det är mingel plus fest, och om lokalen har begränsningar. Resten kan vi ta i ett samtal.",
+            ),
+        ],
+        quote,
+    )}
+{service_faq_closing(
+        "Vanliga situationer",
+        [
+            ("Personalfest och julbord", "Kvällar där kollegor faktiskt dansar. Soul och funk som fungerar även om gästlistan är blandad."),
+            ("Kickoff och konferens", "Mingel till fördrinken, mer tryck efter middagen. Vi anpassar volym och repertoar efter lokalen och programmet."),
+            ("Jubileum och kundkväll", "När ni vill visa något mer än en spellista. Ett komplett band med blås ger tyngd utan att bli stelt."),
+        ],
+        "/kontakt/",
+        "Hör av er",
+    )}"""
+
+
+def mingel_page_body() -> str:
+    hero = service_hero_banner(
+        "mingel",
+        "Musik som fyller rummet utan att ta över samtalet",
+        '        <p class="lead">Vi erbjuder spelning vid mingel med blandad repertoar. Allt från traditionell jazz till svenska klassiker. Upplägget passar konferensmiddagar, bröllopsmottagningar och andra sammankomster där gästerna ska kunna prata - och ändå känna att det händer något.</p>\n',
+    )
+    split_copy = """          <h2 class="alt-svc-display alt-svc-display--sm">Repertoaren i korthet</h2>
+          <p>Jazzstandard, soul i dämpat tempo, svenska visor och klassiker. Vill ni ha en tydlig tråd - till exempel bara jazz, eller mest svenskt - säger ni det så styr vi dit.</p>
+          <p>Många bokar mingel plus fest samma kväll. Det är vårt vanligaste kombinerade upplägg, och det vi rekommenderar när tiden räcker.</p>"""
+    return f"""{hero}
+{service_opener(
+        "När mingel är rätt val",
+        "Innan middagen, under fördrink, i foajén eller på en sommaräng. Vi spelar lägre, mer akustiskt i känslan, men med samma musiker - så kvällen kan växa till fest utan att byta band.",
+    )}
+{service_bleed_figure("halvfjorton-03", "Fest med guldkonfetti och trummor bland gäster vid bord", "wide", width=2400, height=1600)}
+{service_split(
+        "halvfjorton-06",
+        "Sång och slagverk på scen, svartvit bild i dramatiskt ljus",
+        split_copy,
+        media_first=True,
+    )}
+{service_bleed_figure("halvfjorton-05", "Band i rustik lokal med publik i silhuett", "mono", width=1280, height=853)}
+{service_story(
+        [
+            ("Bröllopsmottagning", "Mellan vigsel och middag, när gästerna ska mingla."),
+            ("Konferens och after work", "När första timmen ska vara samtal, inte diskotek."),
+        ],
+    )}
+{service_faq_closing(
+        "Passar till",
+        [
+            ("Bröllopsmottagning", "Mellan vigsel och middag."),
+            ("Konferensmiddag och after work", "Lugn nivå, tydlig livekänsla."),
+            ("Jubileum", "Samtal först, dans senare om ni vill."),
+        ],
+        "/kontakt/",
+        "Hör av er",
+    )}"""
 
 
 def gallery_img(
@@ -1077,17 +1228,7 @@ def write_pages():
             wedding_video_ld(),
         ],
         body=wedding_page_body(wedding_video_block),
-        page_class="alt-page--wedding alt-page--service-banner",
-    )
-
-    foretag_hero = service_hero_banner(
-        "foretag",
-        "Personalfest, kickoff och jubileum",
-        aeo_answer(
-            "Halv Fjorton spelar på företagsfester i Skåne och Småland med åtta musiker och egen blåssektion. "
-            "Vanligt är två set festmusik, ofta efter mingel."
-        )
-        + '        <p class="lead">Vi planerar kvällen med er: mingel, tal, dans. Artistkomp och särskilda musikmoment går att boka.</p>\n',
+        page_class="alt-page--service-banner alt-page--wedding",
     )
 
     page(
@@ -1102,61 +1243,8 @@ def write_pages():
                 "/foretag/",
             )
         ],
-        page_class="alt-page--service-banner",
-        body=f"""{foretag_hero}
-    <section class="section">
-      <div class="wrap">
-        <h2>När företag hör av sig</h2>
-        <div class="faq-grid">
-          <article><h3>Personalfest och julbord</h3><p>Kvällar där kollegor faktiskt dansar. Soul och funk som fungerar även om gästlistan är blandad.</p></article>
-          <article><h3>Kickoff och konferens</h3><p>Mingel till fördrinken, mer tryck efter middagen. Vi anpassar volym och repertoar efter lokalen och programmet.</p></article>
-          <article><h3>Jubileum och kundkväll</h3><p>När ni vill visa något mer än en spellista. Ett komplett band med blås ger tyngd utan att bli stelt.</p></article>
-        </div>
-      </div>
-    </section>
-    <section class="section section-alt">
-      <div class="wrap split">
-        <div>
-          <h2>Det som ofta spelar roll</h2>
-          <ul class="list-check">
-            <li><strong>Blåssektion.</strong> Trumpet, sax och kör - mer än gitarr, bas och trummor i ett hörn.</li>
-            <li><strong>Lokal och logistik.</strong> {LOKAL_TEKNIK_COPY}</li>
-            <li><strong>Bred repertoar.</strong> Från Stevie Wonder till Björn Skifs. Det gör att både vd och sommarjobbare känner igen något.</li>
-            <li><strong>Södra Sverige som hemmaplan.</strong> Växjö i botten, medlemmar i bland annat Malmö och Skåne. Rimliga restider i södern.</li>
-            <li><strong>En motpart.</strong> Ekonomisk förening med organisationsnummer, faktura och en bokningskontakt.</li>
-          </ul>
-        </div>
-        <div>
-          <h2>Ett typiskt upplägg</h2>
-          <p>Mingel 45-90 minuter medan gästerna kommer in. Paus under middag och tal. Därefter ett längre dansblock. Tider justeras efter er agenda - inte tvärtom.</p>
-          <p>Vill ni ha fanfar, extra akt eller bakgrund under mingelmat? Säg till. Vi tar fram ett konkret förslag när vi vet datum, plats, antal gäster och ungefärlig sluttid.</p>
-        </div>
-      </div>
-    </section>
-    <section class="section">
-      <div class="wrap">
-        <h2>Praktiskt vid bokning</h2>
-        <div class="grid-2">
-          <article class="card">
-            <h3>Vad som följer med</h3>
-            <p>Band och liveupplevelse med egen blåssektion. {LOKAL_TEKNIK_COPY}</p>
-          </article>
-          <article class="card">
-            <h3>Vad vi behöver av er</h3>
-            <p>Datum, adress, ungefärligt antal, om det är mingel plus fest, och om lokalen har begränsningar. Resten kan vi ta i ett samtal.</p>
-          </article>
-        </div>
-        <div class="quote-placeholder">
-          <p><strong>Citat från arrangörer | läggs till</strong></p>
-          <p>Här kan referenser från företag och eventbyråer publiceras när de finns. Inga påhittade omdömen.</p>
-        </div>
-        <div class="actions">
-          <a class="btn btn-primary" href="/kontakt/">Hör av er</a>
-          <a class="btn btn-ghost" href="/foretag/">Information till eventbolag</a>
-        </div>
-      </div>
-    </section>
-""",
+        page_class="alt-page--service-banner alt-page--foretag",
+        body=foretag_page_body(),
     )
 
     page(
@@ -1170,35 +1258,8 @@ def write_pages():
                 "/mingel/",
             )
         ],
-        page_class="alt-page--service-banner",
-        body=service_hero_banner(
-            "mingel",
-            "Mingelmusik som håller tonen låg",
-            '        <p class="lead">Vi spelar mingel med blandad repertoar, från jazz till svenska klassiker. Det passar när gästerna ska kunna prata och ändå höra att det är livemusik.</p>\n',
-        )
-        + """    <section class="section">
-      <div class="wrap grid-2">
-        <div>
-          <h2>När mingel är rätt val</h2>
-          <p>Innan middagen, under fördrink, i foajén eller på en sommaräng. Vi spelar lägre, mer akustiskt i känslan, men med samma musiker - så kvällen kan växa till fest utan att byta band.</p>
-          <ul class="list-check">
-            <li>Bröllopsmottagning mellan vigsel och middag</li>
-            <li>Konferensmiddag och after work</li>
-            <li>Jubileum där första timmen ska vara samtal, inte diskotek</li>
-          </ul>
-        </div>
-        <div>
-          <h2>Repertoaren i korthet</h2>
-          <p>Jazzstandard, soul i dämpat tempo, svenska visor och klassiker. Vill ni ha en tydlig tråd - till exempel bara jazz, eller mest svenskt - säger ni det så styr vi dit.</p>
-          <p>Många bokar mingel plus fest samma kväll. Det är vårt vanligaste kombinerade upplägg, och det vi rekommenderar när tiden räcker.</p>
-          <div class="actions">
-            <a class="btn btn-primary" href="/kontakt/">Hör av er</a>
-            <a class="btn btn-ghost" href="/brollop/">Se bröllop</a>
-          </div>
-        </div>
-      </div>
-    </section>
-""",
+        page_class="alt-page--service-banner alt-page--mingel",
+        body=mingel_page_body(),
     )
 
     page(
@@ -2029,7 +2090,8 @@ def rewrite_root_relative_urls(target: Path, subpath: str) -> None:
                 parts.append(" ".join(bits))
             path = ", ".join(parts) if parts else path
         else:
-            path = f"{prefix}{path}"
+            if not path.startswith(prefix):
+                path = f"{prefix}{path}"
         return f"{attr}={q}{path}{q}"
 
     extensions = {".html", ".xml", ".css", ".js", ".txt"}

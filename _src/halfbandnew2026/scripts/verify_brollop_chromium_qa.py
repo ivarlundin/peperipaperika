@@ -24,7 +24,7 @@ def check(page, label: str, at_top: bool) -> None:
           const header = document.querySelector('.alt-header');
           const hr = header ? header.getBoundingClientRect() : { bottom: 0 };
           const h1r = h1 ? h1.getBoundingClientRect() : { top: 0 };
-          const bleedImg = document.querySelector('.alt-wedding-bleed img');
+          const bleedImg = document.querySelector('.alt-svc-bleed img');
           const bleedFit = bleedImg ? getComputedStyle(bleedImg).objectFit : '';
           const introFs = (() => {
             const el = document.querySelector('.alt-service-intro .aeo-answer');
@@ -36,7 +36,7 @@ def check(page, label: str, at_top: bool) -> None:
             underHeader: h1r.top < hr.bottom - 1,
             bleedFit,
             introFs,
-            bleed: document.querySelectorAll('.alt-wedding-bleed').length,
+            bleed: document.querySelectorAll('.alt-svc-bleed').length,
           };
         }"""
     )

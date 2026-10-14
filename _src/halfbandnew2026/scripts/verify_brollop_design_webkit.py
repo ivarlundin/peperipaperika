@@ -18,20 +18,20 @@ def assert_layout(page, label: str) -> None:
         """() => {
           const main = document.querySelector('main#innehall');
           const hero = document.querySelector('.alt-service-hero');
-          const venues = document.querySelector('.alt-wedding-venues__list');
-          const bleed = document.querySelector('.alt-wedding-bleed');
-          const fullVideo = document.querySelector('.alt-wedding-video--full');
-          const faqList = document.querySelector('.alt-wedding-faq__list');
+          const venues = document.querySelector('.alt-svc-venues__list');
+          const bleed = document.querySelector('.alt-svc-bleed');
+          const fullVideo = document.querySelector('.alt-svc-video--full');
+          const faqList = document.querySelector('.alt-svc-faq__list');
           const text = main ? main.innerText : '';
           return {
             bodyClass: document.body.className,
             hasHero: !!hero,
             heroH: hero ? hero.getBoundingClientRect().height : 0,
             venueCount: venues ? venues.querySelectorAll('li').length : 0,
-            bleedCount: document.querySelectorAll('.alt-wedding-bleed').length,
+            bleedCount: document.querySelectorAll('.alt-svc-bleed').length,
             hasFullVideo: !!fullVideo,
             hasFaqList: !!faqList,
-            hasFaqGrid: !!document.querySelector('.alt-wedding-faq__grid'),
+            hasFaqGrid: !!document.querySelector('.alt-svc-faq__grid'),
             docSW: document.documentElement.scrollWidth,
             docCW: document.documentElement.clientWidth,
             hasEyebrow: !!document.querySelector('.eyebrow'),
@@ -61,11 +61,11 @@ def assert_layout(page, label: str) -> None:
     fit = hero_img.evaluate("el => getComputedStyle(el).objectFit")
     assert fit == "cover", f"{label}: hero image must use cover, got {fit}"
 
-    bleed_img = page.locator(".alt-wedding-bleed img").first
+    bleed_img = page.locator(".alt-svc-bleed img").first
     fit = bleed_img.evaluate("el => getComputedStyle(el).objectFit")
     assert fit == "cover", f"{label}: bleed image must use cover, got {fit}"
 
-    display = page.locator(".alt-wedding-display").first
+    display = page.locator(".alt-svc-display").first
     fs = display.evaluate("el => parseFloat(getComputedStyle(el).fontSize)")
     assert fs >= 28, f"{label}: display type too small ({fs}px)"
 

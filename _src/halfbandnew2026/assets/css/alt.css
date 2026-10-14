@@ -3109,12 +3109,8 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   }
 }
 
-/* Bröllop page (editorial layout, scoped) */
-.alt-page--wedding .alt-inner-main {
-  padding-top: 0;
-}
-
-.alt-page--wedding .alt-wedding-wrap {
+/* Service family: Bröllop, Företag, Mingel (shared editorial layout) */
+.alt-page--service-banner .alt-svc-wrap {
   width: 100%;
   max-width: var(--alt-max);
   margin: 0 auto;
@@ -3123,16 +3119,16 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   box-sizing: border-box;
 }
 
-.alt-page--wedding .section {
+.alt-page--service-banner .section {
   padding: clamp(3.5rem, 10vw, 7rem) 0;
 }
 
-.alt-page--wedding .alt-service-intro {
+.alt-page--service-banner .alt-service-intro {
   padding-top: clamp(1.5rem, 4vw, 2.75rem);
   padding-bottom: clamp(2rem, 5vw, 3.25rem);
 }
 
-.alt-page--wedding .alt-service-intro .aeo-answer {
+.alt-page--service-banner .alt-service-intro .aeo-answer {
   font-family: var(--font-display);
   font-size: clamp(1.2rem, 3.6vw, 2.35rem);
   font-weight: 600;
@@ -3145,7 +3141,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 }
 
 @media (max-width: 480px) {
-  .alt-page--wedding .alt-service-intro .aeo-answer {
+  .alt-page--service-banner .alt-service-intro .aeo-answer {
     font-size: clamp(1.12rem, 4.8vw, 1.42rem);
     line-height: 1.32;
     max-width: 34ch;
@@ -3157,7 +3153,15 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   object-position: center 42%;
 }
 
-.alt-wedding-display {
+.alt-page--foretag .alt-service-hero__img {
+  object-position: center 38%;
+}
+
+.alt-page--mingel .alt-service-hero__img {
+  object-position: center 35%;
+}
+
+.alt-svc-display {
   font-family: var(--font-display);
   font-size: clamp(2.1rem, 6.5vw, 3.75rem);
   font-weight: 800;
@@ -3168,24 +3172,24 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   text-wrap: balance;
 }
 
-.alt-wedding-display--sm {
+.alt-svc-display--sm {
   font-size: clamp(1.55rem, 3.4vw, 2.35rem);
   max-width: 16ch;
   margin-bottom: 0.65rem;
 }
 
-.alt-wedding-opener {
+.alt-svc-opener {
   padding-top: clamp(1rem, 3vw, 1.75rem);
   padding-bottom: clamp(2.5rem, 7vw, 4rem);
 }
 
-.alt-wedding-opener__grid {
+.alt-svc-opener__grid {
   display: grid;
   gap: 1.25rem 2rem;
   align-items: end;
 }
 
-.alt-wedding-opener__copy p {
+.alt-svc-opener__copy p {
   margin: 0;
   max-width: 42ch;
   font-weight: 300;
@@ -3194,7 +3198,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   color: var(--alt-muted);
 }
 
-.alt-wedding-bleed {
+.alt-svc-bleed {
   margin: 0;
   width: 100%;
   max-width: 100%;
@@ -3204,7 +3208,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   background: #050506;
 }
 
-.alt-wedding-bleed img {
+.alt-svc-bleed img {
   display: block;
   width: 100%;
   height: 100%;
@@ -3213,35 +3217,35 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   object-position: center center;
 }
 
-.alt-wedding-bleed--mono {
+.alt-svc-bleed--mono {
   height: clamp(15rem, 48vw, 28rem);
 }
 
-.alt-wedding-bleed--mono img {
+.alt-svc-bleed--mono img {
   filter: grayscale(1) contrast(1.05);
   object-position: center 32%;
 }
 
-.alt-wedding-bleed--wide {
+.alt-svc-bleed--wide {
   height: clamp(13.5rem, 38vw, 22rem);
 }
 
-.alt-wedding-bleed--wide img {
+.alt-svc-bleed--wide img {
   object-position: center 48%;
 }
 
-.alt-wedding-sound--ink {
+.alt-svc-split--shade {
   background: var(--alt-bg-elevated);
   border-block: 1px solid var(--alt-line);
 }
 
-.alt-wedding-sound__layout {
+.alt-svc-split__layout {
   display: grid;
   gap: clamp(2rem, 6vw, 3.5rem);
   align-items: start;
 }
 
-.alt-wedding-sound__copy p {
+.alt-svc-split__copy p {
   margin: 0 0 1.35rem;
   max-width: 48ch;
   font-weight: 300;
@@ -3249,19 +3253,19 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   color: var(--alt-muted);
 }
 
-.alt-wedding-sound__copy p:last-child {
+.alt-svc-split__copy p:last-child {
   margin-bottom: 0;
 }
 
-.alt-wedding-sound__copy .alt-wedding-display--sm + p {
+.alt-svc-split__copy .alt-svc-display--sm + p {
   margin-bottom: 2rem;
 }
 
-.alt-wedding-story--editorial {
+.alt-svc-story--editorial {
   padding-block: clamp(4.5rem, 12vw, 8.5rem);
 }
 
-.alt-wedding-story__block h2 {
+.alt-svc-story__block h2 {
   font-family: var(--font-display);
   font-size: clamp(1.45rem, 3vw, 1.95rem);
   font-weight: 700;
@@ -3270,8 +3274,8 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   text-wrap: balance;
 }
 
-.alt-wedding-story__block p,
-.alt-wedding-venues__note {
+.alt-svc-story__block p,
+.alt-svc-venues__note {
   margin: 0;
   font-weight: 300;
   line-height: 1.65;
@@ -3279,19 +3283,19 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   max-width: 46ch;
 }
 
-.alt-wedding-venues {
+.alt-svc-venues {
   margin-top: clamp(2rem, 5vw, 3rem);
   padding-top: clamp(2.5rem, 6vw, 3.75rem);
   border-top: 1px solid var(--alt-line);
 }
 
-.alt-wedding-venues__list {
+.alt-svc-venues__list {
   list-style: none;
   margin: clamp(1.25rem, 3vw, 2rem) 0 clamp(1.75rem, 4vw, 2.5rem);
   padding: 0;
 }
 
-.alt-wedding-venues__list li {
+.alt-svc-venues__list li {
   font-family: var(--font-display);
   font-size: clamp(1.65rem, 5.8vw, 2.65rem);
   font-weight: 650;
@@ -3301,21 +3305,21 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   border-bottom: 1px solid var(--alt-line);
 }
 
-.alt-wedding-venues__list li:first-child {
+.alt-svc-venues__list li:first-child {
   border-top: 1px solid var(--alt-line);
 }
 
-.alt-wedding-video--full {
+.alt-svc-video--full {
   padding: clamp(3.5rem, 9vw, 6rem) 0 clamp(4rem, 11vw, 7rem);
   background: var(--alt-bg-elevated);
   border-top: 1px solid var(--alt-line);
 }
 
-.alt-wedding-video__intro {
+.alt-svc-video__intro {
   margin-bottom: clamp(1.5rem, 4vw, 2.25rem);
 }
 
-.alt-wedding-video__stage {
+.alt-svc-video__stage {
   width: 100%;
   max-width: 100%;
   margin: 0 auto;
@@ -3325,8 +3329,8 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   overflow-x: clip;
 }
 
-.alt-wedding-video__player .video-facade,
-.alt-wedding-video__player .embed {
+.alt-svc-video__player .video-facade,
+.alt-svc-video__player .embed {
   width: 100%;
   max-width: 100%;
   margin: 0;
@@ -3335,7 +3339,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   box-sizing: border-box;
 }
 
-.alt-wedding-video__caption {
+.alt-svc-video__caption {
   max-width: var(--alt-max);
   margin: 0.85rem auto 0;
   padding-left: var(--alt-pad-left);
@@ -3343,30 +3347,30 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   box-sizing: border-box;
 }
 
-.alt-wedding-faq--closing {
+.alt-svc-faq--closing {
   padding-top: clamp(3.5rem, 9vw, 5.5rem);
   padding-bottom: clamp(4.5rem, 12vw, 7rem);
 }
 
-.alt-wedding-faq__list {
+.alt-svc-faq__list {
   margin: clamp(1.75rem, 4vw, 2.5rem) 0 0;
   padding: 0;
   border-top: 1px solid var(--alt-line);
 }
 
-.alt-wedding-faq__list article {
+.alt-svc-faq__list article {
   padding: clamp(1.35rem, 3.5vw, 1.85rem) 0;
   border-bottom: 1px solid var(--alt-line);
 }
 
-.alt-wedding-faq__list h3 {
+.alt-svc-faq__list h3 {
   font-family: var(--font-display);
   font-size: clamp(1.15rem, 2.6vw, 1.45rem);
   font-weight: 650;
   margin: 0 0 0.4rem;
 }
 
-.alt-wedding-faq__list p {
+.alt-svc-faq__list p {
   margin: 0;
   font-weight: 300;
   color: var(--alt-muted);
@@ -3518,14 +3522,14 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   margin-bottom: 0;
 }
 
-.alt-wedding-figure {
+.alt-svc-figure {
   margin: 0;
   border-radius: var(--alt-radius);
   overflow: hidden;
   border: 1px solid var(--alt-line);
 }
 
-.alt-wedding-figure img {
+.alt-svc-figure img {
   display: block;
   width: 100%;
   max-width: 100%;
@@ -3533,91 +3537,136 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   object-fit: contain;
 }
 
-.alt-wedding-story__inner {
+.alt-svc-figure--portrait img {
+  aspect-ratio: 3 / 4;
+  max-height: min(58vh, 680px);
+  object-fit: cover;
+  object-position: center 22%;
+}
+
+.alt-svc-split__copy .list-check {
+  margin: 0 0 1.75rem;
+  max-width: 50ch;
+}
+
+.alt-svc-split__copy .alt-svc-display--sm:not(:first-child) {
+  margin-top: clamp(1.5rem, 4vw, 2.25rem);
+}
+
+.alt-svc-story__block--note {
+  margin-top: clamp(2rem, 5vw, 3rem);
+  padding: clamp(1.25rem, 3vw, 1.75rem);
+  border: 1px solid var(--alt-line);
+  border-radius: var(--alt-radius);
+  background: var(--alt-bg-elevated);
+}
+
+.alt-svc-story__block--note p {
+  max-width: none;
+}
+
+.alt-svc-story__inner {
   display: grid;
   gap: clamp(2.5rem, 6vw, 4rem);
 }
 
-.alt-wedding-actions {
+.alt-svc-actions {
   margin-top: clamp(2rem, 5vw, 2.75rem);
 }
 
 @media (min-width: 901px) {
-  .alt-page--wedding .alt-service-intro .aeo-answer {
-    max-width: 26ch;
+  .alt-page--service-banner .alt-service-intro .aeo-answer {
+    max-width: min(34ch, 100%);
     font-size: clamp(1.85rem, 2.8vw, 2.65rem);
   }
 
-  .alt-wedding-opener__grid {
+  .alt-page--wedding .alt-service-intro .aeo-answer {
+    max-width: 26ch;
+  }
+
+  .alt-svc-opener__grid {
     grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
     gap: 2rem 5rem;
   }
 
-  .alt-wedding-opener__copy .alt-wedding-display {
+  .alt-svc-opener__copy .alt-svc-display {
     max-width: 11ch;
     font-size: clamp(2.75rem, 4.5vw, 4.25rem);
   }
 
-  .alt-wedding-sound__layout {
+  .alt-svc-split__layout {
     grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
     gap: 3rem 5rem;
     align-items: center;
   }
 
-  .alt-wedding-sound__media {
-    order: -1;
+  .alt-svc-split__layout--media-first .alt-svc-split__media {
+    grid-column: 1;
     max-width: 34rem;
   }
 
-  .alt-wedding-story__inner {
+  .alt-svc-split__layout--media-first .alt-svc-split__copy {
+    grid-column: 2;
+  }
+
+  .alt-svc-split__layout--copy-first .alt-svc-split__copy {
+    grid-column: 1;
+  }
+
+  .alt-svc-split__layout--copy-first .alt-svc-split__media {
+    grid-column: 2;
+    max-width: 34rem;
+  }
+
+  .alt-svc-story__inner {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 3.5rem 5rem;
   }
 
-  .alt-wedding-story__block--offset {
+  .alt-svc-story__block--offset {
     margin-top: clamp(3rem, 8vw, 5.5rem);
   }
 
-  .alt-wedding-venues {
+  .alt-svc-venues {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 0 5rem;
     align-items: start;
   }
 
-  .alt-wedding-venues .alt-wedding-display {
+  .alt-svc-venues .alt-svc-display {
     grid-column: 1 / -1;
     max-width: 22ch;
     margin-bottom: 0.5rem;
   }
 
-  .alt-wedding-venues__list {
+  .alt-svc-venues__list {
     margin-bottom: 0;
   }
 
-  .alt-wedding-venues__note {
+  .alt-svc-venues__note {
     max-width: 40ch;
     align-self: end;
     padding-top: 0.5rem;
   }
 
-  .alt-wedding-video__stage {
+  .alt-svc-video__stage {
     padding-left: 0;
     padding-right: 0;
   }
 
-  .alt-wedding-video__player {
+  .alt-svc-video__player {
     width: 100%;
   }
 
-  .alt-wedding-faq__list article {
+  .alt-svc-faq__list article {
     display: grid;
     grid-template-columns: minmax(0, 0.34fr) minmax(0, 1fr);
     gap: 1rem 3rem;
     align-items: baseline;
   }
 
-  .alt-wedding-faq__list h3 {
+  .alt-svc-faq__list h3 {
     margin: 0;
   }
 }

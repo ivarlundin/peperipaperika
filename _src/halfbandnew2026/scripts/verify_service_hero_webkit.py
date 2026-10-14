@@ -41,7 +41,7 @@ PAGES = {
     "mingel": {
         "path": "/mingel/",
         "img_stem": "halvfjorton-04",
-        "h1": "Mingelmusik som håller tonen låg",
+        "h1": "Musik som fyller rummet utan att ta över samtalet",
     },
 }
 
@@ -137,10 +137,10 @@ def assert_service_hero(page, slug: str, label: str) -> None:
         assert intro_styles["paddingTop"] == "0px", intro_styles
         assert intro_styles["borderLeftWidth"] == "0px", intro_styles
         assert intro_styles["boxShadow"] == "none", intro_styles
-        if slug == "brollop":
-            assert "outfit" in intro_styles["fontFamily"].lower(), intro_styles
-        else:
+        if slug == "mingel":
             assert "inter" in intro_styles["fontFamily"].lower(), intro_styles
+        else:
+            assert "outfit" in intro_styles["fontFamily"].lower(), intro_styles
 
 
 def assert_service_hero_layout_top(page, slug: str, label: str) -> None:

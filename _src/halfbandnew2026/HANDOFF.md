@@ -45,6 +45,9 @@ python3 qa_check.py --live --skip-build
 
 ## Service-sidor (Bröllop, Företag, Mingel)
 
+- Klass `alt-page--service-banner` + sidmod (`alt-page--wedding` / `--foretag` / `--mingel`).
+- Gemensam sekvens i `build.py`: `service_hero_banner` → stor ingress → `service_opener` → `service_bleed_figure` (×2) → `service_split` → `service_story` → (bröllop: `service_video_section`) → `service_faq_closing`.
+- Layout-CSS: `alt-svc-*` (wrap, display, bleed, split, story, faq, video; bröllop har `alt-svc-venues`).
 - Klass `alt-page--service-banner`, gemensam `alt-service-hero` i `build.py`.
 - Hero: `padding-top: var(--alt-header-total)` (= header + safe-area), mobil `min-height: max(min(70svh, 560px), header + innehåll)`.
 - Header: `alt-nav.js` sätter `is-solid` vid scroll; mobil utan blur/bakgrund i toppläge, vid scroll `blur(16px) saturate(140%)` via `::before`.
