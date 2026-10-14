@@ -57,6 +57,15 @@ def assert_service_hero(page, slug: str, label: str) -> None:
             introInHero: hero ? hero.querySelectorAll('.aeo-answer, .lead').length : -1,
             typewriterInHero: hero ? hero.querySelectorAll('[data-alt-typewriter], .alt-hero__typewriter').length : -1,
             hasScrim: !!document.querySelector('.alt-service-hero__scrim'),
+            factsCount: document.querySelectorAll('.alt-facts').length,
+            ctaText: (() => {
+              const el = document.querySelector('.alt-service-hero__actions a.alt-btn--primary');
+              return el ? el.innerText : '';
+            })(),
+            ctaHref: (() => {
+              const el = document.querySelector('.alt-service-hero__actions a.alt-btn--primary');
+              return el ? (el.getAttribute('href') || '') : '';
+            })(),
             introBlock: !!document.querySelector('.alt-service-intro'),
             aeoInIntro: document.querySelector('.alt-service-intro .aeo-answer'),
             expectedStem,
@@ -100,6 +109,11 @@ def assert_service_hero(page, slug: str, label: str) -> None:
     assert data["introInHero"] == 0, f"{slug}/{label}: ingress must not sit in hero"
     assert data["typewriterInHero"] == 0, f"{slug}/{label}: no typewriter in service hero"
     assert data["hasScrim"], f"{slug}/{label}: missing home-style scrim"
+    assert data["factsCount"] == 0, f"{slug}/{label}: facts strip must not appear"
+    assert data["ctaText"].strip() == "Kontakta oss", (
+        f"{slug}/{label}: CTA text {data['ctaText']!r}"
+    )
+    assert data["ctaHref"].endswith("/kontakt/#offert"), data["ctaHref"]
     assert data["introBlock"], f"{slug}/{label}: missing alt-service-intro"
     if intro_styles:
         assert intro_styles["paddingTop"] == "0px", intro_styles
