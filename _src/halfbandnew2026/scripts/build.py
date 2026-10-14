@@ -212,6 +212,15 @@ def alt_nav_toggle_markup(panel_id: str = "mobile-menu") -> str:
       </button>"""
 
 
+def alt_header_mobile_controls_markup(panel_id: str = "mobile-menu") -> str:
+    close = mobile_menu_close_markup().replace(
+        'class="mobile-menu__close"',
+        'class="mobile-menu__close alt-header__menu-close"',
+        1,
+    )
+    return alt_nav_toggle_markup(panel_id) + "\n" + close
+
+
 def mobile_menu_close_markup() -> str:
     return """      <button type="button" class="mobile-menu__close" data-nav-close aria-label="Stäng meny">
         <span class="mobile-menu__close-icon" aria-hidden="true"></span>
@@ -317,9 +326,6 @@ def mobile_menu_block(
     prefix: str = "",
 ) -> str:
     return f"""  <div class="mobile-menu" id="mobile-menu" data-mobile-menu hidden aria-hidden="true">
-    <div class="mobile-menu__bar">
-{mobile_menu_close_markup()}
-    </div>
     <nav class="mobile-menu__nav" aria-label="Mobilmeny">
       <ul class="mobile-menu__list nav-list" data-nav-panel>
 {mobile_nav_links_markup(current_path, prefix, "mobile-nav-tjanster")}
@@ -593,7 +599,7 @@ def page(
         body_class = f"{body_class} {page_class}"
     nav_block = home_nav_block(path, "/#offert")
     mobile_menu = mobile_menu_block(path, "/#offert")
-    toggle = alt_nav_toggle_markup("mobile-menu")
+    toggle = alt_header_mobile_controls_markup("mobile-menu")
     html = f"""<!DOCTYPE html>
 <html lang="sv">
 <head>
@@ -1531,7 +1537,7 @@ def patch_home_page():
             '  <script src="/assets/js/alt-hero-typewriter.js" defer></script>',
             '  <script src="/assets/js/alt-hero-typewriter.js" defer></script>\n  <script src="/assets/js/alt-section-typewriter.js" defer></script>',
         )
-    toggle = alt_nav_toggle_markup("mobile-menu")
+    toggle = alt_header_mobile_controls_markup("mobile-menu")
     html = re.sub(
         r'<button class="(?:alt-nav-toggle )?nav-toggle"[^>]*>.*?</button>',
         toggle.strip(),

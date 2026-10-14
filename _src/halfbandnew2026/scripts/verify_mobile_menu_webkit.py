@@ -13,7 +13,9 @@ SCROLL_Y = 1500
 VIEWPORT = {"width": 390, "height": 844}
 BASE_URL = "http://127.0.0.1:8765/testing/halfbandnew2026/"
 MENU_MOTION_MS = 400
-LOGO_LARGE_MIN = 100
+LOGO_MENU_LARGE_MIN = 100
+LOGO_HERO_LARGE_MIN = 74
+LOGO_HERO_LARGE_MAX = 92
 LOGO_NORMAL_MAX = 80
 
 
@@ -22,6 +24,50 @@ def header_logo_width(page) -> float:
         page.locator(".alt-header .brand-mark").evaluate(
             "el => el.getBoundingClientRect().width"
         )
+    )
+
+
+def assert_logo_size(page, label: str, mode: str) -> None:
+    width = header_logo_width(page)
+    if mode == "menu":
+        assert width >= LOGO_MENU_LARGE_MIN, (
+            f"{label}: menu logo should be large ({width}px)"
+        )
+    elif mode == "hero":
+        assert LOGO_HERO_LARGE_MIN <= width <= LOGO_HERO_LARGE_MAX, (
+            f"{label}: hero logo should be ~25% smaller than menu ({width}px)"
+        )
+    else:
+        assert width <= LOGO_NORMAL_MAX, (
+            f"{label}: header logo should be normal size ({width}px)"
+        )
+
+
+def assert_header_close_visible(page, label: str) -> None:
+    close = page.locator(".alt-header__menu-close")
+    assert close.count() == 1, f"{label}: expected one header close control"
+    assert close.is_visible(), f"{label}: header close should be visible"
+    page.evaluate(
+        '() => document.querySelector(".alt-header")?.classList.add("is-solid")'
+    )
+    assert close.is_visible(), f"{label}: close hidden under solid header"
+    hit = page.evaluate(
+        """() => {
+          const el = document.querySelector('.alt-header__menu-close');
+          if (!el) return false;
+          const r = el.getBoundingClientRect();
+          const x = r.left + r.width / 2;
+          const y = r.top + r.height / 2;
+          const top = document.elementFromPoint(x, y);
+          return top === el || el.contains(top);
+        }"""
+    )
+    assert hit, f"{label}: close button is covered at scroll"
+    box = close.bounding_box()
+    vp = page.viewport_size
+    assert box and vp, f"{label}: close box missing"
+    assert box["x"] + box["width"] >= vp["width"] - 56, (
+        f"{label}: close should stay top-right (x={box['x']})"
     )
 
 
@@ -48,7 +94,7 @@ def assert_menu_cta_full_width(page, label: str) -> None:
 def assert_logo_in_viewport(page, label: str) -> None:
     box = page.locator(".alt-header .brand-mark").bounding_box()
     assert box, f"{label}: logo missing box"
-    assert box["width"] >= LOGO_LARGE_MIN, f"{label}: logo too small ({box['width']}px)"
+    assert box["width"] >= LOGO_MENU_LARGE_MIN, f"{label}: logo too small ({box['width']}px)"
     assert -8 < box["y"] < 180, f"{label}: logo top {box['y']} outside viewport band"
     assert box["x"] >= -4, f"{label}: logo left {box['x']} clipped"
 
@@ -76,12 +122,9 @@ def assert_menu_fullscreen(page, label: str) -> None:
     assert not header_cta.is_visible(), f"{label}: desktop CTA visible in header"
 
 
-def assert_single_scaled_header_logo(page, label: str, expect_large: bool) -> None:
+def assert_single_scaled_header_logo(page, label: str) -> None:
     assert page.locator(".mobile-menu__brand--feature").count() == 0, (
         f"{label}: duplicate menu feature logo should be removed"
-    )
-    assert page.locator(".mobile-menu__brand--bar").count() == 0, (
-        f"{label}: bar logo markup should be removed"
     )
     assert page.locator(".alt-header .brand-mark").count() == 1, (
         f"{label}: expected one header brand mark"
@@ -95,18 +138,9 @@ def assert_single_scaled_header_logo(page, label: str, expect_large: bool) -> No
     assert header_vis != "hidden", (
         f"{label}: header brand should stay visible, got {header_vis}"
     )
-    width = header_logo_width(page)
-    if expect_large:
-        assert width >= LOGO_LARGE_MIN, (
-            f"{label}: header logo should be scaled large ({width}px)"
-        )
-    else:
-        assert width <= LOGO_NORMAL_MAX, (
-            f"{label}: header logo should be normal size ({width}px)"
-        )
 
 
-def assert_menu_opens_with_motion(page, label: str, expect_large_logo: bool) -> None:
+def open_menu(page) -> None:
     page.locator("[data-nav-toggle]").click()
     mid_opacity = None
     for _ in range(12):
@@ -119,13 +153,28 @@ def assert_menu_opens_with_motion(page, label: str, expect_large_logo: bool) -> 
         if 0.05 < mid_opacity < 0.98:
             break
     assert mid_opacity is not None and 0.05 < mid_opacity < 0.98, (
-        f"{label}: menu opacity never entered mid-open range, last={mid_opacity}"
+        f"menu opacity never entered mid-open range, last={mid_opacity}"
     )
     page.wait_for_timeout(MENU_MOTION_MS)
+
+
+def assert_menu_opens_with_motion(page, label: str) -> None:
+    open_menu(page)
     assert_menu_fullscreen(page, label)
-    assert_single_scaled_header_logo(page, label, expect_large_logo)
+    assert_single_scaled_header_logo(page, label)
+    assert_logo_size(page, label, "menu")
     assert_logo_in_viewport(page, label)
+    assert_header_close_visible(page, label)
     assert_menu_cta_full_width(page, label)
+
+
+def wait_for_hero_logo_size(page, label: str) -> None:
+    for _ in range(24):
+        width = header_logo_width(page)
+        if LOGO_HERO_LARGE_MIN <= width <= LOGO_HERO_LARGE_MAX:
+            return
+        page.wait_for_timeout(40)
+    assert_logo_size(page, label, "hero")
 
 
 def assert_home_hero_logo_at_top(page, label: str) -> None:
@@ -133,7 +182,8 @@ def assert_home_hero_logo_at_top(page, label: str) -> None:
     assert page.evaluate(
         "document.body.classList.contains('alt-logo-hero-large')"
     ), f"{label}: body should have alt-logo-hero-large at top"
-    assert_single_scaled_header_logo(page, label, True)
+    assert_single_scaled_header_logo(page, label)
+    wait_for_hero_logo_size(page, label)
 
 
 def wait_for_header_logo_normal(page, label: str) -> None:
@@ -142,7 +192,7 @@ def wait_for_header_logo_normal(page, label: str) -> None:
         if width <= LOGO_NORMAL_MAX:
             return
         page.wait_for_timeout(40)
-    assert_single_scaled_header_logo(page, label, False)
+    assert_logo_size(page, label, "normal")
 
 
 def assert_home_hero_logo_scrolled(page, label: str) -> None:
@@ -179,6 +229,29 @@ def assert_tjanster_dropdown_animates(page, label: str) -> None:
     assert chevron_rot, f"{label}: chevron should be rotated when open"
 
 
+def assert_close_at_scroll_positions(page) -> None:
+    positions = (
+        ("top", 0),
+        ("mid", SCROLL_Y),
+        ("bottom", None),
+    )
+    for name, y in positions:
+        page.goto(BASE_URL, wait_until="networkidle")
+        page.wait_for_timeout(100)
+        if y is None:
+            page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+        else:
+            page.evaluate(f"window.scrollTo(0, {y})")
+        page.wait_for_timeout(120)
+        assert_menu_opens_with_motion(page, f"menu-open-{name}")
+        page.screenshot(
+            path=str(OUT / f"mobile-menu-open-iphone-{name}.png"),
+            full_page=False,
+        )
+        page.locator("[data-nav-close]").click()
+        page.wait_for_timeout(MENU_MOTION_MS + 80)
+
+
 def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
 
@@ -206,10 +279,9 @@ def main() -> int:
 
             assert_home_hero_logo_at_top(page, "home-top-closed")
 
-            assert_menu_opens_with_motion(page, "scrollY=0", True)
+            assert_menu_opens_with_motion(page, "scrollY=0")
             assert_tjanster_dropdown_animates(page, "scrollY=0")
             page.screenshot(path=str(OUT / "mobile-menu-open-iphone.png"), full_page=False)
-            page.screenshot(path=str(OUT / "mobile-menu-webkit-top.png"), full_page=False)
 
             page.locator("[data-nav-close]").click()
             page.wait_for_timeout(MENU_MOTION_MS + 80)
@@ -220,7 +292,7 @@ def main() -> int:
             assert page.evaluate("window.scrollY") >= SCROLL_Y - 20
             assert_home_hero_logo_scrolled(page, "home-scrolled-closed")
 
-            assert_menu_opens_with_motion(page, f"scrollY={SCROLL_Y}", True)
+            assert_menu_opens_with_motion(page, f"scrollY={SCROLL_Y}")
             page.screenshot(
                 path=str(OUT / "mobile-menu-webkit-scrolled.png"), full_page=False
             )
@@ -228,6 +300,8 @@ def main() -> int:
             page.locator("[data-nav-close]").click()
             page.wait_for_timeout(MENU_MOTION_MS + 80)
             assert_home_hero_logo_scrolled(page, "home-scrolled-after-close")
+
+            assert_close_at_scroll_positions(page)
 
             browser.close()
     finally:
