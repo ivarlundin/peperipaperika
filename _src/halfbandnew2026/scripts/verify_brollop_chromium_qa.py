@@ -24,7 +24,7 @@ def check(page, label: str, at_top: bool) -> None:
           const header = document.querySelector('.alt-header');
           const hr = header ? header.getBoundingClientRect() : { bottom: 0 };
           const h1r = h1 ? h1.getBoundingClientRect() : { top: 0 };
-          const festImg = document.querySelector('.alt-brollop-figure img');
+          const festImg = document.querySelector('.alt-svc-inline-figure img');
           const festFit = festImg ? getComputedStyle(festImg).objectFit : '';
           const dekFs = (() => {
             const el = document.querySelector('.alt-service-hero__dek');
@@ -36,7 +36,7 @@ def check(page, label: str, at_top: bool) -> None:
             underHeader: h1r.top < hr.bottom - 1,
             festFit,
             dekFs,
-            faqCount: document.querySelectorAll('.alt-brollop-faq .alt-faq__item').length,
+            faqCount: document.querySelectorAll('.alt-faq__item').length,
           };
         }"""
     )

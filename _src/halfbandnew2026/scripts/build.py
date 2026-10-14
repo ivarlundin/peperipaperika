@@ -737,6 +737,7 @@ def wedding_service_ld() -> str:
 
 
 def wedding_page_body() -> str:
+    # Hero: shared service_hero_banner only (no custom hero markup).
     hero = service_hero_banner(
         "brollop",
         "Bröllop",
@@ -746,7 +747,7 @@ def wedding_page_body() -> str:
         "halvfjorton-01",
         "Halv Fjorton spelar på bröllopsfest i Småland",
         "(max-width: 900px) 100vw, min(46vw, 640px)",
-        figure_class="alt-brollop-figure",
+        figure_class="alt-svc-inline-figure",
     )
     faq_items = "\n".join(
         f"""          <details class="alt-faq__item">
@@ -758,15 +759,15 @@ def wedding_page_body() -> str:
         for q, a in BROLLOP_FAQS
     )
     return f"""{hero}
-    <section class="alt-svc-chapter section alt-svc-chapter--split alt-brollop-fest" data-reveal>
+    <section class="alt-svc-chapter section alt-svc-chapter--split" data-reveal>
       <div class="alt-svc-wrap alt-svc-chapter__split alt-svc-chapter__layout--copy-first">
         <div class="alt-svc-chapter__split-copy">
           <h2 class="alt-svc-chapter__title">Festspelning</h2>
           <div class="alt-svc-chapter__body">
             <p>När middagen är över och första valsen är dansad drar vi igång festen på riktigt. Vi är ett bröllopsband från Växjö med åtta musiker och blåssektion, och vi tar er genom flera genrer under kvällen. Vi har lång erfarenhet av bröllop och vet vad som får dansgolvet att leva.</p>
-            <p class="alt-brollop-fest__actions">
+            <div class="actions">
               <a class="alt-btn alt-btn--primary" href="/kontakt/#offert">Kontakta oss</a>
-            </p>
+            </div>
           </div>
         </div>
         <div class="alt-svc-chapter__split-media">
@@ -774,22 +775,22 @@ def wedding_page_body() -> str:
         </div>
       </div>
     </section>
-    <section class="alt-svc-chapter section alt-brollop-addons" data-reveal>
+    <section class="alt-svc-chapter section alt-svc-chapter--addons" data-reveal>
       <div class="alt-svc-wrap">
         <h2 class="alt-svc-chapter__title">Tilläggstjänster</h2>
-        <div class="alt-brollop-addons__grid">
-          <article class="alt-brollop-addon-card">
-            <h3 class="alt-brollop-addon-card__title">Mingelmusik</h3>
-            <p class="alt-brollop-addon-card__text">Före middagen spelar vi lugnare och jazzigare musik medan gästerna minglar. Vi tar med ett eget ljudsystem för detta.</p>
-          </article>
-          <article class="alt-brollop-addon-card">
-            <h3 class="alt-brollop-addon-card__title">Vigselmusik</h3>
-            <p class="alt-brollop-addon-card__text">Till vigseln har vi solist och komp, och låtarna väljer vi tillsammans med er. Har ni andra önskemål för vigseln löser vi det efter dem.</p>
-          </article>
+        <div class="alt-svc-addon-grid alt-svc-chapter__body">
+          <div class="alt-svc-addon">
+            <h3 class="alt-svc-addon__title">Mingelmusik</h3>
+            <p>Före middagen spelar vi lugnare och jazzigare musik medan gästerna minglar. Vi tar med ett eget ljudsystem för detta.</p>
+          </div>
+          <div class="alt-svc-addon">
+            <h3 class="alt-svc-addon__title">Vigselmusik</h3>
+            <p>Till vigseln har vi solist och komp, och låtarna väljer vi tillsammans med er. Har ni andra önskemål för vigseln löser vi det efter dem.</p>
+          </div>
         </div>
       </div>
     </section>
-    <section class="alt-svc-chapter section alt-brollop-faq" data-reveal>
+    <section class="alt-svc-chapter section" data-reveal>
       <div class="alt-svc-wrap alt-faq">
         <h2 class="alt-svc-chapter__title">Vanliga frågor</h2>
         <div class="alt-faq__list" data-faq>
@@ -797,14 +798,14 @@ def wedding_page_body() -> str:
         </div>
       </div>
     </section>
-    <section class="alt-svc-chapter section alt-brollop-contact" data-reveal>
+    <section class="alt-svc-chapter section alt-svc-chapter--closing" data-reveal>
       <div class="alt-svc-wrap">
         <h2 class="alt-svc-chapter__title">Kontakta oss</h2>
         <div class="alt-svc-chapter__body">
           <p>Berätta om ert bröllop, så återkommer vi med ett förslag.</p>
-          <p class="alt-brollop-contact__actions">
+          <div class="actions">
             <a class="alt-btn alt-btn--primary" href="/kontakt/">Kontakta oss</a>
-          </p>
+          </div>
         </div>
       </div>
     </section>"""

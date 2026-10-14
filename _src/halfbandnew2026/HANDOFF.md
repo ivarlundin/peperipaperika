@@ -43,6 +43,11 @@ Efter deploy:
 python3 qa_check.py --live --skip-build
 ```
 
+## Bröllop
+
+- Hero: endast `service_hero_banner()` (samma som Företag/Mingel). Ingen egen hero-markup.
+- Innehåll: `alt-svc-chapter`-sektioner (wireframe: Festspelning, Tilläggstjänster, FAQ, Kontakt).
+
 ## Service-sidor (Bröllop, Företag, Mingel)
 
 - Klass `alt-page--service-banner`, gemensam `alt-service-hero` i `build.py`.

@@ -18,8 +18,8 @@ def assert_layout(page, label: str) -> None:
         """() => {
           const main = document.querySelector('main#innehall');
           const hero = document.querySelector('.alt-service-hero');
-          const fest = document.querySelector('.alt-brollop-fest');
-          const faqList = document.querySelector('.alt-brollop-faq .alt-faq__list');
+          const fest = document.querySelector('.alt-svc-chapter--split');
+          const faqList = document.querySelector('.alt-faq__list');
           const text = main ? main.innerText : '';
           const stems = [...document.querySelectorAll('main img[src*="/gallery/halvfjorton-"]')]
             .map((img) => (img.getAttribute('src') || '').match(/halvfjorton-\\d+/)?.[0])
