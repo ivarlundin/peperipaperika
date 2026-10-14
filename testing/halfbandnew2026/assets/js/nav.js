@@ -62,7 +62,6 @@
       var lines = [
         "Namn: " + (data.get("name") || ""),
         "E-post: " + (data.get("email") || ""),
-        "Telefon: " + (data.get("phone") || ""),
         "Datum: " + (data.get("date") || ""),
         "Plats: " + (data.get("place") || ""),
         "Typ av tillställning: " + (data.get("type") || ""),
