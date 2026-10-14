@@ -216,10 +216,10 @@ def render_nav_list(current_path: str, prefix: str = "", include_home: bool = Tr
     return "\n".join(items)
 
 
-def alt_nav_list_markup() -> str:
-    items = [nav_services_dropdown("", "../", "alt-nav-tjanster")]
+def home_nav_list_markup() -> str:
+    items = [nav_services_dropdown("/", "", "nav-tjanster")]
     for href, label in (("/faq/", "FAQ"), ("/lyssna/", "Lyssna"), ("/kontakt/", "Kontakt")):
-        items.append(f'          <li><a href="{nav_path(href, "../")}">{label}</a></li>')
+        items.append(f'          <li><a href="{href}">{label}</a></li>')
     items.append(
         '          <li class="alt-nav__cta-mobile-wrap"><a class="alt-btn alt-btn--primary alt-nav__cta-mobile" '
         'href="#offert">Begär offert</a></li>'
@@ -227,10 +227,10 @@ def alt_nav_list_markup() -> str:
     return "\n".join(items)
 
 
-def alt_nav_block() -> str:
+def home_nav_block() -> str:
     return f"""      <nav class="alt-nav" aria-label="Huvudmeny">
         <ul class="alt-nav__links nav-list" id="alt-meny" data-nav-panel>
-{alt_nav_list_markup()}
+{home_nav_list_markup()}
         </ul>
         <a class="alt-btn alt-btn--primary alt-nav__cta-desktop" href="#offert">Begär offert</a>
       </nav>"""
@@ -440,103 +440,6 @@ def page(
 
 
 def write_pages():
-    page(
-        "/",
-        f"{BRAND_TITLE}",
-        "Halv Fjorton är ett coverband med åtta musiker och egen blåssektion. Bröllop, företagsfest och privatfest i Växjö, Småland, Skåne och Malmö. Bokning via halvfjorton@gmail.com.",
-        body=f"""    <section class="hero">
-      <div class="hero-grid">
-        <div class="hero-copy">
-          <p class="eyebrow">Coverband från Växjö</p>
-          <h1>Sveriges svängigaste coverband</h1>
-          <p class="lead">Åtta musiker med blås, soul och svenska klassiker. Bröllop, företag och fest i södra Sverige.</p>
-          <div class="actions">
-            <a class="btn btn-primary" href="/kontakt/">Hör av er</a>
-            <a class="btn btn-ghost" href="/lyssna/">Lyssna</a>
-          </div>
-        </div>
-        <figure class="hero-media">
-          <img src="/assets/img/hero.jpg" alt="Halv Fjorton på scen i blått ljus, sångare och blåssektion framför publiken">
-        </figure>
-      </div>
-    </section>
-
-    <section class="section" aria-labelledby="vad-ar" data-reveal>
-      <div class="wrap">
-        <h2 id="vad-ar">Vad är Halv Fjorton?</h2>
-        <div class="facts">
-          <div class="fact surface"><strong>8 musiker</strong><p>Komplett band med sång, rytmsektion och blås. Namnet kommer från att vi började som sju, halva fjorton.</p></div>
-          <div class="fact"><strong>Soul, funk och rock</strong><p>Stevie Wonder, Ray Charles, Earth, Wind &amp; Fire plus svenska klassiker som Björn Skifs och Tomas Ledin.</p></div>
-          <div class="fact"><strong>Egen blåssektion</strong><p>Trumpet, saxofon och kör som ger festen det extra svänget.</p></div>
-          <div class="fact"><strong>Södra Sverige</strong><p>Rötter i Växjö, medlemmar utspridda i södern. Bröllop, kickoffer och fester i hela regionen.</p></div>
-          <div class="fact"><strong>Bokning</strong><p>En kontakt från förfrågan till kvällen. Offert som PDF på begäran.</p></div>
-          <div class="fact"><strong>Ekonomisk förening</strong><p>Halv Fjorton EK. FÖR., org.nr 769641-5418. Tydlig motpart för par och företag.</p></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section-alt" aria-labelledby="erbjudanden" data-reveal>
-      <div class="wrap">
-        <h2 id="erbjudanden">Vanliga upplägg</h2>
-        <div class="offer-grid">
-          <article class="offer-feature">
-            <img src="/assets/img/fest.jpg" alt="Två bandmedlemmar i vita skjortor under en fest med konfetti, en med litet bastrumma">
-            <h3><a href="/brollop/">Bröllop</a></h3>
-            <p>Festen, vigseln, psalmer och komp till solist om ni vill. Upplägget skräddarsys efter er dag.</p>
-            <p><a href="/brollop/">Till bröllop</a></p>
-          </article>
-          <article>
-            <h3><a href="/mingel/">Mingel</a></h3>
-            <p>Från traditionell jazz till svenska klassiker. Passar konferensmiddagar, mottagningar och bröllopsmingel.</p>
-            <p><a href="/mingel/">Till mingel</a></p>
-          </article>
-          <article>
-            <h3><a href="/foretag/">Fest och företag</a></h3>
-            <p>Personalfest, kickoff, jubileum eller födelsedag. Gärna kombinerat med mingel tidigare under kvällen.</p>
-            <p><a href="/foretag/">Till företag</a></p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" aria-labelledby="kort-om" data-reveal>
-      <div class="wrap">
-        <h2 id="kort-om">Kort om oss</h2>
-        <p>Vi är Halv Fjorton, ett coverband på åtta medlemmar från södra Sverige. Grunden ligger i soul, funk och rock, med tillräcklig bredd för att hela rummet ska känna igen sig.</p>
-        <p>Här är ett litet smakprov. Mer finns på lyssna-sidan, bland annat <em>Signed Sealed Delivered</em> från 2025 och vår reel från 2022.</p>
-        <div class="embed" style="margin-top:1.4rem;border-radius:16px;overflow:hidden">
-          <iframe src="https://www.youtube-nocookie.com/embed/V2Nb8jMKUCk" title="Signed Sealed Delivered - Halv Fjorton 2025" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
-        </div>
-        <div class="actions">
-          <a class="btn btn-ghost" href="/om-oss/">Om oss</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section-alt" aria-labelledby="skraeddarsy" data-reveal>
-      <div class="wrap split">
-        <img src="/assets/img/stage.jpg" alt="Scen i lila ljus med mikrofonstativ och keyboard">
-        <div>
-          <h2 id="skraeddarsy">Tillsammans skräddarsyr vi ert event</h2>
-          <p>Utöver repertoaren tar vi fram speciallösningar när det behövs. Musik under middagen? Ett sambatåg genom lokalen? Hör av er så ser vi hur vi kan lägga upp kvällen.</p>
-          <p>{LOKAL_TEKNIK_COPY} Behöver ni teknik utöver det som ingår hjälper vi till via uthyrare vi redan samarbetar med.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" aria-labelledby="boka" data-reveal>
-      <div class="wrap">
-        <h2 id="boka">Vill ni att vi spelar på ert bröllop, fest eller annan tillställning?</h2>
-        <p>Berätta datum, plats och vad ni är ute efter. Vi återkommer med ett förslag.</p>
-        <div class="actions">
-          <a class="btn btn-primary" href="/kontakt/">Hör av er</a>
-          <a class="btn btn-ghost" href="/faq/">Vanliga frågor</a>
-        </div>
-      </div>
-    </section>
-""",
-    )
-
     wedding_video_block = video_facade(
         WEDDING_VIDEO_ID,
         WEDDING_VIDEO_TITLE,
@@ -1259,18 +1162,17 @@ Kärnregion: Växjö, Älmhult, Kalmar, Jönköping, Lund, Malmö, Helsingborg (
 - Kontakt: {SITE}/kontakt/
 - Bröllopsband Småland: {SITE}/brollopsband-smaland/
 - Coverband Skåne: {SITE}/coverband-skane-malmo/
-- Alternativ startsida (förhandsvisning): {SITE}/alt/
 """
     dest = OUT_ROOT / "llms.txt"
     dest.write_text(text, encoding="utf-8")
     print("wrote", dest.relative_to(OUT_ROOT))
 
 
-def write_alt_jsonld():
-    alt_path = OUT_ROOT / "alt/index.html"
-    html = alt_path.read_text(encoding="utf-8")
+def write_home_jsonld():
+    home_path = OUT_ROOT / "index.html"
+    html = home_path.read_text(encoding="utf-8")
     org = music_group_ld()
-    crumb = breadcrumb_ld([("/", "Hem"), ("/alt/", "Alternativ startsida")])
+    crumb = breadcrumb_ld([("/", "Hem")])
     block = f"""  <script type="application/ld+json">
   {org},
   {crumb}
@@ -1286,19 +1188,19 @@ def write_alt_jsonld():
         )
     else:
         html = html.replace(
-            '  <link rel="stylesheet" href="../assets/css/alt.css">\n',
-            f'  <link rel="stylesheet" href="../assets/css/alt.css">\n{block}',
+            '  <link rel="stylesheet" href="/assets/css/alt.css">\n',
+            f'  <link rel="stylesheet" href="/assets/css/alt.css">\n{block}',
         )
-    alt_path.write_text(html, encoding="utf-8")
-    print("wrote", alt_path.relative_to(OUT_ROOT), "(json-ld)")
+    home_path.write_text(html, encoding="utf-8")
+    print("wrote", home_path.relative_to(OUT_ROOT), "(json-ld)")
 
 
-def patch_alt_page():
-    alt_path = OUT_ROOT / "alt/index.html"
-    html = alt_path.read_text(encoding="utf-8")
+def patch_home_page():
+    home_path = OUT_ROOT / "index.html"
+    html = home_path.read_text(encoding="utf-8")
     logo = "\n".join("        " + line for line in brand_logo_markup().splitlines())
     html = re.sub(
-        r'<img src="\.\./assets/img/logo-mark\.png"[^>]*>\s*',
+        r'<img src="/assets/img/logo-mark\.png"[^>]*>\s*',
         logo + "\n",
         html,
     )
@@ -1309,22 +1211,24 @@ def patch_alt_page():
         count=1,
         flags=re.DOTALL,
     )
-    html = html.replace(
-        '<a class="alt-brand brand" href="../">',
-        '<a class="alt-brand brand" href="../" aria-label="Halv Fjorton">',
-    )
+    if 'aria-label="Halv Fjorton"' not in html.split("<header", 1)[-1][:800]:
+        html = html.replace(
+            '<a class="alt-brand brand" href="/">',
+            '<a class="alt-brand brand" href="/" aria-label="Halv Fjorton">',
+            1,
+        )
     html = html.replace(
         '<span class="alt-facts__placeholder">Grundat [ÅR - fyll i]</span>',
         "<span>Grundat 2018</span>",
     )
-    if 'src="../assets/js/alt-nav.js"' not in html:
+    if 'src="/assets/js/alt-nav.js"' not in html:
         html = html.replace(
-            '  <script src="../assets/js/nav.js"></script>',
-            '  <script src="../assets/js/nav.js"></script>\n  <script src="../assets/js/alt-nav.js" defer></script>',
+            '  <script src="/assets/js/nav.js"></script>',
+            '  <script src="/assets/js/nav.js"></script>\n  <script src="/assets/js/alt-nav.js" defer></script>',
         )
     html = re.sub(
         r'^[ \t]*<nav class="alt-nav" aria-label="Huvudmeny">[\s\S]*?</nav>',
-        alt_nav_block(),
+        home_nav_block(),
         html,
         count=1,
         flags=re.MULTILINE,
@@ -1353,8 +1257,13 @@ def patch_alt_page():
     )
     if 'tally-embed.js' not in html:
         html = html.replace(
-            '  <script src="../assets/js/alt-nav.js" defer></script>',
-            '  <script src="../assets/js/alt-nav.js" defer></script>\n  <script src="../assets/js/tally-embed.js" defer></script>',
+            '  <script src="/assets/js/alt-nav.js" defer></script>',
+            '  <script src="/assets/js/alt-nav.js" defer></script>\n  <script src="/assets/js/tally-embed.js" defer></script>',
+        )
+    if 'alt-hero-typewriter.js' not in html:
+        html = html.replace(
+            '  <script src="/assets/js/alt-nav.js" defer></script>',
+            '  <script src="/assets/js/alt-nav.js" defer></script>\n  <script src="/assets/js/alt-hero-typewriter.js" defer></script>',
         )
     toggle = nav_toggle_markup("alt-meny").replace("nav-toggle", "nav-toggle alt-nav-toggle")
     html = re.sub(
@@ -1372,17 +1281,17 @@ def patch_alt_page():
         )
     html = re.sub(
         r"  <link rel=\"preconnect\" href=\"https://fonts\.googleapis\.com\">[^\n]*\n(?:  <link rel=\"preconnect\" href=\"https://fonts\.gstatic\.com\" crossorigin>\n)?  <link href=\"https://fonts\.googleapis\.com/css2[^\"]*\" rel=\"stylesheet\">\n",
-        font_preloads("../assets") + "\n",
+        font_preloads("/assets") + "\n",
         html,
         count=1,
     )
     if "InterVariable.woff2" not in html:
         html = html.replace(
-            '  <link rel="stylesheet" href="../assets/css/alt.css">\n',
-            font_preloads("../assets") + '\n  <link rel="stylesheet" href="../assets/css/alt.css">\n',
+            '  <link rel="stylesheet" href="/assets/css/alt.css">\n',
+            font_preloads("/assets") + '\n  <link rel="stylesheet" href="/assets/css/alt.css">\n',
         )
-    alt_path.write_text(html, encoding="utf-8")
-    print("wrote", alt_path.relative_to(OUT_ROOT), "(alt patches)")
+    home_path.write_text(html, encoding="utf-8")
+    print("wrote", home_path.relative_to(OUT_ROOT), "(home patches)")
 
 
 def normalize_subpath(subpath: str) -> str:
@@ -1401,8 +1310,7 @@ def prepare_output_directory(target: Path) -> None:
         shutil.rmtree(target)
     target.mkdir(parents=True)
     shutil.copytree(ROOT / "assets", target / "assets")
-    (target / "alt").mkdir(parents=True, exist_ok=True)
-    shutil.copy2(ROOT / "alt/index.html", target / "alt/index.html")
+    shutil.copy2(ROOT / "home/index.html", target / "index.html")
     for name in ("robots.txt", ".nojekyll"):
         src = ROOT / name
         if src.exists():
@@ -1440,11 +1348,14 @@ def run_build(output_dir: Path | None = None, subpath: str = "") -> None:
     OUT_ROOT = output_dir.resolve() if output_dir else ROOT
     if output_dir and OUT_ROOT != ROOT.resolve():
         prepare_output_directory(OUT_ROOT)
+    else:
+        OUT_ROOT.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(ROOT / "home/index.html", OUT_ROOT / "index.html")
     write_pages()
     write_sitemap()
     write_llms_txt()
-    write_alt_jsonld()
-    patch_alt_page()
+    write_home_jsonld()
+    patch_home_page()
     rewrite_root_relative_urls(OUT_ROOT, subpath)
 
 
@@ -1454,7 +1365,7 @@ if __name__ == "__main__":
         "--output-dir",
         type=Path,
         default=None,
-        help="Write generated site to this directory (copies assets/ and alt/ source first).",
+        help="Write generated site to this directory (copies assets/ and home/ source first).",
     )
     parser.add_argument(
         "--subpath",

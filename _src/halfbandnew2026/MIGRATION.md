@@ -13,7 +13,7 @@ peperipaperika/
 │   └── halfbandnew2026/     # ← edit here (this tree)
 │       ├── scripts/build.py
 │       ├── assets/
-│       ├── alt/
+│       ├── home/
 │       └── …
 └── testing/
     └── halfbandnew2026/     # ← build output only (do not edit by hand)
@@ -35,7 +35,7 @@ This refreshes `testing/halfbandnew2026/` and rewrites root-relative URLs (`/ass
 
 ## Edit workflow
 
-1. Change copy or structure in **`scripts/build.py`** (most pages) and/or **`alt/index.html`** (alternative homepage).
+1. Change copy or structure in **`scripts/build.py`** (most pages) and/or **`home/index.html`** (startsida).
 2. Edit **`assets/`** (CSS, JS, images, fonts, `assets/schema/organization.json`).
 3. Run the build command above.
 4. Commit source under `_src/halfbandnew2026/` and output under `testing/halfbandnew2026/`.

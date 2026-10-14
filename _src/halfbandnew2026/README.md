@@ -14,7 +14,7 @@ python3 scripts/build.py \
 
 ## Workflow
 
-1. Change copy in `scripts/build.py`, layout/CSS/JS/images under `assets/`, or `alt/index.html`.
+1. Change copy in `scripts/build.py`, layout/CSS/JS/images under `assets/`, or `home/index.html`.
 2. Run the build command above.
 3. Commit **both** this source tree (`_src/halfbandnew2026/`) and `testing/halfbandnew2026/`.
 
