@@ -49,6 +49,28 @@ body.alt-page > main {
   width: 100%;
 }
 
+.alt-page img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Fixed-ratio frames: wrapper sets aspect-ratio; img fills with cover (no grid stretch). */
+.alt-page :is(
+    .alt-offer-card__media,
+    .alt-gallery__card,
+    .alt-hero__slide,
+    .video-facade,
+    .embed
+  )
+  > img,
+.alt-page .video-facade__play > img {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+}
+
 .alt-page::before {
   display: none;
 }
@@ -1325,11 +1347,18 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   color: var(--alt-ink);
 }
 
-.alt-offer-card__img {
+.alt-offer-card__media {
   flex: 0 0 auto;
   width: 100%;
   aspect-ratio: 3 / 2;
-  min-height: 0;
+  overflow: hidden;
+  align-self: start;
+}
+
+.alt-offer-card__img {
+  width: 100%;
+  height: 100%;
+  max-width: none;
   object-fit: cover;
 }
 
@@ -1490,10 +1519,6 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 }
 
 .alt-gallery__card img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
   object-position: center;
   filter: grayscale(1);
 }
@@ -1567,9 +1592,6 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
     height: 5.25rem;
   }
 
-  .alt-gallery__card img {
-    min-height: 100%;
-  }
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -2063,32 +2085,44 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
   .alt-offers__grid {
     grid-template-columns: 1fr;
-    gap: 0.75rem;
+    gap: 1.1rem;
   }
 
   .alt-offer-card {
     display: grid;
     grid-template-columns: minmax(0, 38%) minmax(0, 1fr);
     gap: 0.85rem;
-    align-items: center;
+    align-items: start;
     min-height: 0;
     height: auto;
-    padding: 0.7rem;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    overflow: visible;
   }
 
-  .alt-offer-card__img {
+  .alt-offer-card:hover {
+    transform: none;
+    border-color: transparent;
+  }
+
+  .alt-offer-card__media {
     grid-column: 1;
     grid-row: 1;
     width: 100%;
     aspect-ratio: 4 / 3;
-    border-radius: calc(var(--alt-radius) - 6px);
+    border-radius: 8px;
+    align-self: start;
   }
 
   .alt-offer-card__body {
     grid-column: 2;
+    grid-row: 1;
     flex: none;
-    padding: 0.15rem 0.35rem 0.15rem 0;
-    justify-content: center;
+    padding: 0;
+    justify-content: flex-start;
+    align-self: start;
   }
 
   .alt-offer-card h2 {
