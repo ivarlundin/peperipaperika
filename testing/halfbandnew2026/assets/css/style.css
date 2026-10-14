@@ -1,9 +1,11 @@
+@import url("fonts.css");
+
 :root {
   --bg: #171310;
   --bg-2: #1f1915;
   --bg-3: #2a221c;
   --ink: #f3ebe3;
-  --muted: #c3b2a3;
+  --muted: #cbb9ab;
   --accent: #d9a45a;
   --accent-ink: #1c140c;
   --line: rgba(243, 235, 227, 0.12);
@@ -11,8 +13,9 @@
   --radius: 16px;
   --radius-sm: 8px;
   --max: 1180px;
-  --font-display: "Syne", "Segoe UI", sans-serif;
-  --font-sans: "Outfit", "Segoe UI", sans-serif;
+  --font-display: "Outfit", "Segoe UI", sans-serif;
+  --font-sans: "Inter", "Segoe UI", sans-serif;
+  --font-body-weight: 330;
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
   --header-h: 72px;
 }
@@ -34,7 +37,7 @@ body {
   color: var(--ink);
   font-family: var(--font-sans);
   font-size: 1.125rem;
-  font-weight: 400;
+  font-weight: var(--font-body-weight);
   line-height: 1.65;
 }
 
@@ -88,7 +91,7 @@ a:hover {
 .site-header {
   position: sticky;
   top: 0;
-  z-index: 40;
+  z-index: 50;
   height: var(--header-h);
   background: rgba(23, 19, 16, 0.88);
   backdrop-filter: blur(16px) saturate(140%);
@@ -141,23 +144,81 @@ a:hover {
 
 .nav-toggle {
   display: none;
+  position: relative;
+  z-index: 52;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
   background: transparent;
   color: var(--ink);
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 0.4rem 0.85rem;
-  font: inherit;
-  font-size: 0.95rem;
   cursor: pointer;
+  flex-shrink: 0;
+}
+
+.nav-toggle__bars {
+  display: block;
+  position: relative;
+  width: 22px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 1px;
+  transition: background 0.2s var(--ease);
+}
+
+.nav-toggle__bars::before,
+.nav-toggle__bars::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 22px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 1px;
+  transition: transform 0.25s var(--ease), top 0.25s var(--ease);
+}
+
+.nav-toggle__bars::before {
+  top: -7px;
+}
+
+.nav-toggle__bars::after {
+  top: 7px;
+}
+
+.site-header.is-open .nav-toggle__bars {
+  background: transparent;
+}
+
+.site-header.is-open .nav-toggle__bars::before {
+  top: 0;
+  transform: rotate(45deg);
+}
+
+.site-header.is-open .nav-toggle__bars::after {
+  top: 0;
+  transform: rotate(-45deg);
+}
+
+.nav-backdrop {
+  display: none;
 }
 
 .nav-list {
   display: flex;
   flex-wrap: nowrap;
+  align-items: center;
   gap: 0.15rem 0.95rem;
   list-style: none;
   margin: 0;
   padding: 0;
+}
+
+.nav-list > li {
+  display: flex;
+  align-items: center;
 }
 
 .nav-list a {
@@ -174,7 +235,82 @@ a:hover {
 }
 
 .nav-list a[aria-current="page"] {
-  box-shadow: inset 0 -2px 0 var(--accent);
+  box-shadow: inset 0 -2px 0 var(--ink);
+}
+
+.nav-item--dropdown {
+  position: relative;
+}
+
+.nav-dropdown__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.15rem 0;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.nav-dropdown__trigger:hover,
+.nav-item--dropdown.is-open .nav-dropdown__trigger {
+  color: var(--ink);
+}
+
+.nav-dropdown__chevron {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg) translateY(-1px);
+  transition: transform 0.2s var(--ease);
+}
+
+.nav-item--dropdown.is-open .nav-dropdown__chevron {
+  transform: rotate(-135deg) translateY(1px);
+}
+
+.nav-dropdown__menu {
+  position: absolute;
+  top: calc(100% + 0.65rem);
+  left: 0;
+  z-index: 60;
+  min-width: 16.5rem;
+  margin: 0;
+  padding: 0.45rem 0;
+  list-style: none;
+  background: #0c0a09;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition: opacity 0.2s var(--ease), transform 0.2s var(--ease), visibility 0.2s;
+}
+
+.nav-item--dropdown.is-open .nav-dropdown__menu {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+
+.nav-dropdown__menu a {
+  display: block;
+  padding: 0.55rem 1rem;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+.nav-dropdown__menu a:hover,
+.nav-dropdown__menu a[aria-current="page"] {
+  color: var(--ink);
+  background: rgba(243, 235, 227, 0.06);
+  box-shadow: none;
 }
 
 .wrap,
@@ -632,27 +768,96 @@ textarea {
   }
 }
 
-@media (max-width: 1080px) {
+@media (max-width: 900px) {
+  .header-inner {
+    position: relative;
+  }
+
   .nav-toggle {
     display: inline-flex;
   }
 
+  .nav-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 46;
+    background: rgba(0, 0, 0, 0.55);
+  }
+
+  .nav-backdrop[hidden] {
+    display: none;
+  }
+
   .nav-list {
     display: none;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: var(--header-h);
-    background: #1a1512;
-    border-bottom: 1px solid var(--line);
-    padding: 0.9rem 1.2rem 1.15rem;
+    position: fixed;
+    inset: 0;
+    z-index: 48;
     flex-direction: column;
-    flex-wrap: wrap;
-    gap: 0.55rem;
+    align-items: stretch;
+    gap: 0;
+    margin: 0;
+    padding: calc(var(--header-h) + 1.75rem) 1.5rem 2rem;
+    background: rgba(10, 8, 7, 0.97);
+    overflow-y: auto;
   }
 
   .site-header.is-open .nav-list {
     display: flex;
+  }
+
+  .nav-list > li {
+    display: block;
+    width: 100%;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .nav-list > li > a,
+  .nav-dropdown__trigger {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 1rem 0;
+    font-size: clamp(1.65rem, 5.5vw, 2.15rem);
+    font-weight: 600;
+    color: var(--ink);
+    text-align: left;
+  }
+
+  .nav-item--dropdown {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .nav-dropdown__menu {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    display: none;
+    min-width: 0;
+    padding: 0 0 0.75rem;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+  }
+
+  .nav-item--dropdown.is-open .nav-dropdown__menu {
+    display: block;
+  }
+
+  .nav-dropdown__menu a {
+    padding: 0.65rem 0 0.65rem 0.25rem;
+    font-size: clamp(1.15rem, 4vw, 1.45rem);
+    font-weight: 500;
+    color: var(--muted);
+  }
+
+  .nav-dropdown__menu a:hover {
+    color: var(--ink);
+    background: transparent;
   }
 
   body.nav-open {
