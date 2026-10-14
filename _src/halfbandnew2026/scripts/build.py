@@ -554,6 +554,56 @@ def write_redirect_page(path: str, target: str, link_label: str = "Lyssna") -> N
     print("wrote", dest.relative_to(OUT_ROOT), "(redirect)")
 
 
+SERVICE_OFFER_HERO_IMAGES = {
+    "brollop": (
+        "halvfjorton-03",
+        "Fest med guldkonfetti och trummor bland gäster vid bord",
+        2400,
+        1600,
+        "center",
+    ),
+    "foretag": (
+        "halvfjorton-01",
+        "Band på stor scen med varmt ljus och publik i festsal",
+        2400,
+        1600,
+        "center",
+    ),
+    "mingel": (
+        "halvfjorton-04",
+        "Sångare och band på rustik träscen med professionellt scenljus",
+        1280,
+        853,
+        "center",
+    ),
+}
+
+
+def service_hero_banner(service_key: str, h1: str, intro_html: str) -> str:
+    stem, alt, width, height, _position = SERVICE_OFFER_HERO_IMAGES[service_key]
+    base = f"/assets/img/gallery/{stem}"
+    return f"""    <header class="alt-service-hero" data-reveal>
+      <div class="alt-service-hero__media" aria-hidden="true">
+        <img
+          class="alt-service-hero__img"
+          src="{base}-800w.webp"
+          srcset="{base}-480w.webp 480w, {base}-800w.webp 800w, {base}-1200w.webp 1200w, {base}-1920w.webp 1920w"
+          sizes="100vw"
+          alt="{esc(alt)}"
+          width="{width}"
+          height="{height}"
+          loading="eager"
+          decoding="async"
+        >
+      </div>
+      <div class="alt-service-hero__shade" aria-hidden="true"></div>
+      <div class="alt-service-hero__copy">
+        <h1>{esc(h1)}</h1>
+{intro_html}
+      </div>
+    </header>"""
+
+
 def wedding_figure(
     stem: str,
     alt: str,
@@ -579,16 +629,16 @@ def wedding_figure(
 
 
 def wedding_page_body(wedding_video_block: str) -> str:
-    return f"""    <header class="alt-wedding-hero" data-reveal>
-      <div class="alt-wedding-hero__media" aria-hidden="true">
-{wedding_figure("halvfjorton-01", "Hela bandet på scen i festsal med publik", "100vw", loading="eager")}
-      </div>
-      <div class="alt-wedding-hero__shade" aria-hidden="true"></div>
-      <div class="alt-wedding-wrap alt-wedding-hero__copy">
-        <h1>Bröllopsband med helband, blås och dans</h1>
-{aeo_answer("Halv Fjorton är ett åttamannaband från Växjö med komplett liveband och egen blåssektion. Repertoaren går från soul, funk och rock till schlager och popklassiker, och vi håller igång dansgolvet när festen tar fart.")}
-      </div>
-    </header>
+    hero = service_hero_banner(
+        "brollop",
+        "Bröllopsband med helband, blås och dans",
+        aeo_answer(
+            "Halv Fjorton är ett åttamannaband från Växjö med komplett liveband och egen blåssektion. "
+            "Repertoaren går från soul, funk och rock till schlager och popklassiker, och vi håller igång "
+            "dansgolvet när festen tar fart."
+        ),
+    )
+    return f"""{hero}
     <section class="alt-wedding-band section" data-reveal>
       <div class="alt-wedding-wrap alt-wedding-split alt-wedding-split--text-first">
         <div class="alt-wedding-split__text">
@@ -975,7 +1025,17 @@ def write_pages():
             wedding_video_ld(),
         ],
         body=wedding_page_body(wedding_video_block),
-        page_class="alt-page--wedding",
+        page_class="alt-page--wedding alt-page--service-banner",
+    )
+
+    foretag_hero = service_hero_banner(
+        "foretag",
+        "Personalfest, kickoff och jubileum",
+        aeo_answer(
+            "Halv Fjorton spelar på företagsfester i Skåne och Småland med åtta musiker och egen blåssektion. "
+            "Vanligt är två set festmusik, ofta efter mingel."
+        )
+        + '        <p class="lead">Vi planerar kvällen med er: mingel, tal, dans. Artistkomp och särskilda musikmoment går att boka.</p>\n',
     )
 
     page(
@@ -990,13 +1050,8 @@ def write_pages():
                 "/foretag/",
             )
         ],
-        body=f"""    <header class="page-hero">
-      <div class="page-hero-copy">
-        <h1>Personalfest, kickoff och jubileum</h1>
-{aeo_answer("Halv Fjorton spelar på företagsfester i Skåne och Småland med åtta musiker och egen blåssektion. Vanligt är två set festmusik, ofta efter mingel.")}
-        <p class="lead">Vi planerar kvällen med er: mingel, tal, dans. Artistkomp och särskilda musikmoment går att boka.</p>
-      </div>
-    </header>
+        page_class="alt-page--service-banner",
+        body=f"""{foretag_hero}
     <section class="section">
       <div class="wrap">
         <h2>När företag hör av sig</h2>
@@ -1063,13 +1118,13 @@ def write_pages():
                 "/mingel/",
             )
         ],
-        body="""    <header class="page-hero">
-      <div class="page-hero-copy">
-        <h1>Mingelmusik som håller tonen låg</h1>
-        <p class="lead">Vi spelar mingel med blandad repertoar, från jazz till svenska klassiker. Det passar när gästerna ska kunna prata och ändå höra att det är livemusik.</p>
-      </div>
-    </header>
-    <section class="section">
+        page_class="alt-page--service-banner",
+        body=service_hero_banner(
+            "mingel",
+            "Mingelmusik som håller tonen låg",
+            '        <p class="lead">Vi spelar mingel med blandad repertoar, från jazz till svenska klassiker. Det passar när gästerna ska kunna prata och ändå höra att det är livemusik.</p>\n',
+        )
+        + """    <section class="section">
       <div class="wrap grid-2">
         <div>
           <h2>När mingel är rätt val</h2>
