@@ -3,6 +3,7 @@
 Halv Fjorton QA gate — run before every push (see QA.md).
 
   python3 qa_check.py              # build + local full matrix
+  python3 qa_check.py --quick --pages /brollop/ /foretag/  # fast subset (Chromium)
   python3 qa_check.py --live       # after deploy, against labs URL
   python3 qa_check.py --skip-build # local only, existing testing output
 """
@@ -41,6 +42,7 @@ SUBPATH = "/testing/halfbandnew2026"
 LOCAL_PORT = 8789
 LIVE_BASE = "https://labs.ivarlundin.se/testing/halfbandnew2026"
 SCREENSHOT_DIR = Path("/opt/cursor/artifacts/qa-screenshots")
+QUICK_WIDTHS = (390, 1280)
 
 MENU_TOGGLE = "[data-nav-toggle]"
 MENU_CLOSE = "[data-nav-close]"
@@ -49,6 +51,32 @@ MENU_MOTION_MS = 400
 
 class QAFail(Exception):
     pass
+
+
+def normalize_page_paths(raw: list[str], allowed: set[str]) -> list[str]:
+    """Map CLI page tokens to canonical site paths (e.g. brollop -> /brollop/)."""
+    out: list[str] = []
+    for token in raw:
+        t = token.strip()
+        if not t:
+            continue
+        if t.startswith("http"):
+            raise QAFail(f"invalid --pages entry (use paths like /brollop/): {token}")
+        if t.endswith("index.html"):
+            t = t[: -len("index.html")]
+        if not t.startswith("/"):
+            t = "/" + t
+        if not t.endswith("/"):
+            if "." in t.rsplit("/", 1)[-1]:
+                raise QAFail(f"--pages must be site paths, not files: {token}")
+            t = t + "/"
+        if t not in allowed:
+            raise QAFail(f"unknown page {t!r} (not in testing build)")
+        if t not in out:
+            out.append(t)
+    if not out:
+        raise QAFail("--pages: no valid paths")
+    return out
 
 
 def run_build() -> None:
@@ -220,6 +248,7 @@ def run_matrix(
     paths: list[str],
     browsers: tuple[str, ...],
     screenshot: bool,
+    widths: tuple[int, ...] = WIDTHS,
 ) -> list[str]:
     failures: list[str] = []
     steps_run: list[str] = []
@@ -229,7 +258,7 @@ def run_matrix(
             launch = p.chromium.launch() if browser_name == "chromium" else p.webkit.launch()
             browser = launch
             try:
-                for width in WIDTHS:
+                for width in widths:
                     height = 900 if width >= 768 else 844
                     mobile = width <= MOBILE_MENU_MAX_WIDTH
                     ctx = browser.new_context(
@@ -323,11 +352,29 @@ def run_matrix(
 def main() -> int:
     parser = argparse.ArgumentParser(description="Halv Fjorton QA (binding — see QA.md)")
     parser.add_argument("--skip-build", action="store_true")
+    parser.add_argument(
+        "--quick",
+        action="store_true",
+        help="Fast mode: Chromium only, widths 390+1280, same state/failure rules (requires --pages)",
+    )
+    parser.add_argument(
+        "--pages",
+        nargs="+",
+        metavar="PATH",
+        help="Site paths to check (e.g. /brollop/ brollop foretag). Required with --quick.",
+    )
     parser.add_argument("--live", action="store_true", help="Run against labs after deploy")
     parser.add_argument("--live-base", default=LIVE_BASE)
     parser.add_argument("--wait-deploy", type=int, default=240, help="Seconds to wait for live==local")
     parser.add_argument("--no-screenshots", action="store_true")
     args = parser.parse_args()
+
+    if args.quick and not args.pages:
+        parser.error("--quick requires --pages (one or more paths, e.g. /brollop/ /foretag/)")
+    if args.pages and not args.quick:
+        parser.error("--pages is only valid with --quick")
+    if args.quick and args.live:
+        parser.error("--quick does not support --live (confirm push landed separately; see QA.md)")
 
     if not args.skip_build and not args.live:
         print("QA: build + build-time asserts…")
@@ -337,8 +384,24 @@ def main() -> int:
         print("QA: missing testing output", file=sys.stderr)
         return 1
 
-    paths = [p for p in site_root_paths(TESTING_OUT) if p not in {"/repertoar/"}]
-    print(f"QA: {len(paths)} pages × {len(WIDTHS)} widths × chromium+webkit")
+    all_paths = [p for p in site_root_paths(TESTING_OUT) if p not in {"/repertoar/"}]
+    allowed = set(all_paths)
+
+    if args.quick:
+        paths = normalize_page_paths(args.pages, allowed)
+        browsers: tuple[str, ...] = ("chromium",)
+        widths = QUICK_WIDTHS
+        screenshot = False
+        print(
+            f"QA (quick): {len(paths)} page(s) × {len(widths)} widths × chromium "
+            f"(top/scrolled, menu closed/open on mobile)"
+        )
+    else:
+        paths = all_paths
+        browsers = ("chromium", "webkit")
+        widths = WIDTHS
+        screenshot = not args.no_screenshots
+        print(f"QA: {len(paths)} pages × {len(widths)} widths × chromium+webkit")
 
     if args.live:
         print(f"QA: waiting for live deploy ({args.live_base})…")
@@ -355,17 +418,20 @@ def main() -> int:
         )
         time.sleep(0.4)
 
+    t0 = time.perf_counter()
     try:
         failures = run_matrix(
             base,
             paths,
-            ("chromium", "webkit"),
-            screenshot=not args.no_screenshots,
+            browsers,
+            screenshot=screenshot,
+            widths=widths,
         )
     finally:
         if server:
             server.terminate()
             server.wait(timeout=5)
+    elapsed = time.perf_counter() - t0
 
     if failures:
         print(f"QA FAILED ({len(failures)} issues)", file=sys.stderr)
@@ -373,11 +439,19 @@ def main() -> int:
             print(f"  - {line}", file=sys.stderr)
         if len(failures) > 40:
             print(f"  … and {len(failures) - 40} more", file=sys.stderr)
+        if args.quick:
+            print(f"QA: quick run time {elapsed:.1f}s", file=sys.stderr)
         return 1
 
     phase = "live" if args.live else "local"
-    print(f"OK: qa_check passed ({phase}, {len(paths)} pages, chromium+webkit, widths {list(WIDTHS)})")
-    if not args.no_screenshots:
+    if args.quick:
+        print(
+            f"OK: qa_check passed (quick, {phase}, {len(paths)} page(s), chromium, "
+            f"widths {list(widths)}, {elapsed:.1f}s)"
+        )
+    else:
+        print(f"OK: qa_check passed ({phase}, {len(paths)} pages, chromium+webkit, widths {list(widths)})")
+    if screenshot:
         print(f"QA: full-page screenshots in {SCREENSHOT_DIR} (internal review)")
     return 0
 

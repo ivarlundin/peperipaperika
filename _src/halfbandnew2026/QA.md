@@ -1,24 +1,46 @@
 # QA (bindande för alla agenter)
 
-Alla ändringar i `_src/halfbandnew2026/` som ska pushas till `main` **måste** passera `qa_check.py` lokalt **före push** och mot **live** **efter deploy**. Rapportera inte “klart” förrän båda är gröna.
+Alla ändringar i `_src/halfbandnew2026/` som ska pushas till `main` **måste** passera `qa_check.py` lokalt **före push**. Vid **milestones** eller när Ivar ber om stor granskning: full matris + live efter deploy. Vid **små, fokuserade** ändringar: snabb läge + bekräfta att pushen landade (ingen full live-matris).
 
 ## Kommandon
 
 Från `_src/halfbandnew2026/`:
 
 ```bash
-# Före varje push (bygger testing/halfbandnew2026/)
+# Milestone / stor review (bygger testing/halfbandnew2026/)
 python3 qa_check.py
 
-# Efter push, när GitHub Pages har deployat labs
+# Små ändringar — endast ändrade sidor, mål <30 s
+python3 qa_check.py --quick --pages /brollop/ /foretag/
+python3 qa_check.py --quick --skip-build --pages brollop mingel
+
+# Efter push (milestones): när GitHub Pages har deployat labs
 python3 qa_check.py --live --skip-build
 ```
 
 `--skip-build` på live-körningen använder redan byggd `testing/` som referens för fingerprint.
 
+### Snabb vs full
+
+| Situation | Före push | Efter push |
+|-----------|-----------|------------|
+| Små ändringar (t.ex. en tjänstesida, CSS, copy) | `--quick --pages …` | Bekräfta att `main` på origin har din commit (t.ex. `git fetch origin main && git rev-parse HEAD origin/main`). **Kör inte** `--live` om Ivar inte bad om stor review. |
+| Milestone / Ivar ber om full QA | `python3 qa_check.py` (ev. `--no-screenshots` lokalt) | `python3 qa_check.py --live --skip-build` |
+
 ## Vad som körs
 
-### 1. Matris (alla sidor)
+### 1. Snabb läge (`--quick --pages`)
+
+- Endast angivna sidor (`/brollop/`, `foretag`, …).
+- **Chromium**, bredder **390** och **1280**.
+- Samma tillstånd och **samma fail-regler** som full matris:
+  - top / scrollad (~35 %), meny stängd;
+  - på mobil (390): top / scrollad, meny öppen (om hamburger finns).
+- Bygger `testing/` som vanligt om inte `--skip-build`.
+- Inga fullpage-screenshots (snabbare).
+- Rapportera **uppmätt körtid** i slutraden.
+
+### 2. Matris (alla sidor)
 
 Varje **byggd HTML-sida** (inkl. redirects och inner pages), i **Chromium och WebKit**, bredder **360, 390, 768, 1280, 1440**, tillstånd:
 
@@ -51,9 +73,13 @@ Bygget kör dessutom asserts i `scripts/build.py` (dash, eyebrows, offert bullet
 
 ### 3. Efter push (live)
 
+**Milestones / full review:**
+
 1. Pusha **små, fokuserade** commits (endast uppgiften).
 2. Kör `python3 qa_check.py --live --skip-build` (väntar upp till ~4 min på att live HTML matchar lokal fingerprint på stickprov).
 3. Använd cache-bust (`?qa=…`) på varje sidladdning i QA.
+
+**Små ändringar:** steg 2 utelämnas. Bekräfta bara att pushen landade på `origin/main`.
 
 Labs: `https://labs.ivarlundin.se/testing/halfbandnew2026/`
 
@@ -63,9 +89,9 @@ Fullpage-screenshots (WebKit 390 px, alla sidor) sparas under `/opt/cursor/artif
 
 Steg-logg: `qa-screenshots/qa-steps.json`.
 
-### 5. Regression varje gång
+### 5. Regression
 
-Även vid små ändringar: matrisen täcker **meny, servicebanner, footer** på alla sidor. Ändra aldrig mer än uppgiften kräver.
+Vid **quick**: regression på **ändrade sidor** (meny/banner/footer på just dessa URL:er). Vid **full matris**: alla sidor. Ändra aldrig mer än uppgiften kräver.
 
 ### 6. Rapport till Ivar
 
@@ -88,8 +114,8 @@ Alltid ange:
 ## Workflow
 
 1. Ändra källa under `_src/halfbandnew2026/`.
-2. `python3 qa_check.py` → måste vara grön.
+2. QA före push: `--quick --pages …` (små ändringar) **eller** full `python3 qa_check.py` (milestone).
 3. Committa `_src/` + `testing/halfbandnew2026/` om labs ska uppdateras.
 4. Push `main`.
-5. `python3 qa_check.py --live --skip-build` → måste vara grön.
-6. Rapportera hash + QA-steg.
+5. Efter push: full `python3 qa_check.py --live --skip-build` **eller** (små ändringar) verifiera remote-hash.
+6. Rapportera hash + QA-steg (inkl. quick-körtid om relevant).
