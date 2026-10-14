@@ -1104,19 +1104,20 @@ def write_pages():
                 "/kompband/",
             ),
         ],
+        extra_scripts='  <script src="/assets/js/alt-faq-accordion.js" defer></script>\n',
         body=f"""    <header class="page-hero compact">
       <div class="page-hero-copy">
         <h1>Vanliga frågor</h1>
         <p class="lead">Korta svar för par, företag och eventbolag.</p>
+        <p class="page-hero__actions">
+          <a class="alt-btn alt-btn--ghost" href="/kontakt/">Frågor? Kontakta oss</a>
+        </p>
       </div>
     </header>
     <section class="section">
       <div class="wrap alt-faq">
         <div class="alt-faq__list" data-faq>
 {faq_items}
-        </div>
-        <div class="alt-faq__cta">
-          <a class="alt-btn alt-btn--ghost" href="/kontakt/">Frågor? Kontakta oss</a>
         </div>
       </div>
     </section>

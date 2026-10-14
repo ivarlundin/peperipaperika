@@ -1755,11 +1755,11 @@ body.alt-page.nav-open {
   border-bottom: 2px solid currentColor;
   transform: rotate(45deg);
   opacity: 0.85;
-  transition: transform 0.2s var(--alt-ease);
+  transition: transform 280ms var(--alt-ease);
 }
 
 .alt-page--inner .alt-faq__item[open] .alt-faq__question::after {
-  transform: rotate(-135deg);
+  transform: rotate(225deg);
   margin-top: 0.35rem;
 }
 
@@ -1777,8 +1777,43 @@ body.alt-page.nav-open {
   max-width: 52ch;
 }
 
-.alt-page--inner .alt-faq__cta {
-  margin-top: clamp(1.75rem, 4vw, 2.25rem);
+.alt-page--inner .page-hero-copy .page-hero__actions {
+  margin: 1.15rem 0 0;
+}
+
+@supports (interpolate-size: allow-keywords) {
+  .alt-faq--css-motion .alt-faq__item {
+    interpolate-size: allow-keywords;
+  }
+
+  .alt-faq--css-motion .alt-faq__item::details-content {
+    overflow: hidden;
+    height: 0;
+    opacity: 0;
+    transition:
+      height 280ms var(--alt-ease),
+      opacity 280ms var(--alt-ease),
+      content-visibility 280ms allow-discrete;
+  }
+
+  .alt-faq--css-motion .alt-faq__item[open]::details-content {
+    height: auto;
+    opacity: 1;
+  }
+}
+
+.alt-faq__item--animating .alt-faq__answer {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .alt-page--inner .alt-faq__question::after {
+    transition: none;
+  }
+
+  .alt-faq--css-motion .alt-faq__item::details-content {
+    transition: none;
+  }
 }
 
 .visually-hidden {

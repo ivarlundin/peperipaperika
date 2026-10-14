@@ -79,15 +79,6 @@
     else closeDropdowns();
   });
 
-  document.querySelectorAll("[data-faq] details").forEach(function (item) {
-    item.addEventListener("toggle", function () {
-      if (!item.open) return;
-      document.querySelectorAll("[data-faq] details").forEach(function (other) {
-        if (other !== item) other.open = false;
-      });
-    });
-  });
-
   if ("IntersectionObserver" in window) {
     var io = new IntersectionObserver(
       function (entries) {
