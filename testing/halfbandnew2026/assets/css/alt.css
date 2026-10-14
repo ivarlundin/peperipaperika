@@ -895,6 +895,70 @@ body.alt-page.nav-open {
   font-style: italic;
 }
 
+/* Contact / offert (Tally) */
+.alt-page #offert {
+  scroll-margin-top: calc(var(--alt-header) + 1rem);
+}
+
+.alt-contact-offert {
+  padding: 0 1.25rem 6rem;
+}
+
+.alt-contact-offert__wrap {
+  max-width: var(--alt-max);
+  margin: 0 auto;
+}
+
+.alt-page .contact-offert__copy h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 1rem;
+  color: var(--alt-ink);
+}
+
+.alt-page .contact-offert__lead {
+  color: var(--alt-muted);
+  margin: 0 0 1.25rem;
+  max-width: 42ch;
+}
+
+.alt-page .contact-usps li {
+  color: var(--alt-ink);
+}
+
+.alt-page .contact-usps li::before {
+  background: var(--alt-ink);
+}
+
+.alt-page .contact-offert__alt {
+  color: var(--alt-muted);
+}
+
+.alt-page .contact-offert__alt a {
+  color: var(--alt-ink);
+}
+
+.alt-page .tally-card {
+  background: #fff;
+  color: #0a0a0b;
+  border-radius: var(--alt-radius);
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+  border: 1px solid rgba(10, 10, 11, 0.08);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
+}
+
+.alt-page .tally-card noscript a {
+  color: #0a0a0b;
+}
+
+@media (max-width: 900px) {
+  .contact-offert__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* CTA band */
 .alt-cta {
   padding: 0 1.25rem 6rem;

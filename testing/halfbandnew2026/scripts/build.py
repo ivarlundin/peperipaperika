@@ -13,6 +13,20 @@ H14_LOGO = ROOT / "assets/img/h14-logo.svg"
 BRAND_TITLE = "Halv Fjorton – coverband & bröllopsband i Småland och Skåne"
 WEDDING_VIDEO_ID = "V2Nb8jMKUCk"
 WEDDING_VIDEO_TITLE = "Signed Sealed Delivered - Halv Fjorton"
+TALLY_EMBED_SRC = (
+    "https://tally.so/embed/n0xyqQ?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1"
+)
+TALLY_PUBLIC_URL = "https://tally.so/r/n0xyqQ"
+OFFERT_URL = f"{SITE}/kontakt/#offert"
+
+CONTACT_USPS = [
+    "Vi svarar inom 24 timmar",
+    "Offert som PDF – tydlig och utan dolda kostnader",
+    "En kontakt hela vägen från förfrågan till sista låten",
+    "8 musiker med egen blåssektion",
+    "Spelar i Småland och Skåne – Växjö, Kalmar, Jönköping, Malmö, Lund, Helsingborg",
+    "Sedan 2018",
+]
 
 NAV_SERVICES = [
     ("/brollop/", "Bröllop"),
@@ -80,6 +94,70 @@ def load_org() -> dict:
 
 BRAND_MARK_PX = 42
 
+def contact_page_ld() -> str:
+    data = {
+        "@context": "https://schema.org",
+        "@type": "ContactPage",
+        "url": f"{SITE}/kontakt/",
+        "name": "Kontakta Halv Fjorton",
+        "description": "Begär offert till Halv Fjorton – coverband för bröllop, företag och fest i södra Sverige.",
+        "mainEntity": {
+            "@type": "Organization",
+            "name": "Halv Fjorton",
+            "url": f"{SITE}/",
+            "email": "halvfjorton@gmail.com",
+            "contactPoint": {
+                "@type": "ContactPoint",
+                "contactType": "booking",
+                "email": "halvfjorton@gmail.com",
+                "areaServed": "SE",
+                "availableLanguage": ["sv", "en"],
+            },
+        },
+    }
+    return _indent_ld(data)
+
+
+def tally_iframe_markup() -> str:
+    return f"""          <iframe
+            data-tally-src="{TALLY_EMBED_SRC}"
+            loading="lazy"
+            title="Offertförfrågan Halv Fjorton"
+            width="100%"
+            height="420"
+            frameborder="0"
+            marginheight="0"
+            marginwidth="0"
+          ></iframe>"""
+
+
+def contact_offert_section(
+    heading: str = "Begär offert",
+    lead: str | None = None,
+    section_class: str = "contact-offert section",
+    wrap_class: str = "wrap contact-offert__grid",
+) -> str:
+    usp_items = "\n".join(f"            <li>{esc(u)}</li>" for u in CONTACT_USPS)
+    lead_html = f'        <p class="contact-offert__lead">{esc(lead)}</p>\n' if lead else ""
+    return f"""    <section class="{section_class}" id="offert" aria-labelledby="offert-rubrik">
+      <div class="{wrap_class}">
+        <div class="contact-offert__copy">
+          <h2 id="offert-rubrik">{esc(heading)}</h2>
+{lead_html}          <ul class="contact-usps">
+{usp_items}
+          </ul>
+          <p class="contact-offert__alt">Alternativt: <a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a></p>
+        </div>
+        <div class="contact-offert__form tally-card">
+          <noscript>
+            <p><a href="{TALLY_PUBLIC_URL}">Öppna offertformuläret på Tally</a> om det inte visas här.</p>
+          </noscript>
+{tally_iframe_markup()}
+        </div>
+      </div>
+    </section>"""
+
+
 def font_preloads(asset_root: str = "/assets") -> str:
     root = asset_root.rstrip("/")
     return f"""  <link rel="preload" href="{root}/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
@@ -139,7 +217,7 @@ def alt_nav_list_markup() -> str:
         items.append(f'          <li><a href="{nav_path(href, "../")}">{label}</a></li>')
     items.append(
         '          <li class="alt-nav__cta-mobile-wrap"><a class="alt-btn alt-btn--primary alt-nav__cta-mobile" '
-        'href="mailto:halvfjorton@gmail.com?subject=Beg%C3%A4r%20offert%20-%20Halv%20Fjorton">Begär offert</a></li>'
+        'href="#offert">Begär offert</a></li>'
     )
     return "\n".join(items)
 
@@ -238,6 +316,7 @@ def page(
     page_class: str = "",
     outfile: Path | None = None,
     breadcrumb_name: str | None = None,
+    extra_scripts: str = "",
 ):
     canonical = f"{SITE}{path}"
     nav = render_nav_list(path)
@@ -333,7 +412,7 @@ def page(
   </footer>
   <script src="/assets/js/nav.js"></script>
   <script src="/assets/js/video-facade.js" defer></script>
-</body>
+{extra_scripts}</body>
 </html>
 """
     dest = outfile
@@ -658,7 +737,7 @@ def write_pages():
         <div>
           <p>Skicka låtlista, tonart och ungefärliga tider i god tid. Vi återkommer med förslag och offert via <a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a>.</p>
           <div class="actions">
-            <a class="btn btn-primary" href="/kontakt/">Begär offert</a>
+            <a class="btn btn-primary" href="/kontakt/#offert">Begär offert</a>
             <a class="btn btn-ghost" href="/brollop/">Bröllop</a>
           </div>
         </div>
@@ -751,7 +830,7 @@ def write_pages():
       <div class="wrap">
         <p>Se hela upplägget på <a href="/brollop/">bröllop</a> eller begär offert direkt.</p>
         <div class="actions">
-          <a class="btn btn-primary" href="/kontakt/">Begär offert</a>
+          <a class="btn btn-primary" href="/kontakt/#offert">Begär offert</a>
           <a class="btn btn-ghost" href="/coverband-skane-malmo/">Skåne och Malmö</a>
         </div>
       </div>
@@ -1076,54 +1155,21 @@ def write_pages():
         "/kontakt/",
         "Kontakta Halv Fjorton | boka coverband i södra Sverige",
         "Kontakta Halv Fjorton för bokning: halvfjorton@gmail.com. Coverband till bröllop, företag och fest i Växjö och södra Sverige.",
-        body="""    <header class="page-hero compact">
+        extra_ld=[contact_page_ld()],
+        extra_scripts='  <script src="/assets/js/tally-embed.js" defer></script>\n',
+        body=f"""    <header class="page-hero compact">
       <div class="page-hero-copy">
         <p class="eyebrow">Kontakt</p>
         <h1>Hör av er</h1>
-        <p class="lead">Berätta datum, plats och vad ni är ute efter. Vi återkommer så snart vi kan.</p>
+        <p class="lead">Fyll i formuläret så återkommer vi – oftast inom 24 timmar.</p>
       </div>
     </header>
-    <section class="section">
-      <div class="wrap contact-grid">
-        <div>
-          <h2>Direkt</h2>
-          <p><a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a><br>
-          <a href="https://www.instagram.com/halvfjorton/" rel="noopener noreferrer">Instagram @halvfjorton</a></p>
-          <p>Halv Fjorton EK. FÖR.<br>Organisationsnummer 769641-5418</p>
-          <h3>Bra att ha med i mejlet</h3>
-          <ul class="list-check">
-            <li>Datum och ungefärliga tider</li>
-            <li>Ort och lokal om ni redan vet</li>
-            <li>Bröllop, företag, mingel eller annat</li>
-            <li>Ungefärligt antal gäster</li>
-            <li>Om ni vill kombinera mingel och fest</li>
-          </ul>
-        </div>
-        <form data-mailto-form>
-          <h2>Skicka en förfrågan</h2>
-          <p class="small muted">Formuläret öppnar ert mejlprogram med uppgifterna ifyllda. Ingen data sparas på sajten.</p>
-          <label for="name">Namn</label>
-          <input id="name" name="name" autocomplete="name" required>
-          <label for="email">E-post</label>
-          <input id="email" name="email" type="email" autocomplete="email" required>
-          <label for="date">Datum</label>
-          <input id="date" name="date" type="date">
-          <label for="place">Plats</label>
-          <input id="place" name="place" placeholder="Ort och lokal">
-          <label for="type">Typ av tillställning</label>
-          <select id="type" name="type">
-            <option value="Bröllop">Bröllop</option>
-            <option value="Företag">Företag</option>
-            <option value="Mingel">Mingel</option>
-            <option value="Fest">Fest</option>
-            <option value="Annat">Annat</option>
-          </select>
-          <label for="message">Meddelande</label>
-          <textarea id="message" name="message" required placeholder="Tid, antal gäster, önskemål…"></textarea>
-          <div class="actions">
-            <button class="btn btn-primary" type="submit">Öppna mejl</button>
-          </div>
-        </form>
+{contact_offert_section(
+    lead="Berätta datum, plats och typ av tillställning. Vi tar hand om resten.",
+)}
+    <section class="section section--tight">
+      <div class="wrap">
+        <p class="small muted">Halv Fjorton EK. FÖR. · Org.nr 769641-5418 · <a href="https://www.instagram.com/halvfjorton/" rel="noopener noreferrer">Instagram @halvfjorton</a></p>
       </div>
     </section>
 """,
@@ -1263,14 +1309,40 @@ def patch_alt_page():
             '  <script src="../assets/js/nav.js"></script>\n  <script src="../assets/js/alt-nav.js" defer></script>',
         )
     html = re.sub(
-        r'<ul class="alt-nav__links nav-list" id="alt-meny" data-nav-panel>.*?</ul>',
-        "<ul class=\"alt-nav__links nav-list\" id=\"alt-meny\" data-nav-panel>\n"
+        r'(<ul class="alt-nav__links nav-list" id="alt-meny" data-nav-panel>)[\s\S]*?(</ul>\s*<a class="alt-btn alt-btn--primary alt-nav__cta-desktop")',
+        "\\1\n"
         + alt_nav_list_markup()
-        + "\n        </ul>",
+        + "\n        \\2",
         html,
         count=1,
-        flags=re.DOTALL,
     )
+    html = re.sub(
+        r'href="mailto:halvfjorton@gmail.com\?subject=Beg%C3%A4r%20offert[^"]*"',
+        'href="#offert"',
+        html,
+    )
+    html = re.sub(
+        r'    <section class="alt-intro"[\s\S]*?</section>\n\n',
+        "",
+        html,
+        count=1,
+    )
+    alt_offert = contact_offert_section(
+        section_class="alt-contact-offert",
+        wrap_class="alt-contact-offert__wrap contact-offert__grid",
+        lead="Berätta datum, plats och typ av tillställning. Vi tar hand om resten.",
+    )
+    html = re.sub(
+        r'    <section class="alt-cta"[\s\S]*?</section>',
+        alt_offert,
+        html,
+        count=1,
+    )
+    if 'tally-embed.js' not in html:
+        html = html.replace(
+            '  <script src="../assets/js/alt-nav.js" defer></script>',
+            '  <script src="../assets/js/alt-nav.js" defer></script>\n  <script src="../assets/js/tally-embed.js" defer></script>',
+        )
     toggle = nav_toggle_markup("alt-meny").replace("nav-toggle", "nav-toggle alt-nav-toggle")
     html = re.sub(
         r'<button class="(?:alt-nav-toggle )?nav-toggle"[^>]*>.*?</button>',
