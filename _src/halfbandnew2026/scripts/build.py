@@ -183,15 +183,15 @@ def integritetspolicy_page_body() -> str:
       <div class="alt-svc-wrap alt-legal-page__inner">
         <h1 class="alt-svc-chapter__title alt-legal-page__title">Integritetspolicy</h1>
         <div class="alt-svc-chapter__body alt-legal-page__body">
-          <p>Denna policy beskriver hur Halv Fjorton ek. för. behandlar personuppgifter när du kontaktar oss via webbplatsen.</p>
+          <p>Denna policy beskriver hur Halv Fjorton ekonomisk förening behandlar personuppgifter när du kontaktar oss via webbplatsen.</p>
           <h2 class="alt-svc-chapter__title alt-legal-page__heading">Personuppgiftsansvarig</h2>
-          <p>Halv Fjorton ek. för., organisationsnummer 769641-5418. Kontakt: <a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a>.</p>
+          <p>Halv Fjorton ekonomisk förening, organisationsnummer 769641-5418. Kontakt: <a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a>.</p>
           <h2 class="alt-svc-chapter__title alt-legal-page__heading">Vad vi samlar in</h2>
           <p>Namn, e-postadress, telefonnummer om du anger det, och meddelandet du skickar i kontaktformuläret.</p>
           <h2 class="alt-svc-chapter__title alt-legal-page__heading">Varför</h2>
           <p>Vi använder uppgifterna för att besvara din förfrågan och ta fram offert när det behövs.</p>
           <h2 class="alt-svc-chapter__title alt-legal-page__heading">Hur länge</h2>
-          <p>Uppgifterna raderas när förfrågan är avslutad, senast inom 12 månader.</p>
+          <p>Förfrågningar som inte leder till en bokning raderar vi senast 24 månader efter att de kom in. Uppgifter som hör till en bokning, som avtal och fakturor, sparar vi så länge bokföringslagen kräver.</p>
           <h2 class="alt-svc-chapter__title alt-legal-page__heading">Delning</h2>
           <p>Vi säljer inte personuppgifter och delar dem inte med tredje part i marknadsföringssyfte.</p>
           <h2 class="alt-svc-chapter__title alt-legal-page__heading">Dina rättigheter</h2>
