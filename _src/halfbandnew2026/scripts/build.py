@@ -558,6 +558,24 @@ def write_redirect_page(path: str, target: str, link_label: str = "Lyssna") -> N
     print("wrote", dest.relative_to(OUT_ROOT), "(redirect)")
 
 
+SERVICE_HERO_TYPEWRITER_SCRIPT = (
+    '  <script src="/assets/js/alt-hero-typewriter.js" defer></script>\n'
+)
+
+
+def service_hero_typewriter_h1(h1: str) -> str:
+    phrases_attr = esc(json.dumps([h1], ensure_ascii=False))
+    return f"""        <h1>
+          <span class="visually-hidden">{esc(h1)}</span>
+          <span class="alt-hero__typewriter" data-alt-typewriter data-typewriter-phrases="{phrases_attr}" aria-hidden="true">
+            <span class="alt-hero__typewriter-ghost">{esc(h1)}</span>
+            <span class="alt-hero__typewriter-live">
+              <span class="alt-hero__typewriter-text" data-typewriter-text>{esc(h1)}</span><span class="alt-hero__caret" aria-hidden="true"></span>
+            </span>
+          </span>
+        </h1>"""
+
+
 SERVICE_OFFER_HERO_IMAGES = {
     "brollop": (
         "halvfjorton-03",
@@ -602,7 +620,7 @@ def service_hero_banner(service_key: str, h1: str, intro_html: str) -> str:
       </div>
       <div class="alt-service-hero__scrim" aria-hidden="true"></div>
       <div class="alt-service-hero__content">
-        <h1>{esc(h1)}</h1>
+{service_hero_typewriter_h1(h1)}
         <div class="alt-service-hero__actions">
           <a class="alt-btn alt-btn--primary" href="/kontakt/#offert">Kontakta oss</a>
         </div>
@@ -940,6 +958,8 @@ def page(
     body_class = "alt-page alt-page--inner"
     if page_class:
         body_class = f"{body_class} {page_class}"
+    if "alt-page--service-banner" in page_class and "alt-hero-typewriter.js" not in extra_scripts:
+        extra_scripts = f"{extra_scripts}{SERVICE_HERO_TYPEWRITER_SCRIPT}"
     nav_block = home_nav_block(path, "/#offert")
     mobile_menu = mobile_menu_block(path, "/#offert")
     toggle = alt_header_mobile_controls_markup("mobile-menu")

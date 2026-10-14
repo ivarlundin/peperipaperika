@@ -45,7 +45,9 @@ def assert_service_hero(page, slug: str, label: str) -> None:
             heroCount: document.querySelectorAll('.alt-service-hero').length,
             hasOldHero: !!oldHero,
             heroH: hero ? hero.getBoundingClientRect().height : 0,
-            h1: hero ? (hero.querySelector('h1')?.innerText || '') : '',
+            seoH1: document.querySelector('.alt-service-hero h1 .visually-hidden')?.innerText || '',
+            liveH1: document.querySelector('.alt-service-hero [data-typewriter-text]')?.innerText || '',
+            hasTypewriterScript: !!Array.from(document.scripts).some((s) => (s.src || '').includes('alt-hero-typewriter.js')),
             imgSrc: img ? img.getAttribute('src') || '' : '',
             objectFit: img ? getComputedStyle(img).objectFit : '',
             docSW: document.documentElement.scrollWidth,
@@ -93,7 +95,8 @@ def assert_service_hero(page, slug: str, label: str) -> None:
     assert data["heroCount"] == 1, f"{slug}/{label}: expected one service hero"
     assert not data["hasOldHero"], f"{slug}/{label}: legacy page hero still present"
     assert data["heroH"] >= 170, f"{slug}/{label}: hero too short ({data['heroH']})"
-    assert data["h1"] == spec["h1"], f"{slug}/{label}: h1 mismatch"
+    assert data["seoH1"] == spec["h1"], f"{slug}/{label}: SEO h1 mismatch"
+    assert data["hasTypewriterScript"], f"{slug}/{label}: typewriter script missing"
     assert spec["img_stem"] in data["imgSrc"], (
         f"{slug}/{label}: hero image should match offer card stem, got {data['imgSrc']}"
     )
@@ -107,7 +110,7 @@ def assert_service_hero(page, slug: str, label: str) -> None:
         f"{slug}/{label}: header/footer count"
     )
     assert data["introInHero"] == 0, f"{slug}/{label}: ingress must not sit in hero"
-    assert data["typewriterInHero"] == 0, f"{slug}/{label}: no typewriter in service hero"
+    assert data["typewriterInHero"] == 1, f"{slug}/{label}: service hero typewriter missing"
     assert data["hasScrim"], f"{slug}/{label}: missing home-style scrim"
     assert data["factsCount"] == 0, f"{slug}/{label}: facts strip must not appear"
     assert data["ctaText"].strip() == "Kontakta oss", (
@@ -120,6 +123,57 @@ def assert_service_hero(page, slug: str, label: str) -> None:
         assert intro_styles["borderLeftWidth"] == "0px", intro_styles
         assert intro_styles["boxShadow"] == "none", intro_styles
         assert "inter" in intro_styles["fontFamily"].lower(), intro_styles
+
+
+def assert_typewriter_motion(page, slug: str, label: str) -> None:
+    spec = PAGES[slug]
+    layout = page.evaluate(
+        """() => {
+          const h1 = document.querySelector('.alt-service-hero h1');
+          return h1 ? h1.getBoundingClientRect().height : 0;
+        }"""
+    )
+    page.wait_for_timeout(120)
+    layout_after = page.evaluate(
+        """() => {
+          const h1 = document.querySelector('.alt-service-hero h1');
+          return h1 ? h1.getBoundingClientRect().height : 0;
+        }"""
+    )
+    assert abs(layout - layout_after) <= 2, (
+        f"{slug}/{label}: h1 layout shift {layout} -> {layout_after}"
+    )
+    full_len = len(spec["h1"])
+    start_text = page.locator(".alt-service-hero [data-typewriter-text]").inner_text()
+    assert len(start_text) == full_len, f"{slug}/{label}: initial typewriter text"
+    page.wait_for_timeout(3200)
+    mid_text = page.locator(".alt-service-hero [data-typewriter-text]").inner_text()
+    assert len(mid_text) < full_len, f"{slug}/{label}: typewriter should delete ({mid_text!r})"
+
+
+def assert_reduced_motion_h1(browser, slug: str = "brollop") -> None:
+    ctx = browser.new_context(
+        viewport=MOBILE,
+        device_scale_factor=3,
+        is_mobile=True,
+        has_touch=True,
+        reduced_motion="reduce",
+    )
+    page = ctx.new_page()
+    page.goto(f"{BASE}{PAGES[slug]['path']}", wait_until="networkidle")
+    page.wait_for_timeout(400)
+    data = page.evaluate(
+        """([expectedH1]) => ({
+          seoH1: document.querySelector('.alt-service-hero h1 .visually-hidden')?.innerText || '',
+          live: document.querySelector('.alt-service-hero [data-typewriter-text]')?.innerText || '',
+          caretHidden: document.querySelector('.alt-service-hero .alt-hero__caret')?.hidden,
+        })""",
+        [PAGES[slug]["h1"]],
+    )
+    assert data["seoH1"] == PAGES[slug]["h1"]
+    assert data["live"] == PAGES[slug]["h1"]
+    assert data["caretHidden"] is True
+    ctx.close()
 
 
 def run_viewport(browser, viewport: dict, mobile: bool, tag: str) -> None:
@@ -139,6 +193,12 @@ def run_viewport(browser, viewport: dict, mobile: bool, tag: str) -> None:
             }"""
         )
         assert_service_hero(page, slug, tag)
+        if mobile and slug == "brollop":
+            assert_typewriter_motion(page, slug, tag)
+            page.screenshot(
+                path=str(OUT / "service-typewriter-brollop-iphone.png"),
+                full_page=False,
+            )
         page.screenshot(
             path=str(OUT / f"service-hero-{slug}-{tag}.png"),
             full_page=False,
@@ -160,6 +220,7 @@ def main() -> int:
             browser = p.webkit.launch()
             run_viewport(browser, MOBILE, True, "iphone")
             run_viewport(browser, DESKTOP, False, "desktop")
+            assert_reduced_motion_h1(browser)
             browser.close()
     finally:
         server.terminate()

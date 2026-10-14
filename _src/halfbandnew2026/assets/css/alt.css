@@ -3188,6 +3188,27 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   }
 }
 
+.alt-service-hero h1 .alt-hero__typewriter {
+  display: grid;
+  width: 100%;
+  max-width: min(42ch, 100%);
+  min-width: 0;
+  min-height: 1.06em;
+  line-height: 1.06;
+  white-space: normal;
+  text-wrap: balance;
+}
+
+.alt-service-hero h1 .alt-hero__typewriter-ghost,
+.alt-service-hero h1 .alt-hero__typewriter-live {
+  grid-area: 1 / 1;
+  align-self: start;
+  justify-self: start;
+  max-width: 100%;
+  white-space: normal;
+  text-wrap: balance;
+}
+
 .alt-service-hero__actions {
   display: flex;
   flex-wrap: wrap;
