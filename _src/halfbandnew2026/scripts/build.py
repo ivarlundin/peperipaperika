@@ -24,7 +24,7 @@ OFFERT_URL = f"{SITE}/kontakt/#offert"
 
 CONTACT_USPS = [
     "Vi svarar inom 24 timmar",
-    "Offert som PDF, tydlig och utan dolda kostnader",
+    "Skräddarsytt efter era önskemål",
     "En kontakt hela vägen från förfrågan till sista låten",
     "Åttamannaband med blås",
     "Spelar i Småland och Skåne: Växjö, Kalmar, Jönköping, Malmö, Lund, Helsingborg",
@@ -33,7 +33,7 @@ CONTACT_USPS = [
 
 HOME_CONTACT_USPS = [
     "Vi svarar inom 24 timmar",
-    "Offert som PDF, tydlig och utan dolda kostnader",
+    "Skräddarsytt efter era önskemål",
     "Åttamannaband med blås",
 ]
 
