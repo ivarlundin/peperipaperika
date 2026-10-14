@@ -513,14 +513,18 @@ def member_compact_card(
     if placeholder:
         return """          <article class="member-compact-card member-compact-card--placeholder">
             <span class="member-compact-card__avatar member-compact-card__avatar--empty" aria-hidden="true"></span>
-            <h3 class="member-compact-card__name">Namn</h3>
-            <p class="member-compact-card__line">Instrument</p>
+            <div class="member-compact-card__body">
+              <h3 class="member-compact-card__name">Namn</h3>
+              <p class="member-compact-card__line">Instrument</p>
+            </div>
           </article>"""
     alt = member_avatar_alt(name, line)
     return f"""          <article class="member-compact-card">
             <img class="member-compact-card__avatar" src="/assets/img/{img_file}" alt="{esc(alt)}" width="120" height="120" loading="lazy" decoding="async">
-            <h3 class="member-compact-card__name">{esc(name)}</h3>
-            <p class="member-compact-card__line">{esc(line)}</p>
+            <div class="member-compact-card__body">
+              <h3 class="member-compact-card__name">{esc(name)}</h3>
+              <p class="member-compact-card__line">{esc(line)}</p>
+            </div>
           </article>"""
 
 
@@ -1376,17 +1380,6 @@ def write_pages():
       </div>
     </section>
     <section class="section section-alt">
-      <div class="wrap split">
-        <div>
-{gallery_img("halvfjorton-06", "Sång och slagverk på scen i dramatiskt ljus", extra_class=" content-photo--tall")}
-        </div>
-        <div>
-          <h2>Julkonsert och Nygatan 6</h2>
-          <p>Sedan starten 2018 har vi nästan varje år arrangerat en egen julkonsert med egna jullåtar och covers i soul- och funkstil. Sedan 2023 spelar vi den på <strong>Nygatan 6</strong> i Växjö. Läs mer under <a href="/julkonsert/">julkonsert</a> och se filmer på <a href="/lyssna/">Lyssna</a>.</p>
-        </div>
-      </div>
-    </section>
-    <section class="section">
       <div class="wrap">
         <h2>Föreningen</h2>
         <p>Vi är <strong>Halv Fjorton EK. FÖR.</strong>, organisationsnummer <strong>769641-5418</strong>. Kontakt: <a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a>, Instagram <a href="https://www.instagram.com/halvfjorton/">@halvfjorton</a>, YouTube <a href="https://www.youtube.com/@halvfjorton9292" rel="noopener noreferrer">@halvfjorton9292</a>.</p>
