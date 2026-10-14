@@ -1894,6 +1894,87 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   .alt-contact-offert .tally-card noscript a {
     color: var(--offert-ink);
   }
+
+  .alt-contact-page {
+    --offert-surface: #eeebe6;
+    --offert-ink: #1a1816;
+    --offert-muted: #4a4540;
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 2.75rem 0 3rem;
+    background: var(--offert-surface);
+    box-sizing: border-box;
+    overflow-x: clip;
+  }
+
+  .alt-contact-page .alt-contact-page__intro h1,
+  .alt-contact-page .list-check > li {
+    color: var(--offert-ink);
+  }
+
+  .alt-contact-page .contact-offert__lead {
+    color: var(--offert-muted);
+  }
+
+  .alt-contact-page .list-check > li::before {
+    background-color: var(--offert-ink);
+  }
+
+  .alt-contact-page .tally-card {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+    border-radius: 0;
+  }
+
+  .alt-contact-page__channels {
+    background: var(--offert-surface);
+    padding-bottom: 4.25rem;
+  }
+
+  .alt-contact-page__channels .alt-contact-page__link {
+    color: var(--offert-ink);
+  }
+}
+
+/* Kontakt page (/kontakt/) */
+.alt-contact-page {
+  padding: clamp(4rem, 10vw, 6rem) 0 2.5rem;
+}
+
+.alt-contact-page__intro h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.85rem, 4vw, 2.75rem);
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.05;
+  margin: 0 0 0.65rem;
+  color: var(--alt-ink);
+}
+
+.alt-contact-page__stack .contact-offert__grid {
+  margin-top: 1.5rem;
+}
+
+.alt-contact-page__channels-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 2rem;
+}
+
+.alt-contact-page__link {
+  color: var(--alt-ink);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.alt-contact-page__link:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
 }
 
 /* CTA band */

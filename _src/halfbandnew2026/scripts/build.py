@@ -158,15 +158,55 @@ def tally_iframe_markup() -> str:
           ></iframe>"""
 
 
+def kontakt_page_body() -> str:
+    usp_items = "\n".join(f"            <li>{esc(u)}</li>" for u in HOME_CONTACT_USPS)
+    return f"""    <section class="alt-contact-page section" id="offert" aria-labelledby="kontakt-rubrik">
+      <div class="alt-contact-offert__wrap alt-contact-page__stack">
+        <header class="alt-contact-page__intro">
+          <h1 id="kontakt-rubrik">Kontakta oss</h1>
+          <p class="contact-offert__lead">Fyll i formuläret så återkommer vi, oftast inom 24 timmar.</p>
+        </header>
+        <div class="contact-offert__grid">
+          <div class="contact-offert__copy">
+            <ul class="list-check">
+{usp_items}
+            </ul>
+          </div>
+          <div class="contact-offert__form tally-card">
+            <noscript>
+              <p><a href="{TALLY_PUBLIC_URL}">Öppna offertformuläret på Tally</a> om det inte visas här.</p>
+            </noscript>
+{tally_iframe_markup()}
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="alt-contact-page__channels section section--tight" aria-label="Direktkontakt">
+      <div class="alt-contact-offert__wrap alt-contact-page__channels-inner">
+        <a class="alt-contact-page__link" href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a>
+        <a class="alt-contact-page__link" href="https://www.instagram.com/halvfjorton/" rel="noopener noreferrer">Instagram @halvfjorton</a>
+      </div>
+    </section>"""
+
+
 def contact_offert_section(
     heading: str = "Begär offert",
     lead: str | None = None,
     section_class: str = "contact-offert section",
     wrap_class: str = "wrap contact-offert__grid",
     usps: list[str] | None = None,
+    include_mail_button: bool = True,
 ) -> str:
     usp_items = "\n".join(f"            <li>{esc(u)}</li>" for u in (usps if usps is not None else CONTACT_USPS))
     lead_html = f'        <p class="contact-offert__lead">{esc(lead)}</p>\n' if lead else ""
+    mail_html = (
+        """          <p class="contact-offert__mail">
+            <a class="alt-btn alt-btn--primary" href="mailto:halvfjorton@gmail.com">Mejla oss</a>
+          </p>
+"""
+        if include_mail_button
+        else ""
+    )
     return f"""    <section class="{section_class}" id="offert" aria-labelledby="offert-rubrik">
       <div class="{wrap_class}">
         <div class="contact-offert__copy">
@@ -174,10 +214,7 @@ def contact_offert_section(
 {lead_html}          <ul class="list-check">
 {usp_items}
           </ul>
-          <p class="contact-offert__mail">
-            <a class="alt-btn alt-btn--primary" href="mailto:halvfjorton@gmail.com">Mejla oss</a>
-          </p>
-        </div>
+{mail_html}        </div>
         <div class="contact-offert__form tally-card">
           <noscript>
             <p><a href="{TALLY_PUBLIC_URL}">Öppna offertformuläret på Tally</a> om det inte visas här.</p>
@@ -1337,21 +1374,7 @@ def write_pages():
         "Kontakta Halv Fjorton för bokning: halvfjorton@gmail.com. Coverband till bröllop, företag och fest i Växjö och södra Sverige.",
         extra_ld=[contact_page_ld()],
         extra_scripts='  <script src="/assets/js/tally-embed.js" defer></script>\n',
-        body=f"""    <header class="page-hero compact">
-      <div class="page-hero-copy">
-        <h1>Hör av er</h1>
-        <p class="lead">Fyll i formuläret så återkommer vi, oftast inom 24 timmar.</p>
-      </div>
-    </header>
-{contact_offert_section(
-    lead="Skriv datum, plats och vad ni planerar. Vi återkommer med förslag.",
-)}
-    <section class="section section--tight">
-      <div class="wrap">
-        <p class="small muted">Halv Fjorton EK. FÖR. · Org.nr 769641-5418 · <a href="https://www.instagram.com/halvfjorton/" rel="noopener noreferrer">Instagram @halvfjorton</a></p>
-      </div>
-    </section>
-""",
+        body=kontakt_page_body(),
     )
 
     page(
