@@ -72,11 +72,19 @@ def http_get(url: str, timeout: float = 30.0) -> str:
         return resp.read().decode("utf-8", errors="replace")
 
 
+def local_html_path(path: str) -> Path:
+    if path == "/":
+        return TESTING_OUT / "index.html"
+    clean = path.strip("/")
+    if clean.endswith(".html"):
+        return TESTING_OUT / clean
+    return TESTING_OUT / clean / "index.html"
+
+
 def wait_for_live(base: str, paths: list[str], timeout_s: int = 300) -> None:
     local_fps = {}
     for p in paths[:5]:
-        rel = "index.html" if p == "/" else p.lstrip("/") + "index.html"
-        local_fps[p] = page_fingerprint((TESTING_OUT / rel).read_text(encoding="utf-8"))
+        local_fps[p] = page_fingerprint(local_html_path(p).read_text(encoding="utf-8"))
 
     deadline = time.time() + timeout_s
     while time.time() < deadline:
