@@ -14,9 +14,8 @@ VIEWPORT = {"width": 390, "height": 844}
 BASE_URL = "http://127.0.0.1:8765/testing/halfbandnew2026/"
 MENU_MOTION_MS = 400
 LOGO_MENU_LARGE_MIN = 100
-LOGO_HERO_LARGE_MIN = 74
-LOGO_HERO_LARGE_MAX = 92
 LOGO_NORMAL_MAX = 80
+DESKTOP_VIEWPORT = {"width": 1280, "height": 900}
 ALT_BG_RGB = "rgb(10, 10, 11)"
 
 
@@ -33,10 +32,6 @@ def assert_logo_size(page, label: str, mode: str) -> None:
     if mode == "menu":
         assert width >= LOGO_MENU_LARGE_MIN, (
             f"{label}: menu logo should be large ({width}px)"
-        )
-    elif mode == "hero":
-        assert LOGO_HERO_LARGE_MIN <= width <= LOGO_HERO_LARGE_MAX, (
-            f"{label}: hero logo should be ~25% smaller than menu ({width}px)"
         )
     else:
         assert width <= LOGO_NORMAL_MAX, (
@@ -218,22 +213,15 @@ def assert_menu_opens_with_motion(page, label: str) -> None:
     assert_menu_cta_full_width(page, label)
 
 
-def wait_for_hero_logo_size(page, label: str) -> None:
-    for _ in range(24):
-        width = header_logo_width(page)
-        if LOGO_HERO_LARGE_MIN <= width <= LOGO_HERO_LARGE_MAX:
-            return
-        page.wait_for_timeout(40)
-    assert_logo_size(page, label, "hero")
-
-
-def assert_home_hero_logo_at_top(page, label: str) -> None:
-    assert page.evaluate("window.scrollY") < 40, f"{label}: expected near top scroll"
-    assert page.evaluate(
+def assert_home_header_logo_normal(page, label: str) -> None:
+    assert not page.evaluate(
         "document.body.classList.contains('alt-logo-hero-large')"
-    ), f"{label}: body should have alt-logo-hero-large at top"
+    ), f"{label}: hero logo class should be removed"
+    assert not page.evaluate("document.body.classList.contains('nav-open')"), (
+        f"{label}: menu should be closed"
+    )
     assert_single_scaled_header_logo(page, label)
-    wait_for_hero_logo_size(page, label)
+    wait_for_header_logo_normal(page, label)
 
 
 def wait_for_header_logo_normal(page, label: str) -> None:
@@ -245,14 +233,18 @@ def wait_for_header_logo_normal(page, label: str) -> None:
     assert_logo_size(page, label, "normal")
 
 
-def assert_home_hero_logo_scrolled(page, label: str) -> None:
-    assert not page.evaluate(
-        "document.body.classList.contains('nav-open')"
-    ), f"{label}: menu should be closed"
-    assert not page.evaluate(
-        "document.body.classList.contains('alt-logo-hero-large')"
-    ), f"{label}: hero large class should be off when scrolled"
-    wait_for_header_logo_normal(page, label)
+def assert_home_header_logo_scrolled(page, label: str) -> None:
+    assert_home_header_logo_normal(page, label)
+
+
+def assert_desktop_header_logo(page, label: str) -> None:
+    menu = page.locator("[data-mobile-menu]")
+    assert not menu.is_visible(), f"{label}: mobile menu should be hidden on desktop"
+    toggle = page.locator("[data-nav-toggle]")
+    assert not toggle.is_visible(), f"{label}: nav toggle should be hidden on desktop"
+    assert_logo_size(page, label, "normal")
+    nav = page.locator(".alt-header .alt-nav")
+    assert nav.is_visible(), f"{label}: desktop nav should be visible"
 
 
 def assert_tjanster_dropdown_animates(page, label: str) -> None:
@@ -327,7 +319,7 @@ def main() -> int:
             page.goto(BASE_URL, wait_until="networkidle")
             page.wait_for_timeout(120)
 
-            assert_home_hero_logo_at_top(page, "home-top-closed")
+            assert_home_header_logo_normal(page, "home-top-closed")
 
             assert_menu_opens_with_motion(page, "scrollY=0")
             assert_tjanster_dropdown_animates(page, "scrollY=0")
@@ -335,12 +327,12 @@ def main() -> int:
 
             page.locator("[data-nav-close]").click()
             page.wait_for_timeout(MENU_MOTION_MS + 80)
-            assert_home_hero_logo_at_top(page, "home-top-after-close")
+            assert_home_header_logo_normal(page, "home-top-after-close")
 
             page.evaluate(f"window.scrollTo(0, {SCROLL_Y})")
             page.wait_for_timeout(80)
             assert page.evaluate("window.scrollY") >= SCROLL_Y - 20
-            assert_home_hero_logo_scrolled(page, "home-scrolled-closed")
+            assert_home_header_logo_scrolled(page, "home-scrolled-closed")
 
             assert_menu_opens_with_motion(page, f"scrollY={SCROLL_Y}")
             page.screenshot(
@@ -349,16 +341,27 @@ def main() -> int:
 
             page.locator("[data-nav-close]").click()
             page.wait_for_timeout(MENU_MOTION_MS + 80)
-            assert_home_hero_logo_scrolled(page, "home-scrolled-after-close")
+            assert_home_header_logo_scrolled(page, "home-scrolled-after-close")
 
             assert_close_at_scroll_positions(page)
+
+            context.close()
+
+            desktop_ctx = browser.new_context(viewport=DESKTOP_VIEWPORT)
+            desktop_page = desktop_ctx.new_page()
+            desktop_page.goto(BASE_URL, wait_until="networkidle")
+            assert_desktop_header_logo(desktop_page, "desktop-top")
+            desktop_page.evaluate(f"window.scrollTo(0, {SCROLL_Y})")
+            desktop_page.wait_for_timeout(80)
+            assert_desktop_header_logo(desktop_page, "desktop-scrolled")
+            desktop_ctx.close()
 
             browser.close()
     finally:
         server.terminate()
         server.wait(timeout=5)
 
-    print("OK: WebKit iPhone mobile menu motion, header logo scale, and dropdown")
+    print("OK: WebKit mobile menu + desktop header logo (hero scale removed)")
     return 0
 
 

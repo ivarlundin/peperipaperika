@@ -707,7 +707,6 @@ def page(
 {modern_footer_markup()}
   <script src="/assets/js/nav.js"></script>
   <script src="/assets/js/alt-nav.js" defer></script>
-  <script src="/assets/js/alt-header-logo.js" defer></script>
   <script src="/assets/js/footer-year.js" defer></script>
   <script src="/assets/js/video-facade.js" defer></script>
 {extra_scripts}</body>
