@@ -438,6 +438,18 @@ body.alt-page > main {
   display: none !important;
 }
 
+.mobile-menu a:not(.alt-btn),
+.mobile-menu .nav-dropdown__trigger {
+  font-family: var(--font-display);
+  text-decoration: none;
+  color: #fff;
+}
+
+.mobile-menu a:not(.alt-btn):where(:link, :visited, :hover, :active, :focus) {
+  text-decoration: none;
+  color: #fff;
+}
+
 .mobile-menu__bar {
   display: flex;
   align-items: center;
@@ -568,8 +580,6 @@ body.alt-page > main {
   padding: 0.45rem 0 0.45rem 0.25rem;
   font-size: clamp(1.05rem, 4vw, 1.2rem);
   font-weight: 500;
-  color: #fff;
-  text-decoration: none;
 }
 
 .mobile-menu__foot {
