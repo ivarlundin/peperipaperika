@@ -191,6 +191,12 @@ def nav_toggle_markup(panel_id: str = "meny") -> str:
       </button>"""
 
 
+def alt_nav_toggle_markup(panel_id: str = "alt-meny") -> str:
+    return f"""      <button class="nav-toggle alt-nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="{panel_id}" aria-label="Öppna meny">
+        <span class="nav-toggle__bars" aria-hidden="true"></span>
+      </button>"""
+
+
 def nav_services_dropdown(current_path: str, prefix: str = "", menu_id: str = "nav-tjanster") -> str:
     service_paths = {p for p, _ in NAV_SERVICES}
     expanded = "true" if current_path in service_paths else "false"
@@ -380,7 +386,7 @@ def page(
     if page_class:
         body_class = f"{body_class} {page_class}"
     nav_block = home_nav_block(path, "/#offert")
-    toggle = nav_toggle_markup("alt-meny").replace("nav-toggle", "nav-toggle alt-nav-toggle")
+    toggle = alt_nav_toggle_markup("alt-meny")
     html = f"""<!DOCTYPE html>
 <html lang="sv">
 <head>
@@ -1315,7 +1321,7 @@ def patch_home_page():
             '  <script src="/assets/js/alt-nav.js" defer></script>',
             '  <script src="/assets/js/alt-nav.js" defer></script>\n  <script src="/assets/js/alt-hero-typewriter.js" defer></script>',
         )
-    toggle = nav_toggle_markup("alt-meny").replace("nav-toggle", "nav-toggle alt-nav-toggle")
+    toggle = alt_nav_toggle_markup("alt-meny")
     html = re.sub(
         r'<button class="(?:alt-nav-toggle )?nav-toggle"[^>]*>.*?</button>',
         toggle.strip(),
