@@ -2336,6 +2336,42 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   background: rgba(255, 255, 255, 0.02);
 }
 
+.alt-page--inner .event-card {
+  border: 1px solid var(--alt-line);
+  border-radius: var(--alt-radius);
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.02);
+  max-width: 42rem;
+}
+
+.alt-page--inner .event-card__img {
+  width: 100%;
+  display: block;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.alt-page--inner .event-card__body {
+  padding: 1.25rem 1.35rem 1.5rem;
+}
+
+.alt-page--inner .event-card__body h2 {
+  margin: 0;
+}
+
+.alt-page--inner .event-card__subtitle {
+  margin: 0.4rem 0 0.85rem;
+  color: var(--alt-muted);
+  font-size: 1.05rem;
+}
+
+.alt-page--inner .event-card__meta {
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: var(--alt-muted);
+}
+
 .alt-page--inner .muted,
 .alt-page--inner .small.muted {
   color: var(--alt-muted);

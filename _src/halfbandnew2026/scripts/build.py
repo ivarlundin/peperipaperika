@@ -22,6 +22,8 @@ TALLY_EMBED_SRC = (
 )
 TALLY_PUBLIC_URL = "https://tally.so/r/n0xyqQ"
 OFFERT_URL = f"{SITE}/kontakt/#offert"
+SOULFUL_CHRISTMAS_TICKETS = "https://www.nygatan6.se/kalender/a-soulful-christmas/"
+SOULFUL_CHRISTMAS_IMG = "/assets/img/events/a-soulful-christmas-2026"
 
 CONTACT_USPS = [
     "Vi svarar inom 24 timmar",
@@ -446,6 +448,84 @@ def service_ld(name, desc, url):
     return _indent_ld(data)
 
 
+def music_event_ld(name: str, start: str, description: str, ticket_url: str, image_path: str) -> str:
+    data = {
+        "@context": "https://schema.org",
+        "@type": "MusicEvent",
+        "name": name,
+        "description": description,
+        "startDate": start,
+        "eventStatus": "https://schema.org/EventScheduled",
+        "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+        "image": f"{SITE}{image_path}-1200w.webp",
+        "url": ticket_url,
+        "location": {
+            "@type": "Place",
+            "name": "Nygatan 6",
+            "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "Nygatan 6",
+                "addressLocality": "Växjö",
+                "postalCode": "352 33",
+                "addressCountry": "SE",
+            },
+        },
+        "performer": {
+            "@type": "MusicGroup",
+            "name": "Halv Fjorton",
+            "url": f"{SITE}/",
+        },
+        "organizer": {
+            "@type": "Organization",
+            "name": "Nygatan 6",
+            "url": "https://www.nygatan6.se/",
+        },
+        "offers": {
+            "@type": "Offer",
+            "url": ticket_url,
+            "availability": "https://schema.org/InStock",
+        },
+    }
+    return _indent_ld(data)
+
+
+def soulful_christmas_event_ld() -> list[str]:
+    desc = (
+        "Julkonsert med soul, funk, jazz och komiska inslag. Halv Fjorton och gäster på Nygatan 6 i Växjö."
+    )
+    return [
+        music_event_ld(
+            "A Soulful Christmas (16:00)",
+            "2026-12-12T16:00:00+01:00",
+            desc,
+            SOULFUL_CHRISTMAS_TICKETS,
+            SOULFUL_CHRISTMAS_IMG,
+        ),
+        music_event_ld(
+            "A Soulful Christmas (19:30)",
+            "2026-12-12T19:30:00+01:00",
+            desc,
+            SOULFUL_CHRISTMAS_TICKETS,
+            SOULFUL_CHRISTMAS_IMG,
+        ),
+    ]
+
+
+def soulful_christmas_poster_img() -> str:
+    base = SOULFUL_CHRISTMAS_IMG
+    return f"""          <img
+            class="event-card__img"
+            src="{base}-800w.webp"
+            srcset="{base}-480w.webp 480w, {base}-800w.webp 800w, {base}-1200w.webp 1200w"
+            sizes="(max-width: 720px) 100vw, 42rem"
+            alt="Affisch för A Soulful Christmas med Halv Fjorton på Nygatan 6"
+            width="1200"
+            height="900"
+            loading="lazy"
+            decoding="async"
+          >"""
+
+
 def page(
     path: str,
     title: str,
@@ -812,22 +892,29 @@ def write_pages():
     page(
         "/konserter/",
         f"Konserter | {BRAND_TITLE}",
-        "Kommande konserter med Halv Fjorton i Växjö och södra Sverige, inklusive spelningar på Nygatan 6 och julkonserten.",
+        "Publik konsert A Soulful Christmas 12 december 2026 på Nygatan 6 i Växjö. Två föreställningar med Halv Fjorton och gäster.",
         breadcrumb_name="Konserter",
-        body="""    <header class="page-hero compact">
+        extra_ld=soulful_christmas_event_ld(),
+        body=f"""    <header class="page-hero compact">
       <div class="page-hero-copy">
         <h1>Konserter</h1>
-        <p class="lead">Här samlar vi kommande spelningar där ni kan se hela bandet live.</p>
+        <p class="lead">Vi spelar inte alltid för privata sammankomster utan gör ibland publika konserter, håll utkik här.</p>
       </div>
     </header>
     <section class="section">
       <div class="wrap">
-        <h2>Kommande</h2>
-        <ul class="list-check">
-          <li><strong>Nygatan 6, Växjö</strong>, datum meddelas (TBA).</li>
-          <li><strong>Julkonsert (A Soulful Christmas)</strong>, datum meddelas (TBA).</li>
-        </ul>
-        <p class="small muted">Följ <a href="https://www.instagram.com/halvfjorton/">Instagram @halvfjorton</a> eller sidan <a href="/lyssna/">Lyssna</a> för uppdateringar.</p>
+        <article class="event-card">
+{soulful_christmas_poster_img()}
+          <div class="event-card__body">
+            <h2>A Soulful Christmas</h2>
+            <p class="event-card__subtitle">med Halv Fjorton &amp; gäster</p>
+            <p class="event-card__meta">Lördag 12 december 2026 · Nygatan 6, Växjö · Två föreställningar: 16:00 och 19:30</p>
+            <p>Växjö stad i juleglans, och vad passar då bättre än en julkonsert? Halv Fjorton återvänder och bjuder på svängig julstämning med soul, funk, jazz och komiska inslag. Julklassikerna får en skrud du aldrig hört förut, och kanske smyger sig en och annan sketch in.</p>
+            <div class="actions">
+              <a class="btn btn-primary" href="{SOULFUL_CHRISTMAS_TICKETS}" target="_blank" rel="noopener noreferrer">Köp biljetter</a>
+            </div>
+          </div>
+        </article>
       </div>
     </section>
 """,
