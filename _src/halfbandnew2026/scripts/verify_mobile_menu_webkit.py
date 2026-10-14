@@ -95,10 +95,13 @@ def assert_frosted_header_closed(page, label: str, require_solid: bool = False) 
     assert data, f"{label}: header missing"
     if require_solid:
         assert data["solid"], f"{label}: header should be solid after scroll"
-    assert 0.45 <= data["alpha"] <= 0.55, (
+    assert 0.42 <= data["alpha"] <= 0.48, (
         f"{label}: frosted layer alpha {data['alpha']}"
     )
-    assert "blur(20px)" in data["backdrop"], f"{label}: backdrop {data['backdrop']}"
+    assert "blur(36px)" in data["backdrop"], f"{label}: backdrop {data['backdrop']}"
+    assert "saturate(1.6)" in data["backdrop"] or "saturate(160%)" in data["backdrop"], (
+        f"{label}: saturate in backdrop {data['backdrop']}"
+    )
     assert data["borderWidth"] in ("0px", "0"), (
         f"{label}: header border {data['borderWidth']}"
     )
