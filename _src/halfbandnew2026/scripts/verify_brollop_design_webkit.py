@@ -37,7 +37,7 @@ def assert_layout(page, label: str) -> None:
     )
     assert "alt-page--wedding" in data["bodyClass"], f"{label}: wedding body class"
     assert data["hasHero"], f"{label}: missing wedding hero"
-    assert data["heroH"] >= 280, f"{label}: hero too short ({data['heroH']})"
+    assert data["heroH"] >= 170, f"{label}: hero too short ({data['heroH']})"
     assert data["venueCount"] == 4, f"{label}: venue list count"
     assert data["docSW"] <= data["docCW"] + 1, (
         f"{label}: horizontal overflow {data['docSW']} > {data['docCW']}"

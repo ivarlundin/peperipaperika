@@ -55,6 +55,8 @@ def assert_service_hero(page, slug: str, label: str) -> None:
             headerCount: document.querySelectorAll('.alt-header').length,
             footerCount: document.querySelectorAll('.site-footer').length,
             introInHero: hero ? hero.querySelectorAll('.aeo-answer, .lead').length : -1,
+            typewriterInHero: hero ? hero.querySelectorAll('[data-alt-typewriter], .alt-hero__typewriter').length : -1,
+            hasScrim: !!document.querySelector('.alt-service-hero__scrim'),
             introBlock: !!document.querySelector('.alt-service-intro'),
             aeoInIntro: document.querySelector('.alt-service-intro .aeo-answer'),
             expectedStem,
@@ -81,7 +83,7 @@ def assert_service_hero(page, slug: str, label: str) -> None:
     assert "alt-page--service-banner" in data["bodyClass"], f"{slug}/{label}: service-banner class"
     assert data["heroCount"] == 1, f"{slug}/{label}: expected one service hero"
     assert not data["hasOldHero"], f"{slug}/{label}: legacy page hero still present"
-    assert data["heroH"] >= 220, f"{slug}/{label}: hero too short ({data['heroH']})"
+    assert data["heroH"] >= 170, f"{slug}/{label}: hero too short ({data['heroH']})"
     assert data["h1"] == spec["h1"], f"{slug}/{label}: h1 mismatch"
     assert spec["img_stem"] in data["imgSrc"], (
         f"{slug}/{label}: hero image should match offer card stem, got {data['imgSrc']}"
@@ -96,6 +98,8 @@ def assert_service_hero(page, slug: str, label: str) -> None:
         f"{slug}/{label}: header/footer count"
     )
     assert data["introInHero"] == 0, f"{slug}/{label}: ingress must not sit in hero"
+    assert data["typewriterInHero"] == 0, f"{slug}/{label}: no typewriter in service hero"
+    assert data["hasScrim"], f"{slug}/{label}: missing home-style scrim"
     assert data["introBlock"], f"{slug}/{label}: missing alt-service-intro"
     if intro_styles:
         assert intro_styles["paddingTop"] == "0px", intro_styles

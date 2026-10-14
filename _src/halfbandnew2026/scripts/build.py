@@ -596,8 +596,8 @@ def service_hero_banner(service_key: str, h1: str, intro_html: str) -> str:
           decoding="async"
         >
       </div>
-      <div class="alt-service-hero__shade" aria-hidden="true"></div>
-      <div class="alt-service-hero__copy">
+      <div class="alt-service-hero__scrim" aria-hidden="true"></div>
+      <div class="alt-service-hero__content">
         <h1>{esc(h1)}</h1>
       </div>
     </header>
