@@ -1284,12 +1284,8 @@ body.alt-page.nav-open {
 }
 
 @media (max-width: 560px) {
-  .alt-gallery__grid {
-    grid-template-columns: 1fr 1fr;
-  }
-
+  /* Keep a and f full-width; b|c and d|e stay paired in two columns (see ≤900px rules). */
   .alt-gallery__tile--a,
-  .alt-gallery__tile--e,
   .alt-gallery__tile--f {
     grid-column: 1 / 3;
   }
