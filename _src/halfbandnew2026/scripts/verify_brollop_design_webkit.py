@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""WebKit: bröllop editorial layout, no overflow, screenshots mobile + desktop."""
+"""WebKit: bröllop editorial layout and no horizontal overflow (iPhone + desktop)."""
 import subprocess
 import sys
 import time
@@ -8,7 +8,6 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[3]
-OUT = Path("/opt/cursor/artifacts/screenshots")
 URL = "http://127.0.0.1:8770/testing/halfbandnew2026/brollop/"
 MOBILE = {"width": 390, "height": 844}
 DESKTOP = {"width": 1280, "height": 900}
@@ -20,12 +19,16 @@ def assert_layout(page, label: str) -> None:
           const main = document.querySelector('main#innehall');
           const hero = document.querySelector('.alt-service-hero');
           const venues = document.querySelector('.alt-wedding-venues__list');
+          const mosaic = document.querySelector('.alt-wedding-mosaic--bleed');
+          const cinema = document.querySelector('.alt-wedding-video__layout');
           const text = main ? main.innerText : '';
           return {
             bodyClass: document.body.className,
             hasHero: !!hero,
             heroH: hero ? hero.getBoundingClientRect().height : 0,
             venueCount: venues ? venues.querySelectorAll('li').length : 0,
+            hasMosaicBleed: !!mosaic,
+            hasCinemaLayout: !!cinema,
             docSW: document.documentElement.scrollWidth,
             docCW: document.documentElement.clientWidth,
             hasEyebrow: !!document.querySelector('.eyebrow'),
@@ -39,6 +42,8 @@ def assert_layout(page, label: str) -> None:
     assert data["hasHero"], f"{label}: missing wedding hero"
     assert data["heroH"] >= 170, f"{label}: hero too short ({data['heroH']})"
     assert data["venueCount"] == 4, f"{label}: venue list count"
+    assert data["hasMosaicBleed"], f"{label}: mosaic bleed section"
+    assert data["hasCinemaLayout"], f"{label}: cinema video layout"
     assert data["docSW"] <= data["docCW"] + 1, (
         f"{label}: horizontal overflow {data['docSW']} > {data['docCW']}"
     )
@@ -73,12 +78,10 @@ def run_viewport(browser, viewport: dict, mobile: bool, tag: str) -> None:
         }"""
     )
     assert_layout(page, tag)
-    page.screenshot(path=str(OUT / f"brollop-{tag}.png"), full_page=True)
     ctx.close()
 
 
 def main() -> int:
-    OUT.mkdir(parents=True, exist_ok=True)
     server = subprocess.Popen(
         [sys.executable, "-m", "http.server", "8770", "--bind", "127.0.0.1"],
         cwd=str(ROOT),

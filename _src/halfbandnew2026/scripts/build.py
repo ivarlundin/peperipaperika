@@ -667,8 +667,8 @@ def wedding_page_body(wedding_video_block: str) -> str:
         ),
     )
     return f"""{hero}
-    <section class="alt-wedding-band section" data-reveal>
-      <div class="alt-wedding-wrap alt-wedding-split alt-wedding-split--text-first">
+    <section class="alt-wedding-band section alt-wedding-band--opener" data-reveal>
+      <div class="alt-wedding-wrap alt-wedding-split alt-wedding-split--text-first alt-wedding-split--feature">
         <div class="alt-wedding-split__text">
           <h2>Hela bandet på er fest</h2>
           <p>Vi kommer som ett färdigt band med egen blåssektion. Repertoaren är samlad för bröllop, fest och dans. Säg till om låtar som betyder något för er, så plockar vi in dem där de passar bäst.</p>
@@ -678,8 +678,8 @@ def wedding_page_body(wedding_video_block: str) -> str:
         </div>
       </div>
     </section>
-    <section class="alt-wedding-sound section alt-wedding-sound--shade" data-reveal>
-      <div class="alt-wedding-wrap alt-wedding-split alt-wedding-split--media-first">
+    <section class="alt-wedding-sound section alt-wedding-sound--shade alt-wedding-band--inset" data-reveal>
+      <div class="alt-wedding-wrap alt-wedding-split alt-wedding-split--media-first alt-wedding-split--tight">
         <div class="alt-wedding-split__media alt-wedding-split__media--tall">
 {wedding_figure("halvfjorton-02", "Keyboard och blåssektion på scen i blått ljus", "(max-width: 900px) 100vw, 44vw", height=2400, width=1600)}
         </div>
@@ -692,8 +692,8 @@ def wedding_page_body(wedding_video_block: str) -> str:
         </div>
       </div>
     </section>
-    <section class="alt-wedding-mosaic section" data-reveal>
-      <div class="alt-wedding-wrap">
+    <section class="alt-wedding-mosaic section alt-wedding-mosaic--bleed" data-reveal>
+      <div class="alt-wedding-wrap alt-wedding-mosaic__frame">
         <div class="alt-wedding-mosaic__grid" aria-hidden="false">
 {wedding_figure("halvfjorton-04", "Två sångare framför mikrofoner på träscen", "(max-width: 900px) 94vw, 32vw", width=1280, height=853, figure_class="alt-wedding-figure alt-wedding-figure--wide")}
 {wedding_figure("halvfjorton-01", "Hela bandet på scen i festsal med publik", "(max-width: 900px) 94vw, 32vw", figure_class="alt-wedding-figure alt-wedding-figure--tall")}
@@ -701,7 +701,7 @@ def wedding_page_body(wedding_video_block: str) -> str:
         </div>
       </div>
     </section>
-    <section class="alt-wedding-story section" data-reveal>
+    <section class="alt-wedding-story section alt-wedding-story--editorial" data-reveal>
       <div class="alt-wedding-wrap alt-wedding-story__inner">
         <div class="alt-wedding-story__block">
           <h2>Första dansen och önskemål</h2>
@@ -724,14 +724,18 @@ def wedding_page_body(wedding_video_block: str) -> str:
         </div>
       </div>
     </section>
-    <section class="alt-wedding-video section alt-wedding-sound--shade" data-reveal>
-      <div class="alt-wedding-wrap">
-        <h2>Smakprov från scen</h2>
+    <section class="alt-wedding-video section alt-wedding-sound--shade alt-wedding-video--cinema" data-reveal>
+      <div class="alt-wedding-wrap alt-wedding-video__layout">
+        <div class="alt-wedding-video__head">
+          <h2>Smakprov från scen</h2>
+        </div>
+        <div class="alt-wedding-video__player">
 {wedding_video_block}
+        </div>
         <p class="small muted alt-wedding-video__caption">Signed Sealed Delivered, inspelat live med bandet.</p>
       </div>
     </section>
-    <section class="alt-wedding-faq section" data-reveal>
+    <section class="alt-wedding-faq section alt-wedding-faq--closing" data-reveal>
       <div class="alt-wedding-wrap">
         <h2>Vanliga önskemål</h2>
         <div class="faq-grid alt-wedding-faq__grid">
