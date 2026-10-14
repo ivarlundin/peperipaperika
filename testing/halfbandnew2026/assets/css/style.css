@@ -17,7 +17,7 @@
   --font-sans: "Inter", "Segoe UI", sans-serif;
   --font-body-weight: 330;
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
-  --header-h: 72px;
+  --header-h: 84px;
 }
 
 *,
@@ -102,7 +102,7 @@ a:hover {
   max-width: var(--max);
   height: 100%;
   margin: 0 auto;
-  padding: 0 1.25rem;
+  padding: 0.65rem 1.25rem 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -117,7 +117,7 @@ a:hover {
   text-decoration: none;
   font-family: var(--font-display);
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
 }
 
 .brand:hover {
@@ -125,20 +125,20 @@ a:hover {
 }
 
 .brand-mark {
-  width: 42px;
-  height: 42px;
-  max-width: 48px;
-  max-height: 48px;
+  width: 56px;
+  height: 56px;
+  max-width: 56px;
+  max-height: 56px;
   flex-shrink: 0;
   display: block;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .brand-mark {
-    width: 34px;
-    height: 34px;
-    max-width: 36px;
-    max-height: 36px;
+    width: 44px;
+    height: 44px;
+    max-width: 44px;
+    max-height: 44px;
   }
 }
 
@@ -342,7 +342,7 @@ a:hover {
   font-family: var(--font-display);
   font-size: clamp(2.1rem, 4.1vw, 3.55rem);
   font-weight: 750;
-  letter-spacing: -0.04em;
+  letter-spacing: 0;
   line-height: 1.02;
   text-wrap: balance;
   margin: 0 0 0.85rem;
@@ -384,17 +384,20 @@ a:hover {
   color: var(--accent);
   font-weight: 650;
   font-size: 0.92rem;
-  letter-spacing: 0.01em;
+  letter-spacing: 0;
   margin: 0 0 0.65rem;
 }
 
 h1,
 h2,
-h3 {
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-display);
   line-height: 1.12;
   font-weight: 700;
-  letter-spacing: -0.03em;
+  letter-spacing: 0;
   text-wrap: balance;
 }
 
@@ -686,7 +689,8 @@ p {
   gap: 2rem;
 }
 
-#offert {
+.contact-offert#offert,
+#offert.contact-offert {
   scroll-margin-top: calc(var(--header-h) + 1rem);
 }
 
@@ -701,7 +705,7 @@ p {
   font-family: var(--font-display);
   font-size: clamp(1.75rem, 3.5vw, 2.5rem);
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
   margin: 0 0 1rem;
 }
 
@@ -867,6 +871,25 @@ textarea {
     position: relative;
   }
 
+  .site-header.is-open {
+    z-index: 60;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .site-header.is-open .header-inner {
+    z-index: 61;
+  }
+
+  .site-header.is-open .brand {
+    position: relative;
+    z-index: 63;
+  }
+
+  .site-header.is-open .nav-toggle {
+    z-index: 63;
+  }
+
   .nav-toggle {
     display: inline-flex;
   }
@@ -884,21 +907,21 @@ textarea {
   }
 
   .nav-list {
-    display: none;
+    display: none !important;
     position: fixed;
     inset: 0;
-    z-index: 48;
+    z-index: 50;
     flex-direction: column;
     align-items: stretch;
     gap: 0;
     margin: 0;
-    padding: calc(var(--header-h) + 1.75rem) 1.5rem 2rem;
-    background: rgba(10, 8, 7, 0.97);
+    padding: calc(var(--header-h) + 0.5rem) 1.25rem 2rem;
+    background: var(--bg);
     overflow-y: auto;
   }
 
   .site-header.is-open .nav-list {
-    display: flex;
+    display: flex !important;
   }
 
   .nav-list > li {
@@ -912,11 +935,12 @@ textarea {
     display: flex;
     align-items: center;
     width: 100%;
-    padding: 1rem 0;
-    font-size: clamp(1.65rem, 5.5vw, 2.15rem);
+    padding: 0.45rem 0;
+    font-size: clamp(1.375rem, 4.2vw, 1.625rem);
     font-weight: 600;
     color: var(--ink);
     text-align: left;
+    letter-spacing: 0;
   }
 
   .nav-item--dropdown {

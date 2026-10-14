@@ -1,0 +1,115 @@
+{
+  "@context": "https://schema.org",
+  "@type": ["MusicGroup", "PerformingGroup", "Organization"],
+  "name": "Halv Fjorton",
+  "legalName": "Halv Fjorton EK. FÖR.",
+  "alternateName": "Halv 14",
+  "description": "Halv Fjorton är ett coverband och partyband med åtta musiker, rötter i Växjö och medlemmar över södra Sverige. Soul, funk, rock och svenska klassiker med egen blåssektion.",
+  "url": "https://halvfjorton.se/",
+  "image": "https://halvfjorton.se/assets/img/og.jpg",
+  "logo": "https://halvfjorton.se/assets/img/h14-logo.svg",
+  "email": "halvfjorton@gmail.com",
+  "foundingDate": "2018",
+  "genre": ["Soul", "Funk", "Rock", "Coverband", "Partyband"],
+  "foundingLocation": {
+    "@type": "Place",
+    "name": "Växjö",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Växjö",
+      "addressRegion": "Kronoberg",
+      "addressCountry": "SE"
+    }
+  },
+  "areaServed": [
+    {
+      "@type": "City",
+      "name": "Växjö",
+      "address": {
+        "@type": "PostalAddress",
+        "addressRegion": "Kronoberg",
+        "addressCountry": "SE"
+      }
+    },
+    {
+      "@type": "City",
+      "name": "Älmhult",
+      "address": {
+        "@type": "PostalAddress",
+        "addressRegion": "Kronoberg",
+        "addressCountry": "SE"
+      }
+    },
+    {
+      "@type": "City",
+      "name": "Kalmar",
+      "address": {
+        "@type": "PostalAddress",
+        "addressRegion": "Kalmar",
+        "addressCountry": "SE"
+      }
+    },
+    {
+      "@type": "City",
+      "name": "Jönköping",
+      "address": {
+        "@type": "PostalAddress",
+        "addressRegion": "Jönköping",
+        "addressCountry": "SE"
+      }
+    },
+    {
+      "@type": "City",
+      "name": "Lund",
+      "address": {
+        "@type": "PostalAddress",
+        "addressRegion": "Skåne",
+        "addressCountry": "SE"
+      }
+    },
+    {
+      "@type": "City",
+      "name": "Malmö",
+      "address": {
+        "@type": "PostalAddress",
+        "addressRegion": "Skåne",
+        "addressCountry": "SE"
+      }
+    },
+    {
+      "@type": "City",
+      "name": "Helsingborg",
+      "address": {
+        "@type": "PostalAddress",
+        "addressRegion": "Skåne",
+        "addressCountry": "SE"
+      }
+    },
+    {
+      "@type": "AdministrativeArea",
+      "name": "Småland",
+      "addressCountry": "SE"
+    },
+    {
+      "@type": "AdministrativeArea",
+      "name": "Skåne",
+      "addressCountry": "SE"
+    }
+  ],
+  "sameAs": [
+    "https://www.instagram.com/halvfjorton/",
+    "https://www.youtube.com/@halvfjorton9292"
+  ],
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "email": "halvfjorton@gmail.com",
+    "contactType": "booking",
+    "areaServed": "SE",
+    "availableLanguage": ["sv", "en"]
+  },
+  "identifier": {
+    "@type": "PropertyValue",
+    "propertyID": "orgnr",
+    "value": "769641-5418"
+  }
+}
