@@ -124,8 +124,8 @@ a:hover {
 .brand-mark {
   width: 38px;
   height: 38px;
-  filter: invert(1);
-  mix-blend-mode: screen;
+  flex-shrink: 0;
+  display: block;
 }
 
 .nav-toggle {
