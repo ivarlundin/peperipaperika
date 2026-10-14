@@ -96,6 +96,7 @@ SITEMAP_PATHS = [
     "/lyssna/",
     "/faq/",
     "/kontakt/",
+    "/integritetspolicy/",
 ]
 
 HOME_NAV_LINKS = [
@@ -177,6 +178,29 @@ def tally_iframe_markup() -> str:
           ></iframe>"""
 
 
+def integritetspolicy_page_body() -> str:
+    return """    <section class="section alt-legal-page">
+      <div class="alt-svc-wrap alt-legal-page__inner">
+        <h1 class="alt-svc-chapter__title alt-legal-page__title">Integritetspolicy</h1>
+        <div class="alt-svc-chapter__body alt-legal-page__body">
+          <p>Denna policy beskriver hur Halv Fjorton ek. för. behandlar personuppgifter när du kontaktar oss via webbplatsen.</p>
+          <h2 class="alt-svc-chapter__title alt-legal-page__heading">Personuppgiftsansvarig</h2>
+          <p>Halv Fjorton ek. för., organisationsnummer 769641-5418. Kontakt: <a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a>.</p>
+          <h2 class="alt-svc-chapter__title alt-legal-page__heading">Vad vi samlar in</h2>
+          <p>Namn, e-postadress, telefonnummer om du anger det, och meddelandet du skickar i kontaktformuläret.</p>
+          <h2 class="alt-svc-chapter__title alt-legal-page__heading">Varför</h2>
+          <p>Vi använder uppgifterna för att besvara din förfrågan och ta fram offert när det behövs.</p>
+          <h2 class="alt-svc-chapter__title alt-legal-page__heading">Hur länge</h2>
+          <p>Uppgifterna raderas när förfrågan är avslutad, senast inom 12 månader.</p>
+          <h2 class="alt-svc-chapter__title alt-legal-page__heading">Delning</h2>
+          <p>Vi säljer inte personuppgifter och delar dem inte med tredje part i marknadsföringssyfte.</p>
+          <h2 class="alt-svc-chapter__title alt-legal-page__heading">Dina rättigheter</h2>
+          <p>Du kan begära tillgång, rättelse eller radering av dina uppgifter. Mejla <a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a>.</p>
+        </div>
+      </div>
+    </section>"""
+
+
 def kontakt_page_body() -> str:
     usp_items = "\n".join(f"            <li>{esc(u)}</li>" for u in HOME_CONTACT_USPS)
     return f"""    <section class="alt-contact-page section" id="offert" aria-labelledby="kontakt-rubrik">
@@ -192,11 +216,14 @@ def kontakt_page_body() -> str:
             </ul>
 {offert_email_mail_markup()}
           </div>
-          <div class="contact-offert__form tally-card">
-            <noscript>
-              <p><a href="{TALLY_PUBLIC_URL}">Öppna offertformuläret på Tally</a> om det inte visas här.</p>
-            </noscript>
+          <div class="contact-offert__form-col">
+            <div class="contact-offert__form tally-card">
+              <noscript>
+                <p><a href="{TALLY_PUBLIC_URL}">Öppna offertformuläret på Tally</a> om det inte visas här.</p>
+              </noscript>
 {tally_iframe_markup()}
+            </div>
+            <p class="contact-offert__consent">Genom att skicka godkänner du att vi sparar dina uppgifter för att besvara din förfrågan. Läs mer i vår <a href="/integritetspolicy/">integritetspolicy</a>.</p>
           </div>
         </div>
       </div>
@@ -402,6 +429,7 @@ def modern_footer_markup() -> str:
             <li><a href="/kontakt/">Kontakt</a></li>
             <li><a href="/faq/">FAQ</a></li>
             <li><a href="/lyssna/">Lyssna</a></li>
+            <li><a href="/integritetspolicy/">Integritetspolicy</a></li>
           </ul>
         </nav>
         <div class="site-footer__aside">
@@ -1721,6 +1749,14 @@ def write_pages():
         extra_scripts='  <script src="/assets/js/tally-embed.js" defer></script>\n',
         body=kontakt_page_body(),
         page_class="alt-page--kontakt",
+    )
+
+    page(
+        "/integritetspolicy/",
+        "Integritetspolicy | Halv Fjorton",
+        "Så behandlar Halv Fjorton personuppgifter från kontaktformuläret: vad vi samlar in, varför, hur länge vi sparar och dina rättigheter.",
+        breadcrumb_name="Integritetspolicy",
+        body=integritetspolicy_page_body(),
     )
 
     page(

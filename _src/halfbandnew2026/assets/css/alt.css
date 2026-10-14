@@ -1891,6 +1891,66 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   color: #0a0a0b;
 }
 
+.alt-page .contact-offert__form-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.alt-page .contact-offert__consent {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--alt-muted);
+  max-width: 42ch;
+}
+
+.alt-page .contact-offert__consent a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+}
+
+.alt-page--inner .alt-legal-page {
+  --alt-svc-title-size: clamp(1.55rem, 3.1vw, 2.05rem);
+  --alt-svc-body-size: clamp(1.02rem, 2.15vw, 1.125rem);
+  --alt-svc-body-line: 1.65;
+  padding-block: clamp(3rem, 8vw, 5rem);
+}
+
+.alt-page--inner .alt-legal-page .alt-svc-chapter__title {
+  font-family: var(--font-display);
+  font-size: var(--alt-svc-title-size);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.alt-page--inner .alt-legal-page__title {
+  max-width: none;
+  margin: 0 0 1.25rem;
+}
+
+.alt-page--inner .alt-legal-page__heading {
+  font-size: clamp(1.12rem, 2.2vw, 1.28rem);
+  max-width: none;
+  margin: 1.75rem 0 0.5rem;
+}
+
+.alt-page--inner .alt-legal-page .alt-svc-chapter__body {
+  font-size: var(--alt-svc-body-size);
+  font-weight: 300;
+  line-height: var(--alt-svc-body-line);
+  color: var(--alt-muted);
+  max-width: 52ch;
+}
+
+.alt-page--inner .alt-legal-page .alt-svc-chapter__body p {
+  margin: 0 0 1rem;
+}
+
 @media (max-width: 900px) {
   .alt-contact-offert {
     --offert-surface: #eeebe6;
