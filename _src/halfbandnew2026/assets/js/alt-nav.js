@@ -6,22 +6,10 @@
     header.classList.toggle("is-solid", solid);
   }
 
-  var sentinel = document.querySelector(".alt-header-scroll-sentinel");
-  if (sentinel && "IntersectionObserver" in window) {
-    setSolid(false);
-    new IntersectionObserver(
-      function (entries) {
-        setSolid(!entries[0].isIntersecting);
-      },
-      { threshold: 0 }
-    ).observe(sentinel);
-    return;
+  function updateFromScroll() {
+    setSolid(window.scrollY > 12);
   }
 
-  function update() {
-    setSolid(window.scrollY > 20);
-  }
-
-  update();
-  window.addEventListener("scroll", update, { passive: true });
+  updateFromScroll();
+  window.addEventListener("scroll", updateFromScroll, { passive: true });
 })();

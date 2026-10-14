@@ -13,8 +13,9 @@
     "julfesten",
     "företagsfesten",
   ];
-  var charMs = 70;
-  var holdMs = 2000;
+  var charMs = 85;
+  var holdMs = 2800;
+  var deleteMs = 48;
 
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     textEl.textContent = phrases[0];
@@ -50,7 +51,7 @@
     if (charIndex > 0) {
       charIndex -= 1;
       textEl.textContent = phrase.slice(0, charIndex);
-      return sleep(charMs).then(tick);
+      return sleep(deleteMs).then(tick);
     }
 
     deleting = false;

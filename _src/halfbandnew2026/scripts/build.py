@@ -1398,6 +1398,40 @@ def assert_no_ai_dashes_in_build(target: Path) -> None:
         raise SystemExit(f"Build check failed: en/em dash found in output:\n{sample}{extra}")
 
 
+def _prefix_asset_root(url: str, prefix: str) -> str:
+    if not prefix or not url.startswith("/assets/"):
+        return url
+    if url.startswith(f"{prefix}/"):
+        return url
+    return f"{prefix}{url}"
+
+
+def _prefix_bare_asset_urls(text: str, prefix: str) -> str:
+    """Ensure srcset/imagesrcset candidates use the labs subpath (idempotent)."""
+    if not prefix:
+        return text
+
+    def fix_set(match: re.Match[str]) -> str:
+        attr, q, value = match.group(1), match.group(2), match.group(3)
+        parts: list[str] = []
+        for candidate in value.split(","):
+            candidate = candidate.strip()
+            if not candidate:
+                continue
+            bits = candidate.split()
+            bits[0] = _prefix_asset_root(bits[0], prefix)
+            parts.append(" ".join(bits))
+        if not parts:
+            return match.group(0)
+        return f"{attr}={q}{', '.join(parts)}{q}"
+
+    return re.sub(
+        r'(?P<attr>srcset|imagesrcset)=(?P<q>["\'])(?P<val>[^"\']*)(?P=q)',
+        fix_set,
+        text,
+    )
+
+
 def rewrite_root_relative_urls(target: Path, subpath: str) -> None:
     prefix = normalize_subpath(subpath)
     if not prefix:
@@ -1410,10 +1444,15 @@ def rewrite_root_relative_urls(target: Path, subpath: str) -> None:
         attr = match.group("attr")
         q = match.group("q")
         if attr in ("srcset", "imagesrcset"):
-            updated = path.replace('"/assets/', f'"{prefix}/assets/').replace("'/assets/", f"'{prefix}/assets/")
-            if updated == path:
-                updated = path.replace("/assets/", f"{prefix}/assets/")
-            path = updated
+            parts: list[str] = []
+            for candidate in path.split(","):
+                candidate = candidate.strip()
+                if not candidate:
+                    continue
+                bits = candidate.split()
+                bits[0] = _prefix_asset_root(bits[0], prefix)
+                parts.append(" ".join(bits))
+            path = ", ".join(parts) if parts else path
         else:
             path = f"{prefix}{path}"
         return f"{attr}={q}{path}{q}"
@@ -1424,8 +1463,50 @@ def rewrite_root_relative_urls(target: Path, subpath: str) -> None:
             continue
         text = file_path.read_text(encoding="utf-8")
         updated = _ROOT_RELATIVE_URL.sub(replace_url, text)
+        updated = _prefix_bare_asset_urls(updated, prefix)
         if updated != text:
             file_path.write_text(updated, encoding="utf-8")
+
+
+_EYEBROW_IN_HTML = re.compile(r"""class\s*=\s*["'][^"']*\beyebrow\b""", re.IGNORECASE)
+
+
+def assert_no_eyebrows_in_build(target: Path) -> None:
+    offenders: list[str] = []
+    for file_path in target.rglob("*.html"):
+        if not file_path.is_file():
+            continue
+        text = file_path.read_text(encoding="utf-8")
+        if _EYEBROW_IN_HTML.search(text):
+            offenders.append(str(file_path.relative_to(target)))
+    if offenders:
+        sample = "\n".join(f"  - {line}" for line in offenders[:20])
+        extra = f"\n  ... and {len(offenders) - 20} more" if len(offenders) > 20 else ""
+        raise SystemExit(f"Build check failed: eyebrow kickers found in output:\n{sample}{extra}")
+
+
+def assert_labs_asset_urls(target: Path, subpath: str) -> None:
+    prefix = normalize_subpath(subpath)
+    if not prefix:
+        return
+    needles = (
+        'srcset="/assets/',
+        "srcset='/assets/",
+        'imagesrcset="/assets/',
+        "imagesrcset='/assets/",
+    )
+    offenders: list[str] = []
+    for file_path in target.rglob("*.html"):
+        if not file_path.is_file():
+            continue
+        text = file_path.read_text(encoding="utf-8")
+        for needle in needles:
+            if needle in text:
+                offenders.append(f"{file_path.relative_to(target)} ({needle})")
+                break
+    if offenders:
+        sample = "\n".join(f"  - {line}" for line in offenders[:20])
+        raise SystemExit(f"Build check failed: unprefixed asset URLs in labs output:\n{sample}")
 
 
 def run_build(output_dir: Path | None = None, subpath: str = "") -> None:
@@ -1443,6 +1524,8 @@ def run_build(output_dir: Path | None = None, subpath: str = "") -> None:
     patch_home_page()
     rewrite_root_relative_urls(OUT_ROOT, subpath)
     assert_no_ai_dashes_in_build(OUT_ROOT)
+    assert_no_eyebrows_in_build(OUT_ROOT)
+    assert_labs_asset_urls(OUT_ROOT, subpath)
 
 
 if __name__ == "__main__":
