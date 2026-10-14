@@ -21,6 +21,30 @@ Varje sektion ska knyta an till föregående. Upprepa inte samma mening i nästa
 - Inga kickers (korta överrubriker ovanför huvudrubriker).
 - Undvik anglicismer och svengelska när svenska finns: *evenemang/fest* före *event*, *upplägg* före *setup*, *stämning* före *vibe*, undvik *leverera upplevelse*, *skräddarsydd experience* och liknande.
 - Musiktermer som *soul*, *funk*, *live* och ortnamn är ok när de är etablerade.
+- Skriv **kör** (sång), inte *kö*.
+- Skriv **e-post** / *mejla* i löptext om kontakt; undvik *mail* som substantiv (*i mail*, *per mail*).
+- Skriv **passar** / *fungerar*; undvik *funkar*.
+
+### Blås och bandstorlek
+
+Nämn trumpet och saxofon (och kör om det är relevant) i vanlig prosa. Undvik marknadsfrasen *egen blåssektion* och rubriker som bara säger *Blåssektion* eller *Egen blåssektion*.
+
+### Förbjudna och uttjatade fraser (ersätt eller stryk)
+
+Använd inte dessa som säljargument eller utfyllnad. Om fakta kräver bandstorlek: *åtta musiker*, *trumpet och saxofon*, *hela bandet på scen*.
+
+| Undvik | Skriv hellre (exempel) |
+|--------|-------------------------|
+| egen blåssektion | trumpet och saxofon i bandet; blås på scen |
+| helband / hela helbandet (som säljord) | hela bandet; alla åtta på scen |
+| färdigt band / komplett liveband / fullt liveband | vi kommer som åtta musiker; bandet spelar live |
+| åttamannaband (som rubrik eller USP) | åtta musiker; bandet är åtta personer |
+| full bandbredd / komplett sättning | (stryk, eller beskriv vad som händer) |
+| liveupplevelse / musikunderhållning (byråspråk) | livemusik; band på scen |
+| levererar (musik, sväng, upplevelse) | spelar; håller igång dansgolvet |
+| dynamisk blåssektion | (stryk) |
+| partymusik (upprepat i varje stycke) | festmusik; dansmusik; (variera) |
+| Band och … med egen blåssektion | kort fakta om ljud eller repertoar |
 
 ## Undvik AI-slop
 
