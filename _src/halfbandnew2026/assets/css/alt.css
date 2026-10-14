@@ -1828,12 +1828,55 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
 /* Mobile nav */
 @media (max-width: 900px) {
+  .alt-offers {
+    padding: 3rem 0 3.5rem;
+  }
+
   .alt-offers__grid {
     grid-template-columns: 1fr;
+    gap: 0.75rem;
   }
 
   .alt-offer-card {
-    min-height: 360px;
+    display: grid;
+    grid-template-columns: minmax(0, 38%) minmax(0, 1fr);
+    gap: 0.85rem;
+    align-items: center;
+    min-height: 0;
+    height: auto;
+    padding: 0.7rem;
+  }
+
+  .alt-offer-card__img {
+    grid-column: 1;
+    grid-row: 1;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: calc(var(--alt-radius) - 6px);
+  }
+
+  .alt-offer-card__body {
+    grid-column: 2;
+    flex: none;
+    padding: 0.15rem 0.35rem 0.15rem 0;
+    justify-content: center;
+  }
+
+  .alt-offer-card h2 {
+    font-size: 1.125rem;
+    margin-bottom: 0.35rem;
+    line-height: 1.2;
+  }
+
+  .alt-offer-card p {
+    font-size: 0.875rem;
+    line-height: 1.45;
+  }
+
+  .alt-offer-card__arrow {
+    margin-top: 0.5rem;
+    padding-top: 0;
+    font-size: 0.8125rem;
   }
 
   .alt-voices__grid {
