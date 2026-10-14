@@ -421,7 +421,6 @@ def page(
     <div class="alt-header__inner header-inner">
       <a class="alt-brand brand" href="/" aria-label="Halv Fjorton">
 {brand_logo_markup()}
-        <span>Halv Fjorton</span>
       </a>
 {toggle}
       <div class="nav-backdrop" data-nav-backdrop hidden></div>

@@ -392,7 +392,6 @@
   }
 
   .alt-page .alt-header.is-open .alt-brand,
-  .alt-page .alt-header.is-open .alt-brand span,
   .alt-page .alt-header.is-open .alt-brand .brand-mark {
     position: relative;
     z-index: 63;
