@@ -47,7 +47,7 @@ def main() -> int:
             )
             for i, box in enumerate(boxes):
                 assert box["w"] >= 88, f"column {i} too narrow: {box['w']}"
-                assert box["h"] >= 220, f"column {i} too short for bento stack: {box['h']}"
+                assert box["h"] >= 260, f"column {i} too short for bento stack: {box['h']}"
 
             cards_per_col = page.locator(".alt-gallery__set").first.locator(
                 ".alt-gallery__col"
