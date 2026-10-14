@@ -1628,29 +1628,28 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 /* Featured quote (below gallery) */
 .alt-quote {
   padding: 0 0 4.5rem;
-  border-top: 1px solid var(--alt-line);
   content-visibility: auto;
-  contain-intrinsic-size: auto 280px;
+  contain-intrinsic-size: auto 320px;
 }
 
 .alt-quote__inner {
-  max-width: min(var(--alt-max), 40rem);
+  max-width: min(var(--alt-max), 42rem);
   margin: 0 auto;
   padding: 3.25rem var(--alt-pad-right) 0 var(--alt-pad-left);
   box-sizing: border-box;
 }
 
 .alt-quote__mark {
-  margin: 0 0 0.5rem;
+  margin: 0 0 0.35rem;
   font-family: Georgia, "Times New Roman", Times, serif;
-  font-size: clamp(3.75rem, 13vw, 5.25rem);
-  font-weight: 400;
-  line-height: 0.9;
+  font-size: clamp(6.5rem, 22vw, 11rem);
+  font-weight: 900;
+  line-height: 0.82;
   color: var(--alt-ink);
 }
 
 .alt-quote__text {
-  margin: 0 0 1.35rem;
+  margin: 0 0 1.5rem;
   padding: 0;
   border: 0;
 }
@@ -1658,9 +1657,9 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 .alt-quote__text p {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(1.625rem, 5.2vw, 2.25rem);
+  font-size: clamp(1.875rem, 6vw, 2.75rem);
   font-weight: 700;
-  line-height: 1.22;
+  line-height: 1.2;
   letter-spacing: 0;
   color: var(--alt-ink);
   text-wrap: balance;
@@ -1668,11 +1667,22 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
 .alt-quote__attrib {
   margin: 0;
+  display: grid;
+  gap: 0.2rem;
   font-family: var(--font-sans);
   font-size: 0.9375rem;
-  font-weight: 300;
   line-height: 1.45;
   color: var(--alt-muted);
+}
+
+.alt-quote__attrib-line {
+  display: block;
+  font-weight: 400;
+}
+
+.alt-quote__attrib-line--strong {
+  font-weight: 700;
+  color: var(--alt-ink);
 }
 
 /* Contact / offert (Tally) */
