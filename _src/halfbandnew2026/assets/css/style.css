@@ -899,30 +899,12 @@ textarea {
 }
 
 .site-footer {
+  flex-shrink: 0;
+  margin-top: auto;
   border-top: 1px solid var(--line);
-  padding: 2.6rem 0 3.2rem;
+  padding: 2.75rem 0 3rem;
   background: #120e0c;
   color: var(--muted);
-}
-
-.footer-grid {
-  display: grid;
-  grid-template-columns: 1.3fr 1fr 1fr;
-  gap: 1.6rem;
-}
-
-.footer-grid a {
-  color: var(--ink);
-}
-
-.footer-grid ul {
-  list-style: none;
-  padding: 0;
-  margin: 0.4rem 0 0;
-}
-
-.footer-grid li {
-  margin: 0.25rem 0;
 }
 
 .small {
