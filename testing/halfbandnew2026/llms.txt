@@ -24,5 +24,7 @@ Kärnregion: Växjö, Älmhult, Kalmar, Jönköping, Lund, Malmö, Helsingborg (
 - Företag: https://halvfjorton.se/foretag/
 - FAQ: https://halvfjorton.se/faq/
 - Kontakt: https://halvfjorton.se/kontakt/
+- Konserter: https://halvfjorton.se/konserter/
+- Repertoar: https://halvfjorton.se/repertoar/
 - Bröllopsband Småland: https://halvfjorton.se/brollopsband-smaland/
 - Coverband Skåne: https://halvfjorton.se/coverband-skane-malmo/
