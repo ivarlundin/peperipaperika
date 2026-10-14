@@ -439,13 +439,13 @@ body.alt-page > main {
   display: block;
   padding: 0.55rem 1rem;
   font-size: 0.92rem;
-  color: var(--alt-muted);
+  color: #fff;
   text-decoration: none;
 }
 
 .alt-page .nav-dropdown__menu a:hover,
 .alt-page .nav-dropdown__menu a[aria-current="page"] {
-  color: var(--alt-ink);
+  color: #fff;
   background: rgba(242, 240, 236, 0.06);
 }
 

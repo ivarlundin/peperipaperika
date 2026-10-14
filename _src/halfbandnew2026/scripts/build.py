@@ -217,7 +217,8 @@ def contact_offert_section(
     usps: list[str] | None = None,
     include_mail_button: bool = True,
 ) -> str:
-    usp_items = "\n".join(f"            <li>{esc(u)}</li>" for u in (usps if usps is not None else CONTACT_USPS))
+    usp_list = (usps if usps is not None else CONTACT_USPS)[:3]
+    usp_items = "\n".join(f"            <li>{esc(u)}</li>" for u in usp_list)
     lead_html = f'        <p class="contact-offert__lead">{esc(lead)}</p>\n' if lead else ""
     mail_html = offert_email_mail_markup() if include_mail_button else ""
     return f"""    <section class="{section_class}" id="offert" aria-labelledby="offert-rubrik">
@@ -2019,6 +2020,33 @@ def rewrite_root_relative_urls(target: Path, subpath: str) -> None:
 _EYEBROW_IN_HTML = re.compile(r"""class\s*=\s*["'][^"']*\beyebrow\b""", re.IGNORECASE)
 
 
+def assert_offert_bullet_cap(target: Path, max_items: int = 3) -> None:
+    offenders: list[str] = []
+    for file_path in target.rglob("*.html"):
+        if not file_path.is_file():
+            continue
+        text = file_path.read_text(encoding="utf-8")
+        if 'id="offert"' not in text and "contact-offert__grid" not in text:
+            continue
+        count = text.count('<ul class="list-check">')
+        if not count:
+            continue
+        # Count <li> inside first offert list-check block only (rough slice).
+        start = text.find('<ul class="list-check">')
+        if start < 0:
+            continue
+        end = text.find("</ul>", start)
+        block = text[start:end] if end > start else ""
+        li_count = block.count("<li>")
+        if li_count > max_items:
+            offenders.append(f"{file_path.relative_to(target)} ({li_count} bullets)")
+    if offenders:
+        sample = "\n".join(f"  - {line}" for line in offenders[:20])
+        raise SystemExit(
+            f"Build check failed: offert list-check exceeds {max_items} items:\n{sample}"
+        )
+
+
 def assert_no_eyebrows_in_build(target: Path) -> None:
     offenders: list[str] = []
     for file_path in target.rglob("*.html"):
@@ -2125,6 +2153,7 @@ def run_build(output_dir: Path | None = None, subpath: str = "") -> None:
     rewrite_root_relative_urls(OUT_ROOT, subpath)
     assert_no_ai_dashes_in_build(OUT_ROOT)
     assert_no_eyebrows_in_build(OUT_ROOT)
+    assert_offert_bullet_cap(OUT_ROOT)
     assert_labs_asset_urls(OUT_ROOT, subpath)
     assert_hidden_services_excluded(OUT_ROOT)
     assert_footer_styles_in_css(OUT_ROOT / "assets" / "css" / "alt.css")
