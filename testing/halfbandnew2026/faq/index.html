@@ -20,9 +20,8 @@
   <meta name="twitter:image" content="https://halvfjorton.se/assets/img/og.jpg">
   <link rel="icon" href="/testing/halfbandnew2026/assets/img/favicon.png" type="image/png">
   <link rel="apple-touch-icon" href="/testing/halfbandnew2026/assets/img/favicon.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="preload" href="/testing/halfbandnew2026/assets/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/testing/halfbandnew2026/assets/fonts/Outfit-Variable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/testing/halfbandnew2026/assets/css/style.css">
   <script type="application/ld+json">
     {
@@ -397,14 +396,27 @@
 
         <span>Halv Fjorton</span>
       </a>
-      <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="meny">Meny</button>
+      <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="meny" aria-label="Öppna meny">
+        <span class="nav-toggle__bars" aria-hidden="true"></span>
+      </button>
+      <div class="nav-backdrop" data-nav-backdrop hidden></div>
       <nav id="meny" aria-label="Huvudmeny">
         <ul class="nav-list" data-nav-panel>
           <li><a href="/testing/halfbandnew2026/">Hem</a></li>
-          <li><a href="/testing/halfbandnew2026/brollop/">Bröllop</a></li>
-          <li><a href="/testing/halfbandnew2026/foretag/">Företag</a></li>
-          <li><a href="/testing/halfbandnew2026/kompband/">Kompband</a></li>
-          <li><a href="/testing/halfbandnew2026/mingel/">Mingel</a></li>
+          <li class="nav-item nav-item--dropdown" data-nav-dropdown>
+            <button type="button" class="nav-dropdown__trigger" data-nav-dropdown-trigger aria-expanded="false" aria-controls="nav-tjanster" id="nav-tjanster-btn">
+              Tjänster
+              <span class="nav-dropdown__chevron" aria-hidden="true"></span>
+            </button>
+            <ul class="nav-dropdown__menu" id="nav-tjanster" role="menu" aria-labelledby="nav-tjanster-btn" data-nav-dropdown-menu>
+              <li role="none"><a role="menuitem" href="/testing/halfbandnew2026/brollop/">Bröllop</a></li>
+              <li role="none"><a role="menuitem" href="/testing/halfbandnew2026/foretag/">Företag</a></li>
+              <li role="none"><a role="menuitem" href="/testing/halfbandnew2026/kompband/">Kompband för artist</a></li>
+              <li role="none"><a role="menuitem" href="/testing/halfbandnew2026/50-arsfest/">50-årsfest</a></li>
+              <li role="none"><a role="menuitem" href="/testing/halfbandnew2026/brollopsband-smaland/">Bröllopsband Småland</a></li>
+              <li role="none"><a role="menuitem" href="/testing/halfbandnew2026/coverband-skane-malmo/">Coverband Skåne & Malmö</a></li>
+            </ul>
+          </li>
           <li><a href="/testing/halfbandnew2026/for-eventbolag/">Eventbolag</a></li>
           <li><a href="/testing/halfbandnew2026/om-oss/">Om oss</a></li>
           <li><a href="/testing/halfbandnew2026/lyssna/">Lyssna</a></li>
