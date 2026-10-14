@@ -341,7 +341,6 @@ def modern_footer_markup() -> str:
           </ul>
         </nav>
         <div class="site-footer__aside">
-          <a class="alt-btn alt-btn--primary site-footer__cta" href="/kontakt/">Kontakta oss</a>
           <a class="site-footer__social" href="https://www.instagram.com/halvfjorton/" target="_blank" rel="noopener noreferrer">
             <svg class="site-footer__ig-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.75"/>
@@ -350,6 +349,7 @@ def modern_footer_markup() -> str:
             </svg>
             <span>Följ oss på Instagram</span>
           </a>
+          <a class="alt-btn alt-btn--primary site-footer__cta" href="/kontakt/">Kontakta oss</a>
         </div>
       </div>
       <hr class="site-footer__rule" />
@@ -1574,6 +1574,22 @@ def assert_no_eyebrows_in_build(target: Path) -> None:
         raise SystemExit(f"Build check failed: eyebrow kickers found in output:\n{sample}{extra}")
 
 
+def assert_footer_styles_in_css(alt_css: Path) -> None:
+    if not alt_css.is_file():
+        raise SystemExit(f"Build check failed: missing stylesheet {alt_css}")
+    text = alt_css.read_text(encoding="utf-8")
+    required = (
+        ".alt-page .site-footer__links",
+        "list-style: none",
+        ".alt-page .site-footer__inner",
+    )
+    missing = [needle for needle in required if needle not in text]
+    if missing:
+        raise SystemExit(
+            "Build check failed: alt.css footer rules missing: " + ", ".join(missing)
+        )
+
+
 def assert_labs_asset_urls(target: Path, subpath: str) -> None:
     prefix = normalize_subpath(subpath)
     if not prefix:
@@ -1615,6 +1631,7 @@ def run_build(output_dir: Path | None = None, subpath: str = "") -> None:
     assert_no_ai_dashes_in_build(OUT_ROOT)
     assert_no_eyebrows_in_build(OUT_ROOT)
     assert_labs_asset_urls(OUT_ROOT, subpath)
+    assert_footer_styles_in_css(OUT_ROOT / "assets" / "css" / "alt.css")
 
 
 if __name__ == "__main__":
