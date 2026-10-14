@@ -34,6 +34,36 @@ def assert_home_offers(page) -> None:
     )
     assert gap_px >= 24, f"expected larger row gap on mobile, got {gap_px}px"
 
+    spacing = page.evaluate(
+        """() => {
+          const offers = document.querySelector('.alt-offers');
+          const gallery = document.querySelector('.alt-gallery');
+          const offersPad = offers ? parseFloat(getComputedStyle(offers).paddingBottom) : 0;
+          const galleryPad = gallery ? parseFloat(getComputedStyle(gallery).paddingTop) : 0;
+          return offersPad + galleryPad;
+        }"""
+    )
+    assert spacing >= 80, f"expected larger offers-to-gallery spacing, got {spacing}px"
+
+    foretag = page.locator(".alt-offer-card", has_text="Företag").locator("p").inner_text()
+    assert foretag == (
+        "Personalfest, kickoff och jubileum. Vi skräddarsyr ett upplägg efter era önskemål, "
+        "oavsett om det gäller mingel eller artistkomp vid större evenemang."
+    ), f"unexpected företag copy: {foretag}"
+
+    fest = page.locator(".alt-offer-card", has_text="Fest och mingel")
+    assert fest.count() == 1, "fest och mingel card missing"
+    fest_href = fest.get_attribute("href") or ""
+    assert fest_href.endswith("/mingel/"), fest_href
+    assert fest.locator("h2").inner_text() == "Fest och mingel"
+    assert fest.locator(".alt-offer-card__arrow").inner_text() == "Läs om fest och mingel"
+
+    media_width = box["width"]
+    vp = page.viewport_size["width"]
+    assert media_width <= vp * 0.32, (
+        f"offer image column should be ~30% smaller, got {media_width}px of {vp}px"
+    )
+
     card = page.locator(".alt-offer-card").first
     styles = card.evaluate(
         """el => {

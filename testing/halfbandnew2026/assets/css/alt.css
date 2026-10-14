@@ -1572,7 +1572,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   .alt-gallery {
     content-visibility: visible;
     contain-intrinsic-size: auto;
-    padding: 0 0 3rem;
+    padding: 2.25rem 0 3rem;
   }
 
   .alt-gallery__marquee {
@@ -2284,7 +2284,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 /* Mobile nav */
 @media (max-width: 900px) {
   .alt-offers {
-    padding: 3rem 0 3.5rem;
+    padding: 3rem 0 5.75rem;
   }
 
   .alt-offers__grid {
@@ -2294,7 +2294,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
   .alt-offer-card {
     display: grid;
-    grid-template-columns: minmax(0, 38%) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 27%) minmax(0, 1fr);
     gap: 0.85rem;
     align-items: start;
     min-height: 0;
