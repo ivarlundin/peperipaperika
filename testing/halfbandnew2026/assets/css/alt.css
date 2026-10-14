@@ -1502,6 +1502,76 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   object-position: center 35%;
 }
 
+@media (max-width: 900px) {
+  .alt-gallery {
+    content-visibility: visible;
+    contain-intrinsic-size: auto;
+    padding: 0 0 3rem;
+  }
+
+  .alt-gallery__marquee {
+    height: 15.25rem;
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+
+  .alt-gallery__set {
+    gap: 0.5rem;
+    padding-right: 0.5rem;
+    align-items: flex-start;
+  }
+
+  .alt-gallery__col {
+    gap: 0.5rem;
+    height: auto;
+    flex-shrink: 0;
+  }
+
+  .alt-gallery__col--narrow {
+    width: 5.875rem;
+  }
+
+  .alt-gallery__col--mid {
+    width: 6.375rem;
+  }
+
+  .alt-gallery__col--wide {
+    width: 7.125rem;
+  }
+
+  .alt-gallery__card,
+  .alt-gallery__card--tall,
+  .alt-gallery__card--short,
+  .alt-gallery__col--invert .alt-gallery__card--tall,
+  .alt-gallery__col--invert .alt-gallery__card--short {
+    flex: none;
+    width: 100%;
+    border-radius: 8px;
+  }
+
+  .alt-gallery__card--tall,
+  .alt-gallery__col--invert .alt-gallery__card--tall {
+    height: 9.25rem;
+  }
+
+  .alt-gallery__card--short,
+  .alt-gallery__col--invert .alt-gallery__card--short {
+    height: 5.5rem;
+  }
+
+  .alt-gallery__col--invert .alt-gallery__card--tall {
+    height: 9.5rem;
+  }
+
+  .alt-gallery__col--invert .alt-gallery__card--short {
+    height: 5.25rem;
+  }
+
+  .alt-gallery__card img {
+    min-height: 100%;
+  }
+}
+
 @media (hover: hover) and (pointer: fine) {
   .alt-gallery__marquee:hover .alt-gallery__track {
     animation-play-state: paused;
