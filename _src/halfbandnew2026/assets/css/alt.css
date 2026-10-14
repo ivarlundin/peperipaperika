@@ -1285,14 +1285,16 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   padding-right: var(--alt-pad-right);
   box-sizing: border-box;
   display: grid;
-  grid-template-columns: 1.15fr 0.925fr 0.925fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
+  align-items: stretch;
 }
 
 .alt-offer-card {
   position: relative;
   display: flex;
   flex-direction: column;
+  height: 100%;
   min-height: 420px;
   border-radius: var(--alt-radius);
   overflow: hidden;
@@ -1310,13 +1312,18 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 }
 
 .alt-offer-card__img {
-  flex: 1;
-  min-height: 200px;
-  object-fit: cover;
+  flex: 0 0 auto;
   width: 100%;
+  aspect-ratio: 3 / 2;
+  min-height: 0;
+  object-fit: cover;
 }
 
 .alt-offer-card__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
   padding: 1.35rem 1.4rem 1.5rem;
 }
 
@@ -1335,7 +1342,8 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 }
 
 .alt-offer-card__arrow {
-  margin-top: 1rem;
+  margin-top: auto;
+  padding-top: 1.125rem;
   font-size: 0.875rem;
   font-weight: 600;
   color: var(--alt-ink);
