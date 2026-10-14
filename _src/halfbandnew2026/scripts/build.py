@@ -659,19 +659,18 @@ def wedding_figure(
 def wedding_page_body(wedding_video_block: str) -> str:
     hero = service_hero_banner(
         "brollop",
-        "Bröllopsband med helband, blås och dans",
+        "Bröllopsfest med livemusik och dans",
         aeo_answer(
-            "Halv Fjorton är ett åttamannaband från Växjö med komplett liveband och egen blåssektion. "
-            "Repertoaren går från soul, funk och rock till schlager och popklassiker, och vi håller igång "
-            "dansgolvet när festen tar fart."
+            "När middagen är slut ska gästerna vilja dansa. Vi spelar soul, funk och svenska låtar från Växjö. "
+            "Blåsen sitter i när det ska svänga."
         ),
     )
     return f"""{hero}
     <section class="alt-wedding-band section alt-wedding-band--opener" data-reveal>
       <div class="alt-wedding-wrap alt-wedding-split alt-wedding-split--text-first alt-wedding-split--feature">
         <div class="alt-wedding-split__text">
-          <h2>Hela bandet på er fest</h2>
-          <p>Vi kommer som ett färdigt band med egen blåssektion. Repertoaren är samlad för bröllop, fest och dans. Säg till om låtar som betyder något för er, så plockar vi in dem där de passar bäst.</p>
+          <h2>När dansen börjar</h2>
+          <p>Spellistan håller tempot uppe hela kvällen. Vi byter stil efter hur golvet ser ut. Era låtar tar vi med om de passar live.</p>
         </div>
         <div class="alt-wedding-split__media">
 {wedding_figure("halvfjorton-03", "Fest med guldkonfetti och trummor bland gäster vid bord", "(max-width: 900px) 100vw, 44vw")}
@@ -685,10 +684,9 @@ def wedding_page_body(wedding_video_block: str) -> str:
         </div>
         <div class="alt-wedding-split__text">
           <h2>Ljud och ljus</h2>
-          <p>Eget komplett ljud och ljus ingår. Ni behöver inte ordna extra utrustning för att vi ska höras och synas på dansgolvet.</p>
+          <p>Eget ljud och ljus ingår. Ni behöver ingen extra teknik för festen.</p>
           <h2>Mingel och vigsel</h2>
-          <p>Före middagen eller under minglet kan vi spela lugnare med jazzigare repertoar. Då har vi eget, separat ljud så det inte stör när kvällens fest ska ta vid.</p>
-          <p>Till vigseln spelar vi med solist och komp. Upplägg och repertoar planerar vi tillsammans med er. Helband till ceremonin går att diskutera om det passar er.</p>
+          <p>Under mingel spelar vi lugnare, med eget litet ljud så pratet håller. Till vigseln komp till solist; låtar bestämmer vi med er. Alla åtta till ceremonin går om tid och plats räcker.</p>
         </div>
       </div>
     </section>
@@ -704,13 +702,12 @@ def wedding_page_body(wedding_video_block: str) -> str:
     <section class="alt-wedding-story section alt-wedding-story--editorial" data-reveal>
       <div class="alt-wedding-wrap alt-wedding-story__inner">
         <div class="alt-wedding-story__block">
-          <h2>Första dansen och önskemål</h2>
-          <p>Första dansen spelar vi gärna live efter önskemål. Vill ni hellre använda en inspelning spelar vi den genom vårt ljudsystem.</p>
-          <p>Vi tar gärna emot önskemål inför bokning. Om en låt inte redan finns i repertoaren kan vi ofta lära in den när den funkar live med bandet.</p>
+          <h2>Första dansen</h2>
+          <p>Live eller er inspelning genom vårt ljud. Önskemål tar vi via e-post; nya låtar lär vi in om arrangemanget passar.</p>
         </div>
         <div class="alt-wedding-story__block">
           <h2>Inför spelningen</h2>
-          <p>Vi behöver lite tid i lokalen innan gästerna kommer för att rigga, och en naturlig plats för bandet. Resten av det praktiska stämmer vi av i god tid, så ni kan lägga energin på kvällen.</p>
+          <p>Tid i lokalen innan gästerna och plats för oss på golvet eller scenen. Resten avtalar vi i förväg.</p>
         </div>
         <div class="alt-wedding-venues">
           <h2>Platser vi brukar spela på</h2>
@@ -720,7 +717,7 @@ def wedding_page_body(wedding_video_block: str) -> str:
             <li>Kronovalls slott</li>
             <li>Bäckaskog slott</li>
           </ul>
-          <p>Vi har spelat bröllop på bland annat Asa Herrgård, Norraby gård, Kronovalls slott och Bäckaskog slott. Hemmaplan är Växjö, Kalmar, Älmhult och Jönköping, och vi är ofta i Lund, Malmö och Helsingborg.</p>
+          <p>Vi har spelat där och på liknande ställen. Vi utgår från Växjö och åker till bröllop i Småland och Skåne, till exempel runt Kalmar och Älmhult eller vidare söderut när det passar er dag.</p>
         </div>
       </div>
     </section>
@@ -732,20 +729,20 @@ def wedding_page_body(wedding_video_block: str) -> str:
         <div class="alt-wedding-video__player">
 {wedding_video_block}
         </div>
-        <p class="small muted alt-wedding-video__caption">Signed Sealed Delivered, inspelat live med bandet.</p>
+        <p class="small muted alt-wedding-video__caption">Signed Sealed Delivered, live med bandet.</p>
       </div>
     </section>
     <section class="alt-wedding-faq section alt-wedding-faq--closing" data-reveal>
       <div class="alt-wedding-wrap">
-        <h2>Vanliga önskemål</h2>
+        <h2>Innan ni bokar</h2>
         <div class="faq-grid alt-wedding-faq__grid">
-          <article><h3>Första dansen</h3><p>Första dansen spelar vi gärna live efter önskemål. Vill ni hellre använda en inspelning spelar vi den genom vårt ljudsystem.</p></article>
-          <article><h3>Mingel och fest</h3><p>Samma kväll, samma band: mingel i lugnare tempo och sedan full fart på dansgolvet.</p></article>
-          <article><h3>Komp till solist</h3><p>Psalmer, vigsel eller gästsång? Se <a href="/brollop/">kompband för artist</a>.</p></article>
+          <article><h3>Första dansen</h3><p>Live eller inspelning.</p></article>
+          <article><h3>Mingel och fest</h3><p>Samma kväll, lugnare först.</p></article>
+          <article><h3>Komp till solist</h3><p>Psalmer och vigsel. Se <a href="/kompband/">kompband för artist</a>.</p></article>
         </div>
         <div class="actions alt-wedding-actions">
           <a class="btn btn-primary" href="/kontakt/#offert">Begär offert</a>
-          <a class="btn btn-ghost" href="/brollop/">Bröllop i Småland</a>
+          <a class="btn btn-ghost" href="/brollopsband-smaland/">Bröllop i Småland</a>
         </div>
       </div>
     </section>"""
@@ -1048,12 +1045,12 @@ def write_pages():
     page(
         "/brollop/",
         f"Bröllopsband Växjö, Kalmar och Småland | {BRAND_TITLE}",
-        "Bröllopsband med åttamannaband och blåssektion i Växjö, Småland och Skåne. Eget ljud och ljus, mingel och vigselmusik som tillval.",
+        "Bröllopsband från Växjö. Eget ljud och ljus, mingel och vigsel med komp, fest samma kväll. Spelningar i Småland och Skåne.",
         breadcrumb_name="Bröllop",
         extra_ld=[
             service_ld(
                 "Bröllopsband",
-                "Bröllopsband med helband och blåssektion. Tillval: mingelmusik, vigselmusik med solist, helband eller komp till solist.",
+                "Bröllopsband från Växjö, åtta musiker. Tillval: mingel, vigsel med komp, alla åtta till ceremonin om det passar.",
                 "/brollop/",
             ),
             wedding_video_ld(),

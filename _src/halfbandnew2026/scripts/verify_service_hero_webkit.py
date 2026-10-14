@@ -17,7 +17,7 @@ PAGES = {
     "brollop": {
         "path": "/brollop/",
         "img_stem": "halvfjorton-03",
-        "h1": "Bröllopsband med helband, blås och dans",
+        "h1": "Bröllopsfest med livemusik och dans",
     },
     "foretag": {
         "path": "/foretag/",
