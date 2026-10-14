@@ -169,7 +169,7 @@ CHECKS_JS = """
     errors.push('eyebrow-kicker');
   }
 
-  document.querySelectorAll('.aeo-answer, .alt-service-intro .lead').forEach((el) => {
+  document.querySelectorAll('.aeo-answer, .alt-service-intro .lead, .alt-service-hero__dek').forEach((el) => {
     const s = getComputedStyle(el);
     const border = Math.max(
       parseFloat(s.borderLeftWidth) || 0,

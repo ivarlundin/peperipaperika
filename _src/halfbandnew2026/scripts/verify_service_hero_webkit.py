@@ -70,7 +70,7 @@ def assert_service_hero(page, slug: str, label: str) -> None:
             hasDash: text.includes('–') || text.includes('—'),
             headerCount: document.querySelectorAll('.alt-header').length,
             footerCount: document.querySelectorAll('.site-footer').length,
-            introInHero: hero ? hero.querySelectorAll('.aeo-answer, .lead').length : -1,
+            introInHero: hero ? hero.querySelectorAll('.alt-service-hero__dek').length : -1,
             typewriterInHero: hero ? hero.querySelectorAll('[data-alt-typewriter], .alt-hero__typewriter').length : -1,
             hasScrim: !!document.querySelector('.alt-service-hero__scrim'),
             factsCount: document.querySelectorAll('.alt-facts').length,
@@ -82,8 +82,8 @@ def assert_service_hero(page, slug: str, label: str) -> None:
               const el = document.querySelector('.alt-service-hero__actions a.alt-btn--primary');
               return el ? (el.getAttribute('href') || '') : '';
             })(),
-            introBlock: !!document.querySelector('.alt-service-intro'),
-            aeoInIntro: document.querySelector('.alt-service-intro .aeo-answer'),
+            introBlock: !!document.querySelector('.alt-service-hero__dek'),
+            aeoInIntro: document.querySelector('.alt-service-hero__dek'),
             expectedStem,
             expectedH1,
           };
@@ -92,8 +92,7 @@ def assert_service_hero(page, slug: str, label: str) -> None:
     )
     intro_styles = page.evaluate(
         """() => {
-          const el = document.querySelector('.alt-service-intro .aeo-answer')
-            || document.querySelector('.alt-service-intro .lead');
+          const el = document.querySelector('.alt-service-hero__dek');
           if (!el) return null;
           const s = getComputedStyle(el);
           return {
@@ -124,7 +123,7 @@ def assert_service_hero(page, slug: str, label: str) -> None:
     assert data["headerCount"] == 1 and data["footerCount"] == 1, (
         f"{slug}/{label}: header/footer count"
     )
-    assert data["introInHero"] == 0, f"{slug}/{label}: ingress must not sit in hero"
+    assert data["introInHero"] == 1, f"{slug}/{label}: hero description line missing"
     assert data["typewriterInHero"] == 1, f"{slug}/{label}: service hero typewriter missing"
     assert data["hasScrim"], f"{slug}/{label}: missing home-style scrim"
     assert data["factsCount"] == 0, f"{slug}/{label}: facts strip must not appear"
@@ -137,10 +136,7 @@ def assert_service_hero(page, slug: str, label: str) -> None:
         assert intro_styles["paddingTop"] == "0px", intro_styles
         assert intro_styles["borderLeftWidth"] == "0px", intro_styles
         assert intro_styles["boxShadow"] == "none", intro_styles
-        if slug == "brollop":
-            assert "outfit" in intro_styles["fontFamily"].lower(), intro_styles
-        else:
-            assert "inter" in intro_styles["fontFamily"].lower(), intro_styles
+        assert "inter" in intro_styles["fontFamily"].lower(), intro_styles
 
 
 def assert_service_hero_layout_top(page, slug: str, label: str) -> None:

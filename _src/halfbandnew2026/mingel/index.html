@@ -2,7 +2,8 @@
 <html lang="sv">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="format-detection" content="telephone=no, date=no, email=no, address=no">
   <title>Mingelband och jazz till mottagning | Halv Fjorton</title>
   <meta name="description" content="Halv Fjorton spelar mingel med jazz och svenska klassiker. Passar konferensmiddag, bröllopsmottagning och företagsmingel i södra Sverige.">
   <link rel="canonical" href="https://halvfjorton.se/mingel/">
@@ -22,7 +23,7 @@
   <link rel="apple-touch-icon" href="/assets/img/favicon.png">
   <link rel="preload" href="/assets/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/Outfit-Variable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/alt.css">
   <script type="application/ld+json">
     {
     "@context": "https://schema.org",
@@ -259,11 +260,11 @@
   }
   </script>
 </head>
-<body class="">
+<body class="alt-page alt-page--inner alt-page--service-banner">
   <a class="skip-link" href="#innehall">Hoppa till innehållet</a>
-  <header class="site-header" data-nav>
-    <div class="header-inner">
-      <a class="brand" href="/" aria-label="Halv Fjorton">
+  <header class="alt-header site-header" data-nav>
+    <div class="alt-header__inner header-inner">
+      <a class="alt-brand brand" href="/" aria-label="Halv Fjorton">
 <svg class="brand-mark" focusable="false" width="56" height="56" viewBox="0 0 593 596" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 <g clip-path="url(#clip0_h14_logo)">
 <mask id="mask0_h14_logo" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="593" height="596">
@@ -283,48 +284,101 @@
 </clipPath>
 </defs>
 </svg>
-</a>
-      <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="meny" aria-label="Öppna meny">
+
+      </a>
+      <button class="nav-toggle alt-nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="mobile-menu" aria-label="Öppna meny">
         <span class="nav-toggle__bars" aria-hidden="true"></span>
       </button>
-      <div class="nav-backdrop" data-nav-backdrop hidden></div>
-      <nav id="meny" aria-label="Huvudmeny">
-        <ul class="nav-list" data-nav-panel>
-          <li><a href="/">Hem</a></li>
+      <button type="button" class="mobile-menu__close alt-header__menu-close" data-nav-close aria-label="Stäng meny">
+        <span class="mobile-menu__close-icon" aria-hidden="true"></span>
+      </button>
+      <nav class="alt-nav" aria-label="Huvudmeny">
+        <ul class="alt-nav__links nav-list" id="alt-meny">
           <li class="nav-item nav-item--dropdown" data-nav-dropdown>
-            <button type="button" class="nav-dropdown__trigger" data-nav-dropdown-trigger aria-expanded="false" aria-controls="nav-tjanster" id="nav-tjanster-btn">
+            <button type="button" class="nav-dropdown__trigger" data-nav-dropdown-trigger aria-expanded="true" aria-controls="nav-tjanster" id="nav-tjanster-btn">
               Tjänster
               <span class="nav-dropdown__chevron" aria-hidden="true"></span>
             </button>
             <ul class="nav-dropdown__menu" id="nav-tjanster" role="menu" aria-labelledby="nav-tjanster-btn" data-nav-dropdown-menu>
               <li role="none"><a role="menuitem" href="/brollop/">Bröllop</a></li>
               <li role="none"><a role="menuitem" href="/foretag/">Företag</a></li>
-              <li role="none"><a role="menuitem" href="/kompband/">Kompband för artist</a></li>
-              <li role="none"><a role="menuitem" href="/50-arsfest/">50-årsfest</a></li>
-              <li role="none"><a role="menuitem" href="/brollopsband-smaland/">Bröllopsband Småland</a></li>
-              <li role="none"><a role="menuitem" href="/coverband-skane-malmo/">Coverband Skåne & Malmö</a></li>
+              <li role="none"><a role="menuitem" href="/mingel/" aria-current="page">Fest och mingel</a></li>
             </ul>
           </li>
-          <li><a href="/for-eventbolag/">Eventbolag</a></li>
+          <li><a href="/konserter/">Konserter</a></li>
           <li><a href="/om-oss/">Om oss</a></li>
-          <li><a href="/lyssna/">Lyssna</a></li>
           <li><a href="/faq/">FAQ</a></li>
+          <li><a href="/lyssna/">Lyssna</a></li>
           <li><a href="/kontakt/">Kontakt</a></li>
         </ul>
+        <a class="alt-btn alt-btn--primary alt-nav__cta-desktop" href="/#offert">Begär offert</a>
       </nav>
     </div>
   </header>
-  <main id="innehall">
-    <header class="page-hero">
-      <div class="page-hero-copy">
-        <h1>Musik som fyller rummet utan att ta över samtalet</h1>
-        <p class="lead">Vi erbjuder spelning vid mingel med blandad repertoar. Allt från traditionell jazz till svenska klassiker. Upplägget passar konferensmiddagar, bröllopsmottagningar och andra sammankomster där gästerna ska kunna prata - och ändå känna att det händer något.</p>
+  <div class="mobile-menu" id="mobile-menu" data-mobile-menu hidden aria-hidden="true">
+    <nav class="mobile-menu__nav" aria-label="Mobilmeny">
+      <ul class="mobile-menu__list nav-list" data-nav-panel>
+          <li class="nav-item nav-item--dropdown" data-nav-dropdown>
+            <button type="button" class="nav-dropdown__trigger" data-nav-dropdown-trigger aria-expanded="true" aria-controls="mobile-nav-tjanster" id="mobile-nav-tjanster-btn">
+              Tjänster
+              <span class="nav-dropdown__chevron" aria-hidden="true"></span>
+            </button>
+            <div class="mobile-menu__submenu">
+              <div class="mobile-menu__submenu-inner">
+                <ul class="nav-dropdown__menu" id="mobile-nav-tjanster" role="menu" aria-labelledby="mobile-nav-tjanster-btn" data-nav-dropdown-menu>
+              <li role="none"><a role="menuitem" href="/brollop/">Bröllop</a></li>
+              <li role="none"><a role="menuitem" href="/foretag/">Företag</a></li>
+              <li role="none"><a role="menuitem" href="/mingel/" aria-current="page">Fest och mingel</a></li>
+                </ul>
+              </div>
+            </div>
+          </li>
+          <li><a href="/konserter/">Konserter</a></li>
+          <li><a href="/om-oss/">Om oss</a></li>
+          <li><a href="/faq/">FAQ</a></li>
+          <li><a href="/lyssna/">Lyssna</a></li>
+          <li><a href="/kontakt/">Kontakt</a></li>
+      </ul>
+    </nav>
+    <div class="mobile-menu__foot">
+      <a class="alt-btn alt-btn--primary mobile-menu__cta" href="/#offert">Begär offert</a>
+    </div>
+  </div>
+  <main id="innehall" class="alt-inner-main">
+    <header class="alt-service-hero" data-reveal>
+      <div class="alt-service-hero__media" aria-hidden="true">
+        <img
+          class="alt-service-hero__img"
+          src="/assets/img/gallery/halvfjorton-04-800w.webp"
+          srcset="/assets/img/gallery/halvfjorton-04-480w.webp 480w, /assets/img/gallery/halvfjorton-04-800w.webp 800w, /assets/img/gallery/halvfjorton-04-1200w.webp 1200w, /assets/img/gallery/halvfjorton-04-1920w.webp 1920w"
+          sizes="100vw"
+          alt="Sångare och band på rustik träscen med professionellt scenljus"
+          width="1280"
+          height="853"
+          loading="eager"
+          decoding="async"
+        >
       </div>
-    </header>
-    <section class="section">
-      <div class="wrap grid-2">
-        <div>
-          <h2>När mingel är rätt val</h2>
+      <div class="alt-service-hero__scrim" aria-hidden="true"></div>
+      <div class="alt-service-hero__content">
+        <h1>
+          <span class="visually-hidden">Mingelmusik som håller tonen låg</span>
+          <span class="alt-hero__typewriter" data-alt-typewriter data-typewriter-phrases="[&quot;Mingelmusik som håller tonen låg&quot;]" aria-hidden="true">
+            <span class="alt-hero__typewriter-ghost">Mingelmusik som håller tonen låg</span>
+            <span class="alt-hero__typewriter-live">
+              <span class="alt-hero__typewriter-text" data-typewriter-text>Mingelmusik som håller tonen låg</span><span class="alt-hero__caret" aria-hidden="true"></span>
+            </span>
+          </span>
+        </h1>
+        <p class="alt-service-hero__dek">Vi spelar mingel med blandad repertoar, från jazz till svenska klassiker. Det passar när gästerna ska kunna prata och ändå höra att det är livemusik.</p>
+        <div class="alt-service-hero__actions">
+          <a class="alt-btn alt-btn--primary" href="/kontakt/#offert">Kontakta oss</a>
+        </div>
+      </div>
+    </header>    <section class="section alt-svc-chapter">
+      <div class="wrap grid-2 alt-svc-chapter__inner">
+        <div class="alt-svc-chapter__body">
+          <h2 class="alt-svc-chapter__title">När mingel är rätt val</h2>
           <p>Innan middagen, under fördrink, i foajén eller på en sommaräng. Vi spelar lägre, mer akustiskt i känslan, men med samma musiker - så kvällen kan växa till fest utan att byta band.</p>
           <ul class="list-check">
             <li>Bröllopsmottagning mellan vigsel och middag</li>
@@ -332,8 +386,8 @@
             <li>Jubileum där första timmen ska vara samtal, inte diskotek</li>
           </ul>
         </div>
-        <div>
-          <h2>Repertoaren i korthet</h2>
+        <div class="alt-svc-chapter__body">
+          <h2 class="alt-svc-chapter__title">Repertoaren i korthet</h2>
           <p>Jazzstandard, soul i dämpat tempo, svenska visor och klassiker. Vill ni ha en tydlig tråd - till exempel bara jazz, eller mest svenskt - säger ni det så styr vi dit.</p>
           <p>Många bokar mingel plus fest samma kväll. Det är vårt vanligaste kombinerade upplägg, och det vi rekommenderar när tiden räcker.</p>
           <div class="actions">
@@ -345,44 +399,44 @@
     </section>
 
   </main>
-  <footer class="site-footer">
-    <div class="wrap footer-grid">
-      <div>
-        <p><strong>Halv Fjorton EK. FÖR.</strong></p>
-        <p class="small">Coverband och partyband från Växjö, med medlemmar över södra Sverige.</p>
-        <p class="small">Organisationsnummer 769641-5418</p>
+  <footer class="site-footer" aria-label="Sidfot">
+    <div class="site-footer__inner">
+      <div class="site-footer__grid">
+        <div class="site-footer__brand">
+          <p class="site-footer__title">Halv Fjorton</p>
+          <p class="site-footer__tagline">Coverband från Växjö, Småland</p>
+        </div>
+        <nav class="site-footer__nav" aria-label="Sidfot länkar">
+          <ul class="site-footer__links">
+            <li><a href="/#tjanster">Tjänster</a></li>
+            <li><a href="/kontakt/">Kontakt</a></li>
+            <li><a href="/faq/">FAQ</a></li>
+            <li><a href="/lyssna/">Lyssna</a></li>
+          </ul>
+        </nav>
+        <div class="site-footer__aside">
+          <a class="site-footer__social" href="https://www.instagram.com/halvfjorton/" target="_blank" rel="noopener noreferrer">
+            <svg class="site-footer__ig-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.75"/>
+              <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.75"/>
+              <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
+            </svg>
+            <span>Följ oss på Instagram</span>
+          </a>
+          <a class="alt-btn alt-btn--primary site-footer__cta" href="/kontakt/">Kontakta oss</a>
+        </div>
       </div>
-      <div>
-        <p><strong>Kontakt</strong></p>
-        <ul class="small">
-          <li><a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a></li>
-          <li><a href="https://www.instagram.com/halvfjorton/" rel="noopener noreferrer">Instagram @halvfjorton</a></li>
-          <li><a href="https://www.youtube.com/@halvfjorton9292" rel="noopener noreferrer">YouTube</a></li>
-        </ul>
-      </div>
-      <div>
-        <p><strong>Tjänster</strong></p>
-        <ul class="small">
-          <li><a href="/brollop/">Bröllop</a></li>
-          <li><a href="/foretag/">Företag</a></li>
-          <li><a href="/kompband/">Kompband för artist</a></li>
-          <li><a href="/50-arsfest/">50-årsfest</a></li>
-          <li><a href="/julkonsert/">Julkonsert</a></li>
-          <li><a href="/for-eventbolag/">För eventbolag</a></li>
-        </ul>
-      </div>
-      <div>
-        <p><strong>Områden</strong></p>
-        <ul class="small">
-          <li><a href="/brollopsband-smaland/">Bröllopsband Småland</a></li>
-          <li><a href="/coverband-skane-malmo/">Coverband Skåne</a></li>
-          <li><a href="/faq/">Vanliga frågor</a></li>
-          <li><a href="/kontakt/">Hör av er</a></li>
-        </ul>
-      </div>
+      <hr class="site-footer__rule" />
+      <p class="site-footer__legal">
+        <span class="site-footer__legal-line">© <span data-footer-year>2026</span> Halv Fjorton ek. för.</span>
+        <span class="site-footer__legal-org">Org.nr 769641-5418</span>
+      </p>
     </div>
   </footer>
   <script src="/assets/js/nav.js"></script>
+  <script src="/assets/js/alt-nav.js" defer></script>
+  <script src="/assets/js/footer-year.js" defer></script>
   <script src="/assets/js/video-facade.js" defer></script>
+  <script src="/assets/js/alt-hero-typewriter.js" defer></script>
 </body>
 </html>

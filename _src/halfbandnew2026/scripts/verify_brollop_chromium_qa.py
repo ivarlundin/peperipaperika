@@ -27,7 +27,7 @@ def check(page, label: str, at_top: bool) -> None:
           const bleedImg = document.querySelector('.alt-wedding-bleed img');
           const bleedFit = bleedImg ? getComputedStyle(bleedImg).objectFit : '';
           const introFs = (() => {
-            const el = document.querySelector('.alt-service-intro .aeo-answer');
+            const el = document.querySelector('.alt-service-hero__dek');
             return el ? parseFloat(getComputedStyle(el).fontSize) : 0;
           })();
           return {
