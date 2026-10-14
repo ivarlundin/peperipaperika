@@ -39,6 +39,41 @@ def assert_logo_size(page, label: str, mode: str) -> None:
         )
 
 
+def assert_frosted_header_scrolled_closed(page, label: str) -> None:
+    assert not page.evaluate("document.body.classList.contains('nav-open')"), (
+        f"{label}: menu should be closed"
+    )
+    data = page.evaluate(
+        """() => {
+          const el = document.querySelector('.alt-header');
+          if (!el) return null;
+          const s = getComputedStyle(el);
+          const backdrop = s.backdropFilter || s.webkitBackdropFilter || '';
+          const m = s.backgroundColor.match(/rgba?\\(([^)]+)\\)/);
+          let alpha = 1;
+          if (m) {
+            const parts = m[1].split(',').map((p) => p.trim());
+            if (parts.length === 4) alpha = parseFloat(parts[3]);
+          }
+          return {
+            solid: el.classList.contains('is-solid'),
+            alpha,
+            backdrop,
+            borderWidth: s.borderBottomWidth,
+          };
+        }"""
+    )
+    assert data, f"{label}: header missing"
+    assert data["solid"], f"{label}: header should be solid after scroll"
+    assert 0.55 <= data["alpha"] <= 0.75, (
+        f"{label}: header bg alpha {data['alpha']}"
+    )
+    assert "blur(" in data["backdrop"], f"{label}: backdrop {data['backdrop']}"
+    assert data["borderWidth"] in ("0px", "0"), (
+        f"{label}: header border {data['borderWidth']}"
+    )
+
+
 def assert_solid_menu_surface(page, label: str) -> None:
     data = page.evaluate(
         """() => {
@@ -333,6 +368,11 @@ def main() -> int:
             page.wait_for_timeout(80)
             assert page.evaluate("window.scrollY") >= SCROLL_Y - 20
             assert_home_header_logo_scrolled(page, "home-scrolled-closed")
+            assert_frosted_header_scrolled_closed(page, "home-scrolled-closed")
+            page.screenshot(
+                path=str(OUT / "mobile-header-closed-scrolled-iphone.png"),
+                full_page=False,
+            )
 
             assert_menu_opens_with_motion(page, f"scrollY={SCROLL_Y}")
             page.screenshot(
