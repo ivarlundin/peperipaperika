@@ -31,6 +31,12 @@ CONTACT_USPS = [
     "Sedan 2018",
 ]
 
+HOME_CONTACT_USPS = [
+    "Vi svarar inom 24 timmar",
+    "Offert som PDF – tydlig och utan dolda kostnader",
+    "8 musiker med egen blåssektion",
+]
+
 NAV_SERVICES = [
     ("/brollop/", "Bröllop"),
     ("/foretag/", "Företag"),
@@ -151,8 +157,9 @@ def contact_offert_section(
     lead: str | None = None,
     section_class: str = "contact-offert section",
     wrap_class: str = "wrap contact-offert__grid",
+    usps: list[str] | None = None,
 ) -> str:
-    usp_items = "\n".join(f"            <li>{esc(u)}</li>" for u in CONTACT_USPS)
+    usp_items = "\n".join(f"            <li>{esc(u)}</li>" for u in (usps if usps is not None else CONTACT_USPS))
     lead_html = f'        <p class="contact-offert__lead">{esc(lead)}</p>\n' if lead else ""
     return f"""    <section class="{section_class}" id="offert" aria-labelledby="offert-rubrik">
       <div class="{wrap_class}">
@@ -1304,6 +1311,7 @@ def patch_home_page():
         section_class="alt-contact-offert",
         wrap_class="alt-contact-offert__wrap contact-offert__grid",
         lead="Berätta datum, plats och typ av tillställning. Vi tar hand om resten.",
+        usps=HOME_CONTACT_USPS,
     )
     html = re.sub(
         r'    <section class="alt-cta"[\s\S]*?</section>',
