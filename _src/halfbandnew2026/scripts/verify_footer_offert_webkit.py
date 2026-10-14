@@ -25,11 +25,16 @@ def assert_footer_mobile(page, label: str) -> None:
           const social = document.querySelector('.site-footer__social');
           const cta = document.querySelector('.site-footer__cta');
           const aside = document.querySelector('.site-footer__aside');
+          const title = document.querySelector('.site-footer__title');
+          const org = document.querySelector('.site-footer__legal-org');
+          const copy = document.querySelector('.site-footer__legal-line');
           const legal = document.querySelector('.site-footer__legal');
-          const org = document.querySelector('.site-footer__legal-line:last-child');
           const hero = document.querySelector('.alt-hero__content') || document.querySelector('.alt-header__inner');
           const padInner = inner ? parseFloat(getComputedStyle(inner).paddingLeft) : 0;
           const padHero = hero ? parseFloat(getComputedStyle(hero).paddingLeft) : 0;
+          const legalStyle = legal ? getComputedStyle(legal) : null;
+          const copyY = copy ? copy.getBoundingClientRect().top : 0;
+          const orgY = org ? org.getBoundingClientRect().top : 0;
           return {
             listStyle: ul ? getComputedStyle(ul).listStyleType : '',
             linkDecoration: link ? getComputedStyle(link).textDecorationLine : '',
@@ -39,8 +44,12 @@ def assert_footer_mobile(page, label: str) -> None:
             ctaY: cta ? cta.getBoundingClientRect().top : 0,
             ctaWidth: cta ? cta.getBoundingClientRect().width : 0,
             asideWidth: aside ? aside.getBoundingClientRect().width : 0,
+            titleText: title ? title.textContent.trim() : '',
+            titleFont: title ? getComputedStyle(title).fontFamily : '',
             orgTag: org ? org.tagName : '',
             orgDecoration: org ? getComputedStyle(org).textDecorationLine : '',
+            legalJustify: legalStyle ? legalStyle.justifyContent : '',
+            legalSameRow: Math.abs(copyY - orgY) < 6,
             padInner,
             padHero,
           };
@@ -52,8 +61,14 @@ def assert_footer_mobile(page, label: str) -> None:
     assert data["asideDirection"] == "column", f"{label}: aside flex {data['asideDirection']}"
     assert data["socialY"] < data["ctaY"] - 4, f"{label}: Instagram should sit above CTA"
     assert data["ctaWidth"] >= data["asideWidth"] * 0.92, f"{label}: CTA not full width"
+    assert data["titleText"] == "Halv Fjorton", f"{label}: footer title missing"
+    assert "Outfit" in data["titleFont"], f"{label}: title should use Outfit, got {data['titleFont']}"
     assert data["orgTag"] == "SPAN", f"{label}: org.nr should be plain text, got {data['orgTag']}"
     assert data["orgDecoration"] == "none", f"{label}: org.nr decorated {data['orgDecoration']}"
+    assert data["legalJustify"] == "space-between", (
+        f"{label}: legal row should use space-between, got {data['legalJustify']}"
+    )
+    assert data["legalSameRow"], f"{label}: copyright and org.nr should share one row"
     assert abs(data["padInner"] - data["padHero"]) < 6, (
         f"{label}: footer padding {data['padInner']} != content {data['padHero']}"
     )

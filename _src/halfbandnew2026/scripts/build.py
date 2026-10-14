@@ -341,7 +341,10 @@ def modern_footer_markup() -> str:
     return f"""  <footer class="site-footer" aria-label="Sidfot">
     <div class="site-footer__inner">
       <div class="site-footer__grid">
-        <p class="site-footer__tagline">Coverband från Växjö, Småland</p>
+        <div class="site-footer__brand">
+          <p class="site-footer__title">Halv Fjorton</p>
+          <p class="site-footer__tagline">Coverband från Växjö, Småland</p>
+        </div>
         <nav class="site-footer__nav" aria-label="Sidfot länkar">
           <ul class="site-footer__links">
             <li><a href="/#tjanster">Tjänster</a></li>
@@ -365,7 +368,7 @@ def modern_footer_markup() -> str:
       <hr class="site-footer__rule" />
       <p class="site-footer__legal">
         <span class="site-footer__legal-line">© <span data-footer-year>{BUILD_YEAR}</span> Halv Fjorton ek. för.</span>
-        <span class="site-footer__legal-line">Org.nr 769641-5418</span>
+        <span class="site-footer__legal-org">Org.nr 769641-5418</span>
       </p>
     </div>
   </footer>"""
@@ -605,6 +608,7 @@ def page(
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="format-detection" content="telephone=no, date=no, email=no, address=no">
   <title>{esc(title)}</title>
   <meta name="description" content="{esc(description)}">
   <link rel="canonical" href="{canonical}">
