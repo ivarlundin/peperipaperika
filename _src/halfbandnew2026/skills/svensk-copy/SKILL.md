@@ -45,6 +45,16 @@ Använd inte dessa som säljargument eller utfyllnad. Om fakta kräver bandstorl
 | dynamisk blåssektion | (stryk) |
 | partymusik (upprepat i varje stycke) | festmusik; dansmusik; (variera) |
 | Band och … med egen blåssektion | kort fakta om ljud eller repertoar |
+| Hemmaplan är … / Kärnregion: (kommauppräkning av orter) | Vi utgår från Växjö; ort i en mening om var vi spelar |
+
+### Geografi och orter
+
+Bandet **utgår från Växjö**. Det är utgångspunkten i löptext, inte en ort i en lång lista.
+
+- **Undvik** stela uppräkningar i brödtext: *Hemmaplan är Växjö, Kalmar, Älmhult och Jönköping*, *Vi spelar i Växjö, Kalmar, Älmhult, Jönköping, Lund, Malmö…* som egen mening eller punktlista bara för SEO.
+- **Skriv hellre** orter inbakade i meningar om erfarenhet eller resor: var ni **spelat**, **brukar spela**, eller att ni **åker från Växjö** till bröllop i Småland och Skåne, med ett eller två exempel i samma mening.
+- **Meta och schema** (`areaServed`, tjänstebeskrivningar): ortnamn för sök är ok, men formulera som naturlig svenska (*bröllopsband från Växjö, spelningar i Småland och Skåne*), inte som ren keyword-rad.
+- Längre ortlistor hör hemma i strukturerad data, inte som slogans i synlig copy.
 
 ## Undvik AI-slop
 
@@ -78,3 +88,4 @@ Använd inte dessa som säljargument eller utfyllnad. Om fakta kräver bandstorl
 - [ ] Inga priser, telefon, namn (utom Om oss)
 - [ ] Rubriker är påståenden, inte retoriska frågor
 - [ ] Sista sektion eller CTA pekar mot kontakt/offert utan säljtryck
+- [ ] Geografi: utgår från Växjö; inga fria ortuppräkningar i brödtext
