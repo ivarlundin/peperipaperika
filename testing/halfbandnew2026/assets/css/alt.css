@@ -1649,7 +1649,7 @@ body.alt-page.nav-open {
 }
 
 .alt-page--inner .alt-faq {
-  max-width: 40rem;
+  max-width: min(40rem, 100%);
 }
 
 .alt-page--inner .alt-faq__list {
@@ -1660,6 +1660,20 @@ body.alt-page.nav-open {
 
 .alt-page--inner .alt-faq__item {
   border-bottom: 1px solid var(--alt-line);
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+}
+
+@media (min-width: 901px) {
+  .alt-page--inner .alt-faq {
+    max-width: var(--alt-max);
+  }
+
+  .alt-page--inner .alt-faq__list {
+    display: block;
+    column-count: 2;
+    column-gap: clamp(1.25rem, 3vw, 2.5rem);
+  }
 }
 
 .alt-page--inner .alt-faq__question {
