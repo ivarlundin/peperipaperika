@@ -78,7 +78,6 @@ SITEMAP_PATHS = [
     "/50-arsfest/",
     "/julkonsert/",
     "/konserter/",
-    "/repertoar/",
     "/mingel/",
     "/om-oss/",
     "/lyssna/",
@@ -91,7 +90,7 @@ SITEMAP_PATHS = [
 
 HOME_NAV_LINKS = [
     ("/konserter/", "Konserter"),
-    ("/repertoar/", "Repertoar"),
+    ("/om-oss/", "Om oss"),
     ("/faq/", "FAQ"),
     ("/lyssna/", "Lyssna"),
     ("/kontakt/", "Kontakt"),
@@ -446,6 +445,105 @@ def video_facade(
         </div>"""
 
 
+PERMANENT_MEMBERS = [
+    (
+        "Edvin Sydmark",
+        "member-edvin.jpg",
+        "Gitarr. Ämneslärare från Ör som också sköter ljudet och har svaghet för varmkorv.",
+    ),
+    (
+        "Jonathan Eryd",
+        "member-jonathan.jpg",
+        "Trummor. Skånsk tvillingfar och bandets äldste, jazzentusiast med humor och ödmjukhet.",
+    ),
+    (
+        "Ivar Lundin",
+        "member-ivar.jpg",
+        "Klaviatur. Multiinstrumentalist i Växjö som balanserar IT med jazz och kreativa arrangemang.",
+    ),
+    (
+        "Nils Biström",
+        "member-nils.jpg",
+        "Trumpet och kör. Trumpetare från Älmhult med brett orkester-cv och en falsett som håller i regn.",
+    ),
+    (
+        "Adam Blidstål",
+        "member-adam.jpg",
+        "Sång. Växjöbo och lärare med stor scennärvaro trots att han är minst musikutbildad i gänget.",
+    ),
+    (
+        "Gustav Magnusson",
+        "member-gustav.jpg",
+        "Sång och slagverk. Musikpedagog från Vislanda som sjunger, spelar och backar med släp.",
+    ),
+    (
+        "Zacharias Averin",
+        "member-zacharias.jpg",
+        "Basgitarr. Växjöbo med bredd från jazz till tyngre stilar, alltid med samma energi.",
+    ),
+    (
+        "Olof Ingelsten",
+        "member-olof.jpg",
+        "Saxofon och kör. Designer i Malmö som spelar det som gungar och bjuder på trappist.",
+    ),
+]
+
+
+def member_avatar_alt(name: str, line: str) -> str:
+    role = line.split(".", 1)[0]
+    return f"{name}, {role.lower()}"
+
+
+def member_compact_card(
+    name: str = "",
+    img_file: str = "",
+    line: str = "",
+    placeholder: bool = False,
+) -> str:
+    if placeholder:
+        return """          <article class="member-compact-card member-compact-card--placeholder">
+            <span class="member-compact-card__avatar member-compact-card__avatar--empty" aria-hidden="true"></span>
+            <h3 class="member-compact-card__name">Namn</h3>
+            <p class="member-compact-card__line">Instrument</p>
+          </article>"""
+    alt = member_avatar_alt(name, line)
+    return f"""          <article class="member-compact-card">
+            <img class="member-compact-card__avatar" src="/assets/img/{img_file}" alt="{esc(alt)}" width="120" height="120" loading="lazy" decoding="async">
+            <h3 class="member-compact-card__name">{esc(name)}</h3>
+            <p class="member-compact-card__line">{esc(line)}</p>
+          </article>"""
+
+
+def members_compact_grid(cards: str) -> str:
+    return f"""        <div class="member-compact-grid">
+{cards}
+        </div>"""
+
+
+def write_redirect_page(path: str, target: str, link_label: str = "Lyssna") -> None:
+    canonical = f"{SITE}{target.split('#')[0]}"
+    html = f"""<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="refresh" content="0; url={target}">
+  <link rel="canonical" href="{canonical}">
+  <title>Repertoar | omdirigering</title>
+  <meta name="robots" content="noindex,follow">
+  <script>location.replace("{target}");</script>
+</head>
+<body>
+  <p>Repertoaren finns nu under Lyssna. <a href="{target}">Fortsätt till {esc(link_label)}</a>.</p>
+</body>
+</html>
+"""
+    dest = OUT_ROOT / path.strip("/") / "index.html"
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    dest.write_text(html, encoding="utf-8")
+    print("wrote", dest.relative_to(OUT_ROOT), "(redirect)")
+
+
 def gallery_img(
     stem: str,
     alt: str,
@@ -723,6 +821,10 @@ def page(
 
 
 def write_pages():
+    permanent_member_cards = "\n".join(
+        member_compact_card(name, img, line) for name, img, line in PERMANENT_MEMBERS
+    )
+    guest_member_cards = "\n".join(member_compact_card(placeholder=True) for _ in range(3))
     wedding_video_block = video_facade(
         WEDDING_VIDEO_ID,
         WEDDING_VIDEO_TITLE,
@@ -1054,25 +1156,6 @@ def write_pages():
     )
 
     page(
-        "/repertoar/",
-        f"Repertoar | {BRAND_TITLE}",
-        "Repertoar för Halv Fjorton: soul, funk, rock och svenska klassiker med åtta musiker och egen blåssektion.",
-        breadcrumb_name="Repertoar",
-        body="""    <header class="page-hero compact">
-      <div class="page-hero-copy">
-        <h1>Repertoar</h1>
-        <p class="lead">Här kommer en lista med soul, funk, rock och svenska klassiker.</p>
-      </div>
-    </header>
-    <section class="section">
-      <div class="wrap">
-        <p>Platshållare tills listan är klar. Mejla <a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a> om ni vill diskutera låtönskemål inför bokning.</p>
-      </div>
-    </section>
-""",
-    )
-
-    page(
         "/brollopsband-smaland/",
         f"Bröllopsband Småland, Växjö, Kalmar, Älmhult | {BRAND_TITLE}",
         "Bröllopsband i Småland: Växjö, Kalmar, Älmhult och Jönköping. Två set partymusik, mingel och vigselmusik. Egen blåssektion.",
@@ -1133,25 +1216,50 @@ def write_pages():
     page(
         "/om-oss/",
         f"Om Halv Fjorton | grundat 2018 i Växjö | {BRAND_TITLE}",
-        "Coverband grundat 2018 i Växjö. Egen julkonsert med soul och funk, spelningar på Nygatan 6 sedan 2023. Åtta musiker med egen blåssektion.",
+        "Coverband från Växjö sedan 2018. Åtta musiker, egen blåssektion, egen julkonsert på Nygatan 6. Möt medlemmarna här.",
         breadcrumb_name="Om oss",
-        body="""    <header class="page-hero compact">
+        body=f"""    <header class="page-hero compact">
       <div class="page-hero-copy">
-        <h1>Coverband från Växjö sedan 2018</h1>
-        <p class="lead">Ett partyband med rötter i Växjö och musiker över södra Sverige. Namnet kommer från att vi började som sju, alltså halva fjorton. Idag är vi åtta musiker med egen blåssektion.</p>
+        <h1>Vilka är Halv Fjorton?</h1>
+        <p class="lead">Ett partyband med rötter i Växjö och medlemmar över södra Sverige. Vi började som sju, halva fjorton, och är idag åtta musiker med egen blåssektion.</p>
+        <p>Vi vill skapa fester som folk minns, och vi brinner för att dela musikglädjen med er som bokar och med gästerna på golvet. Som komplett band med dynamisk blåssektion har vi en bred repertoar och stor musikalisk bredd.</p>
       </div>
     </header>
     <section class="section">
-      <div class="wrap">
-        <h2>Musiken</h2>
-        <p>Vi spelar funk och soul: Stevie Wonder, Ray Charles, Earth, Wind &amp; Fire. Därtill svenska favoriter som Björn Skifs och Tomas Ledin.</p>
-        <p>Repertoaren är bred nog för att passa olika åldrar och smaker. När ni bokar oss vill vi att kvällen ska kännas som er fest, inte som en generisk coverkväll.</p>
+      <div class="wrap split">
+        <div>
+          <h2>Musiken</h2>
+          <p>Huvudinriktningen är funk och soul, med låtar från Stevie Wonder, Ray Charles och Earth, Wind &amp; Fire. Vi blandar in svenska favoriter som Björn Skifs och Tomas Ledin så att olika smaker och åldrar hittar något de känner igen.</p>
+          <p>Styrkan är mångsidigheten. Det som behövs för att göra er kväll speciell försöker vi leverera, utan att det ska kännas som en slumpmässig coverkväll. När ni bokar oss vill vi att festen ska kännas som er egen.</p>
+        </div>
+        <div>
+{gallery_img("halvfjorton-01", "Hela bandet på scen i festsal med publik")}
+        </div>
       </div>
     </section>
     <section class="section section-alt">
       <div class="wrap">
-        <h2>Julkonsert och Nygatan 6</h2>
-        <p>Sedan starten 2018 har vi nästan varje år arrangerat en egen julkonsert med egna jullåtar och covers i soul- och funkstil. Sedan 2023 spelar vi den på <strong>Nygatan 6</strong> i Växjö. Läs mer under <a href="/julkonsert/">julkonsert</a> och se filmer på <a href="/lyssna/">Lyssna</a>.</p>
+        <h2>Permanenta medlemmar</h2>
+        <p class="muted">Åtta fasta medlemmar med blås, sång och rytm.</p>
+{members_compact_grid(permanent_member_cards)}
+      </div>
+    </section>
+    <section class="section">
+      <div class="wrap">
+        <h2>Gästande musiker</h2>
+        <p class="muted">Ibland spelar vi med gäster som förstärker blås, sång eller rytm.</p>
+{members_compact_grid(guest_member_cards)}
+      </div>
+    </section>
+    <section class="section section-alt">
+      <div class="wrap split">
+        <div>
+{gallery_img("halvfjorton-06", "Sång och slagverk på scen i dramatiskt ljus", extra_class=" content-photo--tall")}
+        </div>
+        <div>
+          <h2>Julkonsert och Nygatan 6</h2>
+          <p>Sedan starten 2018 har vi nästan varje år arrangerat en egen julkonsert med egna jullåtar och covers i soul- och funkstil. Sedan 2023 spelar vi den på <strong>Nygatan 6</strong> i Växjö. Läs mer under <a href="/julkonsert/">julkonsert</a> och se filmer på <a href="/lyssna/">Lyssna</a>.</p>
+        </div>
       </div>
     </section>
     <section class="section">
@@ -1170,7 +1278,7 @@ def write_pages():
         body="""    <header class="page-hero compact">
       <div class="page-hero-copy">
         <h1>Lyssna på oss</h1>
-        <p class="lead">Filmer från scen och julkonserter. Samma band som ni bokar till bröllop, företag och mingel.</p>
+        <p class="lead">Filmer från scen och julkonserter, plus en överblick av repertoaren. Samma band som ni bokar till bröllop, företag och mingel.</p>
       </div>
     </header>
     <section class="section">
@@ -1190,7 +1298,7 @@ def write_pages():
           </div>
           <div class="meta">
             <h2>Reel 2022</h2>
-            <p>Kortare klipp från spelningar - bra att skicka vidare till den som inte var med.</p>
+            <p>Kortare klipp från spelningar, bra att skicka vidare till den som inte var med.</p>
           </div>
         </article>
       </div>
@@ -1218,6 +1326,15 @@ def write_pages():
           </article>
         </div>
         <p class="small muted">Fler klipp och pressbilder kan läggas här. Se även <a href="https://www.instagram.com/halvfjorton/">Instagram @halvfjorton</a>.</p>
+      </div>
+    </section>
+    <section class="section" id="repertoar">
+      <div class="wrap">
+        <h2>Repertoar</h2>
+        <p class="lead">Soul, funk, rock och svenska klassiker med åtta musiker och egen blåssektion. Här får ni en bild av vad vi spelar, inte en komplett låtlista.</p>
+        <p>Vi bygger kvällar kring funk och soul: Stevie Wonder, Ray Charles, Earth, Wind &amp; Fire. Därtill kommer svenska favoriter som Björn Skifs och Tomas Ledin, och repertoaren är bred nog för blandade sällskap och generationer.</p>
+        <p>Till mingel och mottagning spelar vi lugnare, med jazzstandard, soul i dämpat tempo och svenska klassiker. Vill ni styra tydligt, till exempel mest jazz eller mest svenskt, säger ni till så anpassar vi.</p>
+        <p>Vi tar gärna emot önskemål inför bokning. Om en låt inte redan finns i repertoaren kan vi ofta lära in den när den funkar live med bandet. Mejla <a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a> så tar vi dialogen där.</p>
       </div>
     </section>
 """,
@@ -1447,6 +1564,8 @@ def write_pages():
 """,
     )
 
+    write_redirect_page("/repertoar/", "/lyssna/#repertoar")
+
 
 def write_sitemap():
     lines = [
@@ -1498,7 +1617,7 @@ Kärnregion: Växjö, Älmhult, Kalmar, Jönköping, Lund, Malmö, Helsingborg (
 - FAQ: {SITE}/faq/
 - Kontakt: {SITE}/kontakt/
 - Konserter: {SITE}/konserter/
-- Repertoar: {SITE}/repertoar/
+- Repertoar: {SITE}/lyssna/#repertoar
 - Bröllopsband Småland: {SITE}/brollopsband-smaland/
 - Coverband Skåne: {SITE}/coverband-skane-malmo/
 """
@@ -1577,6 +1696,13 @@ def patch_home_page():
             "  </header>\n\n  <main id=\"innehall\">",
             "  </header>\n\n" + mobile_menu_block("/", "#offert") + "\n\n  <main id=\"innehall\">",
             1,
+        )
+    else:
+        html = re.sub(
+            r'  <div class="mobile-menu" id="mobile-menu"[\s\S]*?</div>\n\n  <main',
+            mobile_menu_block("/", "#offert") + "\n\n  <main",
+            html,
+            count=1,
         )
     html = re.sub(
         r'href="mailto:halvfjorton@gmail.com\?subject=Beg%C3%A4r%20offert[^"]*"',

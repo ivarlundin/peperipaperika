@@ -2523,6 +2523,59 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   }
 }
 
+.alt-page--inner .member-compact-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem 0.75rem;
+  margin-top: 1rem;
+}
+
+@media (min-width: 900px) {
+  .alt-page--inner .member-compact-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.1rem 0.85rem;
+  }
+}
+
+.alt-page--inner .member-compact-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0.35rem 0.25rem;
+}
+
+.alt-page--inner .member-compact-card__avatar {
+  width: 4.25rem;
+  height: 4.25rem;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin-bottom: 0.45rem;
+  border: 1px solid var(--alt-line);
+}
+
+.alt-page--inner .member-compact-card__avatar--empty {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.alt-page--inner .member-compact-card__name {
+  margin: 0 0 0.25rem;
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.alt-page--inner .member-compact-card__line {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: var(--alt-muted);
+  max-width: 16ch;
+}
+
 .alt-page--inner .actions {
   display: flex;
   flex-wrap: wrap;
