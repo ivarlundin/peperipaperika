@@ -8,6 +8,8 @@
   var mqDesktop = window.matchMedia("(min-width: 901px)");
   var scrollLockY = 0;
   var header = document.querySelector(".alt-header");
+  var menuMotionMs = 320;
+  var closeTimer = null;
 
   function isMobileNav() {
     return !mqDesktop.matches;
@@ -58,22 +60,63 @@
     });
   }
 
+  function prefersReducedMotion() {
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }
+
+  function finishMenuClose() {
+    mobileMenu.hidden = true;
+    mobileMenu.setAttribute("aria-hidden", "true");
+    unlockPageScroll();
+    closeDropdowns(mobileMenu);
+  }
+
   function setOpen(open) {
     if (!isMobileNav() && open) return;
     if (open === menuIsOpen()) return;
 
-    mobileMenu.hidden = !open;
-    mobileMenu.setAttribute("aria-hidden", open ? "false" : "true");
-    mobileMenu.classList.toggle("mobile-menu--open", open);
+    if (closeTimer) {
+      window.clearTimeout(closeTimer);
+      closeTimer = null;
+    }
+
     toggle.setAttribute("aria-expanded", open ? "true" : "false");
     toggle.setAttribute("aria-label", open ? "Stäng meny" : "Öppna meny");
 
     if (open) {
+      mobileMenu.hidden = false;
+      mobileMenu.setAttribute("aria-hidden", "false");
+      window.requestAnimationFrame(function () {
+        mobileMenu.classList.add("mobile-menu--open");
+      });
       lockPageScroll();
-    } else {
-      unlockPageScroll();
-      closeDropdowns(mobileMenu);
+      return;
     }
+
+    mobileMenu.classList.remove("mobile-menu--open");
+    mobileMenu.setAttribute("aria-hidden", "true");
+
+    if (prefersReducedMotion()) {
+      finishMenuClose();
+      return;
+    }
+
+    var onEnd = function (event) {
+      if (event.target !== mobileMenu || event.propertyName !== "opacity") return;
+      mobileMenu.removeEventListener("transitionend", onEnd);
+      if (closeTimer) {
+        window.clearTimeout(closeTimer);
+        closeTimer = null;
+      }
+      finishMenuClose();
+    };
+
+    mobileMenu.addEventListener("transitionend", onEnd);
+    closeTimer = window.setTimeout(function () {
+      mobileMenu.removeEventListener("transitionend", onEnd);
+      closeTimer = null;
+      finishMenuClose();
+    }, menuMotionMs + 80);
   }
 
   toggle.addEventListener("click", function () {

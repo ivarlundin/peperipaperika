@@ -419,6 +419,7 @@ body.alt-page > main {
 
 /* Mobile menu: top-level sibling of header (not inside backdrop-filter stack). */
 .mobile-menu {
+  --mobile-menu-motion: 320ms;
   position: fixed;
   inset: 0;
   width: 100%;
@@ -428,15 +429,39 @@ body.alt-page > main {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  background: rgba(10, 10, 11, 0.72);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
-  backdrop-filter: blur(20px) saturate(140%);
+  background: rgba(10, 10, 11, 0);
+  -webkit-backdrop-filter: blur(0);
+  backdrop-filter: blur(0);
   color: var(--alt-ink);
   overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity var(--mobile-menu-motion) var(--alt-ease),
+    background var(--mobile-menu-motion) var(--alt-ease),
+    -webkit-backdrop-filter var(--mobile-menu-motion) var(--alt-ease),
+    backdrop-filter var(--mobile-menu-motion) var(--alt-ease),
+    visibility 0s linear var(--mobile-menu-motion);
 }
 
 .mobile-menu[hidden] {
   display: none !important;
+}
+
+.mobile-menu.mobile-menu--open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  background: rgba(10, 10, 11, 0.72);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  backdrop-filter: blur(20px) saturate(140%);
+  transition:
+    opacity var(--mobile-menu-motion) var(--alt-ease),
+    background var(--mobile-menu-motion) var(--alt-ease),
+    -webkit-backdrop-filter var(--mobile-menu-motion) var(--alt-ease),
+    backdrop-filter var(--mobile-menu-motion) var(--alt-ease),
+    visibility 0s linear 0s;
 }
 
 .mobile-menu a:not(.alt-btn),
@@ -474,6 +499,11 @@ body.alt-page > main {
   text-decoration: none;
 }
 
+.mobile-menu__brand--bar {
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .mobile-menu__brand .brand-mark {
   width: 56px;
   height: 56px;
@@ -481,6 +511,31 @@ body.alt-page > main {
   max-height: 56px;
   flex-shrink: 0;
   display: block;
+}
+
+.mobile-menu__intro {
+  padding: 0.35rem 0 1.65rem;
+}
+
+.mobile-menu__brand--feature {
+  opacity: 0;
+  transform: scale(0.94) translateY(0.35rem);
+  transition:
+    opacity var(--mobile-menu-motion) var(--alt-ease),
+    transform var(--mobile-menu-motion) var(--alt-ease);
+  transition-delay: 0.05s;
+}
+
+.mobile-menu--open .mobile-menu__brand--feature {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+.mobile-menu__brand--feature .brand-mark {
+  width: clamp(4.5rem, 19vw, 5.75rem);
+  height: clamp(4.5rem, 19vw, 5.75rem);
+  max-width: none;
+  max-height: none;
 }
 
 .mobile-menu__close {
@@ -531,7 +586,7 @@ body.alt-page > main {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
-  padding: 0.35rem var(--alt-pad-right) 0 var(--alt-pad-left);
+  padding: 0 var(--alt-pad-right) 0 var(--alt-pad-left);
   -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 3rem), transparent);
   mask-image: linear-gradient(to bottom, #000 calc(100% - 3rem), transparent);
 }
@@ -546,6 +601,40 @@ body.alt-page > main {
   display: block;
   width: 100%;
   border-bottom: 1px solid var(--alt-line);
+  opacity: 0;
+  transform: translateY(0.45rem);
+  transition:
+    opacity var(--mobile-menu-motion) var(--alt-ease),
+    transform var(--mobile-menu-motion) var(--alt-ease);
+}
+
+.mobile-menu--open .mobile-menu__list > li {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mobile-menu--open .mobile-menu__list > li:nth-child(1) {
+  transition-delay: 0.1s;
+}
+
+.mobile-menu--open .mobile-menu__list > li:nth-child(2) {
+  transition-delay: 0.14s;
+}
+
+.mobile-menu--open .mobile-menu__list > li:nth-child(3) {
+  transition-delay: 0.18s;
+}
+
+.mobile-menu--open .mobile-menu__list > li:nth-child(4) {
+  transition-delay: 0.22s;
+}
+
+.mobile-menu--open .mobile-menu__list > li:nth-child(5) {
+  transition-delay: 0.26s;
+}
+
+.mobile-menu--open .mobile-menu__list > li:nth-child(6) {
+  transition-delay: 0.3s;
 }
 
 .mobile-menu__list > li > a,
@@ -578,7 +667,7 @@ body.alt-page > main {
   border: 0;
   background-color: currentColor;
   transform: rotate(0deg);
-  transition: transform 0.25s var(--alt-ease);
+  transition: transform 0.32s var(--alt-ease);
   -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
   -webkit-mask-repeat: no-repeat;
@@ -599,23 +688,34 @@ body.alt-page > main {
   align-items: stretch;
 }
 
+.mobile-menu__submenu {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows 0.34s var(--alt-ease),
+    opacity 0.3s var(--alt-ease);
+}
+
+.mobile-menu .nav-item--dropdown.is-open .mobile-menu__submenu {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
 .mobile-menu .nav-dropdown__menu {
   position: static;
-  opacity: 1;
   visibility: visible;
   transform: none;
-  display: none;
+  display: block;
   min-width: 0;
+  min-height: 0;
+  overflow: hidden;
   margin: 0;
   padding: 0 0 0.75rem;
   border: 0;
   border-radius: 0;
   background: transparent;
   list-style: none;
-}
-
-.mobile-menu .nav-item--dropdown.is-open .nav-dropdown__menu {
-  display: block;
 }
 
 .mobile-menu .nav-dropdown__menu a {
@@ -1675,6 +1775,32 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
     animation: none;
     transform: none;
     will-change: auto;
+  }
+
+  .mobile-menu,
+  .mobile-menu.mobile-menu--open {
+    transition: none;
+    opacity: 1;
+    visibility: visible;
+    background: rgba(10, 10, 11, 0.72);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    backdrop-filter: blur(20px) saturate(140%);
+  }
+
+  .mobile-menu__brand--feature,
+  .mobile-menu--open .mobile-menu__brand--feature,
+  .mobile-menu__list > li,
+  .mobile-menu--open .mobile-menu__list > li,
+  .mobile-menu__submenu,
+  .mobile-menu .nav-item--dropdown.is-open .mobile-menu__submenu,
+  .mobile-menu .nav-dropdown__chevron {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .mobile-menu .nav-item--dropdown.is-open .mobile-menu__submenu {
+    grid-template-rows: 1fr;
   }
 
   .alt-hero__slide {

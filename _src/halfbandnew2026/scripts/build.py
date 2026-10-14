@@ -233,6 +233,29 @@ def nav_services_dropdown(current_path: str, prefix: str = "", menu_id: str = "n
           </li>"""
 
 
+def mobile_nav_services_dropdown(current_path: str, prefix: str = "", menu_id: str = "mobile-nav-tjanster") -> str:
+    service_paths = {p for p, _ in NAV_SERVICES}
+    expanded = "true" if current_path in service_paths else "false"
+    items = []
+    for href, label in NAV_SERVICES:
+        current = ' aria-current="page"' if href == current_path else ""
+        items.append(
+            f'              <li role="none"><a role="menuitem" href="{nav_path(href, prefix)}"{current}>{label}</a></li>'
+        )
+    submenu = "\n".join(items)
+    return f"""          <li class="nav-item nav-item--dropdown" data-nav-dropdown>
+            <button type="button" class="nav-dropdown__trigger" data-nav-dropdown-trigger aria-expanded="{expanded}" aria-controls="{menu_id}" id="{menu_id}-btn">
+              Tjänster
+              <span class="nav-dropdown__chevron" aria-hidden="true"></span>
+            </button>
+            <div class="mobile-menu__submenu">
+              <ul class="nav-dropdown__menu" id="{menu_id}" role="menu" aria-labelledby="{menu_id}-btn" data-nav-dropdown-menu>
+{submenu}
+              </ul>
+            </div>
+          </li>"""
+
+
 def render_nav_list(current_path: str, prefix: str = "", include_home: bool = True, menu_id: str = "nav-tjanster") -> str:
     items = []
     if include_home:
@@ -259,6 +282,18 @@ def home_nav_links_markup(
     return "\n".join(items)
 
 
+def mobile_nav_links_markup(
+    current_path: str = "/",
+    prefix: str = "",
+    menu_id: str = "mobile-nav-tjanster",
+) -> str:
+    items = [mobile_nav_services_dropdown(current_path, prefix, menu_id)]
+    for href, label in HOME_NAV_LINKS:
+        current = ' aria-current="page"' if href == current_path else ""
+        items.append(f'          <li><a href="{nav_path(href, prefix)}"{current}>{label}</a></li>')
+    return "\n".join(items)
+
+
 def home_nav_block(current_path: str = "/", offert_href: str = "#offert", prefix: str = "") -> str:
     return f"""      <nav class="alt-nav" aria-label="Huvudmeny">
         <ul class="alt-nav__links nav-list" id="alt-meny">
@@ -276,14 +311,19 @@ def mobile_menu_block(
     logo = "\n".join("        " + line for line in brand_logo_markup().splitlines())
     return f"""  <div class="mobile-menu" id="mobile-menu" data-mobile-menu hidden aria-hidden="true">
     <div class="mobile-menu__bar">
-      <a class="mobile-menu__brand" href="{nav_path("/", prefix)}" aria-label="Halv Fjorton">
+      <a class="mobile-menu__brand mobile-menu__brand--bar" href="{nav_path("/", prefix)}" aria-hidden="true" tabindex="-1">
 {logo}
       </a>
 {mobile_menu_close_markup()}
     </div>
     <nav class="mobile-menu__nav" aria-label="Mobilmeny">
+      <div class="mobile-menu__intro">
+        <a class="mobile-menu__brand mobile-menu__brand--feature" href="{nav_path("/", prefix)}" aria-label="Halv Fjorton">
+{logo}
+        </a>
+      </div>
       <ul class="mobile-menu__list nav-list" data-nav-panel>
-{home_nav_links_markup(current_path, prefix, "mobile-nav-tjanster")}
+{mobile_nav_links_markup(current_path, prefix, "mobile-nav-tjanster")}
       </ul>
     </nav>
     <div class="mobile-menu__foot">
