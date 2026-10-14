@@ -165,7 +165,7 @@ def contact_offert_section(
       <div class="{wrap_class}">
         <div class="contact-offert__copy">
           <h2 id="offert-rubrik">{esc(heading)}</h2>
-{lead_html}          <ul class="contact-usps">
+{lead_html}          <ul class="list-check">
 {usp_items}
           </ul>
           <p class="contact-offert__mail">
