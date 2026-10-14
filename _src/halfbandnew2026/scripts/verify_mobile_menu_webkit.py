@@ -43,6 +43,28 @@ def assert_logo_size(page, label: str, mode: str) -> None:
         )
 
 
+def assert_header_border_hidden_when_menu_open(page, label: str) -> None:
+    styles = page.evaluate(
+        """() => {
+          const el = document.querySelector('.alt-header');
+          if (!el) return null;
+          const s = getComputedStyle(el);
+          return {
+            borderWidth: s.borderBottomWidth,
+            borderColor: s.borderBottomColor,
+            boxShadow: s.boxShadow,
+          };
+        }"""
+    )
+    assert styles, f"{label}: header missing"
+    assert styles["borderWidth"] in ("0px", "0"), (
+        f"{label}: header border width {styles['borderWidth']}"
+    )
+    assert styles["boxShadow"] in ("none", ""), (
+        f"{label}: header box-shadow {styles['boxShadow']}"
+    )
+
+
 def assert_header_close_visible(page, label: str) -> None:
     close = page.locator(".alt-header__menu-close")
     assert close.count() == 1, f"{label}: expected one header close control"
@@ -161,6 +183,7 @@ def open_menu(page) -> None:
 def assert_menu_opens_with_motion(page, label: str) -> None:
     open_menu(page)
     assert_menu_fullscreen(page, label)
+    assert_header_border_hidden_when_menu_open(page, label)
     assert_single_scaled_header_logo(page, label)
     assert_logo_size(page, label, "menu")
     assert_logo_in_viewport(page, label)

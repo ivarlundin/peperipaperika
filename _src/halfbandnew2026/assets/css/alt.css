@@ -779,7 +779,6 @@ body.alt-page > main {
   body.alt-page.nav-open .alt-header.is-solid {
     background: transparent;
     backdrop-filter: none;
-    border-bottom-color: transparent;
   }
 
   .alt-header {
@@ -817,6 +816,9 @@ body.alt-page > main {
     z-index: 2147483001;
     pointer-events: none;
     overflow: visible;
+    border-bottom-color: transparent;
+    border-bottom-width: 0;
+    box-shadow: none;
   }
 
   body.alt-page.nav-open .alt-header__inner {
