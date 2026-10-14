@@ -55,15 +55,30 @@ def offert_email_mail_markup() -> str:
 NAV_SERVICES = [
     ("/brollop/", "Bröllop"),
     ("/foretag/", "Företag"),
-    ("/kompband/", "Kompband för artist"),
-    ("/50-arsfest/", "50-årsfest"),
-    ("/brollopsband-smaland/", "Bröllopsband Småland"),
-    ("/coverband-skane-malmo/", "Coverband Skåne & Malmö"),
+    ("/mingel/", "Fest och mingel"),
 ]
+
+# Service landing pages kept in build output but omitted from nav, sitemap, and llms.txt.
+HIDDEN_SERVICE_PATHS = frozenset(
+    {
+        "/kompband/",
+        "/50-arsfest/",
+        "/brollopsband-smaland/",
+        "/coverband-skane-malmo/",
+        "/for-eventbolag/",
+    }
+)
+
+SERVICE_LINK_REDIRECTS = {
+    "/kompband/": "/brollop/",
+    "/50-arsfest/": "/mingel/",
+    "/brollopsband-smaland/": "/brollop/",
+    "/coverband-skane-malmo/": "/foretag/",
+    "/for-eventbolag/": "/foretag/",
+}
 
 NAV_PRIMARY = [
     ("/", "Hem"),
-    ("/for-eventbolag/", "Eventbolag"),
     ("/om-oss/", "Om oss"),
     ("/lyssna/", "Lyssna"),
     ("/faq/", "FAQ"),
@@ -74,18 +89,13 @@ SITEMAP_PATHS = [
     "/",
     "/brollop/",
     "/foretag/",
-    "/kompband/",
-    "/50-arsfest/",
     "/julkonsert/",
     "/konserter/",
     "/mingel/",
     "/om-oss/",
     "/lyssna/",
-    "/for-eventbolag/",
     "/faq/",
     "/kontakt/",
-    "/brollopsband-smaland/",
-    "/coverband-skane-malmo/",
 ]
 
 HOME_NAV_LINKS = [
@@ -649,11 +659,11 @@ def wedding_page_body(wedding_video_block: str) -> str:
         <div class="faq-grid alt-wedding-faq__grid">
           <article><h3>Första dansen</h3><p>Första dansen spelar vi gärna live efter önskemål. Vill ni hellre använda en inspelning spelar vi den genom vårt ljudsystem.</p></article>
           <article><h3>Mingel och fest</h3><p>Samma kväll, samma band: mingel i lugnare tempo och sedan full fart på dansgolvet.</p></article>
-          <article><h3>Komp till solist</h3><p>Psalmer, vigsel eller gästsång? Se <a href="/kompband/">kompband för artist</a>.</p></article>
+          <article><h3>Komp till solist</h3><p>Psalmer, vigsel eller gästsång? Se <a href="/brollop/">kompband för artist</a>.</p></article>
         </div>
         <div class="actions alt-wedding-actions">
           <a class="btn btn-primary" href="/kontakt/#offert">Begär offert</a>
-          <a class="btn btn-ghost" href="/brollopsband-smaland/">Bröllop i Småland</a>
+          <a class="btn btn-ghost" href="/brollop/">Bröllop i Småland</a>
         </div>
       </div>
     </section>"""
@@ -860,6 +870,7 @@ def page(
     outfile: Path | None = None,
     breadcrumb_name: str | None = None,
     extra_scripts: str = "",
+    hidden: bool = False,
 ):
     canonical = f"{SITE}{path}"
     crumb_label = breadcrumb_name or title.split(" | ")[0].split(", ")[0]
@@ -873,6 +884,11 @@ def page(
     nav_block = home_nav_block(path, "/#offert")
     mobile_menu = mobile_menu_block(path, "/#offert")
     toggle = alt_header_mobile_controls_markup("mobile-menu")
+    if hidden and path not in HIDDEN_SERVICE_PATHS:
+        raise ValueError(f"hidden=True requires path in HIDDEN_SERVICE_PATHS, got {path}")
+    if not hidden and path in HIDDEN_SERVICE_PATHS:
+        raise ValueError(f"path {path} must use hidden=True")
+    robots = "noindex,nofollow" if hidden else "index,follow"
     html = f"""<!DOCTYPE html>
 <html lang="sv">
 <head>
@@ -882,7 +898,7 @@ def page(
   <title>{esc(title)}</title>
   <meta name="description" content="{esc(description)}">
   <link rel="canonical" href="{canonical}">
-  <meta name="robots" content="index,follow">
+  <meta name="robots" content="{robots}">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="sv_SE">
   <meta property="og:site_name" content="Halv Fjorton">
@@ -1029,7 +1045,7 @@ def write_pages():
         </div>
         <div class="actions">
           <a class="btn btn-primary" href="/kontakt/">Hör av er</a>
-          <a class="btn btn-ghost" href="/for-eventbolag/">Information till eventbolag</a>
+          <a class="btn btn-ghost" href="/foretag/">Information till eventbolag</a>
         </div>
       </div>
     </section>
@@ -1083,6 +1099,7 @@ def write_pages():
         f"Kompband för artist i Småland och Skåne | {BRAND_TITLE}",
         "Kompband för solist eller inhyrd artist på bröllop, fest och företagsevent. Växjö, Malmö, Lund och övriga södra Sverige.",
         breadcrumb_name="Kompband",
+        hidden=True,
         extra_ld=[
             service_ld(
                 "Kompband för artist",
@@ -1125,6 +1142,7 @@ def write_pages():
         f"50-årsfest och privatfest | liveband {BRAND_TITLE.split(' | ')[0]}",
         "Liveband till 50-årsfest, privatfest och födelsedag i Växjö, Småland och Skåne. Två set soul, funk och svenska klassiker.",
         breadcrumb_name="50-årsfest",
+        hidden=True,
         extra_ld=[
             service_ld(
                 "50-årsfest och privatfest",
@@ -1204,6 +1222,7 @@ def write_pages():
         f"Bröllopsband Småland, Växjö, Kalmar, Älmhult | {BRAND_TITLE}",
         "Bröllopsband i Småland: Växjö, Kalmar, Älmhult och Jönköping. Två set partymusik, mingel och vigselmusik. Egen blåssektion.",
         breadcrumb_name="Bröllopsband Småland",
+        hidden=True,
         extra_ld=[
             service_ld(
                 "Bröllopsband Småland",
@@ -1223,7 +1242,7 @@ def write_pages():
         <p>Se hela upplägget på <a href="/brollop/">bröllop</a> eller begär offert direkt.</p>
         <div class="actions">
           <a class="btn btn-primary" href="/kontakt/#offert">Begär offert</a>
-          <a class="btn btn-ghost" href="/coverband-skane-malmo/">Skåne och Malmö</a>
+          <a class="btn btn-ghost" href="/foretag/">Skåne och Malmö</a>
         </div>
       </div>
     </section>
@@ -1235,6 +1254,7 @@ def write_pages():
         f"Coverband Skåne, Malmö, Lund, Helsingborg | {BRAND_TITLE}",
         "Coverband och festband i Skåne: Malmö, Lund och Helsingborg. Bröllop, företagsfest och privatfest med åtta musiker.",
         breadcrumb_name="Coverband Skåne",
+        hidden=True,
         extra_ld=[
             service_ld(
                 "Coverband Skåne",
@@ -1388,6 +1408,7 @@ def write_pages():
         "/for-eventbolag/",
         "Boka Halv Fjorton via eventbolag | underlag för bokare",
         "Underlag för eventbolag: kort bio, vad som ingår, teknik, presskit, organisationsuppgifter och bokningsgång för Halv Fjorton.",
+        hidden=True,
         extra_ld=[
             service_ld(
                 "Bokning via eventbolag",
@@ -1493,11 +1514,11 @@ def write_pages():
         ),
         (
             "Kan ni spela till vigseln?",
-            "Ja. Vi kan spela vigselmusik med helband, komp till solist eller kombinera med psalmer. Läs mer under bröllop och kompband.",
+            "Ja. Vi kan spela vigselmusik med helband, komp till solist eller kombinera med psalmer. Läs mer under bröllop.",
         ),
         (
             "Kan ni kompa en artist?",
-            "Ja. Vi fungerar som kompband för solist, gästsång eller inhyrd artist. Se sidan kompband för artist.",
+            "Ja. Vi fungerar som kompband för solist, gästsång eller inhyrd artist. Se sidan bröllop.",
         ),
         (
             "Kan ni göra specialarrangemang?",
@@ -1552,14 +1573,7 @@ def write_pages():
         "/faq/",
         "Vanliga frågor om Halv Fjorton | bokning, teknik och repertoar",
         "FAQ om Halv Fjorton: bandstorlek, teknik, tillfällen, södra Sverige, bokning, framförhållning och skräddarsydd repertoar.",
-        extra_ld=[
-            faq_ld,
-            service_ld(
-                "Kompband för artist",
-                "Livekompri för solist eller artist på bröllop, fest och event i södra Sverige.",
-                "/kompband/",
-            ),
-        ],
+        extra_ld=[faq_ld],
         extra_scripts='  <script src="/assets/js/alt-faq-accordion.js" defer></script>\n',
         body=f"""    <header class="page-hero compact">
       <div class="page-hero-copy">
@@ -1648,22 +1662,17 @@ def write_llms_txt():
 Kärnregion: Växjö, Älmhult, Kalmar, Jönköping, Lund, Malmö, Helsingborg (Småland och Skåne). Spelningar utanför går att diskutera.
 
 ## Tjänster
-- Bröllopsband: två set partymusik; tillval mingel, vigselmusik, komp till solist
-- Företagsfest / festband: live på företagsfest, artistkomp, särskilda musikmoment
-- Kompband för artist: /kompband/
-- 50-årsfest och privatfest: /50-arsfest/
+- Bröllop: {SITE}/brollop/
+- Företag: {SITE}/foretag/
+- Fest och mingel: {SITE}/mingel/
 - Egen julkonsert (A Soulful Christmas, Nygatan 6 Växjö sedan 2023): /julkonsert/
 
 ## Viktiga sidor
 - Startsida: {SITE}/
-- Bröllop: {SITE}/brollop/
-- Företag: {SITE}/foretag/
 - FAQ: {SITE}/faq/
 - Kontakt: {SITE}/kontakt/
 - Konserter: {SITE}/konserter/
 - Repertoar: {SITE}/lyssna/#repertoar
-- Bröllopsband Småland: {SITE}/brollopsband-smaland/
-- Coverband Skåne: {SITE}/coverband-skane-malmo/
 """
     dest = OUT_ROOT / "llms.txt"
     dest.write_text(text, encoding="utf-8")
@@ -1951,6 +1960,42 @@ def assert_no_eyebrows_in_build(target: Path) -> None:
         raise SystemExit(f"Build check failed: eyebrow kickers found in output:\n{sample}{extra}")
 
 
+def assert_hidden_services_excluded(target: Path) -> None:
+    sitemap = (target / "sitemap.xml").read_text(encoding="utf-8")
+    for path in HIDDEN_SERVICE_PATHS:
+        loc = f"{SITE}{path}"
+        if loc in sitemap:
+            raise SystemExit(f"Build check failed: hidden service {path} still in sitemap")
+    llms = (target / "llms.txt").read_text(encoding="utf-8")
+    for path in HIDDEN_SERVICE_PATHS:
+        if path in llms or f"{SITE}{path}" in llms:
+            raise SystemExit(f"Build check failed: hidden service {path} still in llms.txt")
+    for path in HIDDEN_SERVICE_PATHS:
+        page_file = target / path.lstrip("/") / "index.html"
+        if not page_file.is_file():
+            raise SystemExit(f"Build check failed: missing hidden page output {path}")
+        html = page_file.read_text(encoding="utf-8")
+        if 'name="robots" content="noindex,nofollow"' not in html:
+            raise SystemExit(f"Build check failed: {path} missing noindex robots meta")
+    visible_samples = (
+        "index.html",
+        "brollop/index.html",
+        "foretag/index.html",
+        "mingel/index.html",
+        "faq/index.html",
+    )
+    for rel in visible_samples:
+        page_file = target / rel
+        if not page_file.is_file():
+            continue
+        text = page_file.read_text(encoding="utf-8")
+        for path in HIDDEN_SERVICE_PATHS:
+            if f'href="{path}' in text:
+                raise SystemExit(
+                    f"Build check failed: visible page {rel} still links to hidden {path}"
+                )
+
+
 def assert_footer_styles_in_css(alt_css: Path) -> None:
     if not alt_css.is_file():
         raise SystemExit(f"Build check failed: missing stylesheet {alt_css}")
@@ -2008,6 +2053,7 @@ def run_build(output_dir: Path | None = None, subpath: str = "") -> None:
     assert_no_ai_dashes_in_build(OUT_ROOT)
     assert_no_eyebrows_in_build(OUT_ROOT)
     assert_labs_asset_urls(OUT_ROOT, subpath)
+    assert_hidden_services_excluded(OUT_ROOT)
     assert_footer_styles_in_css(OUT_ROOT / "assets" / "css" / "alt.css")
 
 

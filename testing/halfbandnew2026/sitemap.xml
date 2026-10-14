@@ -16,16 +16,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://halvfjorton.se/kompband/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://halvfjorton.se/50-arsfest/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://halvfjorton.se/julkonsert/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -51,27 +41,12 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://halvfjorton.se/for-eventbolag/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://halvfjorton.se/faq/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://halvfjorton.se/kontakt/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://halvfjorton.se/brollopsband-smaland/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://halvfjorton.se/coverband-skane-malmo/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
