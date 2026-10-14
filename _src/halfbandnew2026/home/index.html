@@ -274,8 +274,7 @@
     <section class="alt-about" aria-labelledby="alt-about-rubrik" data-reveal>
       <div class="alt-about__inner">
         <div class="alt-about__heading">
-          <h2 id="alt-about-rubrik" class="alt-section-heading">
-            <span class="visually-hidden">Vad betyder Halv Fjorton?</span>
+          <h2 id="alt-about-rubrik" class="alt-section-heading" aria-label="Vad betyder Halv Fjorton?">
             <span class="alt-section-typewriter" data-alt-section-typewriter aria-hidden="true">
               <span class="alt-section-typewriter__ghost">Vad betyder Halv Fjorton?</span>
               <span class="alt-section-typewriter__live">
@@ -323,8 +322,7 @@
 
     <section class="alt-gallery" aria-labelledby="alt-gallery-rubrik" data-reveal>
       <div class="alt-gallery__head">
-        <h2 id="alt-gallery-rubrik" class="alt-section-heading">
-          <span class="visually-hidden">Från scenen</span>
+        <h2 id="alt-gallery-rubrik" class="alt-section-heading" aria-label="Från scenen">
           <span class="alt-section-typewriter" data-alt-section-typewriter aria-hidden="true">
             <span class="alt-section-typewriter__ghost">Från scenen</span>
             <span class="alt-section-typewriter__live">
@@ -359,8 +357,7 @@
 
     <section class="alt-voices" aria-labelledby="alt-voices-rubrik" data-reveal>
       <div class="alt-voices__inner">
-        <h2 id="alt-voices-rubrik" class="alt-section-heading">
-          <span class="visually-hidden">Röster från kunder</span>
+        <h2 id="alt-voices-rubrik" class="alt-section-heading" aria-label="Röster från kunder">
           <span class="alt-section-typewriter" data-alt-section-typewriter aria-hidden="true">
             <span class="alt-section-typewriter__ghost">Röster från kunder</span>
             <span class="alt-section-typewriter__live">
@@ -389,8 +386,7 @@
     <section class="alt-contact-offert" id="offert" aria-labelledby="offert-rubrik">
       <div class="alt-contact-offert__wrap contact-offert__grid">
         <div class="contact-offert__copy">
-          <h2 id="offert-rubrik" class="alt-section-heading">
-            <span class="visually-hidden">Begär offert</span>
+          <h2 id="offert-rubrik" class="alt-section-heading" aria-label="Begär offert">
             <span class="alt-section-typewriter" data-alt-section-typewriter aria-hidden="true">
               <span class="alt-section-typewriter__ghost">Begär offert</span>
               <span class="alt-section-typewriter__live">
@@ -460,15 +456,16 @@
   <script src="/assets/js/tally-embed.js" defer></script>
   <style>
     .visually-hidden {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      padding: 0 !important;
+      margin: -1px !important;
+      overflow: hidden !important;
+      clip: rect(0, 0, 0, 0) !important;
+      clip-path: inset(50%) !important;
+      white-space: nowrap !important;
+      border: 0 !important;
     }
     .alt-page .skip-link {
       position: absolute;
