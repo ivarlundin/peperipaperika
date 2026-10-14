@@ -26,13 +26,22 @@
 .alt-page {
   position: relative;
   margin: 0;
+  min-height: 100vh;
+  min-height: 100svh;
   min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
   background: var(--alt-bg);
   color: var(--alt-ink);
   font-family: var(--font-sans);
   font-size: 1.0625rem;
   font-weight: var(--font-body-weight);
   line-height: 1.62;
+}
+
+body.alt-page > main {
+  flex: 1 0 auto;
+  width: 100%;
 }
 
 .alt-page::before {
@@ -1275,6 +1284,7 @@ body.alt-page.nav-open {
 
 /* Footer */
 .alt-footer {
+  flex-shrink: 0;
   width: 100%;
   box-sizing: border-box;
   border-top: 1px solid var(--alt-line);
