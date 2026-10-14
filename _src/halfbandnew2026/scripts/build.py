@@ -1374,7 +1374,7 @@ def prepare_output_directory(target: Path) -> None:
 
 
 _ROOT_RELATIVE_URL = re.compile(
-    r'(?P<attr>href|src|content|data-tally-src)=(?P<q>["\'])(?P<path>/[^"\']*)(?P=q)'
+    r'(?P<attr>href|src|content|data-tally-src|srcset|imagesrcset)=(?P<q>["\'])(?P<path>/[^"\']*)(?P=q)'
 )
 
 
@@ -1387,7 +1387,16 @@ def rewrite_root_relative_urls(target: Path, subpath: str) -> None:
         path = match.group("path")
         if path.startswith("//"):
             return match.group(0)
-        return f'{match.group("attr")}={match.group("q")}{prefix}{path}{match.group("q")}'
+        attr = match.group("attr")
+        q = match.group("q")
+        if attr in ("srcset", "imagesrcset"):
+            updated = path.replace('"/assets/', f'"{prefix}/assets/').replace("'/assets/", f"'{prefix}/assets/")
+            if updated == path:
+                updated = path.replace("/assets/", f"{prefix}/assets/")
+            path = updated
+        else:
+            path = f"{prefix}{path}"
+        return f"{attr}={q}{path}{q}"
 
     extensions = {".html", ".xml", ".css", ".js", ".txt"}
     for file_path in target.rglob("*"):
