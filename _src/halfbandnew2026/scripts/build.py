@@ -599,9 +599,11 @@ def service_hero_banner(service_key: str, h1: str, intro_html: str) -> str:
       <div class="alt-service-hero__shade" aria-hidden="true"></div>
       <div class="alt-service-hero__copy">
         <h1>{esc(h1)}</h1>
-{intro_html}
       </div>
-    </header>"""
+    </header>
+    <div class="alt-service-intro" data-reveal>
+{intro_html}
+    </div>"""
 
 
 def wedding_figure(
