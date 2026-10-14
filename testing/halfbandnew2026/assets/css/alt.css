@@ -1606,65 +1606,54 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   );
 }
 
-/* Testimonials */
-.alt-voices {
-  padding: 0 0 5rem;
+/* Featured quote (below gallery) */
+.alt-quote {
+  padding: 0 0 4.5rem;
   border-top: 1px solid var(--alt-line);
   content-visibility: auto;
-  contain-intrinsic-size: auto 480px;
+  contain-intrinsic-size: auto 280px;
 }
 
-.alt-voices__inner {
-  max-width: var(--alt-max);
+.alt-quote__inner {
+  max-width: min(var(--alt-max), 40rem);
   margin: 0 auto;
-  padding: 4rem var(--alt-pad-right) 0 var(--alt-pad-left);
+  padding: 3.25rem var(--alt-pad-right) 0 var(--alt-pad-left);
   box-sizing: border-box;
 }
 
-.alt-voices h2 {
-  font-family: var(--font-display);
-  font-size: 1.75rem;
-  font-weight: 700;
-  letter-spacing: 0;
-  text-wrap: balance;
+.alt-quote__mark {
   margin: 0 0 0.5rem;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: clamp(3.75rem, 13vw, 5.25rem);
+  font-weight: 400;
+  line-height: 0.9;
+  color: var(--alt-ink);
 }
 
-.alt-voices__note {
-  color: var(--alt-muted);
+.alt-quote__text {
+  margin: 0 0 1.35rem;
+  padding: 0;
+  border: 0;
+}
+
+.alt-quote__text p {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.625rem, 5.2vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.22;
+  letter-spacing: 0;
+  color: var(--alt-ink);
+  text-wrap: balance;
+}
+
+.alt-quote__attrib {
+  margin: 0;
+  font-family: var(--font-sans);
   font-size: 0.9375rem;
-  margin: 0 0 2rem;
-}
-
-.alt-voices__grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-}
-
-.alt-voice {
-  padding: 1.5rem;
-  border-radius: var(--alt-radius);
-  border: 1px dashed rgba(242, 240, 236, 0.2);
-  background: var(--alt-bg-elevated);
-  min-height: 160px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-}
-
-.alt-voice__label {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  font-weight: 300;
+  line-height: 1.45;
   color: var(--alt-muted);
-  margin-bottom: 0.75rem;
-}
-
-.alt-voice__slot {
-  font-size: 0.875rem;
-  color: rgba(154, 149, 144, 0.9);
-  font-style: italic;
 }
 
 /* Contact / offert (Tally) */
@@ -1963,10 +1952,6 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
     margin-top: 0.5rem;
     padding-top: 0;
     font-size: 0.8125rem;
-  }
-
-  .alt-voices__grid {
-    grid-template-columns: 1fr;
   }
 
 }
