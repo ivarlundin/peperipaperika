@@ -2503,6 +2503,37 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   min-width: 0;
 }
 
+.alt-page--inner .content-photo {
+  margin: 0;
+  border-radius: var(--alt-radius);
+  overflow: hidden;
+  border: 1px solid var(--alt-line);
+}
+
+.alt-page--inner .content-photo img {
+  width: 100%;
+  display: block;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.alt-page--inner .content-photo--tall img {
+  aspect-ratio: 4 / 5;
+  object-position: center top;
+}
+
+.alt-page--inner .wedding-photos {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+@media (min-width: 600px) {
+  .alt-page--inner .wedding-photos {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 .alt-page--inner .actions {
   display: flex;
   flex-wrap: wrap;
