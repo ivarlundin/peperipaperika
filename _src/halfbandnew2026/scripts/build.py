@@ -42,6 +42,16 @@ HOME_CONTACT_USPS = [
     "Åttamannaband med blås",
 ]
 
+OFFERT_EMAIL_LINK_TEXT = "Föredrar du e-post? Mejla oss här"
+
+
+def offert_email_mail_markup() -> str:
+    return f"""          <p class="contact-offert__mail">
+            <a class="alt-btn alt-btn--primary" href="mailto:halvfjorton@gmail.com">{OFFERT_EMAIL_LINK_TEXT}</a>
+          </p>
+"""
+
+
 NAV_SERVICES = [
     ("/brollop/", "Bröllop"),
     ("/foretag/", "Företag"),
@@ -171,6 +181,7 @@ def kontakt_page_body() -> str:
             <ul class="list-check">
 {usp_items}
             </ul>
+{offert_email_mail_markup()}
           </div>
           <div class="contact-offert__form tally-card">
             <noscript>
@@ -199,14 +210,7 @@ def contact_offert_section(
 ) -> str:
     usp_items = "\n".join(f"            <li>{esc(u)}</li>" for u in (usps if usps is not None else CONTACT_USPS))
     lead_html = f'        <p class="contact-offert__lead">{esc(lead)}</p>\n' if lead else ""
-    mail_html = (
-        """          <p class="contact-offert__mail">
-            <a class="alt-btn alt-btn--primary" href="mailto:halvfjorton@gmail.com">Mejla oss</a>
-          </p>
-"""
-        if include_mail_button
-        else ""
-    )
+    mail_html = offert_email_mail_markup() if include_mail_button else ""
     return f"""    <section class="{section_class}" id="offert" aria-labelledby="offert-rubrik">
       <div class="{wrap_class}">
         <div class="contact-offert__copy">
@@ -1367,6 +1371,7 @@ def write_pages():
         extra_ld=[contact_page_ld()],
         extra_scripts='  <script src="/assets/js/tally-embed.js" defer></script>\n',
         body=kontakt_page_body(),
+        page_class="alt-page--kontakt",
     )
 
     page(

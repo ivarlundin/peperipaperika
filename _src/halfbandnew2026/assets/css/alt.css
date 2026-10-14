@@ -1895,6 +1895,10 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
     color: var(--offert-ink);
   }
 
+  .alt-page--kontakt .alt-inner-main {
+    background-color: #eeebe6;
+  }
+
   .alt-contact-page {
     --offert-surface: #eeebe6;
     --offert-ink: #1a1816;
@@ -1907,6 +1911,11 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
     background: var(--offert-surface);
     box-sizing: border-box;
     overflow-x: clip;
+  }
+
+  .alt-page--kontakt .alt-contact-page {
+    background: transparent;
+    padding-top: 2.75rem;
   }
 
   .alt-contact-page .alt-contact-page__intro h1,
@@ -1922,6 +1931,18 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
     background-color: var(--offert-ink);
   }
 
+  .alt-contact-page .contact-offert__mail .alt-btn--primary {
+    background: var(--offert-ink);
+    color: #fff;
+    border-color: var(--offert-ink);
+  }
+
+  .alt-contact-page .contact-offert__mail .alt-btn--primary:hover {
+    background: #2a2622;
+    border-color: #2a2622;
+    color: #fff;
+  }
+
   .alt-contact-page .tally-card {
     background: transparent;
     border: 0;
@@ -1930,9 +1951,17 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
     border-radius: 0;
   }
 
+  .alt-contact-page .tally-card noscript a {
+    color: var(--offert-ink);
+  }
+
   .alt-contact-page__channels {
     background: var(--offert-surface);
     padding-bottom: 4.25rem;
+  }
+
+  .alt-page--kontakt .alt-contact-page__channels {
+    background: transparent;
   }
 
   .alt-contact-page__channels .alt-contact-page__link {

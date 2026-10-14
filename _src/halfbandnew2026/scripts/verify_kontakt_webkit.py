@@ -12,9 +12,11 @@ OUT = Path("/opt/cursor/artifacts/screenshots")
 KONTAKT_URL = "http://127.0.0.1:8769/testing/halfbandnew2026/kontakt/"
 MOBILE = {"width": 390, "height": 844}
 DESKTOP = {"width": 1280, "height": 900}
+OFFERT_EMAIL_LINK_TEXT = "Föredrar du e-post? Mejla oss här"
+KONTAKT_SURFACE = "rgb(238, 235, 230)"
 
 
-def assert_kontakt(page, label: str) -> None:
+def assert_kontakt(page, label: str, mobile: bool) -> None:
     data = page.evaluate(
         """() => {
           const main = document.querySelector('main#innehall');
@@ -31,6 +33,13 @@ def assert_kontakt(page, label: str) -> None:
             (p) => p.textContent.includes('Org.nr')
           ) : false;
           const mainText = main ? main.innerText : '';
+          const mailLink = main ? main.querySelector('.contact-offert__mail a') : null;
+          const h1 = main ? main.querySelector('#kontakt-rubrik') : null;
+          const tallyCard = main ? main.querySelector('#offert .tally-card') : null;
+          const mainBg = main ? getComputedStyle(main).backgroundColor : '';
+          const tallyBg = tallyCard ? getComputedStyle(tallyCard).backgroundColor : '';
+          const tallyPad = tallyCard ? parseFloat(getComputedStyle(tallyCard).paddingTop) : 0;
+          const h1Color = h1 ? getComputedStyle(h1).color : '';
           return {
             h1Count: h1s.length,
             h1Text: h1s[0] ? h1s[0].textContent.trim() : '',
@@ -39,11 +48,17 @@ def assert_kontakt(page, label: str) -> None:
             uspCount: items.length,
             uspTexts: items.map((li) => li.textContent.trim()),
             hasIframe: !!iframe,
-            hasMailBtn: !!mailBtn,
+            mailText: mailLink ? mailLink.textContent.trim() : '',
+            mailHref: mailLink ? mailLink.getAttribute('href') : '',
             channelHrefs: links.map((a) => a.getAttribute('href') || ''),
             hasTel: !!tel,
             orgStrip,
             hasEnDash: mainText.includes('–') || mainText.includes('—'),
+            mainBg,
+            tallyBg,
+            tallyPad,
+            h1Color,
+            bodyClass: document.body.className,
           };
         }"""
     )
@@ -55,7 +70,16 @@ def assert_kontakt(page, label: str) -> None:
     assert "Skräddarsytt efter era önskemål" in data["uspTexts"], f"{label}: missing skräddarsytt USP"
     assert "Åttamannaband med blås" in data["uspTexts"], f"{label}: missing blås USP"
     assert data["hasIframe"], f"{label}: Tally iframe missing"
-    assert not data["hasMailBtn"], f"{label}: Mejla oss button should be removed from offert"
+    assert data["mailText"] == OFFERT_EMAIL_LINK_TEXT, f"{label}: mail link text {data['mailText']}"
+    assert data["mailHref"] == "mailto:halvfjorton@gmail.com", f"{label}: mail href {data['mailHref']}"
+    assert "alt-page--kontakt" in data["bodyClass"], f"{label}: missing kontakt body class"
+    if mobile:
+        assert data["mainBg"] == KONTAKT_SURFACE, f"{label}: main bg {data['mainBg']}"
+        assert data["tallyBg"] in ("rgba(0, 0, 0, 0)", "transparent"), (
+            f"{label}: tally card should be transparent, got {data['tallyBg']}"
+        )
+        assert data["tallyPad"] < 2, f"{label}: tally card padding {data['tallyPad']}"
+        assert data["h1Color"] == "rgb(26, 24, 22)", f"{label}: h1 contrast {data['h1Color']}"
     assert len(data["channelHrefs"]) >= 2, f"{label}: email + Instagram links expected"
     assert data["channelHrefs"][0].startswith("mailto:"), f"{label}: email should be first channel"
     assert "instagram.com" in data["channelHrefs"][1], f"{label}: Instagram link missing"
@@ -84,12 +108,12 @@ def main() -> int:
             )
             page = mobile_ctx.new_page()
             page.goto(KONTAKT_URL, wait_until="networkidle")
-            assert_kontakt(page, "webkit-mobile")
+            assert_kontakt(page, "webkit-mobile", mobile=True)
             page.screenshot(path=str(OUT / "kontakt-mobile-webkit.png"), full_page=True)
 
             page.set_viewport_size(DESKTOP)
             page.reload(wait_until="networkidle")
-            assert_kontakt(page, "webkit-desktop")
+            assert_kontakt(page, "webkit-desktop", mobile=False)
             page.screenshot(path=str(OUT / "kontakt-desktop-webkit.png"), full_page=False)
 
             mobile_ctx.close()

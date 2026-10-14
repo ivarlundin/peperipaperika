@@ -105,6 +105,16 @@ def assert_offert_mobile(page, label: str) -> None:
     assert offert["bg"] not in ("", "rgba(0, 0, 0, 0)", "transparent"), (
         f"{label}: offert section should have mobile surface background, got {offert['bg']}"
     )
+    mail = page.evaluate(
+        """() => {
+          const a = document.querySelector('#offert .contact-offert__mail a');
+          return a ? { text: a.textContent.trim(), href: a.getAttribute('href') } : null;
+        }"""
+    )
+    assert mail and mail["text"] == "Föredrar du e-post? Mejla oss här", (
+        f"{label}: home offert mail link text {mail}"
+    )
+    assert mail["href"] == "mailto:halvfjorton@gmail.com", f"{label}: home mail href"
 
 
 def main() -> int:
