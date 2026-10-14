@@ -153,15 +153,17 @@ body.alt-page > main {
     backdrop-filter 0.35s var(--alt-ease);
 }
 
-.alt-header.is-solid {
-  background: rgba(10, 10, 11, 0.97);
-  -webkit-backdrop-filter: blur(18px) saturate(120%);
-  backdrop-filter: blur(18px) saturate(120%);
-  border-bottom-color: var(--alt-line);
+@media (min-width: 901px) {
+  .alt-header.is-solid {
+    background: rgba(10, 10, 11, 0.97);
+    -webkit-backdrop-filter: blur(18px) saturate(120%);
+    backdrop-filter: blur(18px) saturate(120%);
+    border-bottom-color: var(--alt-line);
+  }
 }
 
 @media (min-width: 901px) {
-  .alt-page--inner .alt-header {
+  .alt-page--inner .alt-header.is-solid {
     background: rgba(10, 10, 11, 0.97);
     -webkit-backdrop-filter: blur(18px) saturate(120%);
     backdrop-filter: blur(18px) saturate(120%);
@@ -3320,15 +3322,17 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   padding-left: var(--alt-pad-left);
   padding-right: var(--alt-pad-right);
   box-sizing: border-box;
+  overflow-x: clip;
 }
 
 .alt-wedding-video__player .video-facade,
 .alt-wedding-video__player .embed {
   width: 100%;
-  max-width: none;
+  max-width: 100%;
   margin: 0;
   border: 1px solid var(--alt-line);
   box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
 }
 
 .alt-wedding-video__caption {
@@ -3385,14 +3389,30 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   margin: 0;
   box-sizing: border-box;
   padding-top: var(--alt-header-total);
-  min-height: clamp(20rem, 52svh, 32rem);
+  min-height: max(
+    clamp(20rem, 52svh, 32rem),
+    calc(var(--alt-header-total) + 13.5rem)
+  );
   overflow: hidden;
 }
 
 @media (max-width: 900px) {
   .alt-service-hero {
-    min-height: min(70svh, 560px);
+    min-height: max(
+      min(70svh, 560px),
+      calc(var(--alt-header-total) + 12.5rem)
+    );
   }
+}
+
+.alt-page--service-banner .alt-service-hero__content {
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+.alt-page--service-banner .alt-service-hero__img {
+  transform: none;
 }
 
 .alt-service-hero__media {

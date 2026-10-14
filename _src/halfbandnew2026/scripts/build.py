@@ -1022,7 +1022,7 @@ def page(
 </head>
 <body class="{body_class}">
   <a class="skip-link" href="#innehall">Hoppa till innehållet</a>
-  <header class="alt-header site-header is-solid" data-nav>
+  <header class="alt-header site-header" data-nav>
     <div class="alt-header__inner header-inner">
       <a class="alt-brand brand" href="/" aria-label="Halv Fjorton">
 {brand_logo_markup()}
