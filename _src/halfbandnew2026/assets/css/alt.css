@@ -73,7 +73,6 @@
   li,
   .lead,
   .contact-offert__lead,
-  .alt-hero__lead,
   .aeo-answer,
   .contact-offert__mail,
   .alt-offer-card p,
@@ -766,7 +765,7 @@ body.alt-page.nav-open {
   line-height: 1.05;
   letter-spacing: 0;
   max-width: 18ch;
-  margin: 0 0 0.75rem;
+  margin: 0 0 1.35rem;
 }
 
 .alt-hero__title-line,
@@ -817,14 +816,16 @@ body.alt-page.nav-open {
 .alt-hero__lead {
   color: rgba(242, 240, 236, 0.82);
   font-size: clamp(0.98rem, 2vw, 1.15rem);
-  max-width: min(38ch, 100%);
-  margin: 0 0 1.1rem;
+  max-width: min(44ch, 100%);
+  margin: 0 0 1.65rem;
+  text-wrap: balance;
 }
 
 .alt-hero__actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
+  margin: 0.5rem 0 1.85rem;
 }
 
 /* Fact strip */
@@ -1485,10 +1486,12 @@ body.alt-page.nav-open {
 }
 
 .alt-page--inner .page-hero {
-  padding: 2.5rem 0 1.5rem;
+  padding-top: clamp(4rem, 10vw, 8rem);
+  padding-bottom: 1.5rem;
 }
 
 .alt-page--inner .page-hero.compact {
+  padding-top: clamp(4rem, 10vw, 8rem);
   padding-bottom: 1rem;
 }
 
