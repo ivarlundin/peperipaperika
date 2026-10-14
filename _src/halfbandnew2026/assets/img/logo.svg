@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-labelledby="logoTitle">
+  <title id="logoTitle">Halv Fjorton</title>
+  <text x="8" y="52" font-family="Georgia, 'Times New Roman', serif" font-size="52" font-weight="700" fill="currentColor">1</text>
+  <text x="58" y="52" font-family="Georgia, 'Times New Roman', serif" font-size="52" font-weight="700" fill="currentColor">4</text>
+  <rect x="10" y="60" width="100" height="6" fill="currentColor"/>
+  <text x="38" y="108" font-family="Georgia, 'Times New Roman', serif" font-size="52" font-weight="700" fill="currentColor">2</text>
+</svg>
