@@ -1753,8 +1753,63 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 }
 
 @media (max-width: 900px) {
+  .alt-contact-offert {
+    --offert-surface: #eeebe6;
+    --offert-ink: #1a1816;
+    --offert-muted: #4a4540;
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(50% - 50vw);
+    padding: 2.75rem 0 4.25rem;
+    background: var(--offert-surface);
+    box-sizing: border-box;
+  }
+
   .alt-page .contact-offert__grid {
     grid-template-columns: 1fr;
+  }
+
+  .alt-contact-offert .contact-offert__copy h2,
+  .alt-contact-offert .contact-offert__copy .alt-section-typewriter,
+  .alt-contact-offert .contact-offert__copy .alt-section-typewriter__ghost,
+  .alt-contact-offert .contact-offert__copy .alt-section-typewriter__text {
+    color: var(--offert-ink);
+  }
+
+  .alt-contact-offert .contact-offert__lead {
+    color: var(--offert-muted);
+  }
+
+  .alt-contact-offert .list-check > li {
+    color: var(--offert-ink);
+  }
+
+  .alt-contact-offert .list-check > li::before {
+    background-color: var(--offert-ink);
+  }
+
+  .alt-contact-offert .contact-offert__mail .alt-btn--primary {
+    background: var(--offert-ink);
+    color: #fff;
+    border-color: var(--offert-ink);
+  }
+
+  .alt-contact-offert .contact-offert__mail .alt-btn--primary:hover {
+    background: #2a2622;
+    border-color: #2a2622;
+    color: #fff;
+  }
+
+  .alt-contact-offert .tally-card {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+    border-radius: 0;
+  }
+
+  .alt-contact-offert .tally-card noscript a {
+    color: var(--offert-ink);
   }
 }
 
