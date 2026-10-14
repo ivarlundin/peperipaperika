@@ -1,0 +1,60 @@
+# Handoff: Halv Fjorton (`halfbandnew2026`)
+
+## Repo layout
+
+| Path | Role |
+|------|------|
+| `_src/halfbandnew2026/` | **Källa** (HTML-bygge, CSS, JS, bilder, skills) |
+| `testing/halfbandnew2026/` | **Labs-bygge** (GitHub Pages under `labs.ivarlundin.se`) |
+| `scripts/build.py` | Genererar sidor, sitemap, llms.txt; kopierar `home/index.html` |
+
+**Bygg labs:**
+
+```bash
+cd _src/halfbandnew2026
+python3 scripts/build.py --output-dir ../../testing/halfbandnew2026 --subpath /testing/halfbandnew2026
+```
+
+**Commit:** alltid källändringar **och** `testing/halfbandnew2026/` i samma push till `main`.
+
+**Rör inte:** repots root (`CNAME`, annat), `ns-midihelper/`.
+
+## Designregler (bindande)
+
+- **Outfit** rubriker, **Inter** (lätt vikt) brödtext.
+- Ingress = vanlig text (ingen bakgrund, border, vänsterkant).
+- Samma vänster/högerkant som menyn (`--alt-pad-left/right`).
+- **En gallery-bild per sida** (`halvfjorton-*`), inte i hero + body.
+- Bilder: `object-fit: cover` med genomtänkt `object-position`, fasta höjder på fullbreddsband; ingen horisontell scroll.
+- Inga tankstreck (–/—), kickers, priser, telefon i copy.
+- Copy: `skills/svensk-copy/SKILL.md` (ändra inte Ivar-godkänd bröllopstext utan ok).
+
+## QA (obligatoriskt)
+
+Se **`QA.md`**. Kör före varje push:
+
+```bash
+python3 qa_check.py
+```
+
+Efter deploy:
+
+```bash
+python3 qa_check.py --live --skip-build
+```
+
+## Service-sidor (Bröllop, Företag, Mingel)
+
+- Klass `alt-page--service-banner`, gemensam `alt-service-hero` i `build.py`.
+- Hero: `padding-top: var(--alt-header-total)` (= header + safe-area), mobil `min-height: max(min(70svh, 560px), header + innehåll)`.
+- Header: `alt-nav.js` sätter `is-solid` vid scroll; mobil utan blur/bakgrund i toppläge, vid scroll `blur(16px) saturate(140%)` via `::before`.
+
+## Öppna / kända
+
+- Dolda SEO-sidor (`/kompband/`, `/brollopsband-smaland/`, …) får inte länkas från synliga sidor (build assert).
+- `home/index.html` patchas efter bygge (`patch_home_page`).
+- Skills: `.cursor/skills/` (design), `skills/svensk-copy/`.
+
+## Live
+
+https://labs.ivarlundin.se/testing/halfbandnew2026/

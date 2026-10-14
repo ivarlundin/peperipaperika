@@ -83,6 +83,7 @@ Alltid ange:
 | `scripts/qa_lib.py` | Delade regler och JS-prober |
 | `scripts/qa_check.py` | Shim → `../qa_check.py` |
 | `scripts/verify_*.py` | Äldre fokuserade tester (valfritt; matrisen i `qa_check.py` är normen) |
+| `HANDOFF.md` | Struktur, byggflöde, designregler, öppna punkter |
 
 ## Workflow
 
