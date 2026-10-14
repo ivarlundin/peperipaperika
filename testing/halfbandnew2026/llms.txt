@@ -13,7 +13,7 @@ Kärnregion: Växjö, Älmhult, Kalmar, Jönköping, Lund, Malmö, Helsingborg (
 
 ## Tjänster
 - Bröllopsband: två set partymusik; tillval mingel, vigselmusik, komp till solist
-- Företagsfest / festband: musikunderhållning, artistkomp, specialmusik
+- Företagsfest / festband: live på företagsfest, artistkomp, särskilda musikmoment
 - Kompband för artist: /kompband/
 - 50-årsfest och privatfest: /50-arsfest/
 - Egen julkonsert (A Soulful Christmas, Nygatan 6 Växjö sedan 2023): /julkonsert/

@@ -485,7 +485,7 @@ def write_pages():
     <section class="section">
       <div class="wrap grid-2">
         <div>
-          <h2>Upplägg på bröllopsfesten</h2>
+          <h2>Så brukar kvällen se ut</h2>
           <ul class="list-check">
             <li><strong>Två set partymusik</strong> med dansgolv i fokus.</li>
             <li><strong>Mingelmusik</strong> före middag eller under mottagning.</li>
@@ -521,7 +521,7 @@ def write_pages():
     page(
         "/foretag/",
         f"Coverband till företagsfest Malmö och Skåne | {BRAND_TITLE}",
-        "Festband och musikunderhållning till personalfest, kickoff och jubileum. Artistkomp och specialarrangerad musik. Malmö, Lund, Växjö och Småland.",
+        "Festband till personalfest, kickoff och jubileum i Malmö, Lund, Växjö och Småland. Artistkomp och särskilda musikmoment går att boka.",
         breadcrumb_name="Företag",
         extra_ld=[
             service_ld(
@@ -532,14 +532,14 @@ def write_pages():
         ],
         body=f"""    <header class="page-hero">
       <div class="page-hero-copy">
-        <h1>Festband till personalfest och kickoff</h1>
-{aeo_answer("Halv Fjorton levererar musikunderhållning med åtta musiker och egen blåssektion till företagsfester i Skåne och Småland. Vanligt upplägg är två set festmusik, ofta efter mingel.")}
-        <p class="lead">Vi komponerar kvällen med er: mingel, tal, dans. Artistkomp och specialmusik för event går att boka.</p>
+        <h1>Personalfest, kickoff och jubileum</h1>
+{aeo_answer("Halv Fjorton spelar på företagsfester i Skåne och Småland med åtta musiker och egen blåssektion. Vanligt är två set festmusik, ofta efter mingel.")}
+        <p class="lead">Vi planerar kvällen med er: mingel, tal, dans. Artistkomp och särskilda musikmoment går att boka.</p>
       </div>
     </header>
     <section class="section">
       <div class="wrap">
-        <h2>När företag bokar oss</h2>
+        <h2>När företag hör av sig</h2>
         <div class="faq-grid">
           <article><h3>Personalfest och julbord</h3><p>Kvällar där kollegor faktiskt dansar. Soul och funk som fungerar även om gästlistan är blandad.</p></article>
           <article><h3>Kickoff och konferens</h3><p>Mingel till fördrinken, mer tryck efter middagen. Vi anpassar volym och repertoar efter lokalen och programmet.</p></article>
@@ -550,7 +550,7 @@ def write_pages():
     <section class="section section-alt">
       <div class="wrap split">
         <div>
-          <h2>Det som brukar avgöra</h2>
+          <h2>Det som ofta spelar roll</h2>
           <ul class="list-check">
             <li><strong>Blåssektion.</strong> Trumpet, sax och kör - mer än gitarr, bas och trummor i ett hörn.</li>
             <li><strong>Lokal och logistik.</strong> {LOKAL_TEKNIK_COPY}</li>
@@ -568,7 +568,7 @@ def write_pages():
     </section>
     <section class="section">
       <div class="wrap">
-        <h2>Praktiskt för den som bokar</h2>
+        <h2>Praktiskt vid bokning</h2>
         <div class="grid-2">
           <article class="card">
             <h3>Vad som följer med</h3>
@@ -605,8 +605,8 @@ def write_pages():
         ],
         body="""    <header class="page-hero">
       <div class="page-hero-copy">
-        <h1>Musik som fyller rummet utan att ta över samtalet</h1>
-        <p class="lead">Vi erbjuder spelning vid mingel med blandad repertoar. Allt från traditionell jazz till svenska klassiker. Upplägget passar konferensmiddagar, bröllopsmottagningar och andra sammankomster där gästerna ska kunna prata - och ändå känna att det händer något.</p>
+        <h1>Mingelmusik som håller tonen låg</h1>
+        <p class="lead">Vi spelar mingel med blandad repertoar, från jazz till svenska klassiker. Det passar när gästerna ska kunna prata och ändå höra att det är livemusik.</p>
       </div>
     </header>
     <section class="section">
@@ -650,7 +650,7 @@ def write_pages():
       <div class="page-hero-copy">
         <h1>Kompband för solist och artist</h1>
 {aeo_answer("Halv Fjorton fungerar som kompband när ni vill att en solist, gäst eller inhyrd artist ska framföras med fullt liveband. Samma åtta musiker och egen blåssektion som på våra vanliga gig.")}
-        <p class="lead">Vanligt vid vigsel, psalmer, gästsång eller när eventbolag tar in en artist som behöver professionellt komp.</p>
+        <p class="lead">Vanligt vid vigsel, psalmer, gästsång eller när eventbolag tar in en artist som behöver ordnat komp.</p>
       </div>
     </header>
     <section class="section">
@@ -684,7 +684,7 @@ def write_pages():
         extra_ld=[
             service_ld(
                 "50-årsfest och privatfest",
-                "Festmusik och musikunderhållning till 50-årsfest, privatfest och födelsedag med två set live.",
+                "Festmusik till 50-årsfest, privatfest och födelsedag med två set live.",
                 "/50-arsfest/",
             )
         ],
@@ -766,7 +766,7 @@ def write_pages():
         body="""    <header class="page-hero compact">
       <div class="page-hero-copy">
         <h1>Repertoar</h1>
-        <p class="lead">En kuraterad lista med soul, funk, rock och svenska klassiker publiceras här.</p>
+        <p class="lead">Här kommer en lista med soul, funk, rock och svenska klassiker.</p>
       </div>
     </header>
     <section class="section">
@@ -849,8 +849,8 @@ def write_pages():
     <section class="section">
       <div class="wrap">
         <h2>Musiken</h2>
-        <p>Vårt mål är fester som blir minnesvärda. Huvudinriktningen är funk och soul: Stevie Wonder, Ray Charles, Earth, Wind &amp; Fire. Därtill svenska favoriter som Björn Skifs och Tomas Ledin.</p>
-        <p>Styrkan är mångsidigheten. Det som behövs för att göra festen speciell, det ställer vi upp på. När ni bokar oss ska kvällen kännas unik - inte som en slumpmässig coverkväll.</p>
+        <p>Vi spelar funk och soul: Stevie Wonder, Ray Charles, Earth, Wind &amp; Fire. Därtill svenska favoriter som Björn Skifs och Tomas Ledin.</p>
+        <p>Repertoaren är bred nog för att passa olika åldrar och smaker. När ni bokar oss vill vi att kvällen ska kännas som er fest, inte som en generisk coverkväll.</p>
       </div>
     </section>
     <section class="section section-alt">
@@ -886,7 +886,7 @@ def write_pages():
           </div>
           <div class="meta">
             <h2>Signed Sealed Delivered - 2025</h2>
-            <p>Aktuell livevideo. Ett smakprov på sound, blås och sång.</p>
+            <p>Aktuell livefilm. Smakprov på hur vi låter med blås och sång.</p>
           </div>
         </article>
         <article class="media-card">
@@ -902,7 +902,7 @@ def write_pages():
     </section>
     <section class="section section-alt">
       <div class="wrap">
-        <h2>Lyssna på våra julkonserter</h2>
+        <h2>Julkonserter på film</h2>
         <p class="muted">A Soulful Christmas och en julmässa med vänner. Inbäddade från bandets tidigare mediasida.</p>
         <div class="media-grid">
           <article class="media-card">
@@ -930,29 +930,29 @@ def write_pages():
 
     page(
         "/for-eventbolag/",
-        "Boka Halv Fjorton via eventbolag | underlag för bookers",
-        "Underlag för eventbolag och bookers: kort bio, vad som ingår, teknik, presskit, organisationsuppgifter och bokningsgång för Halv Fjorton.",
+        "Boka Halv Fjorton via eventbolag | underlag för bokare",
+        "Underlag för eventbolag: kort bio, vad som ingår, teknik, presskit, organisationsuppgifter och bokningsgång för Halv Fjorton.",
         extra_ld=[
             service_ld(
                 "Bokning via eventbolag",
-                "Coverband för eventbyråer och bookers i södra Sverige.",
+                "Coverband för eventbyråer i södra Sverige.",
                 "/for-eventbolag/",
             )
         ],
         body=f"""    <header class="page-hero compact">
       <div class="page-hero-copy">
-        <h1>Ett komplett partyband ni kan sätta i offerten utan att gissa</h1>
+        <h1>Info för eventbolag</h1>
         <p class="lead">Halv Fjorton är åtta musiker med egen blåssektion. Rötter i Växjö, spelningar i södra Sverige. Soul, funk, rock och svenska klassiker.</p>
       </div>
     </header>
     <section class="section">
       <div class="wrap grid-2">
         <div>
-          <h2>Kort bio att återanvända</h2>
+          <h2>Kort bio</h2>
           <p>Halv Fjorton är ett cover- och partyband från södra Sverige. Bandet har åtta permanenta medlemmar, egen blåssektion och en repertoar med tyngdpunkt i soul och funk - Stevie Wonder, Ray Charles, Earth, Wind &amp; Fire - plus svenska klassiker som Björn Skifs och Tomas Ledin. Vanliga bokningar: bröllop (även vigsel/psalmer), mingel, personalfest, kickoff och jubileum.</p>
         </div>
         <div>
-          <h2>Vad kunden får</h2>
+          <h2>Det här ingår</h2>
           <ul class="list-check">
             <li>8 musiker på scen (sång, gitarr, bas, trummor, klaviatur, slagverk, trumpet, saxofon)</li>
             <li>Egen blåssektion och komplett sättning på scen.</li>
@@ -1108,7 +1108,7 @@ def write_pages():
         body=f"""    <header class="page-hero compact">
       <div class="page-hero-copy">
         <h1>Vanliga frågor</h1>
-        <p class="lead">Korta svar för par, företag och eventbolag.</p>
+        <p class="lead">Svar på det vi oftast får frågor om.</p>
         <p class="page-hero__actions">
           <a class="alt-btn alt-btn--ghost" href="/kontakt/">Frågor? Kontakta oss</a>
         </p>
@@ -1204,7 +1204,7 @@ Kärnregion: Växjö, Älmhult, Kalmar, Jönköping, Lund, Malmö, Helsingborg (
 
 ## Tjänster
 - Bröllopsband: två set partymusik; tillval mingel, vigselmusik, komp till solist
-- Företagsfest / festband: musikunderhållning, artistkomp, specialmusik
+- Företagsfest / festband: live på företagsfest, artistkomp, särskilda musikmoment
 - Kompband för artist: /kompband/
 - 50-årsfest och privatfest: /50-arsfest/
 - Egen julkonsert (A Soulful Christmas, Nygatan 6 Växjö sedan 2023): /julkonsert/
