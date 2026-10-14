@@ -599,6 +599,9 @@ def service_hero_banner(service_key: str, h1: str, intro_html: str) -> str:
       <div class="alt-service-hero__scrim" aria-hidden="true"></div>
       <div class="alt-service-hero__content">
         <h1>{esc(h1)}</h1>
+        <div class="alt-service-hero__actions">
+          <a class="alt-btn alt-btn--primary" href="/kontakt/#offert">Kontakta oss</a>
+        </div>
       </div>
     </header>
     <div class="alt-service-intro" data-reveal>
