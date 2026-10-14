@@ -7,7 +7,8 @@
   }
 
   function updateFromScroll() {
-    if (header.classList.contains("is-open")) return;
+    var mobileMenu = document.querySelector("[data-mobile-menu]");
+    if (mobileMenu && !mobileMenu.hidden) return;
     setSolid(window.scrollY > 12);
   }
 

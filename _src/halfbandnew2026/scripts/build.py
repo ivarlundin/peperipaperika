@@ -200,9 +200,15 @@ def nav_toggle_markup(panel_id: str = "meny") -> str:
       </button>"""
 
 
-def alt_nav_toggle_markup(panel_id: str = "alt-meny") -> str:
+def alt_nav_toggle_markup(panel_id: str = "mobile-menu") -> str:
     return f"""      <button class="nav-toggle alt-nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="{panel_id}" aria-label="Öppna meny">
         <span class="nav-toggle__bars" aria-hidden="true"></span>
+      </button>"""
+
+
+def mobile_menu_close_markup() -> str:
+    return """      <button type="button" class="mobile-menu__close" data-nav-close aria-label="Stäng meny">
+        <span class="mobile-menu__close-icon" aria-hidden="true"></span>
       </button>"""
 
 
@@ -241,25 +247,49 @@ def render_nav_list(current_path: str, prefix: str = "", include_home: bool = Tr
     return "\n".join(items)
 
 
-def home_nav_list_markup(current_path: str = "/", offert_href: str = "#offert") -> str:
-    items = [nav_services_dropdown(current_path, "", "nav-tjanster")]
+def home_nav_links_markup(
+    current_path: str = "/",
+    prefix: str = "",
+    menu_id: str = "nav-tjanster",
+) -> str:
+    items = [nav_services_dropdown(current_path, prefix, menu_id)]
     for href, label in HOME_NAV_LINKS:
         current = ' aria-current="page"' if href == current_path else ""
-        items.append(f'          <li><a href="{href}"{current}>{label}</a></li>')
-    items.append(
-        f'          <li class="alt-nav__cta-mobile-wrap"><a class="alt-btn alt-btn--primary alt-nav__cta-mobile" '
-        f'href="{offert_href}">Begär offert</a></li>'
-    )
+        items.append(f'          <li><a href="{nav_path(href, prefix)}"{current}>{label}</a></li>')
     return "\n".join(items)
 
 
-def home_nav_block(current_path: str = "/", offert_href: str = "#offert") -> str:
+def home_nav_block(current_path: str = "/", offert_href: str = "#offert", prefix: str = "") -> str:
     return f"""      <nav class="alt-nav" aria-label="Huvudmeny">
-        <ul class="alt-nav__links nav-list" id="alt-meny" data-nav-panel>
-{home_nav_list_markup(current_path, offert_href)}
+        <ul class="alt-nav__links nav-list" id="alt-meny">
+{home_nav_links_markup(current_path, prefix, "nav-tjanster")}
         </ul>
         <a class="alt-btn alt-btn--primary alt-nav__cta-desktop" href="{offert_href}">Begär offert</a>
       </nav>"""
+
+
+def mobile_menu_block(
+    current_path: str = "/",
+    offert_href: str = "#offert",
+    prefix: str = "",
+) -> str:
+    logo = "\n".join("        " + line for line in brand_logo_markup().splitlines())
+    return f"""  <div class="mobile-menu" id="mobile-menu" data-mobile-menu hidden aria-hidden="true">
+    <div class="mobile-menu__bar">
+      <a class="mobile-menu__brand" href="{nav_path("/", prefix)}" aria-label="Halv Fjorton">
+{logo}
+      </a>
+{mobile_menu_close_markup()}
+    </div>
+    <nav class="mobile-menu__nav" aria-label="Mobilmeny">
+      <ul class="mobile-menu__list nav-list" data-nav-panel>
+{home_nav_links_markup(current_path, prefix, "mobile-nav-tjanster")}
+      </ul>
+    </nav>
+    <div class="mobile-menu__foot">
+      <a class="alt-btn alt-btn--primary mobile-menu__cta" href="{offert_href}">Begär offert</a>
+    </div>
+  </div>"""
 
 
 def modern_footer_markup() -> str:
@@ -395,7 +425,8 @@ def page(
     if page_class:
         body_class = f"{body_class} {page_class}"
     nav_block = home_nav_block(path, "/#offert")
-    toggle = alt_nav_toggle_markup("alt-meny")
+    mobile_menu = mobile_menu_block(path, "/#offert")
+    toggle = alt_nav_toggle_markup("mobile-menu")
     html = f"""<!DOCTYPE html>
 <html lang="sv">
 <head>
@@ -432,10 +463,10 @@ def page(
 {brand_logo_markup()}
       </a>
 {toggle}
-      <div class="nav-backdrop" data-nav-backdrop hidden></div>
 {nav_block}
     </div>
   </header>
+{mobile_menu}
   <main id="innehall" class="alt-inner-main">
 {body}
   </main>
@@ -1137,7 +1168,7 @@ def write_pages():
       </div>
     </header>
 {contact_offert_section(
-    lead="Berätta datum, plats och typ av tillställning. Vi tar hand om resten.",
+    lead="Skriv datum, plats och vad ni planerar. Vi återkommer med förslag.",
 )}
     <section class="section section--tight">
       <div class="wrap">
@@ -1290,6 +1321,12 @@ def patch_home_page():
         count=1,
         flags=re.MULTILINE,
     )
+    if "data-mobile-menu" not in html:
+        html = html.replace(
+            "  </header>\n\n  <main id=\"innehall\">",
+            "  </header>\n\n" + mobile_menu_block("/", "#offert") + "\n\n  <main id=\"innehall\">",
+            1,
+        )
     html = re.sub(
         r'href="mailto:halvfjorton@gmail.com\?subject=Beg%C3%A4r%20offert[^"]*"',
         'href="#offert"',
@@ -1304,7 +1341,7 @@ def patch_home_page():
     alt_offert = contact_offert_section(
         section_class="alt-contact-offert",
         wrap_class="alt-contact-offert__wrap contact-offert__grid",
-        lead="Berätta datum, plats och typ av tillställning. Vi tar hand om resten.",
+        lead="Skriv datum, plats och vad ni planerar. Vi återkommer med förslag.",
         usps=HOME_CONTACT_USPS,
     )
     html = re.sub(
@@ -1328,7 +1365,7 @@ def patch_home_page():
             '  <script src="/assets/js/alt-hero-typewriter.js" defer></script>',
             '  <script src="/assets/js/alt-hero-typewriter.js" defer></script>\n  <script src="/assets/js/alt-section-typewriter.js" defer></script>',
         )
-    toggle = alt_nav_toggle_markup("alt-meny")
+    toggle = alt_nav_toggle_markup("mobile-menu")
     html = re.sub(
         r'<button class="(?:alt-nav-toggle )?nav-toggle"[^>]*>.*?</button>',
         toggle.strip(),
@@ -1336,12 +1373,12 @@ def patch_home_page():
         count=1,
         flags=re.DOTALL,
     )
-    if "data-nav-backdrop" not in html:
-        html = html.replace(
-            '      <nav class="alt-nav"',
-            '      <div class="nav-backdrop" data-nav-backdrop hidden></div>\n      <nav class="alt-nav"',
-            1,
-        )
+    html = re.sub(
+        r'\s*<div class="nav-backdrop" data-nav-backdrop hidden></div>\s*',
+        "\n",
+        html,
+        count=1,
+    )
     html = re.sub(
         r"  <link rel=\"preconnect\" href=\"https://fonts\.googleapis\.com\">[^\n]*\n(?:  <link rel=\"preconnect\" href=\"https://fonts\.gstatic\.com\" crossorigin>\n)?  <link href=\"https://fonts\.googleapis\.com/css2[^\"]*\" rel=\"stylesheet\">\n",
         font_preloads("/assets") + "\n",
