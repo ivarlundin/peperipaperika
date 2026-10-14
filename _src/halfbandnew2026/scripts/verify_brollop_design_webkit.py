@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""WebKit: bröllop editorial layout and no horizontal overflow (iPhone + desktop)."""
+"""WebKit: bröllop wireframe layout and no horizontal overflow (iPhone + desktop)."""
 import subprocess
 import sys
 import time
@@ -18,20 +18,20 @@ def assert_layout(page, label: str) -> None:
         """() => {
           const main = document.querySelector('main#innehall');
           const hero = document.querySelector('.alt-service-hero');
-          const venues = document.querySelector('.alt-wedding-venues__list');
-          const bleed = document.querySelector('.alt-wedding-bleed');
-          const fullVideo = document.querySelector('.alt-wedding-video--full');
-          const faqList = document.querySelector('.alt-wedding-faq__list');
+          const fest = document.querySelector('.alt-brollop-fest');
+          const faqList = document.querySelector('.alt-brollop-faq .alt-faq__list');
           const text = main ? main.innerText : '';
+          const stems = [...document.querySelectorAll('main img[src*="/gallery/halvfjorton-"]')]
+            .map((img) => (img.getAttribute('src') || '').match(/halvfjorton-\\d+/)?.[0])
+            .filter(Boolean);
+          const dup = stems.find((s, i) => stems.indexOf(s) !== i);
           return {
             bodyClass: document.body.className,
             hasHero: !!hero,
             heroH: hero ? hero.getBoundingClientRect().height : 0,
-            venueCount: venues ? venues.querySelectorAll('li').length : 0,
-            bleedCount: document.querySelectorAll('.alt-wedding-bleed').length,
-            hasFullVideo: !!fullVideo,
-            hasFaqList: !!faqList,
-            hasFaqGrid: !!document.querySelector('.alt-wedding-faq__grid'),
+            hasFest: !!fest,
+            faqCount: faqList ? faqList.querySelectorAll('.alt-faq__item').length : 0,
+            dup,
             docSW: document.documentElement.scrollWidth,
             docCW: document.documentElement.clientWidth,
             hasEyebrow: !!document.querySelector('.eyebrow'),
@@ -44,10 +44,9 @@ def assert_layout(page, label: str) -> None:
     assert "alt-page--wedding" in data["bodyClass"], f"{label}: wedding body class"
     assert data["hasHero"], f"{label}: missing wedding hero"
     assert data["heroH"] >= 170, f"{label}: hero too short ({data['heroH']})"
-    assert data["venueCount"] == 4, f"{label}: venue list count"
-    assert data["bleedCount"] >= 2, f"{label}: full-bleed images"
-    assert data["hasFullVideo"], f"{label}: full-width video section"
-    assert data["hasFaqList"] and not data["hasFaqGrid"], f"{label}: faq list layout"
+    assert data["hasFest"], f"{label}: missing Festspelning section"
+    assert data["faqCount"] == 5, f"{label}: FAQ count"
+    assert not data["dup"], f"{label}: duplicate gallery image {data['dup']}"
     assert data["docSW"] <= data["docCW"] + 1, (
         f"{label}: horizontal overflow {data['docSW']} > {data['docCW']}"
     )
@@ -61,13 +60,9 @@ def assert_layout(page, label: str) -> None:
     fit = hero_img.evaluate("el => getComputedStyle(el).objectFit")
     assert fit == "cover", f"{label}: hero image must use cover, got {fit}"
 
-    bleed_img = page.locator(".alt-wedding-bleed img").first
-    fit = bleed_img.evaluate("el => getComputedStyle(el).objectFit")
-    assert fit == "cover", f"{label}: bleed image must use cover, got {fit}"
-
-    display = page.locator(".alt-wedding-display").first
+    display = page.locator(".alt-svc-chapter__title").first
     fs = display.evaluate("el => parseFloat(getComputedStyle(el).fontSize)")
-    assert fs >= 28, f"{label}: display type too small ({fs}px)"
+    assert fs >= 22, f"{label}: section title too small ({fs}px)"
 
 
 def run_viewport(browser, viewport: dict, mobile: bool, tag: str) -> None:

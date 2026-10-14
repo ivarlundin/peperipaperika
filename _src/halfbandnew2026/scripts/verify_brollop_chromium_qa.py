@@ -24,9 +24,9 @@ def check(page, label: str, at_top: bool) -> None:
           const header = document.querySelector('.alt-header');
           const hr = header ? header.getBoundingClientRect() : { bottom: 0 };
           const h1r = h1 ? h1.getBoundingClientRect() : { top: 0 };
-          const bleedImg = document.querySelector('.alt-wedding-bleed img');
-          const bleedFit = bleedImg ? getComputedStyle(bleedImg).objectFit : '';
-          const introFs = (() => {
+          const festImg = document.querySelector('.alt-brollop-figure img');
+          const festFit = festImg ? getComputedStyle(festImg).objectFit : '';
+          const dekFs = (() => {
             const el = document.querySelector('.alt-service-hero__dek');
             return el ? parseFloat(getComputedStyle(el).fontSize) : 0;
           })();
@@ -34,9 +34,9 @@ def check(page, label: str, at_top: bool) -> None:
             dup,
             overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
             underHeader: h1r.top < hr.bottom - 1,
-            bleedFit,
-            introFs,
-            bleed: document.querySelectorAll('.alt-wedding-bleed').length,
+            festFit,
+            dekFs,
+            faqCount: document.querySelectorAll('.alt-brollop-faq .alt-faq__item').length,
           };
         }"""
     )
@@ -44,10 +44,10 @@ def check(page, label: str, at_top: bool) -> None:
     if at_top:
         assert not data["underHeader"], f"{label}: h1 under header"
     assert not data["dup"], f"{label}: duplicate image {data['dup']}"
-    assert data["bleedFit"] == "cover", f"{label}: bleed must use cover ({data['bleedFit']})"
-    assert data["bleed"] >= 2, f"{label}: bleed images"
+    assert data["festFit"] == "cover", f"{label}: fest image must use cover ({data['festFit']})"
+    assert data["faqCount"] == 5, f"{label}: FAQ count"
     if page.viewport_size and page.viewport_size["width"] <= 480 and at_top:
-        assert data["introFs"] <= 24, f"{label}: ingress too large on mobile ({data['introFs']}px)"
+        assert data["dekFs"] <= 20, f"{label}: hero dek too large on mobile ({data['dekFs']}px)"
 
 
 def main() -> int:

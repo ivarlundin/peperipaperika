@@ -3474,6 +3474,96 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
     grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
     align-items: center;
   }
+
+  .alt-svc-chapter__split.alt-svc-chapter__layout--copy-first .alt-svc-chapter__split-copy {
+    grid-column: 1;
+  }
+
+  .alt-svc-chapter__split.alt-svc-chapter__layout--copy-first .alt-svc-chapter__split-media {
+    grid-column: 2;
+  }
+}
+
+.alt-page--wedding .alt-brollop-fest {
+  padding-block: clamp(4rem, 11vw, 7.5rem);
+}
+
+.alt-page--wedding .alt-brollop-figure {
+  margin: 0;
+  border-radius: var(--alt-radius);
+  overflow: hidden;
+  border: 1px solid var(--alt-line);
+}
+
+.alt-page--wedding .alt-brollop-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  object-position: center center;
+}
+
+.alt-page--wedding .alt-brollop-fest__actions,
+.alt-page--wedding .alt-brollop-contact__actions {
+  margin: 1.35rem 0 0;
+}
+
+.alt-page--wedding .alt-brollop-addons {
+  padding-block: clamp(2.5rem, 7vw, 4rem);
+  background: var(--alt-bg-elevated);
+  border-block: 1px solid var(--alt-line);
+}
+
+.alt-page--wedding .alt-brollop-addons .alt-svc-chapter__title {
+  font-size: clamp(1.35rem, 2.6vw, 1.75rem);
+  font-weight: 650;
+  max-width: 28ch;
+}
+
+.alt-page--wedding .alt-brollop-addons__grid {
+  display: grid;
+  gap: 1rem 1.25rem;
+  margin-top: 0.25rem;
+}
+
+@media (min-width: 701px) {
+  .alt-page--wedding .alt-brollop-addons__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 56rem;
+  }
+}
+
+.alt-page--wedding .alt-brollop-addon-card {
+  padding: 1.15rem 1.25rem;
+  border: 1px solid var(--alt-line);
+  border-radius: var(--alt-radius);
+  background: var(--alt-bg);
+}
+
+.alt-page--wedding .alt-brollop-addon-card__title {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-display);
+  font-size: var(--alt-svc-body-size);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.alt-page--wedding .alt-brollop-addon-card__text {
+  margin: 0;
+  font-size: var(--alt-svc-body-size);
+  font-weight: 300;
+  line-height: var(--alt-svc-body-line);
+  color: var(--alt-muted);
+}
+
+.alt-page--wedding .alt-brollop-faq .alt-faq__list {
+  margin-top: 0.5rem;
+  max-width: 52rem;
+}
+
+.alt-page--wedding .alt-brollop-contact {
+  padding-bottom: clamp(4.5rem, 12vw, 7rem);
 }
 
 /* Service pages: home-hero look, shorter static band (no carousel / typewriter) */

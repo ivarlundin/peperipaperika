@@ -577,10 +577,37 @@ def service_hero_typewriter_h1(h1: str) -> str:
         </h1>"""
 
 
+BROLLOP_FAQS: tuple[tuple[str, str], ...] = (
+    (
+        "Spelar ni utanför Växjö?",
+        "Ja. Vi utgår från Växjö och spelar på bröllop i hela Småland och Skåne. "
+        "Längre resor går också bra om vi kommer överens om upplägget.",
+    ),
+    (
+        "Hur långt i förväg behöver vi boka?",
+        "För populära datum är det bra att höra av sig ungefär ett år i förväg. "
+        "Hör av er så snart ni har datum och lokal klart.",
+    ),
+    (
+        "Kan vi önska låtar?",
+        "Ja. Skicka era önskemål i förväg så spelar vi dem om vi kan. Vi har också bra koll på vad som får fart på dansgolvet. "
+        "Er första dans ingår alltid, live eller från Spotify genom vårt ljud.",
+    ),
+    (
+        "Spelar ni utomhus?",
+        "Det beror på plats, väder och vad som skyddar bandet och utrustningen. "
+        "Berätta tidigt om ni vill ha musik utomhus, så kan vi ta ställning till det när ni bokar.",
+    ),
+    (
+        "Samarbetar ni med några bröllopslokaler?",
+        "Vi spelar på bröllop i hela Småland och Skåne och återkommer ofta till Asa Herrgård och Norraby gård.",
+    ),
+)
+
 SERVICE_OFFER_HERO_IMAGES = {
     "brollop": (
         "halvfjorton-03",
-        "Fest med guldkonfetti och trummor bland gäster vid bord",
+        "Bröllopsfest med guldkonfetti och livemusik från Halv Fjorton",
         2400,
         1600,
         "center",
@@ -668,98 +695,116 @@ def wedding_figure(
           </figure>"""
 
 
-def wedding_bleed_figure(
-    stem: str,
-    alt: str,
-    modifier: str = "",
-    width: int = 2400,
-    height: int = 1600,
-) -> str:
-    base = f"/assets/img/gallery/{stem}"
-    mod_class = f" alt-wedding-bleed--{modifier}" if modifier else ""
-    return f"""      <figure class="alt-wedding-bleed{mod_class}">
-        <img
-          src="{base}-1200w.webp"
-          srcset="{base}-480w.webp 480w, {base}-800w.webp 800w, {base}-1200w.webp 1200w, {base}-1920w.webp 1920w"
-          sizes="100vw"
-          alt="{esc(alt)}"
-          width="{width}"
-          height="{height}"
-          loading="lazy"
-          decoding="async"
-        >
-      </figure>"""
+def wedding_faq_ld() -> str:
+    entities = [
+        {
+            "@type": "Question",
+            "name": q,
+            "acceptedAnswer": {"@type": "Answer", "text": a},
+        }
+        for q, a in BROLLOP_FAQS
+    ]
+    data = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": entities,
+    }
+    return _indent_ld(data)
 
 
-def wedding_page_body(wedding_video_block: str) -> str:
+def wedding_service_ld() -> str:
+    data = {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": "Bröllopsband",
+        "description": (
+            "Bröllopsband från Växjö med åtta musiker och blås. "
+            "Fest, mingel och vigselmusik på bröllop i Småland och Skåne."
+        ),
+        "url": f"{SITE}/brollop/",
+        "areaServed": [
+            {"@type": "City", "name": "Växjö"},
+            {"@type": "AdministrativeArea", "name": "Småland"},
+            {"@type": "AdministrativeArea", "name": "Skåne"},
+        ],
+        "provider": {
+            "@type": "MusicGroup",
+            "name": "Halv Fjorton",
+            "url": f"{SITE}/",
+        },
+    }
+    return _indent_ld(data)
+
+
+def wedding_page_body() -> str:
     hero = service_hero_banner(
         "brollop",
-        "Bröllopsfest med livemusik och dans",
-        "När middagen är slut ska gästerna vilja dansa. Vi spelar soul, funk och svenska låtar från Växjö. "
-        "Blåsen sitter i när det ska svänga.",
+        "Bröllop",
+        "Avsluta dagen på ett storslaget sätt med ett bröllopsband som ger er och era gäster en kväll ni sent glömmer.",
     )
-    split_figure = wedding_figure(
-        "halvfjorton-02",
-        "Keyboard och blåssektion på scen i blått ljus",
-        "(max-width: 900px) 100vw, min(42vw, 520px)",
-        height=2400,
-        width=1600,
-        figure_class="alt-wedding-figure alt-wedding-figure--portrait",
+    fest_figure = wedding_figure(
+        "halvfjorton-01",
+        "Halv Fjorton spelar på bröllopsfest i Småland",
+        "(max-width: 900px) 100vw, min(46vw, 640px)",
+        figure_class="alt-brollop-figure",
     )
-    venues_html = """          <ul class="alt-svc-venues__list">
-            <li>Asa Herrgård</li>
-            <li>Norraby gård</li>
-            <li>Kronovalls slott</li>
-            <li>Bäckaskog slott</li>
-          </ul>
-          <p>Vi har spelat där och på liknande ställen. Vi utgår från Växjö och åker till bröllop i Småland och Skåne, till exempel runt Kalmar och Älmhult eller vidare söderut när det passar er dag.</p>
-          <h2 class="alt-svc-chapter__title alt-svc-chapter__title--sub">Smakprov från scen</h2>
-          <div class="alt-svc-chapter__video">
-{video}
-          </div>
-          <p class="alt-svc-chapter__caption">Signed Sealed Delivered, live med bandet.</p>""".format(
-        video=wedding_video_block
+    faq_items = "\n".join(
+        f"""          <details class="alt-faq__item">
+            <summary class="alt-faq__question">{esc(q)}</summary>
+            <div class="alt-faq__answer">
+              <p>{esc(a)}</p>
+            </div>
+          </details>"""
+        for q, a in BROLLOP_FAQS
     )
     return f"""{hero}
-{service_chapter(
-        "När dansen börjar",
-        [
-            "Spellistan håller tempot uppe hela kvällen. Vi byter stil efter hur golvet ser ut. "
-            "Era låtar tar vi med om de passar live.",
-        ],
-    )}
-{wedding_bleed_figure("halvfjorton-06", "Sång och slagverk på scen, svartvit bild i dramatiskt ljus", "mono", height=2400, width=1600)}
-    <section class="alt-svc-chapter section alt-svc-chapter--split alt-wedding-sound--ink" data-reveal>
-      <div class="alt-svc-wrap alt-svc-chapter__split">
-        <div class="alt-svc-chapter__split-media">
-{split_figure}
-        </div>
+    <section class="alt-svc-chapter section alt-svc-chapter--split alt-brollop-fest" data-reveal>
+      <div class="alt-svc-wrap alt-svc-chapter__split alt-svc-chapter__layout--copy-first">
         <div class="alt-svc-chapter__split-copy">
-          <h2 class="alt-svc-chapter__title">Ljud, mingel och vigsel</h2>
+          <h2 class="alt-svc-chapter__title">Festspelning</h2>
           <div class="alt-svc-chapter__body">
-            <p>Eget ljud och ljus ingår. Ni behöver ingen extra teknik för festen.</p>
-            <p>Under mingel spelar vi lugnare, med eget litet ljud så pratet håller. Till vigseln komp till solist; låtar bestämmer vi med er. Alla åtta till ceremonin går om tid och plats räcker.</p>
+            <p>När middagen är över och första valsen är dansad drar vi igång festen på riktigt. Vi är ett bröllopsband från Växjö med åtta musiker och blåssektion, och vi tar er genom flera genrer under kvällen. Vi har lång erfarenhet av bröllop och vet vad som får dansgolvet att leva.</p>
+            <p class="alt-brollop-fest__actions">
+              <a class="alt-btn alt-btn--primary" href="/kontakt/#offert">Kontakta oss</a>
+            </p>
           </div>
+        </div>
+        <div class="alt-svc-chapter__split-media">
+{fest_figure}
         </div>
       </div>
     </section>
-{wedding_bleed_figure("halvfjorton-01", "Hela bandet på scen i festsal med publik", "wide")}
-{service_chapter(
-        "Så går kvällen",
-        [
-            "Live eller er inspelning genom vårt ljud. Önskemål tar vi via e-post; nya låtar lär vi in om arrangemanget passar.",
-            "Tid i lokalen innan gästerna och plats för oss på golvet eller scenen. Resten avtalar vi i förväg.",
-            "Samma kväll, lugnare först.",
-            "Live eller inspelning.",
-            "Psalmer och vigsel. Hör av er om komp till solist eller gästsång.",
-        ],
-    )}
-{service_chapter("Platser vi brukar spela på", [], extra_html=venues_html)}
-    <section class="alt-svc-chapter section alt-svc-chapter--closing" data-reveal>
+    <section class="alt-svc-chapter section alt-brollop-addons" data-reveal>
       <div class="alt-svc-wrap">
-        <h2 class="alt-svc-chapter__title">Innan ni bokar</h2>
-        <div class="actions alt-svc-chapter__actions">
-          <a class="btn btn-primary" href="/kontakt/#offert">Begär offert</a>
+        <h2 class="alt-svc-chapter__title">Tilläggstjänster</h2>
+        <div class="alt-brollop-addons__grid">
+          <article class="alt-brollop-addon-card">
+            <h3 class="alt-brollop-addon-card__title">Mingelmusik</h3>
+            <p class="alt-brollop-addon-card__text">Före middagen spelar vi lugnare och jazzigare musik medan gästerna minglar. Vi tar med ett eget ljudsystem för detta.</p>
+          </article>
+          <article class="alt-brollop-addon-card">
+            <h3 class="alt-brollop-addon-card__title">Vigselmusik</h3>
+            <p class="alt-brollop-addon-card__text">Till vigseln har vi solist och komp, och låtarna väljer vi tillsammans med er. Har ni andra önskemål för vigseln löser vi det efter dem.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+    <section class="alt-svc-chapter section alt-brollop-faq" data-reveal>
+      <div class="alt-svc-wrap alt-faq">
+        <h2 class="alt-svc-chapter__title">Vanliga frågor</h2>
+        <div class="alt-faq__list" data-faq>
+{faq_items}
+        </div>
+      </div>
+    </section>
+    <section class="alt-svc-chapter section alt-brollop-contact" data-reveal>
+      <div class="alt-svc-wrap">
+        <h2 class="alt-svc-chapter__title">Kontakta oss</h2>
+        <div class="alt-svc-chapter__body">
+          <p>Berätta om ert bröllop, så återkommer vi med ett förslag.</p>
+          <p class="alt-brollop-contact__actions">
+            <a class="alt-btn alt-btn--primary" href="/kontakt/">Kontakta oss</a>
+          </p>
         </div>
       </div>
     </section>"""
@@ -1054,25 +1099,14 @@ def write_pages():
         member_compact_card(name, img, line) for name, img, line in PERMANENT_MEMBERS
     )
     guest_member_cards = "\n".join(member_compact_card(placeholder=True) for _ in range(3))
-    wedding_video_block = video_facade(
-        WEDDING_VIDEO_ID,
-        WEDDING_VIDEO_TITLE,
-        "Förhandsbild: Halv Fjorton spelar live på bröllopsfest i södra Sverige",
-    )
     page(
         "/brollop/",
-        f"Bröllopsband Växjö, Kalmar och Småland | {BRAND_TITLE}",
-        "Bröllopsband från Växjö. Eget ljud och ljus, mingel och vigsel med komp, fest samma kväll. Spelningar i Småland och Skåne.",
+        "Bröllopsband från Växjö | Halv Fjorton",
+        "Bröllopsband från Växjö med åtta musiker och blås. Fest, mingel och vigselmusik på bröllop i Småland och Skåne.",
         breadcrumb_name="Bröllop",
-        extra_ld=[
-            service_ld(
-                "Bröllopsband",
-                "Bröllopsband från Växjö, åtta musiker. Tillval: mingel, vigsel med komp, alla åtta till ceremonin om det passar.",
-                "/brollop/",
-            ),
-            wedding_video_ld(),
-        ],
-        body=wedding_page_body(wedding_video_block),
+        extra_ld=[wedding_service_ld(), wedding_faq_ld()],
+        extra_scripts='  <script src="/assets/js/alt-faq-accordion.js" defer></script>\n',
+        body=wedding_page_body(),
         page_class="alt-page--wedding alt-page--service-banner",
     )
 
