@@ -49,7 +49,16 @@
   }
 
   function menuIsOpen() {
-    return !mobileMenu.hidden;
+    return mobileMenu.classList.contains("mobile-menu--open");
+  }
+
+  function runAfterPaint(callback) {
+    window.requestAnimationFrame(function () {
+      window.requestAnimationFrame(function () {
+        void mobileMenu.offsetHeight;
+        callback();
+      });
+    });
   }
 
   function closeDropdowns(scope) {
@@ -86,10 +95,17 @@
     if (open) {
       mobileMenu.hidden = false;
       mobileMenu.setAttribute("aria-hidden", "false");
-      window.requestAnimationFrame(function () {
+      mobileMenu.classList.remove("mobile-menu--open");
+      lockPageScroll();
+
+      if (prefersReducedMotion()) {
+        mobileMenu.classList.add("mobile-menu--open");
+        return;
+      }
+
+      runAfterPaint(function () {
         mobileMenu.classList.add("mobile-menu--open");
       });
-      lockPageScroll();
       return;
     }
 

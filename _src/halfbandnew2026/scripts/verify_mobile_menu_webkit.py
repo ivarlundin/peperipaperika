@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Playwright WebKit iPhone: mobile menu full viewport at scroll 0 and 1500px."""
+"""Playwright WebKit iPhone: mobile menu layout, motion, and Tjänster dropdown."""
 import subprocess
 import sys
 import time
@@ -12,11 +12,14 @@ OUT = Path("/opt/cursor/artifacts/screenshots")
 SCROLL_Y = 1500
 VIEWPORT = {"width": 390, "height": 844}
 BASE_URL = "http://127.0.0.1:8765/testing/halfbandnew2026/"
+MENU_MOTION_MS = 400
 
 
 def assert_menu_fullscreen(page, label: str) -> None:
     menu = page.locator("[data-mobile-menu]")
-    assert not menu.evaluate("el => el.hidden"), f"{label}: menu should be visible"
+    assert menu.evaluate("el => el.classList.contains('mobile-menu--open')"), (
+        f"{label}: menu should have open class"
+    )
     box = menu.bounding_box()
     assert box, f"{label}: menu has no bounding box"
     vp = page.viewport_size
@@ -25,18 +28,75 @@ def assert_menu_fullscreen(page, label: str) -> None:
         f"{label}: menu height {box['height']} != viewport {vp['height']}"
     )
     assert box["y"] < 5, f"{label}: menu y={box['y']} not at top"
-    # Last nav link visible (not clipped to header strip)
     kontakt = page.locator(".mobile-menu__list a", has_text="Kontakt")
     assert kontakt.is_visible(), f"{label}: Kontakt link not visible"
     cta = page.locator(".mobile-menu__cta")
     assert cta.is_visible(), f"{label}: CTA not visible"
-    # CTA should be in mobile menu foot, not header bar
-    in_menu = cta.evaluate(
-        "el => !!el.closest('[data-mobile-menu]')"
-    )
+    in_menu = cta.evaluate("el => !!el.closest('[data-mobile-menu]')")
     assert in_menu, f"{label}: CTA not inside mobile menu"
     header_cta = page.locator(".alt-header .alt-nav__cta-desktop")
     assert not header_cta.is_visible(), f"{label}: desktop CTA visible in header"
+
+
+def assert_single_feature_logo(page, label: str) -> None:
+    assert page.locator(".mobile-menu__brand--bar").count() == 0, (
+        f"{label}: bar logo markup should be removed"
+    )
+    feature = page.locator(".mobile-menu__brand--feature .brand-mark")
+    assert feature.count() == 1, f"{label}: expected one feature logo"
+    width = feature.evaluate("el => el.getBoundingClientRect().width")
+    assert width >= 110, f"{label}: feature logo width {width} < 110px"
+    header_vis = page.evaluate(
+        """() => {
+          const el = document.querySelector('.alt-header .alt-brand');
+          return el ? getComputedStyle(el).visibility : '';
+        }"""
+    )
+    assert header_vis == "hidden", f"{label}: header brand should be hidden, got {header_vis}"
+
+
+def assert_menu_opens_with_motion(page, label: str) -> None:
+    page.locator("[data-nav-toggle]").click()
+    mid_opacity = None
+    for _ in range(12):
+        page.wait_for_timeout(35)
+        mid_opacity = float(
+            page.locator("[data-mobile-menu]").evaluate(
+                "el => parseFloat(getComputedStyle(el).opacity)"
+            )
+        )
+        if 0.05 < mid_opacity < 0.98:
+            break
+    assert mid_opacity is not None and 0.05 < mid_opacity < 0.98, (
+        f"{label}: menu opacity never entered mid-open range, last={mid_opacity}"
+    )
+    page.wait_for_timeout(MENU_MOTION_MS)
+    assert_menu_fullscreen(page, label)
+    assert_single_feature_logo(page, label)
+
+
+def assert_tjanster_dropdown_animates(page, label: str) -> None:
+    trigger = page.locator(
+        "[data-mobile-menu] [data-nav-dropdown-trigger]", has_text="Tjänster"
+    )
+    submenu = page.locator("[data-mobile-menu] .mobile-menu__submenu").first
+    trigger.click()
+    page.wait_for_timeout(50)
+    h_early = submenu.evaluate("el => el.getBoundingClientRect().height")
+    page.wait_for_timeout(380)
+    h_late = submenu.evaluate("el => el.getBoundingClientRect().height")
+    assert h_late > h_early + 24, (
+        f"{label}: submenu should grow (early={h_early}, late={h_late})"
+    )
+    chevron_rot = page.evaluate(
+        """() => {
+          const el = document.querySelector('[data-mobile-menu] .nav-dropdown__chevron');
+          if (!el) return '';
+          const t = getComputedStyle(el).transform;
+          return t && t !== 'none' ? t : '';
+        }"""
+    )
+    assert chevron_rot, f"{label}: chevron should be rotated when open"
 
 
 def main() -> int:
@@ -49,7 +109,6 @@ def main() -> int:
         stderr=subprocess.DEVNULL,
     )
     time.sleep(0.35)
-    url = BASE_URL
 
     try:
         with sync_playwright() as p:
@@ -59,21 +118,22 @@ def main() -> int:
                 device_scale_factor=3,
                 is_mobile=True,
                 has_touch=True,
+                reduced_motion="no-preference",
             )
             page = context.new_page()
-            page.goto(url, wait_until="networkidle")
+            page.goto(BASE_URL, wait_until="networkidle")
 
-            page.locator("[data-nav-toggle]").click()
-            assert_menu_fullscreen(page, "scrollY=0")
+            assert_menu_opens_with_motion(page, "scrollY=0")
+            assert_tjanster_dropdown_animates(page, "scrollY=0")
             page.screenshot(path=str(OUT / "mobile-menu-webkit-top.png"), full_page=False)
 
             page.locator("[data-nav-close]").click()
+            page.wait_for_timeout(MENU_MOTION_MS + 80)
             page.evaluate(f"window.scrollTo(0, {SCROLL_Y})")
-            page.wait_for_timeout(200)
+            page.wait_for_timeout(120)
             assert page.evaluate("window.scrollY") >= SCROLL_Y - 20
 
-            page.locator("[data-nav-toggle]").click()
-            assert_menu_fullscreen(page, f"scrollY={SCROLL_Y}")
+            assert_menu_opens_with_motion(page, f"scrollY={SCROLL_Y}")
             page.screenshot(
                 path=str(OUT / "mobile-menu-webkit-scrolled.png"), full_page=False
             )
@@ -83,7 +143,7 @@ def main() -> int:
         server.terminate()
         server.wait(timeout=5)
 
-    print("OK: WebKit iPhone mobile menu at top and scrolled")
+    print("OK: WebKit iPhone mobile menu motion, logo, and dropdown")
     return 0
 
 

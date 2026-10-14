@@ -249,9 +249,11 @@ def mobile_nav_services_dropdown(current_path: str, prefix: str = "", menu_id: s
               <span class="nav-dropdown__chevron" aria-hidden="true"></span>
             </button>
             <div class="mobile-menu__submenu">
-              <ul class="nav-dropdown__menu" id="{menu_id}" role="menu" aria-labelledby="{menu_id}-btn" data-nav-dropdown-menu>
+              <div class="mobile-menu__submenu-inner">
+                <ul class="nav-dropdown__menu" id="{menu_id}" role="menu" aria-labelledby="{menu_id}-btn" data-nav-dropdown-menu>
 {submenu}
-              </ul>
+                </ul>
+              </div>
             </div>
           </li>"""
 
@@ -311,9 +313,7 @@ def mobile_menu_block(
     logo = "\n".join("        " + line for line in brand_logo_markup().splitlines())
     return f"""  <div class="mobile-menu" id="mobile-menu" data-mobile-menu hidden aria-hidden="true">
     <div class="mobile-menu__bar">
-      <a class="mobile-menu__brand mobile-menu__brand--bar" href="{nav_path("/", prefix)}" aria-hidden="true" tabindex="-1">
-{logo}
-      </a>
+      <span class="mobile-menu__bar-spacer" aria-hidden="true"></span>
 {mobile_menu_close_markup()}
     </div>
     <nav class="mobile-menu__nav" aria-label="Mobilmeny">
