@@ -486,9 +486,9 @@ body.alt-page > main {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
-  background: rgba(10, 10, 11, 0.72);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
-  backdrop-filter: blur(20px) saturate(140%);
+  background: var(--alt-bg);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
   transition:
     opacity var(--mobile-menu-motion) var(--alt-ease),
     background var(--mobile-menu-motion) var(--alt-ease),
@@ -729,7 +729,7 @@ body.alt-page > main {
   width: 100%;
   box-sizing: border-box;
   padding: 0.65rem var(--alt-pad-right) calc(0.85rem + env(safe-area-inset-bottom, 0px)) var(--alt-pad-left);
-  background: rgba(10, 10, 11, 0.45);
+  background: var(--alt-bg);
   border-top: 1px solid var(--alt-line);
 }
 
@@ -776,8 +776,10 @@ body.alt-page > main {
     display: none;
   }
 
+  body.alt-page.nav-open .alt-header,
   body.alt-page.nav-open .alt-header.is-solid {
-    background: transparent;
+    background: var(--alt-bg);
+    -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
 
@@ -2246,9 +2248,9 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
     transition: none;
     opacity: 1;
     visibility: visible;
-    background: rgba(10, 10, 11, 0.72);
-    -webkit-backdrop-filter: blur(20px) saturate(140%);
-    backdrop-filter: blur(20px) saturate(140%);
+    background: var(--alt-bg);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
 
   .alt-header .alt-brand {

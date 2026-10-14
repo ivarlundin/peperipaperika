@@ -17,6 +17,7 @@ LOGO_MENU_LARGE_MIN = 100
 LOGO_HERO_LARGE_MIN = 74
 LOGO_HERO_LARGE_MAX = 92
 LOGO_NORMAL_MAX = 80
+ALT_BG_RGB = "rgb(10, 10, 11)"
 
 
 def header_logo_width(page) -> float:
@@ -41,6 +42,31 @@ def assert_logo_size(page, label: str, mode: str) -> None:
         assert width <= LOGO_NORMAL_MAX, (
             f"{label}: header logo should be normal size ({width}px)"
         )
+
+
+def assert_solid_menu_surface(page, label: str) -> None:
+    data = page.evaluate(
+        """() => {
+          const menu = document.querySelector('[data-mobile-menu]');
+          const header = document.querySelector('.alt-header');
+          const menuStyle = menu ? getComputedStyle(menu) : null;
+          const headerStyle = header ? getComputedStyle(header) : null;
+          return {
+            menuBg: menuStyle ? menuStyle.backgroundColor : '',
+            menuBackdrop: menuStyle ? menuStyle.backdropFilter : '',
+            headerBg: headerStyle ? headerStyle.backgroundColor : '',
+            headerBackdrop: headerStyle ? headerStyle.backdropFilter : '',
+          };
+        }"""
+    )
+    assert data["menuBg"] == ALT_BG_RGB, f"{label}: menu bg {data['menuBg']}"
+    assert data["menuBackdrop"] in ("none", ""), (
+        f"{label}: menu backdrop {data['menuBackdrop']}"
+    )
+    assert data["headerBg"] == ALT_BG_RGB, f"{label}: header bg {data['headerBg']}"
+    assert data["headerBackdrop"] in ("none", ""), (
+        f"{label}: header backdrop {data['headerBackdrop']}"
+    )
 
 
 def assert_header_border_hidden_when_menu_open(page, label: str) -> None:
@@ -183,6 +209,7 @@ def open_menu(page) -> None:
 def assert_menu_opens_with_motion(page, label: str) -> None:
     open_menu(page)
     assert_menu_fullscreen(page, label)
+    assert_solid_menu_surface(page, label)
     assert_header_border_hidden_when_menu_open(page, label)
     assert_single_scaled_header_logo(page, label)
     assert_logo_size(page, label, "menu")
