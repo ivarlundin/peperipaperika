@@ -2248,7 +2248,7 @@ def write_pages():
         ),
         (
             "Sedan när finns Halv Fjorton?",
-            "Bandet grundades 2018 i Växjö. Sedan dess har vi bland annat arrangerat egen julkonsert nästan varje år.",
+            "Bandet grundades 2018 i Växjö. Sedan dess har vi spelat på bröllop, företagsfester och privata fester i hela södra Sverige, och varje december ger vi våra egna julkonserter.",
         ),
         (
             "Hur stort är bandet?",
