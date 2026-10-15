@@ -4544,7 +4544,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 }
 
 .alt-page--inner .lyssna-video-tile__play {
-  --lyssna-play-diameter: 3.45rem;
+  --lyssna-play-diameter: 2.76rem;
   --lyssna-play-icon-ratio: 0.425;
   --lyssna-play-icon-nudge: 0.05;
   position: absolute;
@@ -4578,7 +4578,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
 @media (min-width: 641px) {
   .alt-page--inner .lyssna-video-tile__play {
-    --lyssna-play-diameter: 4.65rem;
+    --lyssna-play-diameter: 3.72rem;
     border: 1.5px solid rgba(255, 255, 255, 0.5);
     background: rgba(0, 0, 0, 0.2);
     -webkit-backdrop-filter: blur(15px);
