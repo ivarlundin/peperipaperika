@@ -35,6 +35,9 @@ html {
   --alt-desc-cta-gap: clamp(1.25rem, 2.75vw, 1.65rem);
   --alt-heading-content-gap: clamp(1.35rem, 2.75vw, 1.85rem);
   --alt-page-hero-intro-max: none;
+  --alt-page-h1-size: clamp(1.625rem, 4.25vw, 2.75rem);
+  --alt-h2-size: clamp(1.45rem, 2.85vw, 2.05rem);
+  --alt-h3-size: clamp(1.0625rem, 2.15vw, 1.375rem);
   --alt-check-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5.5 12.5 9.5 16.5 18.5 7.5'/%3E%3C/svg%3E");
   --alt-pin-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='1.5' stroke-linejoin='round'%3E%3Cpath d='M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11Z'/%3E%3Ccircle cx='12' cy='10' r='2.25'/%3E%3C/svg%3E");
   --alt-logo-scale: 2.5;
@@ -2773,7 +2776,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
 .alt-page--inner .page-hero-copy h1 {
   font-family: var(--font-display);
-  font-size: clamp(1.85rem, 4vw, 2.75rem);
+  font-size: var(--alt-page-h1-size);
   font-weight: 800;
   letter-spacing: 0;
   line-height: 1.05;
@@ -2807,6 +2810,20 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 .alt-page--inner h3 {
   font-family: var(--font-display);
   letter-spacing: 0;
+}
+
+.alt-page--inner h2 {
+  font-size: var(--alt-h2-size);
+  line-height: 1.12;
+}
+
+.alt-page--inner h3 {
+  font-size: var(--alt-h3-size);
+  line-height: 1.18;
+}
+
+.alt-page--inner .alt-legal-page__title {
+  font-size: var(--alt-page-h1-size);
 }
 
 /* Minimum gap: section heading → list, grid, card block, or FAQ (never tighter than token). */
@@ -3496,7 +3513,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
 /* Service pages: shared type scale and hero */
 .alt-page--service-banner {
-  --alt-svc-title-size: clamp(1.55rem, 3.1vw, 2.05rem);
+  --alt-svc-title-size: var(--alt-h2-size);
   --alt-svc-body-size: clamp(1.02rem, 2.15vw, 1.125rem);
   --alt-svc-body-line: 1.65;
   --alt-svc-faq-answer-size: clamp(0.88rem, 2.05vw, 0.98rem);
