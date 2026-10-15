@@ -3795,18 +3795,27 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   border: 0 !important;
 }
 
-/* Lyssna: YouTube preview tiles + modal */
+/* Lyssna: page intro width + YouTube preview tiles + modal */
+.alt-page--lyssna .page-hero-copy h1,
+.alt-page--lyssna .page-hero-copy .lead,
+.alt-page--lyssna .lyssna-video-intro,
+.alt-page--lyssna .wrap > h2 + .muted {
+  text-wrap: balance;
+}
+
+@media (min-width: 901px) {
+  .alt-page--lyssna .page-hero-copy,
+  .alt-page--lyssna .lyssna-video-intro,
+  .alt-page--lyssna .wrap > h2 + .muted {
+    max-width: 50%;
+  }
+}
+
 .alt-page--inner .lyssna-video-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: clamp(0.65rem, 2vw, 1.1rem);
   width: 100%;
-}
-
-@media (min-width: 768px) {
-  .alt-page--inner .lyssna-video-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
 }
 
 .alt-page--inner .lyssna-video-intro {

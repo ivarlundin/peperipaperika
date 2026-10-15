@@ -1530,6 +1530,7 @@ def write_pages():
         "/lyssna/",
         "Lyssna på Halv Fjorton | film, reel och julkonserter",
         "Se Halv Fjorton live: Signed Sealed Delivered 2025, reel 2022 och julkonserterna A Soulful Christmas.",
+        page_class="alt-page--lyssna",
         extra_scripts=LYSSNA_VIDEO_MODAL_SCRIPT,
         body=f"""    <header class="page-hero compact">
       <div class="page-hero-copy">
