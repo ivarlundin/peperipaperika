@@ -54,9 +54,7 @@ html:has(.alt-page) {
   --alt-h3-size: clamp(1.0625rem, 2.15vw, 1.375rem);
   --alt-check-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5.5 12.5 9.5 16.5 18.5 7.5'/%3E%3C/svg%3E");
   --alt-pin-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='1.5' stroke-linejoin='round'%3E%3Cpath d='M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11Z'/%3E%3Ccircle cx='12' cy='10' r='2.25'/%3E%3C/svg%3E");
-  --alt-logo-scale: 2.5;
   --alt-logo-size: 3.5rem;
-  --alt-logo-expand-extra: calc(var(--alt-logo-size) * (var(--alt-logo-scale) - 1));
   --alt-hero-h1-size: clamp(1.75rem, 11vw, 2.65rem);
 }
 
@@ -923,18 +921,6 @@ html.alt-header-state-init .alt-header::before {
   .alt-header .alt-brand {
     display: flex;
     align-items: center;
-    transform-origin: top left;
-    transition: transform var(--mobile-menu-motion, 320ms) var(--alt-ease);
-  }
-
-  body.nav-open .alt-header .alt-brand {
-    transform: scale(var(--alt-logo-scale));
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-  }
-
-  body.nav-open .alt-header .brand-mark {
-    transform: none;
   }
 
   .alt-header__menu-close {
@@ -1073,9 +1059,7 @@ html.alt-header-state-init .alt-header::before {
   }
 
   body.alt-page.nav-open .mobile-menu__nav {
-    padding-top: calc(
-      env(safe-area-inset-top, 0px) + var(--alt-header) + var(--alt-logo-expand-extra) + 0.85rem
-    );
+    padding-top: calc(env(safe-area-inset-top, 0px) + var(--alt-header) + 0.85rem);
   }
 
   .mobile-menu__foot {
@@ -2833,14 +2817,6 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
     background: var(--alt-bg);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
-  }
-
-  .alt-header .alt-brand {
-    transition: none;
-  }
-
-  body.nav-open .alt-header .alt-brand {
-    transform: scale(var(--alt-logo-scale));
   }
 
   .mobile-menu__list > li,
