@@ -810,8 +810,8 @@ def run_service_hero_ken_burns_qa(base_url: str) -> list[str]:
     failures: list[str] = []
     checks = (
         ("/brollop/", True, "halvfjorton-03-hero"),
-        ("/foretag/", False, "halvfjorton-01"),
-        ("/mingel/", False, "halvfjorton-04"),
+        ("/foretag/", True, "halvfjorton-01"),
+        ("/mingel/", True, "halvfjorton-04"),
     )
     with sync_playwright() as p:
         browser = p.chromium.launch()
@@ -925,8 +925,8 @@ def run_service_split_layout_qa(base_url: str) -> list[str]:
     failures: list[str] = []
     checks = (
         ("/brollop/", ".alt-svc-chapter--festspelning .alt-svc-chapter__split"),
-        ("/foretag/", "main .wrap.split"),
-        ("/mingel/", "main .wrap.grid-2"),
+        ("/foretag/", ".alt-svc-chapter--festspelning .alt-svc-chapter__split"),
+        ("/mingel/", ".alt-svc-chapter--festspelning .alt-svc-chapter__split"),
     )
     with sync_playwright() as p:
         browser = p.chromium.launch()
