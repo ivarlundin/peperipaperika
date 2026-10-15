@@ -1064,6 +1064,74 @@ def run_konserter_ticket_layout_qa(base_url: str) -> list[str]:
     return failures
 
 
+def run_konserter_ticket_overlap_qa(base_url: str) -> list[str]:
+    """Konserter ticket: poster and text columns must not overlap (bbox check)."""
+    failures: list[str] = []
+    url = base_url.rstrip("/") + "/konserter/?qa=ticket-overlap"
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        try:
+            for width in (390, 1024, 1280, 1440):
+                ctx = browser.new_context(
+                    viewport={"width": width, "height": 900},
+                    device_scale_factor=3 if width <= 390 else 1,
+                )
+                page = ctx.new_page()
+                page.goto(url, wait_until="domcontentloaded", timeout=45000)
+                page.wait_for_timeout(250)
+                label = f"konserter-ticket-overlap/{width}"
+                result = page.evaluate(
+                    """() => {
+                      const card = document.querySelector('.event-ticket');
+                      const poster = card?.querySelector('.event-ticket__poster');
+                      const main = card?.querySelector('.event-ticket__main');
+                      const title = card?.querySelector('.event-ticket__title');
+                      const countdown = card?.querySelector('.event-ticket__countdown');
+                      if (!card || !poster || !main || !title) {
+                        return { ok: false, reason: 'missing nodes' };
+                      }
+                      const pr = poster.getBoundingClientRect();
+                      const mr = main.getBoundingClientRect();
+                      const tr = title.getBoundingClientRect();
+                      const cr = countdown?.getBoundingClientRect();
+                      const stacked = mr.top >= pr.bottom - 2;
+                      const gap = mr.left - pr.right;
+                      const titleOverlap = stacked
+                        ? tr.top < pr.bottom - 1
+                        : tr.left < pr.right - 1;
+                      const countdownOnTitle =
+                        cr &&
+                        cr.right > pr.right + 2 &&
+                        cr.left < tr.right &&
+                        cr.top < tr.bottom;
+                      return {
+                        ok: true,
+                        stacked,
+                        gap,
+                        titleOverlap,
+                        countdownOnTitle,
+                        posterRight: pr.right,
+                        mainLeft: mr.left,
+                      };
+                    }"""
+                )
+                if not result.get("ok"):
+                    failures.append(f"{label}: {result.get('reason', 'check failed')}")
+                elif not result["stacked"] and result["gap"] < -1:
+                    failures.append(
+                        f"{label}: poster overlaps main by {abs(result['gap']):.1f}px "
+                        f"(poster right {result['posterRight']:.1f}, main left {result['mainLeft']:.1f})"
+                    )
+                elif result["titleOverlap"]:
+                    failures.append(f"{label}: title starts under poster column")
+                elif result["countdownOnTitle"]:
+                    failures.append(f"{label}: countdown badge overlaps title in text column")
+                ctx.close()
+        finally:
+            browser.close()
+    return failures
+
+
 def run_faq_collapsed_row_spacing_qa(base_url: str) -> list[str]:
     """All collapsed FAQ rows: equal item height and tight row rhythm (no answer spill)."""
     failures: list[str] = []
@@ -1482,6 +1550,7 @@ def main() -> int:
         if not args.quick:
             failures.extend(run_desktop_tjanster_dropdown_qa(base))
             failures.extend(run_konserter_ticket_layout_qa(base))
+            failures.extend(run_konserter_ticket_overlap_qa(base))
             failures.extend(run_event_ticket_stretched_link_qa(base))
             failures.extend(run_button_hover_contrast_qa(base))
             failures.extend(run_alt_facts_icons_qa(base))
