@@ -100,12 +100,12 @@ body.alt-page > main {
   display: none;
 }
 
-.alt-page a:not([class*="alt-btn"]):not(.site-footer__social) {
+.alt-page a:not([class*="alt-btn"]):not([class~="btn"]):not(.site-footer__social):not(.event-ticket):not(.alt-offer-card) {
   color: var(--alt-link);
   text-underline-offset: 0.16em;
 }
 
-.alt-page a:not([class*="alt-btn"]):not(.site-footer__social):hover {
+.alt-page a:not([class*="alt-btn"]):not([class~="btn"]):not(.site-footer__social):not(.event-ticket):not(.alt-offer-card):hover {
   color: var(--alt-link-hover);
 }
 
@@ -342,12 +342,14 @@ body.alt-page > main {
 }
 
 .alt-page a.alt-btn--primary,
+.alt-page span.alt-btn--primary,
 .alt-btn--primary {
   background: var(--alt-btn-primary-bg);
   color: var(--alt-btn-primary-ink);
 }
 
 .alt-page a.alt-btn--primary:hover,
+.alt-page span.alt-btn--primary:hover,
 .alt-btn--primary:hover {
   background: var(--alt-btn-primary-hover);
   color: var(--alt-btn-primary-ink);
@@ -360,6 +362,34 @@ body.alt-page > main {
 }
 
 .alt-btn--ghost:hover {
+  border-color: rgba(242, 240, 236, 0.28);
+  color: var(--alt-ink);
+}
+
+/* Button UI nested inside block/card links (e.g. event ticket) — keep readable on card hover */
+.alt-page a:not([class*="alt-btn"]) .alt-btn {
+  text-decoration: none;
+}
+
+.alt-page a:not([class*="alt-btn"]) .alt-btn--primary,
+.alt-page a:not([class*="alt-btn"]):hover .alt-btn--primary {
+  background: var(--alt-btn-primary-bg);
+  color: var(--alt-btn-primary-ink);
+}
+
+.alt-page a:not([class*="alt-btn"]):hover .alt-btn--primary:hover {
+  background: var(--alt-btn-primary-hover);
+  color: var(--alt-btn-primary-ink);
+}
+
+.alt-page a:not([class*="alt-btn"]) .alt-btn--ghost,
+.alt-page a:not([class*="alt-btn"]):hover .alt-btn--ghost {
+  background: transparent;
+  color: var(--alt-ink);
+  border-color: var(--alt-line);
+}
+
+.alt-page a:not([class*="alt-btn"]):hover .alt-btn--ghost:hover {
   border-color: rgba(242, 240, 236, 0.28);
   color: var(--alt-ink);
 }
@@ -3004,7 +3034,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   box-sizing: border-box;
   display: block;
   text-decoration: none;
-  color: inherit;
+  color: var(--alt-ink);
   transition:
     border-color 0.2s var(--alt-ease),
     box-shadow 0.2s var(--alt-ease),
@@ -3012,6 +3042,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 }
 
 .alt-page--inner a.event-ticket:hover {
+  color: var(--alt-ink);
   border-color: rgba(242, 240, 236, 0.22);
   box-shadow: 0 22px 56px rgba(0, 0, 0, 0.42);
   transform: translateY(-2px);

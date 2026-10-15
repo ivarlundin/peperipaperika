@@ -454,6 +454,130 @@ def run_desktop_tjanster_dropdown_qa(base_url: str) -> list[str]:
 
 FAQ_COLUMN_STABILITY_PATHS = ("/faq/", "/brollop/")
 
+BUTTON_HOVER_CONTRAST_PAGES = (
+    "/",
+    "/konserter/",
+    "/kontakt/",
+    "/faq/",
+    "/brollop/",
+    "/foretag/",
+    "/mingel/",
+    "/lyssna/",
+    "/om-oss/",
+)
+
+_CONTRAST_RATIO_JS = """
+(el) => {
+  function parseRgb(color) {
+    const m = color.match(/rgba?\\(\\s*([\\d.]+)\\s*,\\s*([\\d.]+)\\s*,\\s*([\\d.]+)/);
+    if (!m) return null;
+    return [+m[1], +m[2], +m[3]];
+  }
+  function lum([r, g, b]) {
+    const a = [r, g, b].map((v) => {
+      v /= 255;
+      return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * a[0] + 0.7152 * a[1] + 0.0722 * a[2];
+  }
+  function contrast(fg, bg) {
+    const l1 = lum(fg);
+    const l2 = lum(bg);
+    const hi = Math.max(l1, l2);
+    const lo = Math.min(l1, l2);
+    return (hi + 0.05) / (lo + 0.05);
+  }
+  const style = getComputedStyle(el);
+  const fg = parseRgb(style.color);
+  if (!fg) return null;
+  const ownBg = parseRgb(style.backgroundColor);
+  if (ownBg && style.backgroundColor !== "rgba(0, 0, 0, 0)") {
+    return contrast(fg, ownBg);
+  }
+  let node = el.parentElement;
+  let bg = null;
+  while (node) {
+    const bgColor = getComputedStyle(node).backgroundColor;
+    const parsed = parseRgb(bgColor);
+    if (parsed && bgColor !== "rgba(0, 0, 0, 0)") {
+      bg = parsed;
+      break;
+    }
+    node = node.parentElement;
+  }
+  if (!bg) return null;
+  return contrast(fg, bg);
+}
+"""
+
+
+def run_button_hover_contrast_qa(base_url: str) -> list[str]:
+    """Hover button-like CTAs; text/background contrast must stay >= 4.5:1."""
+    failures: list[str] = []
+    root = base_url.rstrip("/")
+    button_selectors = (
+        "a.alt-btn--primary",
+        "a.alt-btn--ghost",
+        "a.btn-primary",
+        "a.btn-ghost",
+        ".site-footer__cta",
+        ".alt-nav__cta-desktop",
+    )
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        try:
+            ctx = browser.new_context(
+                viewport={"width": 1280, "height": 900},
+                device_scale_factor=1,
+            )
+            page = ctx.new_page()
+            for path in BUTTON_HOVER_CONTRAST_PAGES:
+                page.goto(f"{root}{path}?qa=btn-contrast", wait_until="domcontentloaded", timeout=45000)
+                page.wait_for_timeout(150)
+                for selector in button_selectors:
+                    loc = page.locator(selector)
+                    count = loc.count()
+                    for index in range(min(count, 12)):
+                        el = loc.nth(index)
+                        if not el.is_visible():
+                            continue
+                        try:
+                            el.hover(force=True, timeout=5000)
+                            page.wait_for_timeout(80)
+                        except Exception:
+                            continue
+                        ratio = el.evaluate(_CONTRAST_RATIO_JS)
+                        label = f"btn-hover-contrast{path}{selector}[{index}]"
+                        if ratio is None:
+                            failures.append(f"{label}: could not compute contrast")
+                        elif ratio < 4.5:
+                            failures.append(f"{label}: contrast {ratio:.2f} < 4.5")
+                ticket = page.locator("a.event-ticket").first
+                if ticket.count() > 0:
+                    ticket.hover(force=True, timeout=5000)
+                    page.wait_for_timeout(80)
+                    cta = page.locator(".event-ticket__cta").first
+                    if cta.count() > 0:
+                        ratio = cta.evaluate(_CONTRAST_RATIO_JS)
+                        label = f"btn-hover-contrast{path}event-ticket-cta"
+                        if ratio is None:
+                            failures.append(f"{label}: could not compute contrast")
+                        elif ratio < 4.5:
+                            failures.append(f"{label}: contrast {ratio:.2f} < 4.5")
+                offer = page.locator("a.alt-offer-card").first
+                if offer.count() > 0:
+                    offer.hover(force=True, timeout=5000)
+                    page.wait_for_timeout(80)
+                    ratio = offer.evaluate(_CONTRAST_RATIO_JS)
+                    if ratio is not None and ratio < 4.5:
+                        failures.append(
+                            f"btn-hover-contrast{path}alt-offer-card: contrast {ratio:.2f} < 4.5"
+                        )
+            ctx.close()
+        finally:
+            browser.close()
+    return failures
+
 
 def run_konserter_ticket_layout_qa(base_url: str) -> list[str]:
     """Desktop: concert cards align with H1 and fill the content column."""
@@ -696,6 +820,7 @@ def main() -> int:
         if not args.quick:
             failures.extend(run_desktop_tjanster_dropdown_qa(base))
             failures.extend(run_konserter_ticket_layout_qa(base))
+            failures.extend(run_button_hover_contrast_qa(base))
             failures.extend(run_faq_column_stability_qa(base))
     finally:
         if server:
