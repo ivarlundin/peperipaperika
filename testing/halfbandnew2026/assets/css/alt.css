@@ -4871,11 +4871,25 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 @media (max-width: 900px) {
   .alt-page .site-footer--columns .site-footer__columns {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(2.15rem, 5.25vw, 3.15rem);
   }
 
   .alt-page .site-footer--columns .site-footer__brand {
     grid-column: 1 / -1;
     max-width: none;
+    margin-bottom: clamp(0.4rem, 1.6vw, 0.65rem);
+  }
+
+  .alt-page .site-footer--columns .site-footer__col {
+    margin-bottom: clamp(0.5rem, 1.75vw, 0.8rem);
+  }
+
+  .alt-page .site-footer--columns .site-footer__col--contact .site-footer__links {
+    gap: 0.9rem;
+  }
+
+  .alt-page .site-footer--columns .site-footer__rule {
+    margin-top: clamp(4rem, 10vw, 5.5rem);
   }
 }
 
