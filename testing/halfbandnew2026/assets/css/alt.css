@@ -486,6 +486,34 @@ body.alt-page > main {
   color: #fff;
 }
 
+/* Unscrolled header on light page tops (e.g. Kontakt): dark chrome until .is-solid */
+@media (max-width: 900px) {
+  .alt-page--header-light-top:not(.nav-open) .alt-header:not(.is-solid) .alt-brand,
+  .alt-page--header-light-top:not(.nav-open) .alt-header:not(.is-solid) .alt-brand:hover {
+    color: #1a1816;
+  }
+
+  .alt-page--header-light-top:not(.nav-open) .alt-header:not(.is-solid) .brand-mark {
+    color: #1a1816;
+  }
+
+  .alt-page--header-light-top:not(.nav-open) .alt-header:not(.is-solid) .alt-nav__links a:not([class*="alt-btn"]),
+  .alt-page--header-light-top:not(.nav-open) .alt-header:not(.is-solid) .alt-nav__links a:not([class*="alt-btn"]):hover,
+  .alt-page--header-light-top:not(.nav-open) .alt-header:not(.is-solid) .alt-nav__links a:not([class*="alt-btn"])[aria-current="page"] {
+    color: #1a1816;
+  }
+
+  .alt-page--header-light-top:not(.nav-open) .alt-header:not(.is-solid) .nav-dropdown__trigger,
+  .alt-page--header-light-top:not(.nav-open) .alt-header:not(.is-solid) .nav-dropdown__trigger:hover,
+  .alt-page--header-light-top:not(.nav-open) .alt-header:not(.is-solid) .nav-item--dropdown.is-open .nav-dropdown__trigger {
+    color: #1a1816;
+  }
+
+  .alt-page--header-light-top:not(.nav-open) .alt-header:not(.is-solid) .nav-toggle {
+    color: #1a1816;
+  }
+}
+
 .alt-page .nav-dropdown__chevron {
   width: 0.45rem;
   height: 0.45rem;

@@ -2049,7 +2049,7 @@ def write_pages():
         extra_ld=[contact_page_ld()],
         extra_scripts='  <script src="/assets/js/tally-embed.js" defer></script>\n',
         body=kontakt_page_body(),
-        page_class="alt-page--kontakt",
+        page_class="alt-page--kontakt alt-page--header-light-top",
     )
 
     page(
