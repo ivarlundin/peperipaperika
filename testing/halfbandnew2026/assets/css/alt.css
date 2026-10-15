@@ -3527,7 +3527,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
     height: auto;
     overflow: hidden;
     background: transparent;
-    line-height: 0;
+    line-height: normal;
   }
 
   .alt-page--inner .event-ticket__poster img {
