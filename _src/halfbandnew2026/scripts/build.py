@@ -859,6 +859,8 @@ SERVICE_HERO_KEN_BURNS_KEYS = frozenset({"brollop", "foretag", "mingel"})
 SERVICE_FAQ_ACCORDION_SCRIPT = (
     '  <script src="/assets/js/alt-faq-accordion.js" defer></script>\n'
 )
+TALLY_EMBED_SCRIPT = '  <script src="/assets/js/tally-embed.js" defer></script>\n'
+FORETAG_PAGE_SCRIPTS = f"{SERVICE_FAQ_ACCORDION_SCRIPT}{TALLY_EMBED_SCRIPT}"
 
 SERVICE_OFFER_HERO_IMAGES = {
     "brollop": (
@@ -1042,36 +1044,34 @@ class StandardServicePage(NamedTuple):
     split_paragraphs: tuple[str, ...]
     split_stem: str
     split_alt: str
-    addons: tuple[ServiceAddon, ServiceAddon]
+    addons: tuple[ServiceAddon, ...]
     faqs: tuple[tuple[str, str], ...]
     closing_text: str
     split_sizes: str = "(max-width: 900px) 100vw, min(46vw, 640px)"
+    closing_embed_form: bool = False
+    closing_email_link: str | None = None
 
 
 FORETAG_FAQS: tuple[tuple[str, str], ...] = (
     (
-        "Spelar ni utanför Skåne och Småland?",
-        "Vi utgår från Växjö och spelar ofta i Malmö, Lund, Helsingborg, Kalmar och Jönköping. "
-        "Hör av er med ort och datum så tar vi ställning till resa och upplägg.",
+        "Hur länge spelar ni?",
+        "På de flesta företagsfester spelar vi två set partymusik. Mingel eller andra delar planeras separat i offerten.",
     ),
     (
-        "Kan ni spela både mingel och fest?",
-        "Ja. Många bokar mingel till fördrinken och ett eller två dansblock senare. "
-        "Samma band hela kvällen, anpassad volym och repertoar.",
+        "Kan ni ta mingel och fest samma kväll?",
+        "Ja, det är ett av våra vanligaste upplägg. Mingel i mer återhållen stil, sedan två set dans när rummet är redo.",
     ),
     (
-        "Hur långt i förväg behöver vi boka?",
-        "Populära datum i höst och vår fylls tidigt. Skicka datum, lokal och ungefärligt antal gäster "
-        "så snart ni kan, så återkommer vi med förslag.",
+        "Ingår ljud och ljus?",
+        "Vi kan ordna ljud och ljus om ni saknar leverantör till tillställningen. Har ni redan extern teknik samarbetar vi gärna med dem så att kvällen hänger ihop.",
     ),
     (
-        "Kan vi önska låtar?",
-        "Ja. Dela önskemål i förväg så bygger vi kvällen kring det som passar er publik. "
-        "Vi har bred repertoar i soul, funk och svenska klassiker.",
+        "Kan ni fakturera?",
+        "Ja. Vi har F-skatt och skickar faktura.",
     ),
     (
-        "Vad behöver lokalen klara?",
-        LOKAL_TEKNIK_COPY,
+        "Vad behöver ni veta innan offert?",
+        "Datum, adress, ungefärligt antal, om det är mingel plus fest, och om lokalen har begränsningar. Resten tar vi i dialogen med er.",
     ),
 )
 
@@ -1137,13 +1137,13 @@ FORETAG_STANDARD_PAGE = StandardServicePage(
     service_key="foretag",
     hero_h1="Personalfest, kickoff och jubileum",
     hero_dek=(
-        "Halv Fjorton spelar på företagsfester i Skåne och Småland med åtta musiker och egen blåssektion. "
-        "Vanligt är två set festmusik, ofta efter mingel."
+        "Oavsett tillfälle levererar vi en medryckande upplevelse som lyfter stämningen. "
+        "Åtta musiker med blåssektion, från första minglet till sista dansen."
     ),
-    split_title="Festspelning",
+    split_title="Upplägg efter ert program",
     split_paragraphs=(
-        "Vi planerar kvällen med er: mingel, tal, dans. Med åtta musiker och egen blåssektion spelar vi soul och funk som fungerar även om gästlistan är blandad, så kollegor faktiskt dansar. Mingel till fördrinken, mer tryck efter middagen. Vi anpassar volym och repertoar efter lokalen och programmet.",
-        "När ni vill visa något mer än en spellista ger ett komplett band med blås tyngd utan att bli stelt. Artistkomp och särskilda musikmoment går att boka.",
+        "Ni berättar hur kvällen ska löpa: mingel, middag, tal, dans. Vi är flexibla och tar fram ett specialupplägg för just er tillställning, med volym och tider som passar lokalen och gästerna.",
+        "Vanligt upplägg är mingel 45 till 90 minuter medan gästerna kommer in, paus under middag och tal, därefter tar vi över och ställer till med ösigt dansgolv!",
     ),
     split_stem="halvfjorton-05",
     split_alt="Band i rustik lokal med publik i silhuett och blå scenbelysning",
@@ -1151,18 +1151,30 @@ FORETAG_STANDARD_PAGE = StandardServicePage(
         ServiceAddon(
             "halvfjorton-04",
             "Sångare och band på rustik träscen med professionellt scenljus",
-            "Mingel till fördrinken",
-            "Mingel 45-90 minuter medan gästerna kommer in. Paus under middag och tal, därefter ett längre dansblock. Tider justeras efter er agenda.",
+            "Mingelmusik",
+            "När gästerna strömmar in spelar vi lugnare musik som låter samtalen flyta. Jazz, soul och svenska visor i en blandning som sätter tonen för kvällen.",
         ),
         ServiceAddon(
-            "halvfjorton-03",
-            "Trummor och feststämning med konfetti bland sittande gäster",
-            "Artistkomp och specialmoment",
-            "Behöver ni fanfar, extra akt eller bakgrund under mingelmat? Vi tar fram ett konkret förslag när vi vet datum, plats och ungefärlig sluttid.",
+            "halvfjorton-06",
+            "Sång och slagverk på scen i dramatiskt ljus",
+            "Artistkomp",
+            "Planerar ni att boka en artist till ert event? Vi har lång erfarenhet av att komp artister, oavsett genre och sättning, och gör framträdandet komplett.",
+            width=1280,
+            height=720,
+        ),
+        ServiceAddon(
+            "halvfjorton-02",
+            "Keyboard och blåssektion på scen i blått ljus och rök",
+            "Middagsunderhållning",
+            "Vi spelar gärna en eller två låtar vid utvalda tillfällen under sittningen. Ett uppskattat inslag är ett interaktivt musikquiz med gästerna, som alltid går hem.",
         ),
     ),
     faqs=FORETAG_FAQS,
-    closing_text="Berätta om ert event, så återkommer vi med ett förslag.",
+    closing_text=(
+        "Hör av er via formuläret på kontaktsidan. Vi återkommer med upplägg och offert när vi vet plats, tider och vilka delar ni vill boka."
+    ),
+    closing_embed_form=True,
+    closing_email_link="E-post? Klicka här",
 )
 
 MINGEL_STANDARD_PAGE = StandardServicePage(
@@ -1217,6 +1229,23 @@ def standard_service_page_body(page: StandardServicePage) -> str:
           </div>"""
         )
     faq_list = faq_list_two_columns(list(page.faqs))
+    addon_grid_class = "alt-svc-addon-grid alt-svc-chapter__body"
+    if len(page.addons) >= 3:
+        addon_grid_class += " alt-svc-addon-grid--cols-3"
+    if page.closing_embed_form:
+        closing_actions = f"""          <div class="alt-svc-closing-form contact-offert__form tally-card">
+{tally_iframe_markup()}
+{contact_form_consent_markup()}
+          </div>"""
+        if page.closing_email_link:
+            closing_actions += f"""
+          <p class="alt-svc-closing__email">
+            <a href="mailto:halvfjorton@gmail.com">{esc(page.closing_email_link)}</a>
+          </p>"""
+    else:
+        closing_actions = """          <div class="actions">
+            <a class="alt-btn alt-btn--primary" href="/kontakt/">Kontakta oss</a>
+          </div>"""
     return f"""{hero}
     <section class="alt-svc-chapter section alt-svc-chapter--split alt-svc-chapter--festspelning" data-reveal>
       <div class="alt-svc-wrap alt-svc-chapter__split alt-svc-chapter__layout--copy-first">
@@ -1234,7 +1263,7 @@ def standard_service_page_body(page: StandardServicePage) -> str:
     <section class="alt-svc-chapter section alt-svc-chapter--addons" data-reveal aria-labelledby="tillaggstjanster">
       <div class="alt-svc-wrap">
         <h2 class="alt-svc-section-label" id="tillaggstjanster">Tilläggstjänster</h2>
-        <div class="alt-svc-addon-grid alt-svc-chapter__body">
+        <div class="{addon_grid_class}">
 {chr(10).join(addon_blocks)}
         </div>
       </div>
@@ -1250,9 +1279,7 @@ def standard_service_page_body(page: StandardServicePage) -> str:
         <h2 class="alt-svc-chapter__title">Kontakta oss</h2>
         <div class="alt-svc-chapter__body">
           <p>{esc(page.closing_text)}</p>
-          <div class="actions">
-            <a class="alt-btn alt-btn--primary" href="/kontakt/">Kontakta oss</a>
-          </div>
+{closing_actions}
         </div>
       </div>
     </section>"""
@@ -1631,17 +1658,20 @@ def write_pages():
     page(
         "/foretag/",
         f"Coverband till företagsfest Malmö och Skåne | {BRAND_TITLE}",
-        "Festband till personalfest, kickoff och jubileum i Malmö, Lund, Växjö och Småland. Artistkomp och särskilda musikmoment går att boka.",
+        (
+            "Personalfest, kickoff och jubileum med åtta musiker och blåssektion. "
+            "Mingelmusik, artistkomp och middagsunderhållning i Skåne och Småland."
+        ),
         breadcrumb_name="Företag",
         extra_ld=[
             service_ld(
                 "Företagsfest och festband",
-                "Musikunderhållning och festmusik till personalfest och företagsevent. Artistkomp för inhyrda artister och specialarrangerad musik.",
+                "Musikunderhållning till personalfest, kickoff och jubileum. Mingelmusik, artistkomp och middagsunderhållning.",
                 "/foretag/",
             ),
             faq_page_ld(FORETAG_FAQS),
         ],
-        extra_scripts=SERVICE_FAQ_ACCORDION_SCRIPT,
+        extra_scripts=FORETAG_PAGE_SCRIPTS,
         page_class="alt-page--service-banner",
         body=standard_service_page_body(FORETAG_STANDARD_PAGE),
     )

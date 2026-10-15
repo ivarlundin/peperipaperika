@@ -4026,6 +4026,31 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
     gap: clamp(1.5rem, 3vw, 2.5rem);
     align-items: start;
   }
+
+  .alt-page--service-banner .alt-svc-addon-grid--cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.alt-page--service-banner .alt-svc-closing-form {
+  margin-top: var(--alt-heading-content-gap);
+  width: 100%;
+  max-width: 100%;
+}
+
+.alt-page--service-banner .alt-svc-closing__email {
+  margin: var(--alt-desc-cta-gap) 0 0;
+  font-size: var(--alt-svc-body-size);
+}
+
+.alt-page--service-banner .alt-svc-closing__email a {
+  color: var(--alt-ink);
+  text-decoration: underline;
+  text-underline-offset: 0.16em;
+}
+
+.alt-page--service-banner .alt-svc-closing__email a:hover {
+  color: #fff;
 }
 
 .alt-page--service-banner .alt-svc-chapter--festspelning .alt-svc-chapter__split {
