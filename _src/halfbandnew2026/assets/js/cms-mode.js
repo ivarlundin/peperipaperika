@@ -212,19 +212,21 @@
     pauseTypewriter(root);
     var overlay = document.createElement("div");
     overlay.id = "cms-mode-overlay";
+    overlay.className = "cms-ui";
     var box = document.createElement("div");
     box.id = "cms-typewriter-editor";
+    box.className = "cms-ui";
     var phrases = parsePhrases(root);
     var originalPhrases = phrases.slice();
     var ghost = root.querySelector(".alt-hero__typewriter-ghost");
     var originalGhost = ghost ? ghost.textContent : "";
 
     box.innerHTML =
-      "<p><strong>Redigera typewriter-varianter</strong> (en rad per fras)</p>" +
+      '<p class="cms-tw-lead">Redigera typewriter-varianter (en rad per fras)</p>' +
       '<textarea id="cms-tw-lines"></textarea>' +
       '<div class="cms-tw-actions">' +
-      '<button type="button" data-cms-tw-cancel>Avbryt</button>' +
-      '<button type="button" data-cms-tw-save>Spara</button></div>';
+      '<button type="button" class="cms-ui-btn" data-cms-tw-cancel>Avbryt</button>' +
+      '<button type="button" class="cms-ui-btn cms-ui-btn--primary" data-cms-tw-save>Spara</button></div>';
     overlay.appendChild(box);
     document.body.appendChild(overlay);
 
@@ -286,10 +288,14 @@
     loadManifest().then(function (manifest) {
       var overlay = document.createElement("div");
       overlay.id = "cms-mode-overlay";
+      overlay.className = "cms-ui";
       var picker = document.createElement("div");
       picker.id = "cms-mode-picker";
+      picker.className = "cms-ui";
       picker.innerHTML =
-        "<header><strong>Byt bild</strong><button type=\"button\" data-cms-close>Stäng</button></header>" +
+        '<header class="cms-picker__head">' +
+        '<strong class="cms-picker__title">Byt bild</strong>' +
+        '<button type="button" class="cms-ui-btn" data-cms-close>Stäng</button></header>' +
         '<div class="cms-picker-grid"></div>';
       overlay.appendChild(picker);
       document.body.appendChild(overlay);
@@ -301,7 +307,10 @@
         btn.className = "cms-picker-item";
         var thumb = entry.variants["480w"] || entry.variants["800w"] || entry.default;
         btn.innerHTML =
-          '<img src="' + thumb + '" alt="" loading="lazy">' + truncate(entry.label, 40);
+          '<img src="' + thumb + '" alt="" loading="lazy">' +
+          '<span class="cms-picker-item__label">' +
+          truncate(entry.label, 40) +
+          "</span>";
         btn.addEventListener("click", function () {
           var cmsId = imgEl.getAttribute("data-cms-id");
           var oldSrc = imgEl.getAttribute("data-cms-original-src") || imgEl.src;
@@ -356,12 +365,13 @@
 
     var panel = document.createElement("div");
     panel.id = "cms-mode-panel";
+    panel.className = "cms-ui";
     panel.innerHTML =
       '<p class="cms-panel__title">CMS mode</p>' +
       '<p class="cms-panel__count" data-cms-count></p>' +
       '<ul id="cms-mode-changes"></ul>' +
-      '<button type="button" class="cms-panel__export">Export changes</button>' +
-      '<button type="button" class="cms-panel__exit">Avsluta CMS mode</button>';
+      '<button type="button" class="cms-ui-btn cms-ui-btn--primary">Export changes</button>' +
+      '<button type="button" class="cms-ui-btn cms-ui-btn--ghost">Avsluta CMS mode</button>';
     document.body.appendChild(panel);
 
     function refreshPanel() {
@@ -377,6 +387,7 @@
         label.textContent = ch.type + ": " + truncate(ch.newValue, 48);
         var undo = document.createElement("button");
         undo.type = "button";
+        undo.className = "cms-ui-btn";
         undo.textContent = "Ångra";
         undo.addEventListener("click", function () {
           var el = document.querySelector('[data-cms-id="' + id + '"]');
@@ -391,11 +402,11 @@
 
     refreshPanel();
 
-    panel.querySelector(".cms-panel__export").addEventListener("click", function () {
+    panel.querySelector(".cms-ui-btn--primary").addEventListener("click", function () {
       exportJson(store);
     });
 
-    panel.querySelector(".cms-panel__exit").addEventListener("click", function () {
+    panel.querySelector(".cms-ui-btn--ghost").addEventListener("click", function () {
       window.__cmsModeActive = false;
       document.documentElement.classList.remove("cms-mode-active");
       panel.remove();
