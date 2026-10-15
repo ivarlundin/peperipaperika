@@ -1172,10 +1172,12 @@ def run_lyssna_video_preview_qa(base_url: str) -> list[str]:
                         tileCount: tiles.length,
                         gridIframe: !!gridIframe,
                         cols,
-                        upper: labelStyle?.textTransform === 'uppercase',
-                        letterSpacing: labelStyle
-                          ? parseFloat(labelStyle.letterSpacing) || 0
-                          : 0,
+                        caseNorm: labelStyle?.textTransform === 'none',
+                        playW: document.querySelector('.lyssna-video-tile__play')
+                          ?.getBoundingClientRect().width,
+                        ssdThumb: document.querySelector(
+                          '.lyssna-video-tile[data-lyssna-video="V2Nb8jMKUCk"] .lyssna-video-tile__thumb'
+                        )?.getAttribute('src') || '',
                       };
                     }"""
                 )
@@ -1191,10 +1193,14 @@ def run_lyssna_video_preview_qa(base_url: str) -> list[str]:
                     failures.append(
                         f"lyssna-video/desktop: expected multiple grid columns, got {metrics.get('cols')}"
                     )
-                if not metrics.get("upper"):
-                    failures.append("lyssna-video: tile labels must be uppercase")
-                if metrics.get("letterSpacing", 0) < 1.5:
-                    failures.append("lyssna-video: tile labels need letter-spacing")
+                if not metrics.get("caseNorm"):
+                    failures.append("lyssna-video: tile labels must use normal case")
+                if (metrics.get("playW") or 0) < 80:
+                    failures.append(
+                        f"lyssna-video/{label}: play control too small ({metrics.get('playW')})"
+                    )
+                if "halvfjorton-01" not in (metrics.get("ssdThumb") or ""):
+                    failures.append("lyssna-video: SSD tile should use custom gallery poster")
 
                 tile = page.locator(".lyssna-video-tile").first
                 tile.click()

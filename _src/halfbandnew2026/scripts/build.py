@@ -601,6 +601,44 @@ SPOTIFY_REPERTOIRE_EMBED = (
     "https://open.spotify.com/embed/playlist/0q8DLuLfZE25an41tppmvu?utm_source=generator"
 )
 
+# Optional "poster" per entry: responsive gallery webp (-1200w) or None → YouTube maxres/hq.
+LYSSNA_LIVE_FILMS: tuple[dict[str, str], ...] = (
+    {
+        "video_id": "V2Nb8jMKUCk",
+        "label": "Signed Sealed Delivered",
+        "title": "Signed Sealed Delivered - Halv Fjorton 2025",
+        "poster": "/assets/img/gallery/halvfjorton-01-1200w.webp",
+    },
+    {
+        "video_id": "gm5C41wqYuU",
+        "label": "Reel 2022",
+        "title": "Halv Fjorton Reel 2022",
+    },
+)
+
+LYSSNA_CHRISTMAS_FILMS: tuple[dict[str, str], ...] = (
+    {
+        "video_id": "vV8aavPxYss",
+        "label": "A Soulful Christmas 2024",
+        "title": "A Soulful Christmas 2024 - 8 december, Nygatan 6",
+    },
+    {
+        "video_id": "UytyTLnKDWQ",
+        "label": "A Soulful Christmas 2023",
+        "title": "A Soulful Christmas 2023 - 3 december, Nygatan 6",
+    },
+    {
+        "video_id": "lAmSo6wGjqo",
+        "label": "Med vänner och mässa",
+        "title": "Halv Fjorton med vänner och mässa - 26 december 2022",
+    },
+    {
+        "video_id": "R0fqTXcAbgc",
+        "label": "A Soulful Christmas 2018",
+        "title": "A Soulful Christmas 2018",
+    },
+)
+
 
 def lyssna_video_tile(
     video_id: str,
@@ -632,6 +670,19 @@ def lyssna_video_tile(
 
 def lyssna_video_grid(*tiles: str) -> str:
     return "        <div class=\"lyssna-video-grid\">\n" + "\n".join(tiles) + "\n        </div>"
+
+
+def lyssna_video_tile_from_entry(entry: dict[str, str]) -> str:
+    return lyssna_video_tile(
+        entry["video_id"],
+        entry["label"],
+        entry["title"],
+        poster=entry.get("poster"),
+    )
+
+
+def lyssna_video_grid_from_entries(entries: tuple[dict[str, str], ...] | list[dict[str, str]]) -> str:
+    return lyssna_video_grid(*(lyssna_video_tile_from_entry(e) for e in entries))
 
 
 def lyssna_repertoire_song_list_markup() -> str:
@@ -1684,41 +1735,13 @@ def write_pages():
     </header>
     <section class="section" aria-label="Livefilmer">
       <div class="wrap">
-{lyssna_video_grid(
-    lyssna_video_tile(
-        "V2Nb8jMKUCk",
-        "Signed Sealed Delivered",
-        "Signed Sealed Delivered - Halv Fjorton 2025",
-    ),
-    lyssna_video_tile("gm5C41wqYuU", "Reel 2022", "Halv Fjorton Reel 2022"),
-)}
+{lyssna_video_grid_from_entries(LYSSNA_LIVE_FILMS)}
       </div>
     </section>
     <section class="section section-alt">
       <div class="wrap">
         <h2>Julkonserter på film</h2>
-{lyssna_video_grid(
-    lyssna_video_tile(
-        "vV8aavPxYss",
-        "A Soulful Christmas 2024",
-        "A Soulful Christmas 2024 - 8 december, Nygatan 6",
-    ),
-    lyssna_video_tile(
-        "UytyTLnKDWQ",
-        "A Soulful Christmas 2023",
-        "A Soulful Christmas 2023 - 3 december, Nygatan 6",
-    ),
-    lyssna_video_tile(
-        "lAmSo6wGjqo",
-        "Med vänner och mässa",
-        "Halv Fjorton med vänner och mässa - 26 december 2022",
-    ),
-    lyssna_video_tile(
-        "R0fqTXcAbgc",
-        "A Soulful Christmas 2018",
-        "A Soulful Christmas 2018",
-    ),
-)}
+{lyssna_video_grid_from_entries(LYSSNA_CHRISTMAS_FILMS)}
       </div>
     </section>
     <section class="section" id="repertoar">

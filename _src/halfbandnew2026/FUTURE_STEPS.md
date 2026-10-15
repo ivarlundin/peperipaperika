@@ -21,6 +21,10 @@ Ersätt eller utöka dagens Spotify-spelare på Lyssna med en full repertoarsida
 
 - **Företag page design reference:** https://downbeat.agency/corporate/ — used when we wireframe Företag with Ivar.
 
+## Lyssna (videor)
+
+- Replace YouTube auto thumbnails with custom preview images for all videos.
+
 ## Bröllop (bilder)
 
 - Replace with real wedding photos (hero and innehåll) when professional bröllopsbilder finns.

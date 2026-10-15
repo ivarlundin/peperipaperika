@@ -14,7 +14,11 @@
       useThumbFallback(img);
     });
     img.addEventListener("load", function () {
-      if (img.naturalWidth > 0 && img.naturalWidth < 320) {
+      if (
+        img.src.indexOf("i.ytimg.com") !== -1 &&
+        img.naturalWidth > 0 &&
+        img.naturalWidth < 320
+      ) {
         useThumbFallback(img);
       }
     });
