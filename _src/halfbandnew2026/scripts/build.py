@@ -1095,6 +1095,30 @@ def service_addon_figure(
     )
 
 
+GALLERY_STEMS_800_1600 = frozenset(
+    {
+        "halvfjorton-garden-mingel",
+        "halvfjorton-garden-sax-barn",
+    }
+)
+
+
+def _gallery_src_and_srcset(stem: str) -> tuple[str, str]:
+    base = f"/assets/img/gallery/{stem}"
+    if stem in GALLERY_STEMS_800_1600:
+        return (
+            f"{base}-800w.webp",
+            f"{base}-800w.webp 800w, {base}-1600w.webp 1600w",
+        )
+    return (
+        f"{base}-800w.webp",
+        (
+            f"{base}-480w.webp 480w, {base}-800w.webp 800w, "
+            f"{base}-1200w.webp 1200w, {base}-1920w.webp 1920w"
+        ),
+    )
+
+
 def wedding_figure(
     stem: str,
     alt: str,
@@ -1104,11 +1128,11 @@ def wedding_figure(
     figure_class: str = "alt-wedding-figure",
     loading: str = "lazy",
 ) -> str:
-    base = f"/assets/img/gallery/{stem}"
+    src, srcset = _gallery_src_and_srcset(stem)
     return f"""          <figure class="{figure_class}">
             <img
-              src="{base}-800w.webp"
-              srcset="{base}-480w.webp 480w, {base}-800w.webp 800w, {base}-1200w.webp 1200w, {base}-1920w.webp 1920w"
+              src="{src}"
+              srcset="{srcset}"
               sizes="{sizes}"
               alt="{esc(alt)}"
               width="{width}"
@@ -1251,13 +1275,13 @@ BROLLOP_STANDARD_PAGE = StandardServicePage(
     split_alt="Band i rustik lokal med publik i silhuett och blå scenbelysning",
     addons=(
         ServiceAddon(
-            "halvfjorton-04",
-            "Sångare och band på rustik träscen med professionellt scenljus",
+            "halvfjorton-garden-mingel",
+            "Musiker som spelar utomhus",
             "Mingelmusik",
             "Före middagen spelar vi lugnare och jazzigare musik medan gästerna minglar. Vi tar med ett eget ljudsystem för detta.",
         ),
         ServiceAddon(
-            "halvfjorton-06",
+            "halvfjorton-garden-sax-barn",
             "Sång och slagverk på scen i dramatiskt ljus",
             "Vigselmusik",
             "Till vigseln har vi solist och komp, och låtarna väljer vi tillsammans med er. Har ni andra önskemål för vigseln löser vi det efter dem.",
