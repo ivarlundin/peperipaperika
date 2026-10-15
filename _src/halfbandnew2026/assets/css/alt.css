@@ -4489,14 +4489,16 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
 /* Footer: column layout (Downbeat-inspired) */
 .alt-page .site-footer.site-footer--columns {
-  border-top-color: rgba(242, 240, 236, 0.08);
-  padding-top: clamp(2.5rem, 7vw, 3.25rem);
+  background: var(--alt-bg);
+  border-top: 1px solid rgba(242, 240, 236, 0.08);
+  padding-top: clamp(2.35rem, 6.5vw, 3rem);
+  padding-bottom: clamp(1.65rem, 4.5vw, 2.15rem);
 }
 
 .alt-page .site-footer--columns .site-footer__columns {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) repeat(4, minmax(0, 1fr));
-  gap: clamp(1.5rem, 3.5vw, 2.5rem);
+  grid-template-columns: minmax(0, 1.4fr) repeat(4, minmax(0, 1fr));
+  gap: clamp(1.35rem, 3vw, 2.15rem);
   align-items: start;
 }
 
@@ -4519,31 +4521,41 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   max-width: 18rem;
 }
 
+.alt-page .site-footer--columns .site-footer__tagline {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 300;
+  line-height: 1.55;
+  color: rgba(168, 162, 156, 0.92);
+  max-width: 24ch;
+}
+
 .alt-page .site-footer--columns .site-footer__title {
   margin: 0;
   font-size: 1.05rem;
 }
 
 .alt-page .site-footer--columns .site-footer__col-label {
-  margin: 0 0 0.85rem;
-  padding-bottom: 0.55rem;
-  border-bottom: 1px solid rgba(242, 240, 236, 0.12);
+  margin: 0 0 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(242, 240, 236, 0.1);
   font-family: var(--font-sans);
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   font-weight: 500;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.18em;
   line-height: 1.35;
   text-transform: uppercase;
-  color: rgba(168, 162, 156, 0.95);
+  color: rgba(168, 162, 156, 0.9);
 }
 
 .alt-page .site-footer--columns .site-footer__links {
-  gap: 0.45rem;
+  gap: 0.4rem;
 }
 
 .alt-page .site-footer--columns .site-footer__links a {
+  font-size: 0.875rem;
   font-weight: 400;
-  color: rgba(242, 240, 236, 0.88);
+  color: rgba(242, 240, 236, 0.82);
 }
 
 .alt-page .site-footer--columns .site-footer__links a:hover,
@@ -4553,14 +4565,20 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
 .alt-page .site-footer--columns .site-footer__contact-line {
   font-family: var(--font-sans);
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   font-weight: 400;
   line-height: 1.45;
-  color: rgba(242, 240, 236, 0.78);
+  color: rgba(242, 240, 236, 0.72);
+}
+
+.alt-page .site-footer--columns .site-footer__links--plain a {
+  font-size: 0.875rem;
+  color: rgba(242, 240, 236, 0.82);
 }
 
 .alt-page .site-footer--columns .site-footer__rule {
-  margin-top: clamp(2rem, 5vw, 2.75rem);
+  margin-top: clamp(1.75rem, 4.5vw, 2.35rem);
+  margin-bottom: 1rem;
   border-top-color: rgba(242, 240, 236, 0.08);
 }
 

@@ -76,6 +76,10 @@ python3 qa_check.py --live --skip-build
 - Rutnät: `.lyssna-video-tile` (YouTube `maxresdefault`, `hqdefault` via `error`/`naturalWidth`), ingen iframe förrän klick.
 - Modal: `lyssna-video-modal.js` (autoplay embed, Esc/backdrop/stäng, fokus, scroll-lås). Desktop spelare ~80vh höjd; mobil nästan full höjd.
 
+## Sidfot
+
+- Gemensam markup: `modern_footer_markup()` i `build.py` (`site-footer--columns`). Samma vänsterkant som sidinnehåll (`site-footer__inner` + `--alt-pad-left/right`). Mobil: 2 kolumner, smal skärm 1 kolumn. Integritetspolicy-länk krävs (build assert).
+
 ## Live
 
 https://labs.ivarlundin.se/testing/halfbandnew2026/

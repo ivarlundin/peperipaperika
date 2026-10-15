@@ -40,6 +40,13 @@
     "image": "https://halvfjorton.se/assets/img/og.jpg",
     "logo": "https://halvfjorton.se/assets/img/h14-logo.svg",
     "email": "halvfjorton@gmail.com",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Fabriksgatan 12",
+      "postalCode": "342 50",
+      "addressLocality": "Vislanda",
+      "addressCountry": "SE"
+    },
     "foundingDate": "2018",
     "genre": [
       "Soul",
@@ -264,7 +271,10 @@
         <div class="alt-svc-chapter__body alt-legal-page__body">
           <p>Denna policy beskriver hur Halv Fjorton ekonomisk förening behandlar personuppgifter när du kontaktar oss via webbplatsen.</p>
           <h2 class="alt-svc-chapter__title alt-legal-page__heading">Personuppgiftsansvarig</h2>
-          <p>Halv Fjorton ekonomisk förening, organisationsnummer 769641-5418. Kontakt: <a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a>.</p>
+          <p>Halv Fjorton ekonomisk förening, organisationsnummer 769641-5418.<br>
+Fabriksgatan 12<br>
+342 50 Vislanda<br>
+Kontakt: <a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a>.</p>
           <h2 class="alt-svc-chapter__title alt-legal-page__heading">Vad vi samlar in</h2>
           <p>Namn, e-postadress, telefonnummer om du anger det, och meddelandet du skickar i kontaktformuläret.</p>
           <h2 class="alt-svc-chapter__title alt-legal-page__heading">Varför</h2>
@@ -279,38 +289,55 @@
       </div>
     </section>
   </main>
-  <footer class="site-footer" aria-label="Sidfot">
+  <footer class="site-footer site-footer--columns" aria-label="Sidfot">
     <div class="site-footer__inner">
-      <div class="site-footer__grid">
+      <div class="site-footer__columns">
         <div class="site-footer__brand">
-          <p class="site-footer__title">Halv Fjorton</p>
-          <p class="site-footer__tagline">Coverband från Växjö, Småland</p>
+          <a class="site-footer__brand-mark" href="/" aria-label="Halv Fjorton">
+            <img src="/assets/img/h14-logo.svg" alt="" width="44" height="44" decoding="async">
+            <span class="site-footer__title">Halv Fjorton</span>
+          </a>
+          <p class="site-footer__tagline">Liveband med blåssektion för bröllop, företag och mingel.</p>
         </div>
-        <nav class="site-footer__nav" aria-label="Sidfot länkar">
+        <div class="site-footer__col">
+          <p class="site-footer__col-label">TJÄNSTER</p>
           <ul class="site-footer__links">
-            <li><a href="/#tjanster">Tjänster</a></li>
-            <li><a href="/kontakt/">Kontakt</a></li>
+            <li><a href="/brollop/">Bröllop</a></li>
+            <li><a href="/foretag/">Företag</a></li>
+            <li><a href="/mingel/">Fest och mingel</a></li>
+          </ul>
+        </div>
+        <div class="site-footer__col">
+          <p class="site-footer__col-label">LÄS MER</p>
+          <ul class="site-footer__links">
+            <li><a href="/om-oss/">Om oss</a></li>
             <li><a href="/faq/">FAQ</a></li>
             <li><a href="/lyssna/">Lyssna</a></li>
+            <li><a href="/konserter/">Konserter</a></li>
             <li><a href="/integritetspolicy/">Integritetspolicy</a></li>
           </ul>
-        </nav>
-        <div class="site-footer__aside">
-          <a class="site-footer__social" href="https://www.instagram.com/halvfjorton/" target="_blank" rel="noopener noreferrer">
-            <svg class="site-footer__ig-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.75"/>
-              <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.75"/>
-              <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
-            </svg>
-            <span>Följ oss på Instagram</span>
-          </a>
-          <a class="alt-btn alt-btn--primary site-footer__cta" href="/kontakt/">Kontakta oss</a>
+        </div>
+        <div class="site-footer__col">
+          <p class="site-footer__col-label">FÖLJ OSS</p>
+          <ul class="site-footer__links">
+            <li><a href="https://www.instagram.com/halvfjorton/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+            <li><a href="https://www.youtube.com/@halvfjorton9292" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+          </ul>
+        </div>
+        <div class="site-footer__col site-footer__col--contact">
+          <p class="site-footer__col-label">KONTAKT</p>
+          <ul class="site-footer__links site-footer__links--plain">
+            <li><span class="site-footer__contact-line">Fabriksgatan 12</span></li>
+            <li><span class="site-footer__contact-line">342 50 Vislanda</span></li>
+            <li><span class="site-footer__contact-line">Org.nr 769641-5418</span></li>
+            <li><a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a></li>
+          </ul>
         </div>
       </div>
       <hr class="site-footer__rule" />
-      <p class="site-footer__legal">
-        <span class="site-footer__legal-line">© <span data-footer-year>2026</span> Halv Fjorton ek. för.</span>
-        <span class="site-footer__legal-org">Org.nr 769641-5418</span>
+      <p class="site-footer__legal site-footer__legal--bar">
+        <span class="site-footer__legal-line">© <span data-footer-year>2026</span> Halv Fjorton</span>
+        <span class="site-footer__legal-place">Växjö, Småland</span>
       </p>
     </div>
   </footer>

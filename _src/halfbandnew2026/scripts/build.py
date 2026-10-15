@@ -164,6 +164,10 @@ BUILD_YEAR = datetime.now(timezone.utc).year
 
 ORG_STREET_ADDRESS = "Fabriksgatan 12"
 ORG_POSTAL_CITY_LINE = "342 50 Vislanda"
+ORG_NUMBER = "769641-5418"
+FOOTER_TAGLINE = "Liveband med blåssektion för bröllop, företag och mingel."
+
+YOUTUBE_PROFILE_URL = "https://www.youtube.com/@halvfjorton9292"
 ORG_POSTAL_ADDRESS_LD = {
     "@type": "PostalAddress",
     "streetAddress": ORG_STREET_ADDRESS,
@@ -512,10 +516,10 @@ def modern_footer_markup() -> str:
             <img src="/assets/img/h14-logo.svg" alt="" width="44" height="44" decoding="async">
             <span class="site-footer__title">Halv Fjorton</span>
           </a>
-          <p class="site-footer__tagline">Coverband och partyband med rötter i Växjö, Småland.</p>
+          <p class="site-footer__tagline">{esc(FOOTER_TAGLINE)}</p>
         </div>
         <div class="site-footer__col">
-          <p class="site-footer__col-label">Tjänster</p>
+          <p class="site-footer__col-label">TJÄNSTER</p>
           <ul class="site-footer__links">
             <li><a href="/brollop/">Bröllop</a></li>
             <li><a href="/foretag/">Företag</a></li>
@@ -523,7 +527,7 @@ def modern_footer_markup() -> str:
           </ul>
         </div>
         <div class="site-footer__col">
-          <p class="site-footer__col-label">Läs mer</p>
+          <p class="site-footer__col-label">LÄS MER</p>
           <ul class="site-footer__links">
             <li><a href="/om-oss/">Om oss</a></li>
             <li><a href="/faq/">FAQ</a></li>
@@ -533,18 +537,18 @@ def modern_footer_markup() -> str:
           </ul>
         </div>
         <div class="site-footer__col">
-          <p class="site-footer__col-label">Följ oss</p>
+          <p class="site-footer__col-label">FÖLJ OSS</p>
           <ul class="site-footer__links">
-            <li><a href="https://www.instagram.com/halvfjorton/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
-            <li><a href="https://www.youtube.com/@halvfjorton9292" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+            <li><a href="{INSTAGRAM_PROFILE_URL}" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+            <li><a href="{YOUTUBE_PROFILE_URL}" target="_blank" rel="noopener noreferrer">YouTube</a></li>
           </ul>
         </div>
         <div class="site-footer__col site-footer__col--contact">
-          <p class="site-footer__col-label">Kontakt</p>
+          <p class="site-footer__col-label">KONTAKT</p>
           <ul class="site-footer__links site-footer__links--plain">
             <li><span class="site-footer__contact-line">{ORG_STREET_ADDRESS}</span></li>
             <li><span class="site-footer__contact-line">{ORG_POSTAL_CITY_LINE}</span></li>
-            <li><span class="site-footer__contact-line">Org.nr 769641-5418</span></li>
+            <li><span class="site-footer__contact-line">Org.nr {ORG_NUMBER}</span></li>
             <li><a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a></li>
           </ul>
         </div>
@@ -2167,7 +2171,7 @@ def patch_home_page():
             font_preloads("/assets") + '\n  <link rel="stylesheet" href="/assets/css/alt.css">\n',
         )
     html = re.sub(
-        r'  <footer class="site-footer"[\s\S]*?  </footer>',
+        r'  <footer class="site-footer[^"]*"[\s\S]*?  </footer>',
         modern_footer_markup(),
         html,
         count=1,

@@ -4489,14 +4489,16 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
 /* Footer: column layout (Downbeat-inspired) */
 .alt-page .site-footer.site-footer--columns {
-  border-top-color: rgba(242, 240, 236, 0.08);
-  padding-top: clamp(2.5rem, 7vw, 3.25rem);
+  background: var(--alt-bg);
+  border-top: 1px solid rgba(242, 240, 236, 0.08);
+  padding-top: clamp(2.35rem, 6.5vw, 3rem);
+  padding-bottom: clamp(1.65rem, 4.5vw, 2.15rem);
 }
 
 .alt-page .site-footer--columns .site-footer__columns {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) repeat(4, minmax(0, 1fr));
-  gap: clamp(1.5rem, 3.5vw, 2.5rem);
+  grid-template-columns: minmax(0, 1.4fr) repeat(4, minmax(0, 1fr));
+  gap: clamp(1.35rem, 3vw, 2.15rem);
   align-items: start;
 }
 
