@@ -1065,7 +1065,7 @@ def run_konserter_ticket_layout_qa(base_url: str) -> list[str]:
 
 
 def run_konserter_ticket_overlap_qa(base_url: str) -> list[str]:
-    """Konserter ticket: poster and text columns must not overlap (bbox check)."""
+    """Konserter ticket: poster fills media cell; text sits beside image with padding only."""
     failures: list[str] = []
     url = base_url.rstrip("/") + "/konserter/?qa=ticket-overlap"
     with sync_playwright() as p:
@@ -1084,48 +1084,67 @@ def run_konserter_ticket_overlap_qa(base_url: str) -> list[str]:
                     """() => {
                       const card = document.querySelector('.event-ticket');
                       const poster = card?.querySelector('.event-ticket__poster');
+                      const img = poster?.querySelector('img');
                       const main = card?.querySelector('.event-ticket__main');
                       const title = card?.querySelector('.event-ticket__title');
                       const countdown = card?.querySelector('.event-ticket__countdown');
-                      if (!card || !poster || !main || !title) {
+                      if (!card || !poster || !img || !main || !title) {
                         return { ok: false, reason: 'missing nodes' };
                       }
                       const pr = poster.getBoundingClientRect();
+                      const ir = img.getBoundingClientRect();
                       const mr = main.getBoundingClientRect();
                       const tr = title.getBoundingClientRect();
                       const cr = countdown?.getBoundingClientRect();
+                      const mainPad = parseFloat(getComputedStyle(main).paddingLeft) || 0;
                       const stacked = mr.top >= pr.bottom - 2;
-                      const gap = mr.left - pr.right;
+                      const colGap = mr.left - pr.right;
+                      const imgFillsPoster = Math.abs(ir.height - pr.height) <= 2
+                        && Math.abs(ir.width - pr.width) <= 2
+                        && Math.abs(ir.top - pr.top) <= 2
+                        && Math.abs(ir.left - pr.left) <= 2;
+                      const textInset = tr.left - ir.right;
                       const titleOverlap = stacked
                         ? tr.top < pr.bottom - 1
-                        : tr.left < pr.right - 1;
+                        : tr.left < ir.right - 1;
                       const countdownOnTitle =
                         cr &&
-                        cr.right > pr.right + 2 &&
+                        cr.right > ir.right + 2 &&
                         cr.left < tr.right &&
                         cr.top < tr.bottom;
+                      const hugeColGap = !stacked && colGap > 4;
                       return {
                         ok: true,
                         stacked,
-                        gap,
+                        colGap,
+                        hugeColGap,
+                        imgFillsPoster,
+                        textInset,
+                        mainPad,
                         titleOverlap,
                         countdownOnTitle,
-                        posterRight: pr.right,
-                        mainLeft: mr.left,
                       };
                     }"""
                 )
                 if not result.get("ok"):
                     failures.append(f"{label}: {result.get('reason', 'check failed')}")
-                elif not result["stacked"] and result["gap"] < -1:
-                    failures.append(
-                        f"{label}: poster overlaps main by {abs(result['gap']):.1f}px "
-                        f"(poster right {result['posterRight']:.1f}, main left {result['mainLeft']:.1f})"
-                    )
                 elif result["titleOverlap"]:
                     failures.append(f"{label}: title starts under poster column")
                 elif result["countdownOnTitle"]:
                     failures.append(f"{label}: countdown badge overlaps title in text column")
+                elif not result["stacked"]:
+                    if result["hugeColGap"]:
+                        failures.append(
+                            f"{label}: empty gap between poster and text columns "
+                            f"({result['colGap']:.1f}px)"
+                        )
+                    if not result["imgFillsPoster"]:
+                        failures.append(f"{label}: poster image does not fill media cell")
+                    if abs(result["textInset"] - result["mainPad"]) > 3:
+                        failures.append(
+                            f"{label}: title inset {result['textInset']:.1f}px "
+                            f"!= main padding {result['mainPad']:.1f}px"
+                        )
                 ctx.close()
         finally:
             browser.close()
