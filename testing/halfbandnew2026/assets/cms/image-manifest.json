@@ -289,6 +289,28 @@
       "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-keys-tent-purple-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-keys-tent-purple-1600w.webp 1600w"
     },
     {
+      "id": "gallery/halvfjorton-pov-sax-purple-stage.webp",
+      "label": "halvfjorton-pov-sax-purple-stage.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-pov-sax-purple-stage-800w.webp",
+      "variants": {
+        "1600w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-pov-sax-purple-stage-1600w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-pov-sax-purple-stage-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-pov-sax-purple-stage-800w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-pov-sax-purple-stage-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-pov-sax-purple-stage-1600w.webp 1600w"
+    },
+    {
+      "id": "gallery/halvfjorton-sax-red-tent.webp",
+      "label": "halvfjorton-sax-red-tent.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-sax-red-tent-800w.webp",
+      "variants": {
+        "1600w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-sax-red-tent-1600w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-sax-red-tent-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-sax-red-tent-800w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-sax-red-tent-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-sax-red-tent-1600w.webp 1600w"
+    },
+    {
       "id": "gallery/halvfjorton-singer-chandelier-hall.webp",
       "label": "halvfjorton-singer-chandelier-hall.webp",
       "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-chandelier-hall-800w.webp",
@@ -298,6 +320,28 @@
         "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-chandelier-hall-800w.webp"
       },
       "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-chandelier-hall-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-chandelier-hall-1600w.webp 1600w"
+    },
+    {
+      "id": "gallery/halvfjorton-singers-green-tent.webp",
+      "label": "halvfjorton-singers-green-tent.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singers-green-tent-800w.webp",
+      "variants": {
+        "1600w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singers-green-tent-1600w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singers-green-tent-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singers-green-tent-800w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singers-green-tent-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-singers-green-tent-1600w.webp 1600w"
+    },
+    {
+      "id": "gallery/halvfjorton-soundcheck-purple-room.webp",
+      "label": "halvfjorton-soundcheck-purple-room.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-soundcheck-purple-room-800w.webp",
+      "variants": {
+        "1600w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-soundcheck-purple-room-1600w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-soundcheck-purple-room-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-soundcheck-purple-room-800w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-soundcheck-purple-room-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-soundcheck-purple-room-1600w.webp 1600w"
     },
     {
       "id": "gallery/halvfjorton-stage-blue-dining-hall.webp",
