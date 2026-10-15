@@ -198,7 +198,55 @@ CHECKS_JS = """
     }
   }
 
-  return { errors, docSW, docCW, vw };
+  let innerH1Gap = null;
+  let serviceH1Gap = null;
+
+  if (states.atTop && !states.menuOpen && vw >= 901) {
+    const body = document.body;
+    const grid = document.querySelector('.contact-offert__grid');
+    if (grid) {
+      const copyTitle = grid.querySelector(
+        '.contact-offert__copy h1, .contact-offert__copy h2, .contact-offert__copy .alt-section-heading'
+      );
+      const formCard = grid.querySelector('.contact-offert__form.tally-card');
+      if (copyTitle && formCard) {
+        const delta = Math.abs(copyTitle.getBoundingClientRect().top - formCard.getBoundingClientRect().top);
+        if (delta > 2.5) {
+          errors.push(`offert-copy-form-top-delta=${delta.toFixed(1)}`);
+        }
+      }
+    }
+
+    if (body.classList.contains('alt-page--home')) {
+      /* home uses custom hero layout */
+    } else if (body.classList.contains('alt-page--service-banner')) {
+      const hero = document.querySelector('.alt-service-hero');
+      const heroH1 = hero ? hero.querySelector('h1') : null;
+      if (hero && heroH1) {
+        serviceH1Gap = hero.getBoundingClientRect().bottom - heroH1.getBoundingClientRect().bottom;
+      }
+    } else if (body.classList.contains('alt-page--inner')) {
+      const h1 = document.querySelector('main h1');
+      if (h1) {
+        innerH1Gap = h1.getBoundingClientRect().top - headerBottom;
+        const raw = getComputedStyle(body).getPropertyValue('--alt-inner-title-offset').trim();
+        if (raw) {
+          const probe = document.createElement('div');
+          probe.style.cssText = 'position:absolute;visibility:hidden;pointer-events:none;height:' + raw;
+          document.body.appendChild(probe);
+          const expected = probe.getBoundingClientRect().height;
+          probe.remove();
+          if (expected > 0 && Math.abs(innerH1Gap - expected) > 5) {
+            errors.push(
+              `h1-title-offset gap=${innerH1Gap.toFixed(1)} expected~${expected.toFixed(1)}`
+            );
+          }
+        }
+      }
+    }
+  }
+
+  return { errors, docSW, docCW, vw, innerH1Gap, serviceH1Gap };
 }
 """
 

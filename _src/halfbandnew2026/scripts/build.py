@@ -211,12 +211,12 @@ def kontakt_page_body() -> str:
     usp_items = "\n".join(f"            <li>{esc(u)}</li>" for u in HOME_CONTACT_USPS)
     return f"""    <section class="alt-contact-page section" id="offert" aria-labelledby="kontakt-rubrik">
       <div class="alt-contact-offert__wrap alt-contact-page__stack">
-        <header class="alt-contact-page__intro">
-          <h1 id="kontakt-rubrik">Kontakta oss</h1>
-          <p class="contact-offert__lead">Fyll i formuläret så återkommer vi, oftast inom 24 timmar.</p>
-        </header>
         <div class="contact-offert__grid">
           <div class="contact-offert__copy">
+            <header class="alt-contact-page__intro">
+              <h1 id="kontakt-rubrik">Kontakta oss</h1>
+              <p class="contact-offert__lead">Fyll i formuläret så återkommer vi, oftast inom 24 timmar.</p>
+            </header>
             <ul class="list-check">
 {usp_items}
             </ul>

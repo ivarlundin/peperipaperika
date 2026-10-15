@@ -162,7 +162,7 @@ def run_state_checks(
     menu_open: bool,
     console_errors: list[str],
     check_urls: bool,
-) -> list[str]:
+) -> tuple[list[str], dict]:
     failures: list[str] = []
     if console_errors:
         failures.extend(f"{label}: console: {e}" for e in console_errors[-3:])
@@ -233,7 +233,7 @@ def run_state_checks(
             if not ok:
                 failures.append(f"{label}: broken-url {rel}")
 
-    return failures
+    return failures, data
 
 
 def capture_screenshot(page, path: str, width: int, browser_name: str) -> None:
@@ -252,6 +252,8 @@ def run_matrix(
 ) -> list[str]:
     failures: list[str] = []
     steps_run: list[str] = []
+    inner_h1_gaps: dict[str, float] = {}
+    service_h1_gaps: dict[str, float] = {}
 
     with sync_playwright() as p:
         for browser_name in browsers:
@@ -323,16 +325,28 @@ def run_matrix(
                                 page.wait_for_timeout(80)
                             set_menu(page, menu_open, width)
                             console_errors.clear()
-                            failures.extend(
-                                run_state_checks(
-                                    page,
-                                    label,
-                                    at_top,
-                                    menu_open,
-                                    console_errors,
-                                    check_urls=(state_name == "top-closed"),
-                                )
+                            state_failures, check_data = run_state_checks(
+                                page,
+                                label,
+                                at_top,
+                                menu_open,
+                                console_errors,
+                                check_urls=(state_name == "top-closed"),
                             )
+                            failures.extend(state_failures)
+                            if (
+                                browser_name == "chromium"
+                                and width >= 901
+                                and at_top
+                                and not menu_open
+                                and state_name == "top-closed"
+                            ):
+                                inner_gap = check_data.get("innerH1Gap")
+                                if inner_gap is not None:
+                                    inner_h1_gaps[path] = float(inner_gap)
+                                svc_gap = check_data.get("serviceH1Gap")
+                                if svc_gap is not None:
+                                    service_h1_gaps[path] = float(svc_gap)
 
                         if screenshot and browser_name == "webkit" and width == 390:
                             page.evaluate("window.scrollTo(0, 0)")
@@ -343,9 +357,33 @@ def run_matrix(
             finally:
                 browser.close()
 
+    if len(inner_h1_gaps) > 1:
+        spread = max(inner_h1_gaps.values()) - min(inner_h1_gaps.values())
+        if spread > 5:
+            failures.append(
+                f"h1-inner-offset-mismatch spread={spread:.1f}px samples={inner_h1_gaps}"
+            )
+    if len(service_h1_gaps) > 1:
+        spread = max(service_h1_gaps.values()) - min(service_h1_gaps.values())
+        if spread > 6:
+            failures.append(
+                f"h1-service-hero-inset-mismatch spread={spread:.1f}px samples={service_h1_gaps}"
+            )
+
     summary_path = SCREENSHOT_DIR / "qa-steps.json"
     SCREENSHOT_DIR.mkdir(parents=True, exist_ok=True)
-    summary_path.write_text(json.dumps({"steps": steps_run, "failures": failures}, indent=2), encoding="utf-8")
+    summary_path.write_text(
+        json.dumps(
+            {
+                "steps": steps_run,
+                "failures": failures,
+                "innerH1Gaps": inner_h1_gaps,
+                "serviceH1Gaps": service_h1_gaps,
+            },
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
     return failures
 
 
