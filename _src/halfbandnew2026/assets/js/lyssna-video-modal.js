@@ -76,15 +76,17 @@
     }
   }
 
-  function openModal(videoId, title) {
+  function openModal(videoId, title, startSeconds) {
     lastFocus = document.activeElement;
     titleEl.textContent = title;
     stopPlayback();
     var iframe = document.createElement("iframe");
+    var params = "autoplay=1&rel=0";
+    if (startSeconds) {
+      params += "&start=" + encodeURIComponent(startSeconds);
+    }
     iframe.src =
-      "https://www.youtube-nocookie.com/embed/" +
-      videoId +
-      "?autoplay=1&rel=0";
+      "https://www.youtube-nocookie.com/embed/" + videoId + "?" + params;
     iframe.title = title;
     iframe.allow =
       "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
@@ -102,7 +104,8 @@
     tile.addEventListener("click", function () {
       var id = tile.getAttribute("data-lyssna-video");
       var title = tile.getAttribute("data-lyssna-title") || "YouTube-video";
-      if (id) openModal(id, title);
+      var start = tile.getAttribute("data-lyssna-start");
+      if (id) openModal(id, title, start);
     });
   });
 

@@ -26,6 +26,9 @@ SOULFUL_CHRISTMAS_TICKETS = "https://www.nygatan6.se/kalender/a-soulful-christma
 SOULFUL_CHRISTMAS_IMG = "/assets/img/events/a-soulful-christmas-2026"
 SOULFUL_CHRISTMAS_START = "2026-12-12T00:00:00+01:00"
 SOULFUL_CHRISTMAS_END = "2026-12-12T22:00:00+01:00"
+SOULFUL_LUCIA_2025_VIDEO_ID = "CFr_XLrILmY"
+SOULFUL_LUCIA_2025_START = 5491
+SOULFUL_LUCIA_2025_IMG = "/assets/img/events/a-soulful-lucia-2025"
 
 CONTACT_USPS = [
     "Vi svarar inom 24 timmar",
@@ -618,32 +621,51 @@ SPOTIFY_REPERTOIRE_EMBED = (
     "https://open.spotify.com/embed/playlist/0q8DLuLfZE25an41tppmvu?utm_source=generator"
 )
 
+LYSSNA_TILE_PLAY_ICON = """            <svg class="lyssna-video-tile__play-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M9.15 7.35v9.3l8.7-4.65-8.7-4.65z" fill="currentColor" stroke="currentColor" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"/>
+            </svg>"""
+
+
+def _lyssna_poster_srcset(poster: str) -> str:
+    if not poster.endswith("-1200w.webp"):
+        return ""
+    stem = poster[: -len("-1200w.webp")]
+    if "/assets/img/gallery/halvfjorton-" in poster:
+        return (
+            f' srcset="{stem}-480w.webp 480w, {stem}-800w.webp 800w, '
+            f'{stem}-1200w.webp 1200w, {stem}-1920w.webp 1920w"'
+        )
+    if "/assets/img/events/" in poster:
+        return (
+            f' srcset="{stem}-480w.webp 480w, {stem}-800w.webp 800w, '
+            f'{stem}-1200w.webp 1200w"'
+        )
+    return ""
+
 
 def lyssna_video_tile(
     video_id: str,
     label: str,
     title: str,
     poster: str | None = None,
+    start_seconds: int | None = None,
 ) -> str:
     yt_max = f"https://i.ytimg.com/vi/{video_id}/maxresdefault.jpg"
     yt_hq = f"https://i.ytimg.com/vi/{video_id}/hqdefault.jpg"
     thumb_src = poster or yt_max
     thumb_fallback = yt_hq
-    srcset = ""
-    sizes = ' sizes="(max-width: 640px) 33vw, (max-width: 900px) 50vw, 36rem"'
-    if poster and "/assets/img/gallery/halvfjorton-" in poster and poster.endswith("-1200w.webp"):
-        stem = poster[: -len("-1200w.webp")]
-        srcset = (
-            f' srcset="{stem}-480w.webp 480w, {stem}-800w.webp 800w, '
-            f'{stem}-1200w.webp 1200w, {stem}-1920w.webp 1920w"'
-        )
-    return f"""        <button type="button" class="lyssna-video-tile" data-lyssna-video="{video_id}" data-lyssna-title="{esc(title)}" aria-label="Spela video: {esc(title)}">
+    srcset = _lyssna_poster_srcset(poster) if poster else ""
+    sizes = ' sizes="(max-width: 640px) 50vw, (max-width: 900px) 50vw, 36rem"'
+    start_attr = f' data-lyssna-start="{start_seconds}"' if start_seconds else ""
+    return f"""        <button type="button" class="lyssna-video-tile" data-lyssna-video="{video_id}" data-lyssna-title="{esc(title)}"{start_attr} aria-label="Spela video: {esc(title)}">
           <span class="lyssna-video-tile__media">
             <img class="lyssna-video-tile__thumb" src="{esc(thumb_src)}"{srcset}{sizes} alt="" width="1280" height="720" loading="lazy" decoding="async" data-lyssna-thumb-fallback="{thumb_fallback}">
+            <span class="lyssna-video-tile__play" aria-hidden="true">
+{LYSSNA_TILE_PLAY_ICON}
+            </span>
           </span>
           <span class="lyssna-video-tile__meta">
             <span class="lyssna-video-tile__label">{esc(label)}</span>
-            <span class="lyssna-video-tile__play" aria-hidden="true"></span>
           </span>
         </button>"""
 
@@ -1083,15 +1105,26 @@ def gallery_img(
           </figure>"""
 
 
-def wedding_video_ld() -> str:
+def youtube_video_object_ld(
+    name: str,
+    description: str,
+    video_id: str,
+    thumbnail_url: str,
+    start_seconds: int | None = None,
+) -> str:
+    embed_url = f"https://www.youtube-nocookie.com/embed/{video_id}"
+    content_url = f"https://www.youtube.com/watch?v={video_id}"
+    if start_seconds:
+        embed_url += f"?start={start_seconds}"
+        content_url += f"&t={start_seconds}"
     data = {
         "@context": "https://schema.org",
         "@type": "VideoObject",
-        "name": WEDDING_VIDEO_TITLE,
-        "description": "Livevideo med Halv Fjorton som cover- och bröllopsband i södra Sverige.",
-        "thumbnailUrl": f"https://i.ytimg.com/vi/{WEDDING_VIDEO_ID}/hqdefault.jpg",
-        "embedUrl": f"https://www.youtube-nocookie.com/embed/{WEDDING_VIDEO_ID}",
-        "contentUrl": f"https://www.youtube.com/watch?v={WEDDING_VIDEO_ID}",
+        "name": name,
+        "description": description,
+        "thumbnailUrl": thumbnail_url,
+        "embedUrl": embed_url,
+        "contentUrl": content_url,
         "publisher": {
             "@type": "Organization",
             "name": "Halv Fjorton",
@@ -1099,6 +1132,52 @@ def wedding_video_ld() -> str:
         },
     }
     return _indent_ld(data)
+
+
+def wedding_video_ld() -> str:
+    return youtube_video_object_ld(
+        WEDDING_VIDEO_TITLE,
+        "Livevideo med Halv Fjorton som cover- och bröllopsband i södra Sverige.",
+        WEDDING_VIDEO_ID,
+        f"https://i.ytimg.com/vi/{WEDDING_VIDEO_ID}/hqdefault.jpg",
+    )
+
+
+def lyssna_page_video_ld() -> list[str]:
+    yt_thumb = lambda vid: f"https://i.ytimg.com/vi/{vid}/hqdefault.jpg"
+    return [
+        youtube_video_object_ld(
+            "Signed Sealed Delivered - Halv Fjorton 2025",
+            "Livefilm med Halv Fjorton från 2025.",
+            "V2Nb8jMKUCk",
+            f"{SITE}/assets/img/gallery/halvfjorton-01-1200w.webp",
+        ),
+        youtube_video_object_ld(
+            "Halv Fjorton Reel 2022",
+            "Kortare klipp från spelningar 2022.",
+            "gm5C41wqYuU",
+            yt_thumb("gm5C41wqYuU"),
+        ),
+        youtube_video_object_ld(
+            "A Soulful Lucia 2025",
+            "Julkonsert med Halv Fjorton, inspelning från lucia 2025.",
+            SOULFUL_LUCIA_2025_VIDEO_ID,
+            f"{SITE}{SOULFUL_LUCIA_2025_IMG}-1200w.webp",
+            SOULFUL_LUCIA_2025_START,
+        ),
+        youtube_video_object_ld(
+            "A Soulful Christmas 2024 - 8 december, Nygatan 6",
+            "Julkonsert A Soulful Christmas 2024 på Nygatan 6 i Växjö.",
+            "vV8aavPxYss",
+            yt_thumb("vV8aavPxYss"),
+        ),
+        youtube_video_object_ld(
+            "A Soulful Christmas 2023 - 3 december, Nygatan 6",
+            "Julkonsert A Soulful Christmas 2023 på Nygatan 6 i Växjö.",
+            "UytyTLnKDWQ",
+            yt_thumb("UytyTLnKDWQ"),
+        ),
+    ]
 
 
 def breadcrumb_ld(items):
@@ -1717,6 +1796,7 @@ def write_pages():
         "Se Halv Fjorton live: Signed Sealed Delivered 2025, reel 2022 och julkonserterna A Soulful Christmas.",
         page_class="alt-page--lyssna",
         extra_scripts=LYSSNA_VIDEO_MODAL_SCRIPT,
+        extra_ld=lyssna_page_video_ld(),
         body=f"""    <header class="page-hero compact">
       <div class="page-hero-copy">
         <h1>Lyssna på oss</h1>
@@ -1747,6 +1827,13 @@ def write_pages():
         <h2>Lyssna på våra julkonserter</h2>
 {lyssna_video_grid(
     lyssna_video_tile(
+        SOULFUL_LUCIA_2025_VIDEO_ID,
+        "A Soulful Lucia 2025",
+        "A Soulful Lucia 2025",
+        poster=f"{SOULFUL_LUCIA_2025_IMG}-1200w.webp",
+        start_seconds=SOULFUL_LUCIA_2025_START,
+    ),
+    lyssna_video_tile(
         "vV8aavPxYss",
         "A Soulful Christmas 2024",
         "A Soulful Christmas 2024 - 8 december, Nygatan 6",
@@ -1756,16 +1843,6 @@ def write_pages():
         "A Soulful Christmas 2023",
         "A Soulful Christmas 2023 - 3 december, Nygatan 6",
     ),
-    lyssna_video_tile(
-        "lAmSo6wGjqo",
-        "Med vänner och mässa",
-        "Halv Fjorton med vänner och mässa - 26 december 2022",
-    ),
-    lyssna_video_tile(
-        "R0fqTXcAbgc",
-        "A Soulful Christmas 2018",
-        "A Soulful Christmas 2018",
-    ),
 )}
       </div>
     </section>
@@ -1774,13 +1851,12 @@ def write_pages():
         <div class="lyssna-repertoire-split">
           <div class="lyssna-repertoire-split__copy">
             <h2>Repertoar</h2>
-            <p>Vi bygger kvällar kring funk och soul: Stevie Wonder, Ray Charles, Earth, Wind &amp; Fire. Därtill kommer svenska favoriter som Björn Skifs och Tomas Ledin, och repertoaren är bred nog för blandade sällskap och generationer.</p>
+            <p>Vi bygger kvällar kring funk och soul: Stevie Wonder, Ray Charles, Earth, Wind &amp; Fire. Därtill kommer svenska favoriter som Björn Skifs och Tomas Ledin, och repertoaren är bred nog för blandade sällskap och generationer. Vi tar gärna emot önskemål inför bokning, mejla <a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a> så tar vi dialogen där.</p>
           </div>
           <div class="lyssna-repertoire-split__spotify">
 {lyssna_spotify_embed_markup()}
           </div>
         </div>
-        <p class="lyssna-repertoire-note">Vi tar gärna emot önskemål inför bokning. Om en låt inte redan finns i repertoaren kan vi ofta lära in den när den funkar live med bandet. Mejla <a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a> så tar vi dialogen där.</p>
       </div>
     </section>
 """,
