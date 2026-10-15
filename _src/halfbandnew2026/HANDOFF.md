@@ -56,6 +56,7 @@ python3 qa_check.py --live --skip-build
 
 ## Öppna / kända
 
+- Framtida funktioner och designreferenser: **[FUTURE_STEPS.md](FUTURE_STEPS.md)** (internt, ingår inte i labs-bygget).
 - Dolda SEO-sidor (`/kompband/`, `/brollopsband-smaland/`, …) får inte länkas från synliga sidor (build assert).
 - `home/index.html` patchas efter bygge (`patch_home_page`).
 - Skills: `.cursor/skills/` (design), `skills/svensk-copy/`.
