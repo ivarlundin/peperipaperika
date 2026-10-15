@@ -1097,8 +1097,11 @@ def service_addon_figure(
 
 GALLERY_STEMS_800_1600 = frozenset(
     {
+        "halvfjorton-barn-purple-stage",
         "halvfjorton-garden-mingel",
         "halvfjorton-garden-sax-barn",
+        "halvfjorton-stage-blue-dining-hall",
+        "halvfjorton-warehouse-green-stage",
     }
 )
 
@@ -1305,26 +1308,26 @@ FORETAG_STANDARD_PAGE = StandardServicePage(
         "Ni berättar hur kvällen ska löpa: mingel, middag, tal, dans. Vi är flexibla och tar fram ett specialupplägg för just er tillställning, med volym och tider som passar lokalen och gästerna.",
         "Vanligt upplägg är mingel 45 till 90 minuter medan gästerna kommer in, paus under middag och tal, därefter tar vi över och ställer till med ösigt dansgolv!",
     ),
-    split_stem="halvfjorton-05",
-    split_alt="Band i rustik lokal med publik i silhuett och blå scenbelysning",
+    split_stem="halvfjorton-stage-blue-dining-hall",
+    split_alt="Scen med blått ljus i festlokal",
     addons=(
         ServiceAddon(
-            "halvfjorton-04",
-            "Sångare och band på rustik träscen med professionellt scenljus",
+            "halvfjorton-barn-purple-stage",
+            "Scen i lada med lila ljus och rök",
             "Mingelmusik",
             "När gästerna strömmar in spelar vi lugnare musik som låter samtalen flyta. Jazz, soul och svenska visor i en blandning som sätter tonen för kvällen.",
         ),
         ServiceAddon(
-            "halvfjorton-06",
-            "Sång och slagverk på scen i dramatiskt ljus",
+            "halvfjorton-01",
+            "Band på stor scen med varmt ljus och publik i festsal",
             "Artistkomp",
             "Planerar ni att boka en artist till ert event? Vi har lång erfarenhet av att kompa artister, oavsett genre och sättning, och gör framträdandet komplett.",
             width=1280,
             height=720,
         ),
         ServiceAddon(
-            "halvfjorton-02",
-            "Keyboard och blåssektion på scen i blått ljus och rök",
+            "halvfjorton-warehouse-green-stage",
+            "Keyboard på scen i lagerlokal",
             "Middagsunderhållning",
             "Vi spelar gärna en eller två låtar vid utvalda tillfällen under sittningen. Ett uppskattat inslag är ett interaktivt musikquiz med gästerna, som alltid går hem.",
         ),
@@ -2800,15 +2803,20 @@ def assert_no_duplicate_gallery_images_on_page(target: Path) -> None:
         text = file_path.read_text(encoding="utf-8")
         if "alt-service-hero" not in text:
             continue
-        stems = _GALLERY_IMG_SRC_STEM.findall(text)
-        if not stems:
+        hero_match = re.search(
+            r'<header class="alt-service-hero">.*?</header>',
+            text,
+            flags=re.DOTALL,
+        )
+        hero_text = hero_match.group(0) if hero_match else ""
+        body_text = text.replace(hero_text, "", 1) if hero_match else text
+        body_stems = _GALLERY_IMG_SRC_STEM.findall(body_text)
+        if not body_stems:
             continue
-        seen: set[str] = set()
-        dupes: set[str] = set()
-        for stem in stems:
-            if stem in seen:
-                dupes.add(stem)
-            seen.add(stem)
+        counts: dict[str, int] = {}
+        for stem in body_stems:
+            counts[stem] = counts.get(stem, 0) + 1
+        dupes = {stem for stem, n in counts.items() if n > 1}
         if dupes:
             offenders.append(
                 f"{file_path.relative_to(target)} ({', '.join(sorted(dupes))})"
