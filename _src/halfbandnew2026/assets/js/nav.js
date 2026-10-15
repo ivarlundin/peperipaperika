@@ -53,12 +53,42 @@
     });
   }
 
+  var desktopDropdownCloseMs = 220;
+
+  function clearDropdownCloseTimer(dd) {
+    var timer = dd._hfDropdownCloseTimer;
+    if (timer) {
+      window.clearTimeout(timer);
+      dd._hfDropdownCloseTimer = null;
+    }
+  }
+
   function closeDropdowns(scope) {
     (scope || document).querySelectorAll("[data-nav-dropdown]").forEach(function (dd) {
+      clearDropdownCloseTimer(dd);
       dd.classList.remove("is-open");
       var btn = dd.querySelector("[data-nav-dropdown-trigger]");
       if (btn) btn.setAttribute("aria-expanded", "false");
     });
+  }
+
+  function openDesktopDropdown(dd, btn) {
+    if (!mqDesktop.matches) return;
+    clearDropdownCloseTimer(dd);
+    closeDropdowns(document.querySelector(".alt-header"));
+    dd.classList.add("is-open");
+    btn.setAttribute("aria-expanded", "true");
+  }
+
+  function scheduleDesktopDropdownClose(dd, btn) {
+    if (!mqDesktop.matches) return;
+    clearDropdownCloseTimer(dd);
+    dd._hfDropdownCloseTimer = window.setTimeout(function () {
+      dd._hfDropdownCloseTimer = null;
+      if (dd.contains(document.activeElement)) return;
+      dd.classList.remove("is-open");
+      btn.setAttribute("aria-expanded", "false");
+    }, desktopDropdownCloseMs);
   }
 
   function prefersReducedMotion() {
@@ -167,17 +197,25 @@
     var btn = dd.querySelector("[data-nav-dropdown-trigger]");
     if (!btn) return;
 
-    btn.addEventListener("mouseenter", function () {
-      if (!mqDesktop.matches) return;
-      closeDropdowns(document.querySelector(".alt-header"));
-      dd.classList.add("is-open");
-      btn.setAttribute("aria-expanded", "true");
+    dd.addEventListener("mouseenter", function () {
+      openDesktopDropdown(dd, btn);
     });
 
     dd.addEventListener("mouseleave", function () {
+      scheduleDesktopDropdownClose(dd, btn);
+    });
+
+    dd.addEventListener("focusin", function () {
+      openDesktopDropdown(dd, btn);
+    });
+
+    dd.addEventListener("focusout", function () {
       if (!mqDesktop.matches) return;
-      dd.classList.remove("is-open");
-      btn.setAttribute("aria-expanded", "false");
+      window.setTimeout(function () {
+        if (!dd.contains(document.activeElement)) {
+          scheduleDesktopDropdownClose(dd, btn);
+        }
+      }, 0);
     });
 
     btn.addEventListener("click", function (event) {
@@ -187,8 +225,7 @@
       var open = !dd.classList.contains("is-open");
       closeDropdowns(document.querySelector(".alt-header"));
       if (open) {
-        dd.classList.add("is-open");
-        btn.setAttribute("aria-expanded", "true");
+        openDesktopDropdown(dd, btn);
       }
     });
   });

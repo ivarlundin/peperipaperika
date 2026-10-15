@@ -387,6 +387,71 @@ def run_matrix(
     return failures
 
 
+DESKTOP_NAV_SERVICE_LINKS = (
+    ("/brollop/", "Bröllop"),
+    ("/foretag/", "Företag"),
+    ("/mingel/", "Fest och mingel"),
+)
+
+
+def run_desktop_tjanster_dropdown_qa(base_url: str) -> list[str]:
+    """Desktop Chromium: hover Tjänster → each service link → click navigates."""
+    failures: list[str] = []
+    home = base_url.rstrip("/") + "/"
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        try:
+            ctx = browser.new_context(
+                viewport={"width": 1280, "height": 900},
+                device_scale_factor=1,
+            )
+            page = ctx.new_page()
+            for index, (path_suffix, label) in enumerate(DESKTOP_NAV_SERVICE_LINKS):
+                page.goto(
+                    home + f"?qa=nav-dd-{index}",
+                    wait_until="domcontentloaded",
+                    timeout=45000,
+                )
+                page.wait_for_timeout(120)
+                dd = page.locator(".alt-header .nav-item--dropdown").first
+                trigger = dd.locator("[data-nav-dropdown-trigger]")
+                link = dd.locator('a[role="menuitem"]').nth(index)
+                if trigger.count() == 0 or dd.locator('a[role="menuitem"]').count() < len(DESKTOP_NAV_SERVICE_LINKS):
+                    failures.append(f"desktop-nav-dropdown: missing trigger or menu links (index {index})")
+                    continue
+                link_text = link.evaluate("el => (el.textContent || '').trim()")
+                if link_text != label:
+                    failures.append(
+                        f"desktop-nav-dropdown: expected link '{label}' at index {index}, got '{link_text}'"
+                    )
+                    continue
+                trigger.hover()
+                page.wait_for_timeout(100)
+                link.hover()
+                page.wait_for_timeout(150)
+                is_open = dd.evaluate("el => el.classList.contains('is-open')")
+                menu_box = page.locator(".alt-header #nav-tjanster").bounding_box()
+                if not is_open and not menu_box:
+                    failures.append(
+                        f"desktop-nav-dropdown: menu closed while moving pointer to '{label}'"
+                    )
+                    continue
+                try:
+                    with page.expect_navigation(wait_until="domcontentloaded", timeout=20000):
+                        link.click()
+                except PlaywrightError as e:
+                    failures.append(f"desktop-nav-dropdown: click '{label}' failed: {e}")
+                    continue
+                if path_suffix.rstrip("/") not in page.url:
+                    failures.append(
+                        f"desktop-nav-dropdown: after '{label}' expected path {path_suffix} in {page.url}"
+                    )
+            ctx.close()
+        finally:
+            browser.close()
+    return failures
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Halv Fjorton QA (binding — see QA.md)")
     parser.add_argument("--skip-build", action="store_true")
@@ -465,6 +530,8 @@ def main() -> int:
             screenshot=screenshot,
             widths=widths,
         )
+        if not args.quick:
+            failures.extend(run_desktop_tjanster_dropdown_qa(base))
     finally:
         if server:
             server.terminate()
