@@ -900,6 +900,23 @@ def service_chapter(title: str, paragraphs: list[str], extra_html: str = "", mod
     </section>"""
 
 
+def service_addon_figure(
+    stem: str,
+    alt: str,
+    *,
+    width: int = 2400,
+    height: int = 1600,
+) -> str:
+    return wedding_figure(
+        stem,
+        alt,
+        "(max-width: 900px) 100vw, min(42vw, 520px)",
+        width=width,
+        height=height,
+        figure_class="alt-svc-addon__figure",
+    )
+
+
 def wedding_figure(
     stem: str,
     alt: str,
@@ -1001,10 +1018,22 @@ def wedding_page_body() -> str:
         <h2 class="alt-svc-section-label" id="tillaggstjanster">Tilläggstjänster</h2>
         <div class="alt-svc-addon-grid alt-svc-chapter__body">
           <div class="alt-svc-addon">
+{service_addon_figure(
+    "halvfjorton-04",
+    "Sångare och band på rustik träscen med professionellt scenljus",
+    width=1280,
+    height=853,
+)}
             <h3 class="alt-svc-addon__title">Mingelmusik</h3>
             <p>Före middagen spelar vi lugnare och jazzigare musik medan gästerna minglar. Vi tar med ett eget ljudsystem för detta.</p>
           </div>
           <div class="alt-svc-addon">
+{service_addon_figure(
+    "halvfjorton-06",
+    "Sång och slagverk på scen i dramatiskt ljus",
+    width=1600,
+    height=2400,
+)}
             <h3 class="alt-svc-addon__title">Vigselmusik</h3>
             <p>Till vigseln har vi solist och komp, och låtarna väljer vi tillsammans med er. Har ni andra önskemål för vigseln löser vi det efter dem.</p>
           </div>
