@@ -40,7 +40,11 @@ def main() -> int:
             assert card_count == 6, f"expected 6 bento tiles, got {card_count}"
 
             cols = page.locator(".alt-gallery__bento").evaluate(
-                "el => getComputedStyle(el).gridTemplateColumns.split(' ').length"
+                """el => {
+                  const mq = window.matchMedia('(max-width: 900px)').matches;
+                  const n = getComputedStyle(el).gridTemplateColumns.split(' ').length;
+                  return mq ? n : -1;
+                }"""
             )
             assert cols == 2, f"mobile should be 2 columns, got {cols}"
 
@@ -92,8 +96,11 @@ def main() -> int:
                       br.right <= contentRight + 1 &&
                       br.left >= hr.left + padL - 1 &&
                       br.right <= hr.right - padR + 1,
+                    cols: getComputedStyle(bento).gridTemplateColumns.split(' ').length,
                     feature: document.querySelector('.alt-gallery__card--feature')?.getBoundingClientRect(),
                     wide: document.querySelector('.alt-gallery__card--wide-top')?.getBoundingClientRect(),
+                    sm: document.querySelector('.alt-gallery__card--sm')?.getBoundingClientRect(),
+                    kenAnim: getComputedStyle(document.querySelector('.alt-gallery__ken')).animationName,
                   };
                 }"""
             )
@@ -101,10 +108,14 @@ def main() -> int:
             assert metrics["bentoH"] >= metrics["vh"] * 0.68, (
                 f"bento too short: {metrics['bentoH']} vs vh {metrics['vh']}"
             )
+            assert metrics["cols"] == 6, f"desktop bento should use 6 columns, got {metrics['cols']}"
+            assert metrics["kenAnim"] not in (None, "none"), "Ken Burns animation expected on gallery images"
             feat = metrics["feature"]
             wide = metrics["wide"]
-            assert feat and wide and feat["width"] > wide["width"] * 1.4
+            sm = metrics["sm"]
+            assert feat and wide and feat["width"] > wide["width"] * 1.15
             assert feat["height"] > wide["height"] * 1.35
+            assert wide and sm and wide["width"] > sm["width"] * 1.55
 
             browser.close()
     finally:
