@@ -1025,9 +1025,6 @@ def wedding_page_body() -> str:
           <h2 class="alt-svc-chapter__title">Festspelning</h2>
           <div class="alt-svc-chapter__body">
             <p>När middagen är över och första valsen är dansad drar vi igång festen på riktigt. Vi är ett bröllopsband från Växjö med åtta musiker och blåssektion, och vi tar er genom flera genrer under kvällen. Vi har lång erfarenhet av bröllop och vet vad som får dansgolvet att leva.</p>
-            <div class="actions">
-              <a class="alt-btn alt-btn--primary" href="/kontakt/#offert">Kontakta oss</a>
-            </div>
           </div>
         </div>
         <div class="alt-svc-chapter__split-media">
