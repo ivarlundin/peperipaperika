@@ -2836,9 +2836,18 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   }
 
   .alt-hero__slide img,
-  .alt-service-hero__img {
+  .alt-service-hero__img,
+  .alt-service-hero__media--slideshow .alt-service-hero__slide .alt-service-hero__img {
     animation: none;
     transform: none;
+  }
+
+  .alt-service-hero__media--slideshow .alt-service-hero__slide {
+    transition: none;
+  }
+
+  .alt-service-hero__media--slideshow .alt-service-hero__slide:not(:first-child) {
+    opacity: 0;
   }
 }
 
@@ -4307,9 +4316,35 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 }
 
 .alt-page--service-banner
-  .alt-service-hero__media:not(.alt-service-hero__media--ken-burns)
+  .alt-service-hero__media:not(.alt-service-hero__media--ken-burns):not(
+    .alt-service-hero__media--slideshow
+  )
   .alt-service-hero__img {
   transform: none;
+}
+
+.alt-service-hero__media--slideshow .alt-service-hero__carousel {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.alt-service-hero__media--slideshow .alt-service-hero__slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.9s ease-in-out;
+  will-change: opacity;
+  pointer-events: none;
+}
+
+.alt-service-hero__media--slideshow .alt-service-hero__slide:first-child {
+  opacity: 1;
+}
+
+.alt-service-hero__media--slideshow .alt-service-hero__slide .alt-service-hero__img {
+  transform: scale(1.06) translate3d(0, 0, 0);
+  will-change: transform, opacity;
 }
 
 .alt-service-hero__media--ken-burns {

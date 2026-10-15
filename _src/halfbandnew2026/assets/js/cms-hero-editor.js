@@ -60,9 +60,14 @@
 
   function readHeroListFromDom(container, manifest) {
     var list = [];
-    var carousel = container.querySelector(".alt-hero__carousel");
+    var carousel =
+      container.querySelector(".alt-hero__carousel") ||
+      container.querySelector(".alt-service-hero__carousel");
     if (carousel) {
-      carousel.querySelectorAll(".alt-hero__slide img").forEach(function (img) {
+      var slideSel = carousel.classList.contains("alt-service-hero__carousel")
+        ? ".alt-service-hero__slide img"
+        : ".alt-hero__slide img";
+      carousel.querySelectorAll(slideSel).forEach(function (img) {
         var entry = manifestEntryForImg(manifest, img);
         list.push({
           manifestId: entry ? entry.id : "",
@@ -127,9 +132,47 @@
     );
   }
 
+  function serviceSlideObjectPosition(manifestId) {
+    var stem = (manifestId || "").replace(/\.(webp|jpg|jpeg|png)$/i, "");
+    if (stem.indexOf("halvfjorton-03-hero") >= 0) return "center 38%";
+    return "center";
+  }
+
+  function buildServiceCarouselSlide(entry, alt, index) {
+    var src = defaultSrcFromEntry(entry);
+    var srcset = srcsetFromEntry(entry);
+    var first = index === 0;
+    var loading = first ? "eager" : "lazy";
+    var fp = first ? ' fetchpriority="high"' : "";
+    var w = entry.id.indexOf("1280") >= 0 || entry.id.indexOf("halvfjorton-04") >= 0 ? "1280" : "2400";
+    var h = w === "1280" ? "853" : "1600";
+    var pos = serviceSlideObjectPosition(entry.id);
+    return (
+      '<div class="alt-service-hero__slide">' +
+      '<img class="alt-service-hero__img" src="' +
+      escapeAttr(src) +
+      '"' +
+      (srcset ? ' srcset="' + escapeAttr(srcset) + '"' : "") +
+      ' sizes="100vw" alt="' +
+      escapeAttr(alt) +
+      '" width="' +
+      w +
+      '" height="' +
+      h +
+      '" loading="' +
+      loading +
+      '" decoding="async"' +
+      fp +
+      ' style="object-position: ' +
+      escapeAttr(pos) +
+      ';">' +
+      "</div>"
+    );
+  }
+
   function applyHeroListToDom(container, list, manifest) {
-    var carousel = container.querySelector(".alt-hero__carousel");
-    if (carousel) {
+    var homeCarousel = container.querySelector(".alt-hero__carousel");
+    if (homeCarousel) {
       var html = "";
       list.forEach(function (item, i) {
         var entry = manifestEntryById(manifest, item.manifestId);
@@ -137,8 +180,22 @@
         entry = preferHeroManifestEntry(entry, manifest);
         html += buildCarouselSlide(entry, item.alt || "", i);
       });
-      carousel.innerHTML = html;
-      syncSlideAnimations(carousel);
+      homeCarousel.innerHTML = html;
+      syncSlideAnimations(homeCarousel);
+      return;
+    }
+    var serviceCarousel = container.querySelector(".alt-service-hero__carousel");
+    if (serviceCarousel) {
+      var svcHtml = "";
+      list.forEach(function (item, i) {
+        var entry = manifestEntryById(manifest, item.manifestId);
+        if (!entry) return;
+        svcHtml += buildServiceCarouselSlide(entry, item.alt || "", i);
+      });
+      serviceCarousel.innerHTML = svcHtml;
+      if (window.__altServiceHeroSlideshow) {
+        window.__altServiceHeroSlideshow.refresh();
+      }
       return;
     }
     var img = container.querySelector(".alt-service-hero__img, img");
@@ -276,7 +333,10 @@
             heroKey: heroKey,
             oldList: original,
             newList: working,
-            carousel: !!container.querySelector(".alt-hero__carousel"),
+            carousel: !!(
+              container.querySelector(".alt-hero__carousel") ||
+              container.querySelector(".alt-service-hero__carousel")
+            ),
           },
         });
         deps.refreshPanel();

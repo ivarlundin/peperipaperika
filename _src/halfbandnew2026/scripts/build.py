@@ -913,7 +913,10 @@ BROLLOP_FAQS: tuple[tuple[str, str], ...] = (
     ),
 )
 
-SERVICE_HERO_KEN_BURNS_KEYS = frozenset({"brollop", "foretag", "mingel"})
+SERVICE_HERO_SLIDESHOW_KEYS = frozenset({"brollop", "foretag"})
+SERVICE_HERO_SLIDESHOW_SCRIPT = (
+    '  <script src="/assets/js/alt-service-hero-slideshow.js" defer></script>\n'
+)
 
 SERVICE_FAQ_ACCORDION_SCRIPT = (
     '  <script src="/assets/js/alt-faq-accordion.js" defer></script>\n'
@@ -922,29 +925,87 @@ TALLY_EMBED_SCRIPT = '  <script src="/assets/js/tally-embed.js" defer></script>\
 FORETAG_PAGE_SCRIPTS = f"{SERVICE_FAQ_ACCORDION_SCRIPT}{TALLY_EMBED_SCRIPT}"
 MINGEL_PAGE_SCRIPTS = FORETAG_PAGE_SCRIPTS
 
-SERVICE_OFFER_HERO_IMAGES = {
-    "brollop": (
-        "halvfjorton-03-hero",
-        "Fest med guldkonfetti och trummor bland gäster vid bord",
-        2400,
-        1600,
-        "center 38%",
-    ),
-    "foretag": (
-        "halvfjorton-01",
-        "Band på stor scen med varmt ljus och publik i festsal",
-        2400,
-        1600,
-        "center",
-    ),
-    "mingel": (
-        "halvfjorton-04",
-        "Sångare och band på rustik träscen med professionellt scenljus",
-        1280,
-        853,
-        "center",
-    ),
+# stem, alt, width, height, object-position per slide (ordered list for CMS Hero-bilder).
+SERVICE_HERO_SLIDES: dict[str, list[tuple[str, str, int, int, str]]] = {
+    "brollop": [
+        (
+            "halvfjorton-03-hero",
+            "Fest med guldkonfetti och trummor bland gäster vid bord",
+            2400,
+            1600,
+            "center 38%",
+        ),
+        (
+            "halvfjorton-trumpet-barn-wedding",
+            "Trumpetare och brudpar på dansgolvet",
+            2400,
+            1600,
+            "center",
+        ),
+    ],
+    "foretag": [
+        (
+            "halvfjorton-01",
+            "Band på stor scen med varmt ljus och publik i festsal",
+            2400,
+            1600,
+            "center",
+        ),
+    ],
+    "mingel": [
+        (
+            "halvfjorton-04",
+            "Sångare och band på rustik träscen med professionellt scenljus",
+            1280,
+            853,
+            "center",
+        ),
+    ],
 }
+
+
+def _service_hero_img_urls(stem: str) -> tuple[str, str]:
+    base = f"/assets/img/gallery/{stem}"
+    if stem == "halvfjorton-trumpet-barn-wedding":
+        return (
+            f"{base}-800w.webp",
+            f"{base}.webp 2400w, {base}-800w.webp 800w",
+        )
+    return (
+        f"{base}-800w.webp",
+        (
+            f"{base}-480w.webp 480w, {base}-800w.webp 800w, "
+            f"{base}-1200w.webp 1200w, {base}-1920w.webp 1920w"
+        ),
+    )
+
+
+def _service_hero_slide_markup(
+    stem: str,
+    alt: str,
+    width: int,
+    height: int,
+    position: str,
+    *,
+    first: bool,
+) -> str:
+    src, srcset = _service_hero_img_urls(stem)
+    pos = f' style="object-position: {position};"' if position else ""
+    loading = "eager" if first else "lazy"
+    fp = ' fetchpriority="high"' if first else ""
+    return f"""          <div class="alt-service-hero__slide">
+            <img
+              class="alt-service-hero__img"
+              src="{src}"
+              srcset="{srcset}"
+              sizes="100vw"
+              alt="{esc(alt)}"
+              width="{width}"
+              height="{height}"
+              loading="{loading}"
+              decoding="async"{fp}{pos}
+            >
+          </div>"""
 
 
 def service_hero_banner(
@@ -952,23 +1013,38 @@ def service_hero_banner(
     h1: str,
     description: str,
     *,
-    ken_burns: bool | None = None,
     loop_suffixes: tuple[str, ...] | None = None,
 ) -> str:
-    stem, alt, width, height, position = SERVICE_OFFER_HERO_IMAGES[service_key]
-    if ken_burns is None:
-        ken_burns = service_key in SERVICE_HERO_KEN_BURNS_KEYS
-    base = f"/assets/img/gallery/{stem}"
-    media_class = "alt-service-hero__media"
-    if ken_burns:
-        media_class += " alt-service-hero__media--ken-burns"
+    slides = SERVICE_HERO_SLIDES[service_key]
+    if service_key in SERVICE_HERO_SLIDESHOW_KEYS:
+        slide_html = "\n".join(
+            _service_hero_slide_markup(stem, alt, w, h, pos, first=i == 0)
+            for i, (stem, alt, w, h, pos) in enumerate(slides)
+        )
+        return f"""    <header class="alt-service-hero">
+      <div class="alt-service-hero__media alt-service-hero__media--slideshow" data-cms-hero="{service_key}" aria-hidden="true">
+        <div class="alt-service-hero__carousel">
+{slide_html}
+        </div>
+      </div>
+      <div class="alt-service-hero__scrim" aria-hidden="true"></div>
+      <div class="alt-service-hero__content" data-reveal-group="hero">
+{service_hero_typewriter_h1(h1, loop_suffixes=loop_suffixes)}
+        <p class="alt-service-hero__dek" data-reveal-item data-reveal-i="1">{esc(description)}</p>
+        <div class="alt-service-hero__actions" data-reveal-item data-reveal-i="2">
+          <a class="alt-btn alt-btn--primary" href="/kontakt/#offert">Kontakta oss</a>
+        </div>
+      </div>
+    </header>"""
+    stem, alt, width, height, position = slides[0]
+    src, srcset = _service_hero_img_urls(stem)
     position_attr = f' style="object-position: {position};"' if position else ""
     return f"""    <header class="alt-service-hero">
-      <div class="{media_class}" data-cms-hero="{service_key}" aria-hidden="true">
+      <div class="alt-service-hero__media" data-cms-hero="{service_key}" aria-hidden="true">
         <img
           class="alt-service-hero__img"
-          src="{base}-800w.webp"
-          srcset="{base}-480w.webp 480w, {base}-800w.webp 800w, {base}-1200w.webp 1200w, {base}-1920w.webp 1920w"
+          src="{src}"
+          srcset="{srcset}"
           sizes="100vw"
           alt="{esc(alt)}"
           width="{width}"
@@ -1647,8 +1723,9 @@ def page(
     body_class = "alt-page alt-page--inner"
     if page_class:
         body_class = f"{body_class} {page_class}"
-    if "alt-page--service-banner" in page_class and "alt-hero-typewriter.js" not in extra_scripts:
-        extra_scripts = f"{extra_scripts}{SERVICE_HERO_TYPEWRITER_SCRIPT}"
+    if "alt-page--service-banner" in page_class:
+        if "alt-hero-typewriter.js" not in extra_scripts:
+            extra_scripts = f"{extra_scripts}{SERVICE_HERO_TYPEWRITER_SCRIPT}"
     nav_block = home_nav_block(path, "/#offert")
     mobile_menu = mobile_menu_block(path, "/#offert")
     toggle = alt_header_mobile_controls_markup("mobile-menu")
@@ -1728,7 +1805,7 @@ def write_pages():
         "Bröllopsband från Växjö med åtta musiker och blås. Fest, mingel och vigselmusik på bröllop i Småland och Skåne.",
         breadcrumb_name="Bröllop",
         extra_ld=[wedding_service_ld(), wedding_faq_ld()],
-        extra_scripts=SERVICE_FAQ_ACCORDION_SCRIPT,
+        extra_scripts=f"{SERVICE_FAQ_ACCORDION_SCRIPT}{SERVICE_HERO_SLIDESHOW_SCRIPT}",
         body=wedding_page_body(),
         page_class="alt-page--wedding alt-page--service-banner",
     )
@@ -1749,7 +1826,7 @@ def write_pages():
             ),
             faq_page_ld(FORETAG_FAQS),
         ],
-        extra_scripts=FORETAG_PAGE_SCRIPTS,
+        extra_scripts=f"{FORETAG_PAGE_SCRIPTS}{SERVICE_HERO_SLIDESHOW_SCRIPT}",
         page_class="alt-page--service-banner",
         body=standard_service_page_body(FORETAG_STANDARD_PAGE),
     )

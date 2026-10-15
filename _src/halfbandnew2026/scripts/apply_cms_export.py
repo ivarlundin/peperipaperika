@@ -99,25 +99,46 @@ def apply_image_list_home(text: str, change: dict) -> str:
     return text[: match.start(2)] + "\n" + slides + "\n        " + text[match.start(3) :]
 
 
-def apply_image_list_service_build(text: str, hero_key: str, item: dict) -> str:
+def _service_slide_dims(stem: str) -> tuple[int, int]:
+    if stem in ("halvfjorton-04",) or "04" in stem and "hero" not in stem:
+        return 1280, 853
+    return 2400, 1600
+
+
+def _service_slide_position(stem: str) -> str:
+    if stem == "halvfjorton-03-hero":
+        return "center 38%"
+    return "center"
+
+
+def _format_service_hero_slide(item: dict) -> str:
     stem = _stem_from_manifest_id(item.get("manifestId", ""))
-    alt = item.get("alt", "")
-    pattern = (
-        rf'("{hero_key}": \(\s*")'
-        r'([^"]+)(",\s*")'
-        r'([^"]+)(")'
-    )
-    match = re.search(pattern, text)
-    if not match:
-        print(f"skip imageList service {hero_key}: SERVICE_OFFER_HERO_IMAGES entry not found", file=sys.stderr)
-        return text
+    alt = json.dumps(item.get("alt") or "", ensure_ascii=False)
+    w, h = _service_slide_dims(stem)
+    pos = _service_slide_position(stem)
     return (
-        text[: match.start(2)]
-        + stem
-        + text[match.end(2) : match.start(4)]
-        + alt
-        + text[match.end(4) :]
+        f"        (\n"
+        f'            "{stem}",\n'
+        f"            {alt},\n"
+        f"            {w},\n"
+        f"            {h},\n"
+        f'            "{pos}",\n'
+        f"        )"
     )
+
+
+def apply_image_list_service_build(text: str, hero_key: str, new_list: list[dict]) -> str:
+    slides_body = ",\n".join(_format_service_hero_slide(item) for item in new_list)
+    pattern = rf'("{hero_key}": \[)(.*?)(\n    \],)'
+    match = re.search(pattern, text, flags=re.DOTALL)
+    if not match:
+        print(
+            f"skip imageList service {hero_key}: SERVICE_HERO_SLIDES entry not found",
+            file=sys.stderr,
+        )
+        return text
+    replacement = match.group(1) + "\n" + slides_body + match.group(3)
+    return text[: match.start()] + replacement + text[match.end() :]
 
 
 def apply_image_list(change: dict, text: str, source: str) -> str:
@@ -129,7 +150,7 @@ def apply_image_list(change: dict, text: str, source: str) -> str:
     if source.endswith("scripts/build.py") and hero_key in ("brollop", "foretag", "mingel"):
         if not new_list:
             return text
-        return apply_image_list_service_build(text, hero_key, new_list[0])
+        return apply_image_list_service_build(text, hero_key, new_list)
     print(f"skip imageList: unsupported target {hero_key} in {source}", file=sys.stderr)
     return text
 
