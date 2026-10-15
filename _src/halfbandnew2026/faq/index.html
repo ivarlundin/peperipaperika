@@ -2,7 +2,8 @@
 <html lang="sv">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="format-detection" content="telephone=no, date=no, email=no, address=no">
   <title>Vanliga frågor om Halv Fjorton | bokning, teknik och repertoar</title>
   <meta name="description" content="FAQ om Halv Fjorton: bandstorlek, teknik, tillfällen, södra Sverige, bokning, framförhållning och skräddarsydd repertoar.">
   <link rel="canonical" href="https://halvfjorton.se/faq/">
@@ -22,7 +23,7 @@
   <link rel="apple-touch-icon" href="/assets/img/favicon.png">
   <link rel="preload" href="/assets/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/Outfit-Variable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/alt.css">
   <script type="application/ld+json">
     {
     "@context": "https://schema.org",
@@ -227,7 +228,7 @@
         "name": "Kan ni spela till vigseln?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Ja. Vi kan spela vigselmusik med helband, komp till solist eller kombinera med psalmer. Läs mer under bröllop och kompband."
+          "text": "Ja. Vi kan spela vigselmusik med helband, komp till solist eller kombinera med psalmer. Läs mer under bröllop."
         }
       },
       {
@@ -235,7 +236,7 @@
         "name": "Kan ni kompa en artist?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Ja. Vi fungerar som kompband för solist, gästsång eller inhyrd artist. Se sidan kompband för artist."
+          "text": "Ja. Vi fungerar som kompband för solist, gästsång eller inhyrd artist. Se sidan bröllop."
         }
       },
       {
@@ -279,101 +280,14 @@
         }
       }
     ]
-  },
-    {
-    "@context": "https://schema.org",
-    "@type": "Service",
-    "name": "Kompband för artist",
-    "description": "Livekompri för solist eller artist på bröllop, fest och event i södra Sverige.",
-    "url": "https://halvfjorton.se/kompband/",
-    "areaServed": [
-      {
-        "@type": "City",
-        "name": "Växjö",
-        "address": {
-          "@type": "PostalAddress",
-          "addressRegion": "Kronoberg",
-          "addressCountry": "SE"
-        }
-      },
-      {
-        "@type": "City",
-        "name": "Älmhult",
-        "address": {
-          "@type": "PostalAddress",
-          "addressRegion": "Kronoberg",
-          "addressCountry": "SE"
-        }
-      },
-      {
-        "@type": "City",
-        "name": "Kalmar",
-        "address": {
-          "@type": "PostalAddress",
-          "addressRegion": "Kalmar",
-          "addressCountry": "SE"
-        }
-      },
-      {
-        "@type": "City",
-        "name": "Jönköping",
-        "address": {
-          "@type": "PostalAddress",
-          "addressRegion": "Jönköping",
-          "addressCountry": "SE"
-        }
-      },
-      {
-        "@type": "City",
-        "name": "Lund",
-        "address": {
-          "@type": "PostalAddress",
-          "addressRegion": "Skåne",
-          "addressCountry": "SE"
-        }
-      },
-      {
-        "@type": "City",
-        "name": "Malmö",
-        "address": {
-          "@type": "PostalAddress",
-          "addressRegion": "Skåne",
-          "addressCountry": "SE"
-        }
-      },
-      {
-        "@type": "City",
-        "name": "Helsingborg",
-        "address": {
-          "@type": "PostalAddress",
-          "addressRegion": "Skåne",
-          "addressCountry": "SE"
-        }
-      },
-      {
-        "@type": "AdministrativeArea",
-        "name": "Småland",
-        "addressCountry": "SE"
-      },
-      {
-        "@type": "AdministrativeArea",
-        "name": "Skåne",
-        "addressCountry": "SE"
-      }
-    ],
-    "provider": {
-      "@type": "MusicGroup",
-      "name": "Halv Fjorton",
-      "url": "https://halvfjorton.se/"
-    }
   }
   </script>
 </head>
-<body class="">
+<body class="alt-page alt-page--inner">
   <a class="skip-link" href="#innehall">Hoppa till innehållet</a>
-  <header class="site-header" data-nav>
-    <div class="header-inner">
-      <a class="brand" href="/" aria-label="Halv Fjorton">
+  <header class="alt-header site-header" data-nav>
+    <div class="alt-header__inner header-inner">
+      <a class="alt-brand brand" href="/" aria-label="Halv Fjorton">
 <svg class="brand-mark" focusable="false" width="56" height="56" viewBox="0 0 593 596" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 <g clip-path="url(#clip0_h14_logo)">
 <mask id="mask0_h14_logo" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="593" height="596">
@@ -393,14 +307,16 @@
 </clipPath>
 </defs>
 </svg>
-</a>
-      <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="meny" aria-label="Öppna meny">
+
+      </a>
+      <button class="nav-toggle alt-nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="mobile-menu" aria-label="Öppna meny">
         <span class="nav-toggle__bars" aria-hidden="true"></span>
       </button>
-      <div class="nav-backdrop" data-nav-backdrop hidden></div>
-      <nav id="meny" aria-label="Huvudmeny">
-        <ul class="nav-list" data-nav-panel>
-          <li><a href="/">Hem</a></li>
+      <button type="button" class="mobile-menu__close alt-header__menu-close" data-nav-close aria-label="Stäng meny">
+        <span class="mobile-menu__close-icon" aria-hidden="true"></span>
+      </button>
+      <nav class="alt-nav" aria-label="Huvudmeny">
+        <ul class="alt-nav__links nav-list" id="alt-meny">
           <li class="nav-item nav-item--dropdown" data-nav-dropdown>
             <button type="button" class="nav-dropdown__trigger" data-nav-dropdown-trigger aria-expanded="false" aria-controls="nav-tjanster" id="nav-tjanster-btn">
               Tjänster
@@ -409,124 +325,183 @@
             <ul class="nav-dropdown__menu" id="nav-tjanster" role="menu" aria-labelledby="nav-tjanster-btn" data-nav-dropdown-menu>
               <li role="none"><a role="menuitem" href="/brollop/">Bröllop</a></li>
               <li role="none"><a role="menuitem" href="/foretag/">Företag</a></li>
-              <li role="none"><a role="menuitem" href="/kompband/">Kompband för artist</a></li>
-              <li role="none"><a role="menuitem" href="/50-arsfest/">50-årsfest</a></li>
-              <li role="none"><a role="menuitem" href="/brollopsband-smaland/">Bröllopsband Småland</a></li>
-              <li role="none"><a role="menuitem" href="/coverband-skane-malmo/">Coverband Skåne & Malmö</a></li>
+              <li role="none"><a role="menuitem" href="/mingel/">Fest och mingel</a></li>
             </ul>
           </li>
-          <li><a href="/for-eventbolag/">Eventbolag</a></li>
+          <li><a href="/konserter/">Konserter</a></li>
           <li><a href="/om-oss/">Om oss</a></li>
-          <li><a href="/lyssna/">Lyssna</a></li>
           <li><a href="/faq/" aria-current="page">FAQ</a></li>
+          <li><a href="/lyssna/">Lyssna</a></li>
           <li><a href="/kontakt/">Kontakt</a></li>
         </ul>
+        <a class="alt-btn alt-btn--primary alt-nav__cta-desktop" href="/#offert">Begär offert</a>
       </nav>
     </div>
   </header>
-  <main id="innehall">
+  <div class="mobile-menu" id="mobile-menu" data-mobile-menu hidden aria-hidden="true">
+    <nav class="mobile-menu__nav" aria-label="Mobilmeny">
+      <ul class="mobile-menu__list nav-list" data-nav-panel>
+          <li class="nav-item nav-item--dropdown" data-nav-dropdown>
+            <button type="button" class="nav-dropdown__trigger" data-nav-dropdown-trigger aria-expanded="false" aria-controls="mobile-nav-tjanster" id="mobile-nav-tjanster-btn">
+              Tjänster
+              <span class="nav-dropdown__chevron" aria-hidden="true"></span>
+            </button>
+            <div class="mobile-menu__submenu">
+              <div class="mobile-menu__submenu-inner">
+                <ul class="nav-dropdown__menu" id="mobile-nav-tjanster" role="menu" aria-labelledby="mobile-nav-tjanster-btn" data-nav-dropdown-menu>
+              <li role="none"><a role="menuitem" href="/brollop/">Bröllop</a></li>
+              <li role="none"><a role="menuitem" href="/foretag/">Företag</a></li>
+              <li role="none"><a role="menuitem" href="/mingel/">Fest och mingel</a></li>
+                </ul>
+              </div>
+            </div>
+          </li>
+          <li><a href="/konserter/">Konserter</a></li>
+          <li><a href="/om-oss/">Om oss</a></li>
+          <li><a href="/faq/" aria-current="page">FAQ</a></li>
+          <li><a href="/lyssna/">Lyssna</a></li>
+          <li><a href="/kontakt/">Kontakt</a></li>
+      </ul>
+    </nav>
+    <div class="mobile-menu__foot">
+      <a class="alt-btn alt-btn--primary mobile-menu__cta" href="/#offert">Begär offert</a>
+    </div>
+  </div>
+  <main id="innehall" class="alt-inner-main">
     <header class="page-hero compact">
       <div class="page-hero-copy">
         <h1>Vanliga frågor</h1>
-        <p class="lead">Korta svar för par, företag och eventbolag. Saknas er fråga finns den i mejlen.</p>
+        <p class="lead">Svar på det vi oftast får frågor om.</p>
+        <p class="page-hero__actions">
+          <a class="alt-btn alt-btn--ghost" href="/kontakt/">Frågor? Kontakta oss</a>
+        </p>
       </div>
     </header>
     <section class="section">
-      <div class="wrap faq-grid">
-        <article class="faq-item">
-          <h3>Spelar ni i Småland och Skåne?</h3>
-          <p>Ja. Vår kärnregion är Växjö, Älmhult, Kalmar, Jönköping, Lund, Malmö och Helsingborg, det vill säga Småland och Skåne.</p>
-        </article>
-        <article class="faq-item">
-          <h3>Spelar ni utanför ert område?</h3>
-          <p>Oftast ja, om datum och logistik går ihop. Maila plats och datum så återkommer vi med vad som är rimligt.</p>
-        </article>
-        <article class="faq-item">
-          <h3>Sedan när finns Halv Fjorton?</h3>
-          <p>Bandet grundades 2018 i Växjö. Sedan dess har vi bland annat arrangerat egen julkonsert nästan varje år.</p>
-        </article>
-        <article class="faq-item">
-          <h3>Hur stort är bandet?</h3>
-          <p>Vi är åtta musiker med sång, rytmsektion och egen blåssektion. Namnet kommer från att vi började som sju, alltså halva fjorton.</p>
-        </article>
-        <article class="faq-item">
-          <h3>Hur länge spelar ni?</h3>
-          <p>På de flesta fester spelar vi två set partymusik. Mingel eller vigsel utöver det planeras separat i offerten.</p>
-        </article>
-        <article class="faq-item">
-          <h3>Kan ni spela både mingel och fest?</h3>
-          <p>Ja, det är ett av våra vanligaste upplägg. Mingel i mer återhållen stil, sedan två set dans när rummet är redo.</p>
-        </article>
-        <article class="faq-item">
-          <h3>Kan ni spela till vigseln?</h3>
-          <p>Ja. Vi kan spela vigselmusik med helband, komp till solist eller kombinera med psalmer. Läs mer under bröllop och kompband.</p>
-        </article>
-        <article class="faq-item">
-          <h3>Kan ni kompa en artist?</h3>
-          <p>Ja. Vi fungerar som kompband för solist, gästsång eller inhyrd artist. Se sidan kompband för artist.</p>
-        </article>
-        <article class="faq-item">
-          <h3>Kan ni göra specialarrangemang?</h3>
-          <p>Ja. Första dans, fanfar, musik under middag eller sambatåg går ofta att lösa om ni hör av er i tid.</p>
-        </article>
-        <article class="faq-item">
-          <h3>Hur bokar man?</h3>
-          <p>Maila halvfjorton@gmail.com med datum, plats och typ av tillställning. Vi återkommer med upplägg och offert, som PDF på begäran.</p>
-        </article>
-        <article class="faq-item">
-          <h3>Hur löser ni ljud och teknik?</h3>
-          <p>Tekniska behov tar vi i offerten utifrån lokal och program. Vid större saler eller särskilda önskemål har vi kontakter bland uthyrare. Detaljer följer i offert och rider närmare spelningen.</p>
-        </article>
-        <article class="faq-item">
-          <h3>Hur lång framförhållning behövs?</h3>
-          <p>Så tidigt ni kan, särskilt lördagar under bröllopssäsong. Kortare varsel kan funka - fråga hellre än att anta att det är fullt.</p>
-        </article>
-        <article class="faq-item">
-          <h3>Vem fakturerar?</h3>
-          <p>Halv Fjorton EK. FÖR., organisationsnummer 769641-5418. Mejl halvfjorton@gmail.com.</p>
-        </article>
+      <div class="wrap alt-faq">
+        <div class="alt-faq__list" data-faq>
+          <details class="alt-faq__item">
+            <summary class="alt-faq__question">Spelar ni i Småland och Skåne?</summary>
+            <div class="alt-faq__answer">
+              <p>Ja. Vår kärnregion är Växjö, Älmhult, Kalmar, Jönköping, Lund, Malmö och Helsingborg, det vill säga Småland och Skåne.</p>
+            </div>
+          </details>
+          <details class="alt-faq__item">
+            <summary class="alt-faq__question">Spelar ni utanför ert område?</summary>
+            <div class="alt-faq__answer">
+              <p>Oftast ja, om datum och logistik går ihop. Maila plats och datum så återkommer vi med vad som är rimligt.</p>
+            </div>
+          </details>
+          <details class="alt-faq__item">
+            <summary class="alt-faq__question">Sedan när finns Halv Fjorton?</summary>
+            <div class="alt-faq__answer">
+              <p>Bandet grundades 2018 i Växjö. Sedan dess har vi bland annat arrangerat egen julkonsert nästan varje år.</p>
+            </div>
+          </details>
+          <details class="alt-faq__item">
+            <summary class="alt-faq__question">Hur stort är bandet?</summary>
+            <div class="alt-faq__answer">
+              <p>Vi är åtta musiker med sång, rytmsektion och egen blåssektion. Namnet kommer från att vi började som sju, alltså halva fjorton.</p>
+            </div>
+          </details>
+          <details class="alt-faq__item">
+            <summary class="alt-faq__question">Hur länge spelar ni?</summary>
+            <div class="alt-faq__answer">
+              <p>På de flesta fester spelar vi två set partymusik. Mingel eller vigsel utöver det planeras separat i offerten.</p>
+            </div>
+          </details>
+          <details class="alt-faq__item">
+            <summary class="alt-faq__question">Kan ni spela både mingel och fest?</summary>
+            <div class="alt-faq__answer">
+              <p>Ja, det är ett av våra vanligaste upplägg. Mingel i mer återhållen stil, sedan två set dans när rummet är redo.</p>
+            </div>
+          </details>
+          <details class="alt-faq__item">
+            <summary class="alt-faq__question">Kan ni spela till vigseln?</summary>
+            <div class="alt-faq__answer">
+              <p>Ja. Vi kan spela vigselmusik med helband, komp till solist eller kombinera med psalmer. Läs mer under bröllop.</p>
+            </div>
+          </details>
+          <details class="alt-faq__item">
+            <summary class="alt-faq__question">Kan ni kompa en artist?</summary>
+            <div class="alt-faq__answer">
+              <p>Ja. Vi fungerar som kompband för solist, gästsång eller inhyrd artist. Se sidan bröllop.</p>
+            </div>
+          </details>
+          <details class="alt-faq__item">
+            <summary class="alt-faq__question">Kan ni göra specialarrangemang?</summary>
+            <div class="alt-faq__answer">
+              <p>Ja. Första dans, fanfar, musik under middag eller sambatåg går ofta att lösa om ni hör av er i tid.</p>
+            </div>
+          </details>
+          <details class="alt-faq__item">
+            <summary class="alt-faq__question">Hur bokar man?</summary>
+            <div class="alt-faq__answer">
+              <p>Maila halvfjorton@gmail.com med datum, plats och typ av tillställning. Vi återkommer med upplägg och offert, som PDF på begäran.</p>
+            </div>
+          </details>
+          <details class="alt-faq__item">
+            <summary class="alt-faq__question">Hur löser ni ljud och teknik?</summary>
+            <div class="alt-faq__answer">
+              <p>Tekniska behov tar vi i offerten utifrån lokal och program. Vid större saler eller särskilda önskemål har vi kontakter bland uthyrare. Detaljer följer i offert och rider närmare spelningen.</p>
+            </div>
+          </details>
+          <details class="alt-faq__item">
+            <summary class="alt-faq__question">Hur lång framförhållning behövs?</summary>
+            <div class="alt-faq__answer">
+              <p>Så tidigt ni kan, särskilt lördagar under bröllopssäsong. Kortare varsel kan funka - fråga hellre än att anta att det är fullt.</p>
+            </div>
+          </details>
+          <details class="alt-faq__item">
+            <summary class="alt-faq__question">Vem fakturerar?</summary>
+            <div class="alt-faq__answer">
+              <p>Halv Fjorton EK. FÖR., organisationsnummer 769641-5418. Mejl halvfjorton@gmail.com.</p>
+            </div>
+          </details>
+        </div>
       </div>
     </section>
 
   </main>
-  <footer class="site-footer">
-    <div class="wrap footer-grid">
-      <div>
-        <p><strong>Halv Fjorton EK. FÖR.</strong></p>
-        <p class="small">Coverband och partyband från Växjö, med medlemmar över södra Sverige.</p>
-        <p class="small">Organisationsnummer 769641-5418</p>
+  <footer class="site-footer" aria-label="Sidfot">
+    <div class="site-footer__inner">
+      <div class="site-footer__grid">
+        <div class="site-footer__brand">
+          <p class="site-footer__title">Halv Fjorton</p>
+          <p class="site-footer__tagline">Coverband från Växjö, Småland</p>
+        </div>
+        <nav class="site-footer__nav" aria-label="Sidfot länkar">
+          <ul class="site-footer__links">
+            <li><a href="/#tjanster">Tjänster</a></li>
+            <li><a href="/kontakt/">Kontakt</a></li>
+            <li><a href="/faq/">FAQ</a></li>
+            <li><a href="/lyssna/">Lyssna</a></li>
+            <li><a href="/integritetspolicy/">Integritetspolicy</a></li>
+          </ul>
+        </nav>
+        <div class="site-footer__aside">
+          <a class="site-footer__social" href="https://www.instagram.com/halvfjorton/" target="_blank" rel="noopener noreferrer">
+            <svg class="site-footer__ig-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.75"/>
+              <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.75"/>
+              <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
+            </svg>
+            <span>Följ oss på Instagram</span>
+          </a>
+          <a class="alt-btn alt-btn--primary site-footer__cta" href="/kontakt/">Kontakta oss</a>
+        </div>
       </div>
-      <div>
-        <p><strong>Kontakt</strong></p>
-        <ul class="small">
-          <li><a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a></li>
-          <li><a href="https://www.instagram.com/halvfjorton/" rel="noopener noreferrer">Instagram @halvfjorton</a></li>
-          <li><a href="https://www.youtube.com/@halvfjorton9292" rel="noopener noreferrer">YouTube</a></li>
-        </ul>
-      </div>
-      <div>
-        <p><strong>Tjänster</strong></p>
-        <ul class="small">
-          <li><a href="/brollop/">Bröllop</a></li>
-          <li><a href="/foretag/">Företag</a></li>
-          <li><a href="/kompband/">Kompband för artist</a></li>
-          <li><a href="/50-arsfest/">50-årsfest</a></li>
-          <li><a href="/julkonsert/">Julkonsert</a></li>
-          <li><a href="/for-eventbolag/">För eventbolag</a></li>
-        </ul>
-      </div>
-      <div>
-        <p><strong>Områden</strong></p>
-        <ul class="small">
-          <li><a href="/brollopsband-smaland/">Bröllopsband Småland</a></li>
-          <li><a href="/coverband-skane-malmo/">Coverband Skåne</a></li>
-          <li><a href="/faq/">Vanliga frågor</a></li>
-          <li><a href="/kontakt/">Hör av er</a></li>
-        </ul>
-      </div>
+      <hr class="site-footer__rule" />
+      <p class="site-footer__legal">
+        <span class="site-footer__legal-line">© <span data-footer-year>2026</span> Halv Fjorton ek. för.</span>
+        <span class="site-footer__legal-org">Org.nr 769641-5418</span>
+      </p>
     </div>
   </footer>
   <script src="/assets/js/nav.js"></script>
+  <script src="/assets/js/alt-nav.js" defer></script>
+  <script src="/assets/js/footer-year.js" defer></script>
   <script src="/assets/js/video-facade.js" defer></script>
+  <script src="/assets/js/alt-faq-accordion.js" defer></script>
 </body>
 </html>

@@ -44,6 +44,12 @@ HOME_CONTACT_USPS = [
 
 OFFERT_EMAIL_LINK_TEXT = "Föredrar du e-post? Mejla oss här"
 
+FOOTER_INTEGRITETSPOLICY_HREF = "/integritetspolicy/"
+
+
+def contact_form_consent_markup() -> str:
+    return f"""            <p class="contact-offert__consent">Genom att skicka godkänner du att vi sparar dina uppgifter för att besvara din förfrågan. Läs mer i vår <a href="{FOOTER_INTEGRITETSPOLICY_HREF}">integritetspolicy</a>.</p>"""
+
 
 def offert_email_mail_markup() -> str:
     return f"""          <p class="contact-offert__mail">
@@ -223,7 +229,7 @@ def kontakt_page_body() -> str:
               </noscript>
 {tally_iframe_markup()}
             </div>
-            <p class="contact-offert__consent">Genom att skicka godkänner du att vi sparar dina uppgifter för att besvara din förfrågan. Läs mer i vår <a href="/integritetspolicy/">integritetspolicy</a>.</p>
+{contact_form_consent_markup()}
           </div>
         </div>
       </div>
@@ -256,11 +262,14 @@ def contact_offert_section(
 {usp_items}
           </ul>
 {mail_html}        </div>
-        <div class="contact-offert__form tally-card">
-          <noscript>
-            <p><a href="{TALLY_PUBLIC_URL}">Öppna offertformuläret på Tally</a> om det inte visas här.</p>
-          </noscript>
+        <div class="contact-offert__form-col">
+          <div class="contact-offert__form tally-card">
+            <noscript>
+              <p><a href="{TALLY_PUBLIC_URL}">Öppna offertformuläret på Tally</a> om det inte visas här.</p>
+            </noscript>
 {tally_iframe_markup()}
+          </div>
+{contact_form_consent_markup()}
         </div>
       </div>
     </section>"""
@@ -429,7 +438,7 @@ def modern_footer_markup() -> str:
             <li><a href="/kontakt/">Kontakt</a></li>
             <li><a href="/faq/">FAQ</a></li>
             <li><a href="/lyssna/">Lyssna</a></li>
-            <li><a href="/integritetspolicy/">Integritetspolicy</a></li>
+            <li><a href="{FOOTER_INTEGRITETSPOLICY_HREF}">Integritetspolicy</a></li>
           </ul>
         </nav>
         <div class="site-footer__aside">
@@ -1939,6 +1948,13 @@ def patch_home_page():
         html,
         count=1,
     )
+    if "contact-offert__consent" not in html:
+        html = re.sub(
+            r'    <section class="alt-contact-offert"[\s\S]*?</section>',
+            alt_offert,
+            html,
+            count=1,
+        )
     if 'tally-embed.js' not in html:
         html = html.replace(
             '  <script src="/assets/js/alt-nav.js" defer></script>',
@@ -1979,6 +1995,12 @@ def patch_home_page():
             '  <link rel="stylesheet" href="/assets/css/alt.css">\n',
             font_preloads("/assets") + '\n  <link rel="stylesheet" href="/assets/css/alt.css">\n',
         )
+    html = re.sub(
+        r'  <footer class="site-footer"[\s\S]*?  </footer>',
+        modern_footer_markup(),
+        html,
+        count=1,
+    )
     home_path.write_text(html, encoding="utf-8")
     print("wrote", home_path.relative_to(OUT_ROOT), "(home patches)")
 
@@ -2216,6 +2238,38 @@ def assert_hidden_services_excluded(target: Path) -> None:
                 )
 
 
+def assert_integritetspolicy_links_in_build(target: Path) -> None:
+    footer_offenders: list[str] = []
+    consent_offenders: list[str] = []
+    for file_path in target.rglob("*.html"):
+        if not file_path.is_file():
+            continue
+        rel = str(file_path.relative_to(target))
+        if rel.startswith("repertoar/") or rel == "home/index.html":
+            continue
+        text = file_path.read_text(encoding="utf-8")
+        if 'class="site-footer"' in text:
+            if (
+                'href="' not in text
+                or "integritetspolicy/" not in text
+                or ">Integritetspolicy</a>" not in text
+            ):
+                footer_offenders.append(rel)
+        if "data-tally-src" in text or TALLY_EMBED_SRC in text:
+            if "contact-offert__consent" not in text or "integritetspolicy/" not in text:
+                consent_offenders.append(rel)
+    if footer_offenders:
+        sample = "\n".join(f"  - {line}" for line in footer_offenders[:20])
+        raise SystemExit(
+            "Build check failed: footer missing Integritetspolicy link:\n" + sample
+        )
+    if consent_offenders:
+        sample = "\n".join(f"  - {line}" for line in consent_offenders[:20])
+        raise SystemExit(
+            "Build check failed: contact form missing GDPR consent line:\n" + sample
+        )
+
+
 def assert_footer_styles_in_css(alt_css: Path) -> None:
     if not alt_css.is_file():
         raise SystemExit(f"Build check failed: missing stylesheet {alt_css}")
@@ -2276,6 +2330,7 @@ def run_build(output_dir: Path | None = None, subpath: str = "") -> None:
     assert_offert_bullet_cap(OUT_ROOT)
     assert_labs_asset_urls(OUT_ROOT, subpath)
     assert_hidden_services_excluded(OUT_ROOT)
+    assert_integritetspolicy_links_in_build(OUT_ROOT)
     assert_footer_styles_in_css(OUT_ROOT / "assets" / "css" / "alt.css")
 
 
