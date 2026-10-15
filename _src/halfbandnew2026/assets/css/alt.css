@@ -6,6 +6,16 @@ html {
   overflow-x: clip;
 }
 
+html:has(.alt-page) {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:has(.alt-page) {
+    scroll-behavior: auto;
+  }
+}
+
 .alt-page {
   --alt-bg: #0a0a0b;
   --alt-bg-elevated: #121214;
@@ -2151,6 +2161,10 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   scroll-margin-top: calc(var(--alt-header) + 1rem);
 }
 
+.alt-page #repertoar {
+  scroll-margin-top: calc(var(--alt-header) + 1rem);
+}
+
 .alt-contact-offert {
   padding: clamp(1.25rem, 2.5vw, 2rem) 0 6rem;
 }
@@ -3871,6 +3885,10 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 }
 
 .alt-page--inner .page-hero-copy .page-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
   margin: 0;
 }
 

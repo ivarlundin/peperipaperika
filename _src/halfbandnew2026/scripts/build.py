@@ -2098,6 +2098,7 @@ def write_pages():
 {INSTAGRAM_ICON_BTN}
             <span>Instagram @halvfjorton</span>
           </a>
+          <a class="alt-btn alt-btn--ghost" href="#repertoar">Repertoar</a>
         </p>
       </div>
     </header>
