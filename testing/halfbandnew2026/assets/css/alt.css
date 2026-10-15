@@ -4212,6 +4212,16 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   }
 }
 
+@media (min-width: 901px) {
+  .alt-page--service-banner .alt-service-hero {
+    min-height: max(
+      clamp(30rem, 60vh, 45rem),
+      clamp(30rem, 60dvh, 45rem),
+      calc(var(--alt-header-total) + 13.5rem)
+    );
+  }
+}
+
 .alt-page--service-banner .alt-service-hero__content {
   position: relative;
   z-index: 2;
