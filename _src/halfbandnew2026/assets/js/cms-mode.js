@@ -92,6 +92,25 @@
     if (typeof altText === "string") imgEl.alt = altText;
   }
 
+  function isLeafTextElement(el) {
+    if (!el || el.getAttribute("data-cms-type") !== "text") return false;
+    return el.children.length === 0;
+  }
+
+  function sanitizeStore(store) {
+    var changed = false;
+    Object.keys(store.changes).forEach(function (id) {
+      var ch = store.changes[id];
+      if (ch.type !== "text") return;
+      var el = document.querySelector('[data-cms-id="' + id + '"]');
+      if (!el || !isLeafTextElement(el)) {
+        delete store.changes[id];
+        changed = true;
+      }
+    });
+    if (changed) writeStore(store);
+  }
+
   function recordChange(store, payload) {
     var id = payload.cmsId;
     var existing = store.changes[id];
@@ -130,10 +149,30 @@
         if (ghost) ghost.textContent = ch.meta.originalGhost || "";
         if (live) live.textContent = ch.meta.originalPhrases[0] || "";
       }
+    } else if (ch.type === "text") {
+      restoreTextElement(el, ch, store);
+    }
+    removeChange(store, id);
+  }
+
+  function restoreTextElement(el, ch, store) {
+    if (!el || ch.type !== "text") return;
+    if (!isLeafTextElement(el)) {
+      console.warn("[cmsmode] unsafe undo target, reloading page", ch.cmsId);
+      if (store) removeChange(store, ch.cmsId);
+      window.location.reload();
+      return;
+    }
+    if (ch.meta && typeof ch.meta.originalInnerHTML === "string") {
+      el.innerHTML = ch.meta.originalInnerHTML;
     } else {
       el.textContent = ch.oldValue;
     }
-    removeChange(store, id);
+  }
+
+  function applyTextNewValue(el, ch) {
+    if (!isLeafTextElement(el)) return;
+    el.textContent = ch.newValue;
   }
 
   function applyStoredChanges(store) {
@@ -160,9 +199,21 @@
         if (live) live.textContent = ch.meta.phrases[0] || "";
         root.classList.add("cms-typewriter-paused", "is-complete");
       } else if (ch.type === "text") {
-        el.textContent = ch.newValue;
+        applyTextNewValue(el, ch);
       }
     });
+  }
+
+  function clearAllChanges() {
+    if (
+      !window.confirm(
+        "Rensa alla CMS-ändringar på denna webbläsare? Sidan laddas om utan sparade ändringar."
+      )
+    ) {
+      return;
+    }
+    localStorage.removeItem(STORAGE_KEY);
+    window.location.reload();
   }
 
   function buildExportPayload(store) {
@@ -410,6 +461,8 @@
     document.addEventListener("submit", blockCmsFormSubmit, true);
 
     var store = readStore();
+    sanitizeStore(store);
+    store = readStore();
     applyStoredChanges(store);
 
     var panel = document.createElement("div");
@@ -424,6 +477,7 @@
       '<button type="button" class="cms-ui-btn" data-cms-copy>Copy to clipboard</button>' +
       "</div>" +
       '<p class="cms-panel__feedback" data-cms-copy-feedback aria-live="polite"></p>' +
+      '<button type="button" class="cms-ui-btn cms-ui-btn--danger" data-cms-clear-all>Rensa allt</button>' +
       '<button type="button" class="cms-ui-btn cms-ui-btn--ghost">Avsluta CMS mode</button>';
     document.body.appendChild(panel);
 
@@ -461,6 +515,10 @@
 
     panel.querySelector("[data-cms-copy]").addEventListener("click", function () {
       copyExportJson(store, panel.querySelector("[data-cms-copy-feedback]"));
+    });
+
+    panel.querySelector("[data-cms-clear-all]").addEventListener("click", function () {
+      clearAllChanges();
     });
 
     panel.querySelector(".cms-ui-btn--ghost").addEventListener("click", function () {
@@ -506,10 +564,12 @@
 
         if (!textTarget || textTarget.getAttribute("contenteditable") === "true") return;
         if (typeRoot && typeRoot.contains(textTarget)) return;
+        if (!isLeafTextElement(textTarget)) return;
 
         ev.preventDefault();
         var cmsId = textTarget.getAttribute("data-cms-id");
         var oldValue = textTarget.textContent;
+        var originalInnerHTML = textTarget.innerHTML;
         textTarget.setAttribute("contenteditable", "true");
         textTarget.focus();
 
@@ -525,7 +585,11 @@
               type: "text",
               oldValue: oldValue,
               newValue: newValue,
-              meta: { tag: textTarget.tagName.toLowerCase() },
+              meta: {
+                tag: textTarget.tagName.toLowerCase(),
+                leaf: true,
+                originalInnerHTML: originalInnerHTML,
+              },
             });
             refreshPanel();
           }

@@ -193,6 +193,20 @@ body.alt-page .cms-ui textarea {
   filter: brightness(1.05);
 }
 
+#cms-mode-panel.cms-ui .cms-ui-btn--danger {
+  margin-top: 0.35rem;
+  width: 100%;
+  font-size: 12px;
+  color: #fecaca;
+  background: rgba(127, 29, 29, 0.35);
+  border-color: rgba(248, 113, 113, 0.35);
+}
+
+#cms-mode-panel.cms-ui .cms-ui-btn--danger:hover {
+  background: rgba(127, 29, 29, 0.55);
+  color: #fff;
+}
+
 #cms-mode-panel.cms-ui .cms-ui-btn--ghost {
   margin-top: 0.45rem;
   font-size: 12px;
