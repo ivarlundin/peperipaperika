@@ -179,6 +179,24 @@ INSTAGRAM_ICON_BTN = """            <svg class="alt-btn__icon" width="18" height
               <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
             </svg>"""
 
+FOOTER_SOCIAL_ICON_SVG = (
+    '<svg class="alt-btn__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" '
+    'xmlns="http://www.w3.org/2000/svg" aria-hidden="true">{inner}</svg>'
+)
+FOOTER_INSTAGRAM_ICON = FOOTER_SOCIAL_ICON_SVG.format(
+    inner=(
+        '<rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.75"/>'
+        '<circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.75"/>'
+        '<circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>'
+    )
+)
+FOOTER_YOUTUBE_ICON = FOOTER_SOCIAL_ICON_SVG.format(
+    inner=(
+        '<path d="M20.5 7.2a1.6 1.6 0 0 0-1.12-.74C17.7 6.25 12 6.25 12 6.25s-5.7 0-7.38.21a1.6 1.6 0 0 0-1.12.74A16.8 16.8 0 0 0 3 12a16.8 16.8 0 0 0 .5 4.8 1.6 1.6 0 0 0 1.12.74c1.68.21 7.38.21 7.38.21s5.7 0 7.38-.21a1.6 1.6 0 0 0 1.12-.74A16.8 16.8 0 0 0 21 12a16.8 16.8 0 0 0-.5-4.8z" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/>'
+        '<path d="M10.25 15.02V8.98L15.5 12l-5.25 3.02z" fill="currentColor"/>'
+    )
+)
+
 
 def esc(text: str) -> str:
     return (
@@ -509,7 +527,6 @@ def modern_footer_markup() -> str:
       <div class="site-footer__columns">
         <div class="site-footer__brand">
           <a class="site-footer__brand-mark" href="/" aria-label="Halv Fjorton">
-            <img src="/assets/img/h14-logo.svg" alt="" width="44" height="44" decoding="async">
             <span class="site-footer__title">Halv Fjorton</span>
           </a>
           <p class="site-footer__tagline">Coverband och partyband med rötter i Växjö, Småland.</p>
@@ -535,17 +552,21 @@ def modern_footer_markup() -> str:
         <div class="site-footer__col">
           <p class="site-footer__col-label">Följ oss</p>
           <ul class="site-footer__links">
-            <li><a href="https://www.instagram.com/halvfjorton/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
-            <li><a href="https://www.youtube.com/@halvfjorton9292" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+            <li><a class="site-footer__social-link" href="https://www.instagram.com/halvfjorton/" target="_blank" rel="noopener noreferrer">{FOOTER_INSTAGRAM_ICON}<span>Instagram</span></a></li>
+            <li><a class="site-footer__social-link" href="https://www.youtube.com/@halvfjorton9292" target="_blank" rel="noopener noreferrer">{FOOTER_YOUTUBE_ICON}<span>YouTube</span></a></li>
           </ul>
         </div>
         <div class="site-footer__col site-footer__col--contact">
           <p class="site-footer__col-label">Kontakt</p>
           <ul class="site-footer__links site-footer__links--plain">
-            <li><span class="site-footer__contact-line">{ORG_STREET_ADDRESS}</span></li>
-            <li><span class="site-footer__contact-line">{ORG_POSTAL_CITY_LINE}</span></li>
+            <li>
+              <address class="site-footer__address">
+                {ORG_STREET_ADDRESS}<br>
+                {ORG_POSTAL_CITY_LINE}
+              </address>
+            </li>
             <li><span class="site-footer__contact-line">Org.nr 769641-5418</span></li>
-            <li><a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a></li>
+            <li><a class="site-footer__email" href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a></li>
           </ul>
         </div>
       </div>

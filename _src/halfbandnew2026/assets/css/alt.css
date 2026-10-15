@@ -4586,12 +4586,6 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   text-decoration: none;
 }
 
-.alt-page .site-footer--columns .site-footer__brand-mark img {
-  width: 2.75rem;
-  height: 2.75rem;
-  flex-shrink: 0;
-}
-
 .alt-page .site-footer--columns .site-footer__brand {
   max-width: 18rem;
 }
@@ -4634,6 +4628,27 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   font-weight: 400;
   line-height: 1.45;
   color: rgba(242, 240, 236, 0.78);
+}
+
+.alt-page .site-footer--columns .site-footer__address {
+  margin: 0;
+  font-style: normal;
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1.35;
+  color: rgba(242, 240, 236, 0.78);
+}
+
+.alt-page .site-footer--columns .site-footer__links a.site-footer__email {
+  text-decoration: underline;
+  text-underline-offset: 0.16em;
+}
+
+.alt-page .site-footer--columns .site-footer__links a.site-footer__social-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .alt-page .site-footer--columns .site-footer__rule {
