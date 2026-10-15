@@ -548,27 +548,53 @@ def video_facade(
         </div>"""
 
 
-LYSSNA_VIDEO_MODAL_SCRIPT = (
-    '  <script src="/assets/js/lyssna-video-modal.js" defer></script>\n'
-)
 LYSSNA_REPERTOIRE_JSON = ROOT / "assets/data/lyssna-repertoire.json"
+LYSSNA_EMBEDS: list[tuple[str, str]] = [
+    ("V2Nb8jMKUCk", "Signed Sealed Delivered - Halv Fjorton 2025"),
+    ("gm5C41wqYuU", "Halv Fjorton Reel 2022"),
+    ("vV8aavPxYss", "A Soulful Christmas 2024 - 8 december, Nygatan 6"),
+    ("UytyTLnKDWQ", "A Soulful Christmas 2023 - 3 december, Nygatan 6"),
+    ("lAmSo6wGjqo", "Halv Fjorton med vänner och mässa - 26 december 2022"),
+    ("R0fqTXcAbgc", "A Soulful Christmas 2018"),
+]
 SPOTIFY_REPERTOIRE_EMBED = (
     "https://open.spotify.com/embed/playlist/0q8DLuLfZE25an41tppmvu?utm_source=generator"
 )
 
 
-def lyssna_video_tile(video_id: str, label: str, title: str) -> str:
-    return f"""        <button type="button" class="lyssna-video-tile" data-lyssna-video="{video_id}" data-lyssna-title="{esc(title)}" aria-label="Spela video: {esc(title)}">
-          <span class="lyssna-video-tile__media">
-            <img class="lyssna-video-tile__thumb" src="https://i.ytimg.com/vi/{video_id}/maxresdefault.jpg" alt="" width="1280" height="720" loading="lazy" decoding="async" data-lyssna-thumb-fallback="https://i.ytimg.com/vi/{video_id}/hqdefault.jpg">
-            <span class="lyssna-video-tile__play" aria-hidden="true"></span>
-            <span class="lyssna-video-tile__label">{esc(label)}</span>
-          </span>
-        </button>"""
+def lyssna_video_embed(video_id: str, title: str) -> str:
+    return f"""        <div class="lyssna-embed">
+          <iframe class="lyssna-embed__iframe" src="https://www.youtube-nocookie.com/embed/{video_id}" title="{esc(title)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+        </div>"""
 
 
-def lyssna_video_grid(*tiles: str) -> str:
-    return "        <div class=\"lyssna-video-grid\">\n" + "\n".join(tiles) + "\n        </div>"
+def lyssna_embed_grid() -> str:
+    cells = "\n".join(lyssna_video_embed(vid, title) for vid, title in LYSSNA_EMBEDS)
+    return f"""        <div class="lyssna-embed-grid">
+{cells}
+        </div>"""
+
+
+def lyssna_jump_cards_markup() -> str:
+    film_icon = """<svg class="lyssna-jump-card__icon" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.75"/>
+              <path d="M10 9.5v5l4.5-2.5L10 9.5z" fill="currentColor"/>
+            </svg>"""
+    list_icon = """<svg class="lyssna-jump-card__icon" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M9 18V5l12-2v13" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="6" cy="18" r="3" stroke="currentColor" stroke-width="1.75"/>
+              <circle cx="18" cy="16" r="3" stroke="currentColor" stroke-width="1.75"/>
+            </svg>"""
+    return f"""        <nav class="lyssna-jump-cards" aria-label="Hoppa till sektion på sidan">
+          <a class="lyssna-jump-card" href="#inspelningar">
+            {film_icon}
+            <span class="lyssna-jump-card__label">Inspelningar</span>
+          </a>
+          <a class="lyssna-jump-card" href="#repertoar">
+            {list_icon}
+            <span class="lyssna-jump-card__label">Repertoar</span>
+          </a>
+        </nav>"""
 
 
 def lyssna_repertoire_song_list_markup() -> str:
@@ -1592,7 +1618,6 @@ def write_pages():
         "Lyssna på Halv Fjorton | film, reel och julkonserter",
         "Se Halv Fjorton live: Signed Sealed Delivered 2025, reel 2022 och julkonserterna A Soulful Christmas.",
         page_class="alt-page--lyssna",
-        extra_scripts=LYSSNA_VIDEO_MODAL_SCRIPT,
         body=f"""    <header class="page-hero compact">
       <div class="page-hero-copy">
         <h1>Lyssna på oss</h1>
@@ -1604,44 +1629,14 @@ def write_pages():
           </a>
         </p>
       </div>
-    </header>
-    <section class="section" aria-label="Livefilmer">
-      <div class="wrap">
-{lyssna_video_grid(
-    lyssna_video_tile(
-        "V2Nb8jMKUCk",
-        "Signed Sealed Delivered",
-        "Signed Sealed Delivered - Halv Fjorton 2025",
-    ),
-    lyssna_video_tile("gm5C41wqYuU", "Reel 2022", "Halv Fjorton Reel 2022"),
-)}
+      <div class="wrap lyssna-hero-jump">
+{lyssna_jump_cards_markup()}
       </div>
-    </section>
-    <section class="section section-alt">
+    </header>
+    <section class="section" id="inspelningar" aria-labelledby="lyssna-inspelningar-heading">
       <div class="wrap">
-        <h2>Julkonserter på film</h2>
-{lyssna_video_grid(
-    lyssna_video_tile(
-        "vV8aavPxYss",
-        "A Soulful Christmas 2024",
-        "A Soulful Christmas 2024 - 8 december, Nygatan 6",
-    ),
-    lyssna_video_tile(
-        "UytyTLnKDWQ",
-        "A Soulful Christmas 2023",
-        "A Soulful Christmas 2023 - 3 december, Nygatan 6",
-    ),
-    lyssna_video_tile(
-        "lAmSo6wGjqo",
-        "Med vänner och mässa",
-        "Halv Fjorton med vänner och mässa - 26 december 2022",
-    ),
-    lyssna_video_tile(
-        "R0fqTXcAbgc",
-        "A Soulful Christmas 2018",
-        "A Soulful Christmas 2018",
-    ),
-)}
+        <h2 id="lyssna-inspelningar-heading" class="visually-hidden">Inspelningar</h2>
+{lyssna_embed_grid()}
       </div>
     </section>
     <section class="section" id="repertoar">

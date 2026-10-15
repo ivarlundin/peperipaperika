@@ -452,6 +452,101 @@ def run_desktop_tjanster_dropdown_qa(base_url: str) -> list[str]:
     return failures
 
 
+def run_lyssna_video_qa(base_url: str) -> list[str]:
+    failures: list[str] = []
+    url = base_url.rstrip("/") + "/lyssna/?qa=video-grid"
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        try:
+            for width in (390, 1280):
+                ctx = browser.new_context(
+                    viewport={"width": width, "height": 900},
+                    device_scale_factor=1,
+                )
+                page = ctx.new_page()
+                page.goto(url, wait_until="domcontentloaded", timeout=45000)
+                page.wait_for_timeout(200)
+                label = f"lyssna-video/{width}"
+                if page.locator(".lyssna-jump-card").count() != 2:
+                    failures.append(f"{label}: expected 2 jump cards")
+                hrefs = page.evaluate(
+                    "() => [...document.querySelectorAll('.lyssna-jump-card')].map((a) => a.getAttribute('href'))"
+                )
+                if hrefs != ["#inspelningar", "#repertoar"]:
+                    failures.append(f"{label}: jump hrefs {hrefs}")
+                if page.locator(".lyssna-video-tile").count() > 0:
+                    failures.append(f"{label}: preview tiles should be removed")
+                iframes = page.locator("#inspelningar .lyssna-embed__iframe")
+                if iframes.count() != 6:
+                    failures.append(f"{label}: expected 6 embed iframes, got {iframes.count()}")
+                overflow = page.evaluate(
+                    "() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1"
+                )
+                if overflow:
+                    failures.append(f"{label}: horizontal scroll")
+                ctx.close()
+        finally:
+            browser.close()
+    return failures
+
+
+LYSSNA_REPERTOIRE_FORBIDDEN = (
+    "inte en komplett låtlista",
+    "Till mingel och mottagning spelar vi lugnare",
+)
+
+
+def run_lyssna_repertoire_qa(base_url: str) -> list[str]:
+    failures: list[str] = []
+    url = base_url.rstrip("/") + "/lyssna/?qa=repertoar"
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        try:
+            for width, expect_two_cols in ((390, False), (1280, True)):
+                ctx = browser.new_context(
+                    viewport={"width": width, "height": 900},
+                    device_scale_factor=1,
+                )
+                page = ctx.new_page()
+                page.goto(url, wait_until="domcontentloaded", timeout=45000)
+                page.wait_for_timeout(200)
+                label = f"lyssna-repertoar/{width}"
+                text = page.evaluate("() => document.querySelector('main')?.innerText || ''")
+                for phrase in LYSSNA_REPERTOIRE_FORBIDDEN:
+                    if phrase in text:
+                        failures.append(f"{label}: forbidden copy still present ({phrase[:40]}…)")
+                iframe = page.locator("#repertoar .lyssna-spotify__embed")
+                if iframe.count() == 0:
+                    failures.append(f"{label}: missing Spotify embed in #repertoar")
+                else:
+                    src = iframe.get_attribute("src") or ""
+                    title = iframe.get_attribute("title") or ""
+                    if "0q8DLuLfZE25an41tppmvu" not in src or "theme=0" not in src:
+                        failures.append(f"{label}: unexpected Spotify embed src")
+                    if title != "Halv Fjorton repertoar på Spotify":
+                        failures.append(f"{label}: Spotify iframe title mismatch")
+                cols = page.evaluate(
+                    """() => {
+                      const split = document.querySelector('#repertoar .lyssna-repertoire-split');
+                      if (!split) return 0;
+                      return getComputedStyle(split).gridTemplateColumns.split(' ').filter(Boolean).length;
+                    }"""
+                )
+                if expect_two_cols and cols < 2:
+                    failures.append(f"{label}: expected 2-column repertoar split, got {cols}")
+                if not expect_two_cols and cols > 1:
+                    failures.append(f"{label}: expected 1-column repertoar split on mobile, got {cols}")
+                overflow = page.evaluate(
+                    "() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1"
+                )
+                if overflow:
+                    failures.append(f"{label}: horizontal scroll detected")
+                ctx.close()
+        finally:
+            browser.close()
+    return failures
+
+
 FAQ_COLUMN_STABILITY_PATHS = ("/faq/", "/brollop/")
 
 
@@ -621,6 +716,7 @@ def main() -> int:
         if not args.quick:
             failures.extend(run_desktop_tjanster_dropdown_qa(base))
             failures.extend(run_faq_column_stability_qa(base))
+            failures.extend(run_lyssna_video_qa(base))
     finally:
         if server:
             server.terminate()
