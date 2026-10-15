@@ -722,7 +722,7 @@ BROLLOP_FAQS: tuple[tuple[str, str], ...] = (
 
 SERVICE_OFFER_HERO_IMAGES = {
     "brollop": (
-        "halvfjorton-03",
+        "halvfjorton-03-hero",
         "Bröllopsfest med guldkonfetti och livemusik från Halv Fjorton",
         2400,
         1600,
@@ -745,11 +745,20 @@ SERVICE_OFFER_HERO_IMAGES = {
 }
 
 
-def service_hero_banner(service_key: str, h1: str, description: str) -> str:
+def service_hero_banner(
+    service_key: str,
+    h1: str,
+    description: str,
+    *,
+    ken_burns: bool = False,
+) -> str:
     stem, alt, width, height, _position = SERVICE_OFFER_HERO_IMAGES[service_key]
     base = f"/assets/img/gallery/{stem}"
+    media_class = "alt-service-hero__media"
+    if ken_burns:
+        media_class += " alt-service-hero__media--ken-burns"
     return f"""    <header class="alt-service-hero" data-reveal>
-      <div class="alt-service-hero__media" aria-hidden="true">
+      <div class="{media_class}" aria-hidden="true">
         <img
           class="alt-service-hero__img"
           src="{base}-800w.webp"
@@ -858,6 +867,7 @@ def wedding_page_body() -> str:
         "brollop",
         "Bröllop",
         "Avsluta dagen på ett storslaget sätt med ett bröllopsband som ger er och era gäster en kväll ni sent glömmer.",
+        ken_burns=True,
     )
     fest_figure = wedding_figure(
         "halvfjorton-01",
