@@ -36,17 +36,17 @@ def main() -> int:
             )
             page.wait_for_timeout(400)
 
-            card_count = page.locator(".alt-gallery__bento .alt-gallery__card").count()
+            card_count = page.locator(".alt-gallery__strip .alt-gallery__card").count()
             assert card_count == 6, f"expected 6 bento tiles, got {card_count}"
 
-            cols = page.locator(".alt-gallery__bento").evaluate(
-                """el => {
-                  const mq = window.matchMedia('(max-width: 900px)').matches;
-                  const n = getComputedStyle(el).gridTemplateColumns.split(' ').length;
-                  return mq ? n : -1;
+            mobile_bento_h = page.evaluate(
+                """() => {
+                  const bento = document.querySelector('.alt-gallery__bento');
+                  return bento ? bento.getBoundingClientRect().height : 0;
                 }"""
             )
-            assert cols == 2, f"mobile should be 2 columns, got {cols}"
+            assert mobile_bento_h <= page.viewport_size["height"] * 1.02
+            assert page.locator(".alt-gallery__quote-tile").count() == 1
 
             bounds = page.evaluate(
                 """() => {

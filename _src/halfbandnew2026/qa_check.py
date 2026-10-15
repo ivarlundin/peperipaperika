@@ -1191,8 +1191,12 @@ def run_home_bento_qa(base_url: str) -> list[str]:
                   const sm = document.querySelector('.alt-gallery__card--sm')?.getBoundingClientRect();
                   const ken = document.querySelector('.alt-gallery__ken');
                   const kenStyle = ken ? getComputedStyle(ken) : null;
+                  const strip = document.querySelector('.alt-gallery__strip');
+                  const stripStyle = strip ? getComputedStyle(strip) : null;
                   const firstCard = document.querySelector('.alt-gallery__card');
                   const cardStyle = firstCard ? getComputedStyle(firstCard) : null;
+                  const quote = document.querySelector('.alt-gallery__quote-tile');
+                  const legacyQuote = document.querySelector('section.alt-quote');
                   return {
                     ok: true,
                     bentoH: br.height,
@@ -1207,7 +1211,10 @@ def run_home_bento_qa(base_url: str) -> list[str]:
                     featH: feat?.height || 0,
                     wideH: wide?.height || 0,
                     kenAnim: kenStyle?.animationName,
+                    stripAnim: stripStyle?.animationName,
                     cardOpacity: cardStyle ? parseFloat(cardStyle.opacity) : 0,
+                    hasQuoteTile: !!quote,
+                    legacyQuote: !!legacyQuote,
                   };
                 }"""
             )
@@ -1220,6 +1227,10 @@ def run_home_bento_qa(base_url: str) -> list[str]:
                     )
                 if data["cols"] != 6:
                     failures.append(f"home-bento: expected 6 desktop columns, got {data['cols']}")
+                if not data.get("hasQuoteTile"):
+                    failures.append("home-bento: missing in-bento quote tile")
+                if data.get("legacyQuote"):
+                    failures.append("home-bento: standalone .alt-quote section must be removed")
                 if not data.get("inside"):
                     failures.append("home-bento: grid must stay inside content padding")
                 if data["wideW"] <= data["smW"] * 1.5:
@@ -1230,6 +1241,8 @@ def run_home_bento_qa(base_url: str) -> list[str]:
                     failures.append("home-bento: feature tile should be taller than wide-top")
                 if data.get("kenAnim") in (None, "none"):
                     failures.append("home-bento: Ken Burns animation inactive on gallery images")
+                if data.get("stripAnim") in (None, "none"):
+                    failures.append("home-bento: photo strip lateral motion inactive on desktop")
                 if data.get("cardOpacity", 0) < 0.98:
                     failures.append("home-bento: reveal stagger did not finish (card opacity)")
             page.close()
@@ -1244,16 +1257,36 @@ def run_home_bento_qa(base_url: str) -> list[str]:
                 wait_until="domcontentloaded",
                 timeout=45000,
             )
-            mcols = mobile.evaluate(
+            mobile.locator(".alt-gallery").scroll_into_view_if_needed()
+            mdata = mobile.evaluate(
                 """() => {
                   const bento = document.querySelector('.alt-gallery__bento');
-                  return bento
-                    ? getComputedStyle(bento).gridTemplateColumns.split(' ').length
-                    : 0;
+                  const strip = document.querySelector('.alt-gallery__strip');
+                  const vh = window.innerHeight;
+                  const br = bento?.getBoundingClientRect();
+                  const stripStyle = strip ? getComputedStyle(strip) : null;
+                  const kenStyle = document.querySelector('.alt-gallery__ken')
+                    ? getComputedStyle(document.querySelector('.alt-gallery__ken'))
+                    : null;
+                  return {
+                    bentoH: br?.height || 0,
+                    vh,
+                    stripAnim: stripStyle?.animationName,
+                    kenAnim: kenStyle?.animationName,
+                    quote: !!document.querySelector('.alt-gallery__quote-tile'),
+                  };
                 }"""
             )
-            if mcols != 2:
-                failures.append(f"home-bento: mobile should be 2 columns, got {mcols}")
+            if mdata["bentoH"] > mdata["vh"] * 1.02:
+                failures.append(
+                    f"home-bento/mobile: bento exceeds 100vh ({mdata['bentoH']:.0f}px)"
+                )
+            if not mdata.get("quote"):
+                failures.append("home-bento/mobile: missing quote tile")
+            if mdata.get("stripAnim") in (None, "none"):
+                failures.append("home-bento/mobile: strip lateral motion inactive")
+            if mdata.get("kenAnim") in (None, "none"):
+                failures.append("home-bento/mobile: image pan motion inactive")
             mobile.close()
         finally:
             browser.close()
