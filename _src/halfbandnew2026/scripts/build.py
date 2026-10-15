@@ -1906,7 +1906,7 @@ def write_pages():
         <h1>Lyssna på oss</h1>
         <p class="lead">Filmer från scen och julkonserter, plus en överblick av repertoaren. Samma band som ni bokar till bröllop, företag och mingel.</p>
         <p class="page-hero__actions">
-          <a class="alt-btn alt-btn--ghost" href="{INSTAGRAM_PROFILE_URL}" target="_blank" rel="noopener noreferrer">
+          <a class="alt-btn alt-btn--primary" href="{INSTAGRAM_PROFILE_URL}" target="_blank" rel="noopener noreferrer">
 {INSTAGRAM_ICON_BTN}
             <span>Instagram @halvfjorton</span>
           </a>
