@@ -3797,16 +3797,12 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
 /* Lyssna: page intro width + YouTube preview tiles + modal */
 .alt-page--lyssna .page-hero-copy h1,
-.alt-page--lyssna .page-hero-copy .lead,
-.alt-page--lyssna .lyssna-video-intro,
-.alt-page--lyssna .wrap > h2 + .muted {
+.alt-page--lyssna .page-hero-copy .lead {
   text-wrap: balance;
 }
 
 @media (min-width: 901px) {
-  .alt-page--lyssna .page-hero-copy,
-  .alt-page--lyssna .lyssna-video-intro,
-  .alt-page--lyssna .wrap > h2 + .muted {
+  .alt-page--lyssna .page-hero-copy {
     max-width: 50%;
   }
 }
@@ -3818,8 +3814,8 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   width: 100%;
 }
 
-.alt-page--inner .lyssna-video-intro {
-  margin: 1rem 0 0;
+.alt-btn__icon {
+  flex-shrink: 0;
 }
 
 .alt-page--inner .lyssna-video-tile {

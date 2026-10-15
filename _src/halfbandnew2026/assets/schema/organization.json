@@ -9,6 +9,13 @@
   "image": "https://halvfjorton.se/assets/img/og.jpg",
   "logo": "https://halvfjorton.se/assets/img/h14-logo.svg",
   "email": "halvfjorton@gmail.com",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Fabriksgatan 12",
+    "postalCode": "342 50",
+    "addressLocality": "Vislanda",
+    "addressCountry": "SE"
+  },
   "foundingDate": "2018",
   "genre": ["Soul", "Funk", "Rock", "Coverband", "Partyband"],
   "foundingLocation": {

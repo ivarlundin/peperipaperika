@@ -121,6 +121,23 @@ LOKAL_TEKNIK_COPY = (
 LABS_SUBPATH_DEFAULT = "/testing/halfbandnew2026"
 BUILD_YEAR = datetime.now(timezone.utc).year
 
+ORG_STREET_ADDRESS = "Fabriksgatan 12"
+ORG_POSTAL_CITY_LINE = "342 50 Vislanda"
+ORG_POSTAL_ADDRESS_LD = {
+    "@type": "PostalAddress",
+    "streetAddress": ORG_STREET_ADDRESS,
+    "postalCode": "342 50",
+    "addressLocality": "Vislanda",
+    "addressCountry": "SE",
+}
+
+INSTAGRAM_PROFILE_URL = "https://www.instagram.com/halvfjorton/"
+INSTAGRAM_ICON_BTN = """            <svg class="alt-btn__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.75"/>
+              <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.75"/>
+              <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
+            </svg>"""
+
 
 def esc(text: str) -> str:
     return (
@@ -159,6 +176,7 @@ def contact_page_ld() -> str:
             "name": "Halv Fjorton",
             "url": f"{SITE}/",
             "email": "halvfjorton@gmail.com",
+            "address": ORG_POSTAL_ADDRESS_LD,
             "contactPoint": {
                 "@type": "ContactPoint",
                 "contactType": "booking",
@@ -185,13 +203,16 @@ def tally_iframe_markup() -> str:
 
 
 def integritetspolicy_page_body() -> str:
-    return """    <section class="section alt-legal-page">
+    return f"""    <section class="section alt-legal-page">
       <div class="alt-svc-wrap alt-legal-page__inner">
         <h1 class="alt-svc-chapter__title alt-legal-page__title">Integritetspolicy</h1>
         <div class="alt-svc-chapter__body alt-legal-page__body">
           <p>Denna policy beskriver hur Halv Fjorton ekonomisk förening behandlar personuppgifter när du kontaktar oss via webbplatsen.</p>
           <h2 class="alt-svc-chapter__title alt-legal-page__heading">Personuppgiftsansvarig</h2>
-          <p>Halv Fjorton ekonomisk förening, organisationsnummer 769641-5418. Kontakt: <a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a>.</p>
+          <p>Halv Fjorton ekonomisk förening, organisationsnummer 769641-5418.<br>
+{ORG_STREET_ADDRESS}<br>
+{ORG_POSTAL_CITY_LINE}<br>
+Kontakt: <a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a>.</p>
           <h2 class="alt-svc-chapter__title alt-legal-page__heading">Vad vi samlar in</h2>
           <p>Namn, e-postadress, telefonnummer om du anger det, och meddelandet du skickar i kontaktformuläret.</p>
           <h2 class="alt-svc-chapter__title alt-legal-page__heading">Varför</h2>
@@ -463,7 +484,8 @@ def modern_footer_markup() -> str:
         <div class="site-footer__col site-footer__col--contact">
           <p class="site-footer__col-label">Kontakt</p>
           <ul class="site-footer__links site-footer__links--plain">
-            <li><span class="site-footer__contact-line">Växjö, Småland</span></li>
+            <li><span class="site-footer__contact-line">{ORG_STREET_ADDRESS}</span></li>
+            <li><span class="site-footer__contact-line">{ORG_POSTAL_CITY_LINE}</span></li>
             <li><span class="site-footer__contact-line">Org.nr 769641-5418</span></li>
             <li><a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a></li>
           </ul>
@@ -1536,6 +1558,12 @@ def write_pages():
       <div class="page-hero-copy">
         <h1>Lyssna på oss</h1>
         <p class="lead">Filmer från scen och julkonserter, plus en överblick av repertoaren. Samma band som ni bokar till bröllop, företag och mingel.</p>
+        <p class="page-hero__actions">
+          <a class="alt-btn alt-btn--ghost" href="{INSTAGRAM_PROFILE_URL}" target="_blank" rel="noopener noreferrer">
+{INSTAGRAM_ICON_BTN}
+            <span>Instagram @halvfjorton</span>
+          </a>
+        </p>
       </div>
     </header>
     <section class="section" aria-label="Livefilmer">
@@ -1548,13 +1576,11 @@ def write_pages():
     ),
     lyssna_video_tile("gm5C41wqYuU", "Reel 2022", "Halv Fjorton Reel 2022"),
 )}
-        <p class="small muted lyssna-video-intro">Aktuell livefilm och kortare klipp från spelningar.</p>
       </div>
     </section>
     <section class="section section-alt">
       <div class="wrap">
         <h2>Julkonserter på film</h2>
-        <p class="muted">A Soulful Christmas och en julmässa med vänner.</p>
 {lyssna_video_grid(
     lyssna_video_tile(
         "vV8aavPxYss",
@@ -1577,7 +1603,6 @@ def write_pages():
         "A Soulful Christmas 2018",
     ),
 )}
-        <p class="small muted">Fler klipp och pressbilder kan läggas här. Se även <a href="https://www.instagram.com/halvfjorton/">Instagram @halvfjorton</a>.</p>
       </div>
     </section>
     <section class="section" id="repertoar">
