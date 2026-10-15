@@ -1646,11 +1646,10 @@ def write_pages():
     </section>
     <section class="section" id="repertoar">
       <div class="wrap">
-        <h2>Repertoar</h2>
-        <p>Vi bygger kvällar kring funk och soul: Stevie Wonder, Ray Charles, Earth, Wind &amp; Fire. Därtill kommer svenska favoriter som Björn Skifs och Tomas Ledin, och repertoaren är bred nog för blandade sällskap och generationer.</p>
         <div class="lyssna-repertoire-split">
-          <div class="lyssna-repertoire-split__list">
-{lyssna_repertoire_song_list_markup()}
+          <div class="lyssna-repertoire-split__copy">
+            <h2>Repertoar</h2>
+            <p>Vi bygger kvällar kring funk och soul: Stevie Wonder, Ray Charles, Earth, Wind &amp; Fire. Därtill kommer svenska favoriter som Björn Skifs och Tomas Ledin, och repertoaren är bred nog för blandade sällskap och generationer.</p>
           </div>
           <div class="lyssna-repertoire-split__spotify">
 {lyssna_spotify_embed_markup()}

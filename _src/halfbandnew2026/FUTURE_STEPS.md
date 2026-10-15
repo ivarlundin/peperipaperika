@@ -4,6 +4,7 @@ Intern planering. Innehållet här byggs inte ut till `testing/halfbandnew2026/`
 
 ## Repertoar som sökbar låtlista
 
+- Full repertoire page/list with complete text info for all songs (see Downbeat The A-List reference); Spotify playlist is the index until then.
 - Sida eller sektion under **Repertoar** med sök, genre-filter (chips), antal låtar per genre och numrerad tvåkolumnslista.
 - Designreferens: [Downbeat The A-List](https://downbeat.agency/thealist/)
 - Skärmdump (internt): [repertoire-songlist-reference.png](docs/future/repertoire-songlist-reference.png)
