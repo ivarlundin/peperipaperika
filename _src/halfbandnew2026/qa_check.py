@@ -805,6 +805,75 @@ def run_om_oss_member_cards_qa(base_url: str) -> list[str]:
     return failures
 
 
+def run_service_split_layout_qa(base_url: str) -> list[str]:
+    """Service pages: first split/grid block aligned to content column."""
+    failures: list[str] = []
+    checks = (
+        ("/brollop/", ".alt-svc-chapter--festspelning .alt-svc-chapter__split"),
+        ("/foretag/", "main .wrap.split"),
+        ("/mingel/", "main .wrap.grid-2"),
+    )
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        try:
+            for path, selector in checks:
+                page = browser.new_page(viewport={"width": 1280, "height": 900})
+                page.goto(
+                    base_url.rstrip("/") + path + "?qa=svc-split",
+                    wait_until="domcontentloaded",
+                    timeout=45000,
+                )
+                page.evaluate(
+                    "() => document.querySelectorAll('[data-reveal]').forEach((el) => el.classList.add('is-in'))"
+                )
+                metrics = page.evaluate(
+                    f"""() => {{
+                      const header = document.querySelector('.alt-header__inner');
+                      const grid = document.querySelector('{selector}');
+                      if (!header || !grid) return {{ missing: true }};
+                      const pad = parseFloat(getComputedStyle(header).paddingLeft);
+                      const contentLeft = header.getBoundingClientRect().left + pad;
+                      const gr = grid.getBoundingClientRect();
+                      const kids = [...grid.children].slice(0, 2);
+                      const tops = kids.map((el) => el.getBoundingClientRect().top);
+                      const gridStyle = getComputedStyle(grid);
+                      const gridPad = parseFloat(gridStyle.paddingLeft);
+                      return {{
+                        missing: false,
+                        contentLeft,
+                        gridContentLeft: gr.left + gridPad,
+                        gridWidth: gr.width,
+                        maxWidth: gridStyle.maxWidth,
+                        topDelta: tops.length === 2 ? Math.abs(tops[0] - tops[1]) : 99,
+                        colCount: gridStyle.gridTemplateColumns.trim().split(/\\s+/).length,
+                      }};
+                    }}"""
+                )
+                label = path.strip("/")
+                if metrics.get("missing"):
+                    failures.append(f"svc-split/{label}: missing header or split grid")
+                    continue
+                if metrics.get("maxWidth") == "none":
+                    failures.append(f"svc-split/{label}: split grid max-width is none")
+                if abs(metrics["gridContentLeft"] - metrics["contentLeft"]) > 3:
+                    failures.append(
+                        f"svc-split/{label}: grid misaligned with nav column "
+                        f"(grid {metrics['gridContentLeft']}, content {metrics['contentLeft']})"
+                    )
+                if metrics.get("topDelta", 99) > 2:
+                    failures.append(
+                        f"svc-split/{label}: columns not top-aligned (delta {metrics.get('topDelta')})"
+                    )
+                if metrics.get("colCount") != 2:
+                    failures.append(
+                        f"svc-split/{label}: expected 2 columns, got {metrics.get('colCount')}"
+                    )
+                page.close()
+        finally:
+            browser.close()
+    return failures
+
+
 def run_konserter_ticket_layout_qa(base_url: str) -> list[str]:
     """Desktop: concert cards align with H1 and fill the content column."""
     failures: list[str] = []
@@ -1050,6 +1119,7 @@ def main() -> int:
             failures.extend(run_button_hover_contrast_qa(base))
             failures.extend(run_alt_facts_icons_qa(base))
             failures.extend(run_om_oss_member_cards_qa(base))
+            failures.extend(run_service_split_layout_qa(base))
             failures.extend(run_faq_column_stability_qa(base))
     finally:
         if server:

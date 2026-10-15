@@ -3537,7 +3537,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
 @media (min-width: 901px) {
   .alt-page--service-banner {
-    --alt-svc-hero-h1-size: clamp(2.5rem, calc(0.7rem + 8.25vw), 5.75rem);
+    --alt-svc-hero-h1-size: clamp(2.5rem, calc(0.7rem + 7.35vw), 5.35rem);
   }
 
   .alt-page--service-banner .alt-service-hero h1 {
@@ -3621,7 +3621,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 .alt-page--service-banner .alt-svc-chapter--split .alt-svc-chapter__split {
   display: grid;
   gap: clamp(2rem, 6vw, 3.5rem);
-  align-items: center;
+  align-items: start;
 }
 
 .alt-page--service-banner .alt-svc-chapter--closing {
@@ -3635,7 +3635,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 @media (min-width: 901px) {
   .alt-page--service-banner .alt-svc-chapter--split .alt-svc-chapter__split {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    align-items: center;
+    align-items: start;
   }
 
   .alt-svc-chapter__split.alt-svc-chapter__layout--copy-first .alt-svc-chapter__split-copy {
@@ -3678,17 +3678,23 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 }
 
 @media (min-width: 901px) {
-  .alt-page--service-banner :is(
-      .alt-svc-chapter--split .alt-svc-chapter__split,
-      .wrap.grid-2,
-      .wrap.split
-    ) {
+  .alt-page--service-banner :is(.wrap.grid-2, .wrap.split) {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     width: 100%;
-    max-width: none;
     gap: clamp(1.5rem, 3vw, 2.5rem);
-    align-items: center;
+    align-items: start;
+  }
+
+  .alt-page--service-banner .alt-svc-wrap.alt-svc-chapter__split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    width: 100%;
+    max-width: var(--alt-max);
+    margin-left: auto;
+    margin-right: auto;
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    align-items: start;
   }
 
   .alt-page--service-banner :is(.alt-svc-addon-grid, .alt-faq__list--cols) {
@@ -3703,7 +3709,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
 .alt-page--service-banner .alt-svc-chapter--festspelning .alt-svc-chapter__split {
   width: 100%;
-  align-items: center;
+  align-items: start;
   gap: clamp(1.5rem, 4vw, 2.75rem);
 }
 
@@ -3909,9 +3915,10 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
 .alt-page--service-banner main > .alt-service-hero + section {
   position: relative;
-  z-index: 0;
+  z-index: 2;
   margin-top: 0;
-  padding-top: clamp(2.5rem, 6vw, 4rem);
+  padding-top: clamp(2.75rem, 6.5vw, 4.25rem);
+  background: var(--alt-bg);
 }
 
 .alt-page--service-banner main > .alt-service-hero + section.alt-svc-chapter.section {
