@@ -2084,8 +2084,11 @@ def write_pages():
 
     page(
         "/lyssna/",
-        "Lyssna på Halv Fjorton | film, reel och julkonserter",
-        "Se Halv Fjorton live: Signed Sealed Delivered 2025, reel 2022 och julkonserterna A Soulful Christmas.",
+        "Lyssna | Halv Fjorton",
+        (
+            "Hör hur det låter när Halv Fjorton spelar på bröllop, företagsfester och julkonserter. "
+            "Åtta musiker med egen blåssektion."
+        ),
         page_class="alt-page--lyssna",
         extra_scripts=LYSSNA_VIDEO_MODAL_SCRIPT,
         extra_ld=lyssna_page_video_ld(),
