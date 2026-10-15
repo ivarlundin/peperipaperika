@@ -246,27 +246,6 @@
     if (mqDesktop.matches) setOpen(false);
   });
 
-  if ("IntersectionObserver" in window) {
-    var io = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-in");
-            io.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.12 }
-    );
-    document.querySelectorAll("[data-reveal]").forEach(function (node) {
-      io.observe(node);
-    });
-  } else {
-    document.querySelectorAll("[data-reveal]").forEach(function (node) {
-      node.classList.add("is-in");
-    });
-  }
-
   var form = document.querySelector("[data-mailto-form]");
   if (form) {
     form.addEventListener("submit", function (event) {
@@ -286,4 +265,100 @@
       window.location.href = "mailto:halvfjorton@gmail.com?subject=" + subject + "&body=" + body;
     });
   }
+})();
+
+(function initAltReveals() {
+  var HERO_AFTER_DELAY_MS = 420;
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var heroGroups = document.querySelectorAll('[data-reveal-group="hero"]');
+  var reveals = document.querySelectorAll("[data-reveal]");
+
+  function revealAll() {
+    heroGroups.forEach(function (group) {
+      group.classList.add("is-in");
+    });
+    reveals.forEach(function (node) {
+      node.classList.add("is-in");
+    });
+  }
+
+  if (reduceMotion) {
+    revealAll();
+    return;
+  }
+
+  var heroRoot = document.querySelector(".alt-hero, .alt-service-hero");
+  var delayedReveal = null;
+  if (heroRoot) {
+    var sibling = heroRoot.nextElementSibling;
+    while (sibling) {
+      if (sibling.hasAttribute("data-reveal")) {
+        delayedReveal = sibling;
+        break;
+      }
+      sibling = sibling.nextElementSibling;
+    }
+  }
+
+  function startHeroGroup(group) {
+    if (group.classList.contains("is-in")) return;
+    group.classList.add("is-in");
+    if (!delayedReveal || delayedReveal.classList.contains("is-in")) return;
+    window.setTimeout(function () {
+      delayedReveal.classList.add("is-in");
+    }, HERO_AFTER_DELAY_MS);
+  }
+
+  function observeReveals(nodes) {
+    if (!nodes.length) return;
+    if (!("IntersectionObserver" in window)) {
+      nodes.forEach(function (node) {
+        node.classList.add("is-in");
+      });
+      return;
+    }
+    var io = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-in");
+            io.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+    nodes.forEach(function (node) {
+      io.observe(node);
+    });
+  }
+
+  if (heroGroups.length) {
+    if ("IntersectionObserver" in window) {
+      var heroIo = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              startHeroGroup(entry.target);
+              heroIo.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.08 }
+      );
+      heroGroups.forEach(function (group) {
+        heroIo.observe(group);
+      });
+    } else {
+      heroGroups.forEach(startHeroGroup);
+    }
+  }
+
+  var otherReveals = [];
+  reveals.forEach(function (node) {
+    if (node === delayedReveal) return;
+    if (node.closest('[data-reveal-group="hero"]')) return;
+    otherReveals.push(node);
+  });
+  observeReveals(otherReveals);
 })();

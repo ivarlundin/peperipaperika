@@ -834,7 +834,7 @@ def service_hero_typewriter_h1(
         longest_full = f"{prefix}{longest_suffix}"
         phrases_attr = esc(json.dumps(list(loop_suffixes), ensure_ascii=False))
         first = loop_suffixes[0]
-        return f"""        <h1>
+        return f"""        <h1 data-reveal-item data-reveal-i="0">
           <span class="visually-hidden">{esc(h1)}</span>
           <span class="alt-service-hero__h1-stack" aria-hidden="true">
             <span class="alt-service-hero__h1-ghost">{esc(longest_full)}</span>
@@ -849,7 +849,7 @@ def service_hero_typewriter_h1(
           </span>
         </h1>"""
     phrases_attr = esc(json.dumps([h1], ensure_ascii=False))
-    return f"""        <h1>
+    return f"""        <h1 data-reveal-item data-reveal-i="0">
           <span class="visually-hidden">{esc(h1)}</span>
           <span class="alt-hero__typewriter" data-alt-typewriter data-typewriter-once data-typewriter-phrases="{phrases_attr}" aria-hidden="true">
             <span class="alt-hero__typewriter-ghost">{esc(h1)}</span>
@@ -952,10 +952,10 @@ def service_hero_banner(
         >
       </div>
       <div class="alt-service-hero__scrim" aria-hidden="true"></div>
-      <div class="alt-service-hero__content" data-reveal>
+      <div class="alt-service-hero__content" data-reveal-group="hero">
 {service_hero_typewriter_h1(h1, loop_suffixes=loop_suffixes)}
-        <p class="alt-service-hero__dek">{esc(description)}</p>
-        <div class="alt-service-hero__actions">
+        <p class="alt-service-hero__dek" data-reveal-item data-reveal-i="1">{esc(description)}</p>
+        <div class="alt-service-hero__actions" data-reveal-item data-reveal-i="2">
           <a class="alt-btn alt-btn--primary" href="/kontakt/#offert">Kontakta oss</a>
         </div>
       </div>
