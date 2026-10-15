@@ -17,9 +17,9 @@ Ersätt eller utöka dagens Spotify-spelare på Lyssna med en full repertoarsida
 
 **Skärmdump (repo only, ej labs):** [repertoire-songlist-reference.png](docs/future/repertoire-songlist-reference.png)
 
-## Referenser (design)
+## References
 
-- **Företag**: [Downbeat Corporate](https://downbeat.agency/corporate/)
+- **Företag page design reference:** https://downbeat.agency/corporate/ — used when we wireframe Företag with Ivar.
 
 ## Bröllop (bilder)
 
