@@ -3407,10 +3407,11 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   border-top: 1px solid var(--alt-line);
 }
 
-.alt-page--inner .alt-faq__list--cols {
+.alt-page .alt-faq__list--cols {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 0;
+  row-gap: 0;
+  column-gap: 0;
 }
 
 .alt-page--inner .alt-faq__item {
@@ -3418,18 +3419,32 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   min-width: 0;
 }
 
+/* Collapsed FAQ: ::details-content can clip visually but answers still spill into grid row sizing. */
+.alt-page .alt-faq__item:not([open]) {
+  overflow: hidden;
+}
+
+.alt-page .alt-faq__item:not([open]):not(.alt-faq__item--animating) .alt-faq__answer {
+  display: none;
+}
+
+.alt-page .alt-faq__item[open] {
+  overflow: visible;
+}
+
 @media (min-width: 901px) {
   .alt-page--inner .alt-faq {
     max-width: var(--alt-max);
   }
 
-  .alt-page--inner .alt-faq__list--cols {
+  .alt-page .alt-faq__list--cols {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     column-gap: clamp(1.25rem, 3vw, 2.5rem);
+    row-gap: 0;
     align-items: stretch;
   }
 
-  .alt-page--inner .alt-faq__list--cols > .alt-faq__item {
+  .alt-page .alt-faq__list--cols > .alt-faq__item {
     height: 100%;
     box-sizing: border-box;
   }
@@ -3711,7 +3726,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
     align-items: start;
   }
 
-  .alt-page--service-banner :is(.alt-svc-addon-grid, .alt-faq__list--cols) {
+  .alt-page--service-banner .alt-svc-addon-grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     width: 100%;
@@ -3797,12 +3812,15 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   grid-template-columns: 1fr;
   width: 100%;
   max-width: none;
+  row-gap: 0;
+  column-gap: 0;
 }
 
 @media (min-width: 901px) {
   .alt-page--service-banner .alt-faq__list--cols {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     column-gap: clamp(1.25rem, 3vw, 2.5rem);
+    row-gap: 0;
     align-items: stretch;
   }
 

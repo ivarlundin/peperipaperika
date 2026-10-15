@@ -1145,6 +1145,99 @@ def run_konserter_ticket_layout_qa(base_url: str) -> list[str]:
     return failures
 
 
+def run_faq_collapsed_row_spacing_qa(base_url: str) -> list[str]:
+    """All collapsed FAQ rows: equal item height and tight row rhythm (no answer spill)."""
+    failures: list[str] = []
+    paths = FAQ_COLUMN_STABILITY_PATHS
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        try:
+            page = browser.new_page(viewport={"width": 1280, "height": 900})
+            for path in paths:
+                page.goto(
+                    base_url.rstrip("/") + path + "?qa=faq-collapsed",
+                    wait_until="domcontentloaded",
+                    timeout=45000,
+                )
+                page.wait_for_timeout(150)
+                metrics = page.evaluate(
+                    """() => {
+                      const items = [...document.querySelectorAll('[data-faq] .alt-faq__item')];
+                      if (!items.length) return { missing: true };
+                      const open = items.filter((el) => el.open);
+                      if (open.length) {
+                        items.forEach((el) => { el.open = false; });
+                      }
+                      const rows = items.map((el) => {
+                        const er = el.getBoundingClientRect();
+                        const sum = el.querySelector('summary');
+                        const ans = el.querySelector('.alt-faq__answer');
+                        const sr = sum.getBoundingClientRect();
+                        const ar = ans ? ans.getBoundingClientRect() : null;
+                        return {
+                          top: er.top,
+                          bottom: er.bottom,
+                          height: er.height,
+                          sumH: sr.height,
+                          spill: ar ? Math.max(0, ar.bottom - er.bottom) : 0,
+                        };
+                      });
+                      const heights = rows.map((r) => r.height);
+                      const minH = Math.min(...heights);
+                      const maxH = Math.max(...heights);
+                      const col0 = rows.filter((_, i) => i % 2 === 0);
+                      const pitches = [];
+                      for (let i = 1; i < col0.length; i++) {
+                        pitches.push(col0[i].top - col0[i - 1].top);
+                      }
+                      const rowGaps = [];
+                      for (let i = 0; i < rows.length - 2; i += 2) {
+                        rowGaps.push(rows[i + 2].top - rows[i].bottom);
+                      }
+                      return {
+                        missing: false,
+                        count: items.length,
+                        minH,
+                        maxH,
+                        pitches,
+                        rowGaps,
+                        maxSpill: Math.max(...rows.map((r) => r.spill)),
+                      };
+                    }"""
+                )
+                slug = path.strip("/") or "home"
+                if metrics.get("missing"):
+                    failures.append(f"faq-collapsed/{slug}: missing FAQ list")
+                    continue
+                if metrics["maxH"] - metrics["minH"] > 2:
+                    failures.append(
+                        f"faq-collapsed/{slug}: item heights differ "
+                        f"({metrics['minH']:.1f}–{metrics['maxH']:.1f}px)"
+                    )
+                if metrics.get("maxSpill", 0) > 1:
+                    failures.append(
+                        f"faq-collapsed/{slug}: answer spills below item "
+                        f"({metrics['maxSpill']:.1f}px)"
+                    )
+                pitches = metrics.get("pitches") or []
+                if pitches:
+                    spread = max(pitches) - min(pitches)
+                    if spread > 2:
+                        failures.append(
+                            f"faq-collapsed/{slug}: uneven row pitch in column "
+                            f"({min(pitches):.1f}–{max(pitches):.1f}px)"
+                        )
+                for gap in metrics.get("rowGaps") or []:
+                    if gap > 4:
+                        failures.append(
+                            f"faq-collapsed/{slug}: extra gap between rows ({gap:.1f}px)"
+                        )
+            page.close()
+        finally:
+            browser.close()
+    return failures
+
+
 def run_faq_column_stability_qa(base_url: str) -> list[str]:
     """Desktop: opening one FAQ item must not shift siblings horizontally."""
     failures: list[str] = []
@@ -1309,6 +1402,7 @@ def main() -> int:
             widths=widths,
         )
         failures.extend(run_title_desc_cta_spacing_qa(base))
+        failures.extend(run_faq_collapsed_row_spacing_qa(base))
         if not args.quick:
             failures.extend(run_desktop_tjanster_dropdown_qa(base))
             failures.extend(run_konserter_ticket_layout_qa(base))
