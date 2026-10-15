@@ -87,3 +87,5 @@ On each build, after URL rewriting for labs:
 - Writes `assets/cms/image-manifest.json`.
 
 Do not copy `_src` into `testing/` by hand; use `scripts/build.py` only.
+
+The build injects `cmsmode-stub.js?v=<hash>` where the hash is derived from CMS asset file contents, so browsers fetch fresh `cms-mode.js` / CSS after deploys (HTML `data-cms-id` values come from the built page, not from cached editor scripts).

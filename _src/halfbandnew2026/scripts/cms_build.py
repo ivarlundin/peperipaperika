@@ -10,9 +10,25 @@ from pathlib import Path
 CMS_STUB_MARK = 'data-cms-stub="1"'
 
 
-def cms_stub_script(url_prefix: str) -> str:
+def cms_asset_version(source_root: Path) -> str:
+    blobs: list[bytes] = []
+    for rel in (
+        "assets/js/cms-mode.js",
+        "assets/js/cmsmode-stub.js",
+        "assets/css/cms-mode.css",
+    ):
+        path = source_root / rel
+        if path.is_file():
+            blobs.append(path.read_bytes())
+    if not blobs:
+        return "0"
+    return hashlib.sha256(b"".join(blobs)).hexdigest()[:10]
+
+
+def cms_stub_script(url_prefix: str, version: str = "") -> str:
+    query = f"?v={version}" if version else ""
     return (
-        f'  <script src="{url_prefix}/assets/js/cmsmode-stub.js" defer data-cms-stub="1"></script>\n'
+        f'  <script src="{url_prefix}/assets/js/cmsmode-stub.js{query}" defer data-cms-stub="1"></script>\n'
     )
 
 # Tags that receive data-cms-id for inline text editing (within main/footer).
@@ -162,7 +178,13 @@ def _skip_anchor_wrapper(attrs: str) -> bool:
     return False
 
 
-def annotate_html(html: str, page_slug: str, source_file: str, url_prefix: str = "") -> str:
+def annotate_html(
+    html: str,
+    page_slug: str,
+    source_file: str,
+    url_prefix: str = "",
+    cms_version: str = "",
+) -> str:
     text_counters: dict[str, int] = {}
 
     def repl(match: re.Match[str]) -> str:
@@ -208,11 +230,11 @@ def annotate_html(html: str, page_slug: str, source_file: str, url_prefix: str =
 
     if CMS_STUB_MARK not in html:
         prefix = url_prefix.rstrip("/") if url_prefix else ""
-        html = html.replace("</body>", f"{cms_stub_script(prefix)}</body>")
+        html = html.replace("</body>", f"{cms_stub_script(prefix, cms_version)}</body>")
     return html
 
 
-def annotate_site_html(target: Path, url_prefix: str = "") -> None:
+def annotate_site_html(target: Path, url_prefix: str = "", cms_version: str = "") -> None:
     for file_path in sorted(target.rglob("*.html")):
         if not file_path.is_file():
             continue
@@ -222,7 +244,9 @@ def annotate_site_html(target: Path, url_prefix: str = "") -> None:
         slug = _page_slug(rel)
         source = _source_file_for_page(rel)
         text = file_path.read_text(encoding="utf-8")
-        patched = annotate_html(text, slug, source, url_prefix=url_prefix)
+        patched = annotate_html(
+            text, slug, source, url_prefix=url_prefix, cms_version=cms_version
+        )
         if patched != text:
             file_path.write_text(patched, encoding="utf-8")
             print("cms-annotate", rel)
@@ -317,6 +341,7 @@ def write_image_manifest(img_root: Path, out_path: Path, url_prefix: str = "") -
 
 def run_cms_build_steps(target: Path, source_root: Path, subpath: str) -> None:
     prefix = subpath.rstrip("/") if subpath else ""
+    cms_version = cms_asset_version(source_root)
     manifest_out = target / "assets" / "cms" / "image-manifest.json"
     write_image_manifest(source_root / "assets" / "img", manifest_out, url_prefix=prefix)
-    annotate_site_html(target, url_prefix=prefix)
+    annotate_site_html(target, url_prefix=prefix, cms_version=cms_version)

@@ -11,17 +11,20 @@
     var stub = document.querySelector("script[data-cms-stub]");
     var src = stub && stub.src ? stub.src : "";
     var base = "";
+    var versionQuery = "";
     if (src) {
+      var qIndex = src.indexOf("?");
+      versionQuery = qIndex >= 0 ? src.slice(qIndex) : "";
       base = src.replace(/\/assets\/js\/cmsmode-stub\.js(?:\?.*)?$/, "");
     }
 
     var css = document.createElement("link");
     css.rel = "stylesheet";
-    css.href = base + "/assets/css/cms-mode.css";
+    css.href = base + "/assets/css/cms-mode.css" + versionQuery;
     document.head.appendChild(css);
 
     var script = document.createElement("script");
-    script.src = base + "/assets/js/cms-mode.js";
+    script.src = base + "/assets/js/cms-mode.js" + versionQuery;
     script.onload = function () {
       window.__cmsModeLoading = false;
       if (window.__cmsMode && typeof window.__cmsMode.boot === "function") {
