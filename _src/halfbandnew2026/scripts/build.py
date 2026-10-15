@@ -1117,11 +1117,8 @@ def soulful_christmas_event_ld() -> list[str]:
 
 def soulful_christmas_ticket_card() -> str:
     base = SOULFUL_CHRISTMAS_IMG
-    return f"""        <a
+    return f"""        <article
           class="event-ticket"
-          href="{SOULFUL_CHRISTMAS_TICKETS}"
-          target="_blank"
-          rel="noopener noreferrer"
           data-event-ticket
           data-event-start="{SOULFUL_CHRISTMAS_START}"
           data-event-end="{SOULFUL_CHRISTMAS_END}"
@@ -1160,12 +1157,20 @@ def soulful_christmas_ticket_card() -> str:
                 <span>Nygatan 6, Växjö</span>
               </p>
               <p class="event-ticket__text">Växjö stad i juleglans, och vad passar då bättre än en julkonsert? Halv Fjorton återvänder och bjuder på svängig julstämning med soul, funk, jazz och komiska inslag. Julklassikerna får en skrud du aldrig hört förut, och kanske smyger sig en och annan sketch in…</p>
-              <div class="event-ticket__actions">
-                <span class="alt-btn alt-btn--primary event-ticket__cta">Köp biljetter</span>
+              <div class="event-ticket__actions" aria-hidden="true">
+                <span class="alt-btn alt-btn--primary event-ticket__cta event-ticket__cta-spacer">Köp biljetter</span>
               </div>
             </div>
           </div>
-        </a>"""
+          <a
+            class="event-ticket__stretched-link"
+            href="{SOULFUL_CHRISTMAS_TICKETS}"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span class="alt-btn alt-btn--primary event-ticket__cta">Köp biljetter</span>
+          </a>
+        </article>"""
 
 
 def page(

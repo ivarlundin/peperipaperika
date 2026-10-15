@@ -550,16 +550,16 @@ def run_button_hover_contrast_qa(base_url: str) -> list[str]:
                         label = f"btn-hover-contrast{path}{selector}[{index}]"
                         if ratio is not None and ratio < 4.5:
                             failures.append(f"{label}: contrast {ratio:.2f} < 4.5")
-                ticket = page.locator("a.event-ticket").first
-                if ticket.count() > 0:
-                    ticket.hover(force=True, timeout=5000)
+                cta = page.locator(
+                    ".event-ticket__stretched-link > .event-ticket__cta"
+                ).first
+                if cta.count() > 0:
+                    cta.hover(force=True, timeout=5000)
                     page.wait_for_timeout(80)
-                    cta = page.locator(".event-ticket__cta").first
-                    if cta.count() > 0:
-                        ratio = cta.evaluate(_CONTRAST_RATIO_JS)
-                        label = f"btn-hover-contrast{path}event-ticket-cta"
-                        if ratio is not None and ratio < 4.5:
-                            failures.append(f"{label}: contrast {ratio:.2f} < 4.5")
+                    ratio = cta.evaluate(_CONTRAST_RATIO_JS)
+                    label = f"btn-hover-contrast{path}event-ticket-cta"
+                    if ratio is not None and ratio < 4.5:
+                        failures.append(f"{label}: contrast {ratio:.2f} < 4.5")
                 offer = page.locator("a.alt-offer-card").first
                 if offer.count() > 0:
                     offer.hover(force=True, timeout=5000)
@@ -569,6 +569,70 @@ def run_button_hover_contrast_qa(base_url: str) -> list[str]:
                         failures.append(
                             f"btn-hover-contrast{path}alt-offer-card: contrast {ratio:.2f} < 4.5"
                         )
+            ctx.close()
+        finally:
+            browser.close()
+    return failures
+
+
+def run_event_ticket_stretched_link_qa(base_url: str) -> list[str]:
+    """Concert cards: article shell + stretched-link CTA (not wrapper anchor)."""
+    failures: list[str] = []
+    url = base_url.rstrip("/") + "/konserter/?qa=stretched-link"
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        try:
+            ctx = browser.new_context(viewport={"width": 1280, "height": 900})
+            page = ctx.new_page()
+            page.goto(url, wait_until="domcontentloaded", timeout=45000)
+            page.wait_for_timeout(200)
+            if page.locator("a.event-ticket").count() > 0:
+                failures.append("event-ticket-stretched: card must not be an <a> wrapper")
+            cards = page.locator("article.event-ticket")
+            if cards.count() == 0:
+                failures.append("event-ticket-stretched: missing article.event-ticket")
+            for index in range(cards.count()):
+                card = cards.nth(index)
+                links = card.locator(".event-ticket__stretched-link")
+                if links.count() != 1:
+                    failures.append(
+                        f"event-ticket-stretched: card {index} expected 1 stretched link, "
+                        f"got {links.count()}"
+                    )
+                    continue
+                href = links.first.get_attribute("href") or ""
+                if not href.startswith("http"):
+                    failures.append(f"event-ticket-stretched: card {index} missing ticket href")
+                after = links.first.evaluate(
+                    """(el) => {
+                      const s = getComputedStyle(el, '::after');
+                      return s.position === 'absolute' && s.inset === '0px';
+                    }"""
+                )
+                if not after:
+                    failures.append(f"event-ticket-stretched: card {index} missing ::after overlay")
+                poster = card.locator(".event-ticket__poster")
+                if poster.count() > 0:
+                    poster_box = poster.bounding_box()
+                    if poster_box:
+                        cx = poster_box["x"] + poster_box["width"] / 2
+                        cy = poster_box["y"] + poster_box["height"] / 2
+                        try:
+                            with ctx.expect_page(timeout=8000) as new_page_info:
+                                page.mouse.click(cx, cy)
+                            new_page = new_page_info.value
+                            new_url = new_page.url
+                            new_page.close()
+                            if href and href not in new_url:
+                                failures.append(
+                                    f"event-ticket-stretched: card {index} poster click "
+                                    f"opened {new_url}, expected {href}"
+                                )
+                        except Exception as exc:
+                            failures.append(
+                                f"event-ticket-stretched: card {index} poster click "
+                                f"did not open ticket tab ({exc})"
+                            )
             ctx.close()
         finally:
             browser.close()
@@ -816,6 +880,7 @@ def main() -> int:
         if not args.quick:
             failures.extend(run_desktop_tjanster_dropdown_qa(base))
             failures.extend(run_konserter_ticket_layout_qa(base))
+            failures.extend(run_event_ticket_stretched_link_qa(base))
             failures.extend(run_button_hover_contrast_qa(base))
             failures.extend(run_faq_column_stability_qa(base))
     finally:

@@ -347,11 +347,8 @@
         </div>
       </header>
       <div class="event-ticket-wrap alt-konserter-page__tickets">
-        <a
+        <article
           class="event-ticket"
-          href="https://www.nygatan6.se/kalender/a-soulful-christmas/"
-          target="_blank"
-          rel="noopener noreferrer"
           data-event-ticket
           data-event-start="2026-12-12T00:00:00+01:00"
           data-event-end="2026-12-12T22:00:00+01:00"
@@ -390,12 +387,20 @@
                 <span>Nygatan 6, Växjö</span>
               </p>
               <p class="event-ticket__text">Växjö stad i juleglans, och vad passar då bättre än en julkonsert? Halv Fjorton återvänder och bjuder på svängig julstämning med soul, funk, jazz och komiska inslag. Julklassikerna får en skrud du aldrig hört förut, och kanske smyger sig en och annan sketch in…</p>
-              <div class="event-ticket__actions">
-                <span class="alt-btn alt-btn--primary event-ticket__cta">Köp biljetter</span>
+              <div class="event-ticket__actions" aria-hidden="true">
+                <span class="alt-btn alt-btn--primary event-ticket__cta event-ticket__cta-spacer">Köp biljetter</span>
               </div>
             </div>
           </div>
-        </a>
+          <a
+            class="event-ticket__stretched-link"
+            href="https://www.nygatan6.se/kalender/a-soulful-christmas/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span class="alt-btn alt-btn--primary event-ticket__cta">Köp biljetter</span>
+          </a>
+        </article>
       </div>
     </div>
 
