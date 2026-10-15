@@ -1197,6 +1197,13 @@ def run_home_bento_qa(base_url: str) -> list[str]:
                   const cardStyle = firstCard ? getComputedStyle(firstCard) : null;
                   const quote = document.querySelector('.alt-gallery__quote-tile');
                   const legacyQuote = document.querySelector('section.alt-quote');
+                  const mutedLine = document.querySelector('.alt-gallery__quote-attr-muted');
+                  const quoteBox = quote?.getBoundingClientRect();
+                  const mutedBox = mutedLine?.getBoundingClientRect();
+                  const quoteClip =
+                    quoteBox && mutedBox
+                      ? mutedBox.bottom > quoteBox.bottom + 1.5
+                      : false;
                   return {
                     ok: true,
                     bentoH: br.height,
@@ -1215,6 +1222,8 @@ def run_home_bento_qa(base_url: str) -> list[str]:
                     cardOpacity: cardStyle ? parseFloat(cardStyle.opacity) : 0,
                     hasQuoteTile: !!quote,
                     legacyQuote: !!legacyQuote,
+                    quoteClip,
+                    quoteBg: quote ? getComputedStyle(quote).backgroundColor : '',
                   };
                 }"""
             )
@@ -1231,6 +1240,8 @@ def run_home_bento_qa(base_url: str) -> list[str]:
                     failures.append("home-bento: missing in-bento quote tile")
                 if data.get("legacyQuote"):
                     failures.append("home-bento: standalone .alt-quote section must be removed")
+                if data.get("quoteClip"):
+                    failures.append("home-bento: quote tile clips attribution text")
                 if not data.get("inside"):
                     failures.append("home-bento: grid must stay inside content padding")
                 if data["wideW"] <= data["smW"] * 1.5:
@@ -1262,8 +1273,12 @@ def run_home_bento_qa(base_url: str) -> list[str]:
                 """() => {
                   const bento = document.querySelector('.alt-gallery__bento');
                   const strip = document.querySelector('.alt-gallery__strip');
+                  const quote = document.querySelector('.alt-gallery__quote-tile');
+                  const mutedLine = document.querySelector('.alt-gallery__quote-attr-muted');
                   const vh = window.innerHeight;
                   const br = bento?.getBoundingClientRect();
+                  const quoteBox = quote?.getBoundingClientRect();
+                  const mutedBox = mutedLine?.getBoundingClientRect();
                   const stripStyle = strip ? getComputedStyle(strip) : null;
                   const kenStyle = document.querySelector('.alt-gallery__ken')
                     ? getComputedStyle(document.querySelector('.alt-gallery__ken'))
@@ -1273,7 +1288,11 @@ def run_home_bento_qa(base_url: str) -> list[str]:
                     vh,
                     stripAnim: stripStyle?.animationName,
                     kenAnim: kenStyle?.animationName,
-                    quote: !!document.querySelector('.alt-gallery__quote-tile'),
+                    quote: !!quote,
+                    quoteClip:
+                      quoteBox && mutedBox
+                        ? mutedBox.bottom > quoteBox.bottom + 1.5
+                        : false,
                   };
                 }"""
             )
@@ -1283,6 +1302,8 @@ def run_home_bento_qa(base_url: str) -> list[str]:
                 )
             if not mdata.get("quote"):
                 failures.append("home-bento/mobile: missing quote tile")
+            if mdata.get("quoteClip"):
+                failures.append("home-bento/mobile: quote tile clips attribution text")
             if mdata.get("stripAnim") in (None, "none"):
                 failures.append("home-bento/mobile: strip lateral motion inactive")
             if mdata.get("kenAnim") in (None, "none"):

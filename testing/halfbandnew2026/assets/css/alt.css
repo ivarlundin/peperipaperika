@@ -9,6 +9,9 @@ html {
 .alt-page {
   --alt-bg: #0a0a0b;
   --alt-bg-elevated: #121214;
+  --alt-gallery-quote-bg: #3a2618;
+  --alt-gallery-quote-border: rgba(255, 214, 170, 0.16);
+  --alt-gallery-quote-muted: #d8cbb9;
   --alt-ink: #f2f0ec;
   --alt-muted: #a8a29c;
   --alt-link: #f2f0ec;
@@ -1677,14 +1680,17 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 .alt-gallery__quote-tile {
   margin: 0;
   min-width: 0;
+  min-height: min-content;
+  height: auto;
+  overflow: visible;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   gap: clamp(0.35rem, 1vw, 0.65rem);
   padding: clamp(0.85rem, 2vw, 1.35rem);
   border-radius: var(--alt-radius);
-  border: 1px solid var(--alt-line);
-  background: var(--alt-bg-elevated);
+  border: 1px solid var(--alt-gallery-quote-border);
+  background: var(--alt-gallery-quote-bg);
   box-sizing: border-box;
   opacity: 0;
   transform: translate3d(0, 14px, 0);
@@ -1734,7 +1740,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 }
 
 .alt-gallery__quote-attr-muted {
-  color: var(--alt-muted);
+  color: var(--alt-gallery-quote-muted);
 }
 
 .alt-gallery.is-in .alt-gallery__quote-tile {
@@ -1850,17 +1856,17 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   .alt-gallery__bento {
     grid-template-columns: repeat(6, minmax(0, 1fr));
     grid-template-rows:
-      minmax(0, 1.05fr)
-      minmax(0, 0.88fr)
-      minmax(0, 0.95fr)
-      minmax(0, 0.72fr);
-    height: clamp(72vh, 78vh, 82vh);
-    max-height: 82vh;
+      minmax(clamp(62vh, 72vh, 78vh), auto)
+      minmax(min-content, max-content);
+    height: auto;
+    max-height: none;
   }
 
   .alt-gallery__photo-field {
     grid-column: 1 / -1;
-    grid-row: 1 / 4;
+    grid-row: 1;
+    min-height: clamp(62vh, 72vh, 78vh);
+    max-height: 78vh;
   }
 
   .alt-gallery__strip {
@@ -1871,13 +1877,14 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
       minmax(0, 0.88fr)
       minmax(0, 0.95fr);
     gap: clamp(0.6rem, 1vw, 0.85rem);
+    height: 100%;
     animation: alt-gallery-strip-drift 58s ease-in-out infinite alternate;
   }
 
   .alt-gallery__quote-tile {
     grid-column: 1 / span 3;
-    grid-row: 4;
-    min-height: 0;
+    grid-row: 2;
+    align-self: start;
   }
 
   .alt-gallery__strip > .alt-gallery__card--feature {
@@ -1931,7 +1938,8 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   .alt-gallery__quote-tile {
     grid-row: 1;
     grid-column: 1;
-    max-height: 34vh;
+    min-height: min-content;
+    max-height: none;
     flex-shrink: 0;
     z-index: 1;
   }
