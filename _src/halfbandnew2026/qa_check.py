@@ -856,6 +856,87 @@ def run_service_hero_ken_burns_qa(base_url: str) -> list[str]:
     return failures
 
 
+def run_title_desc_cta_spacing_qa(base_url: str) -> list[str]:
+    """Title→copy gap must be clearly smaller than copy→CTA (site-wide tokens)."""
+    failures: list[str] = []
+    min_ratio = 1.65
+    checks = (
+        (
+            "/brollop/",
+            ".alt-svc-chapter--festspelning .alt-svc-chapter__title",
+            ".alt-svc-chapter--festspelning .alt-svc-chapter__body > p:first-of-type",
+            ".alt-svc-chapter--festspelning .actions",
+            "festspelning",
+        ),
+        (
+            "/brollop/",
+            ".alt-service-hero h1",
+            ".alt-service-hero__dek",
+            ".alt-service-hero__actions",
+            "brollop-hero",
+        ),
+        (
+            "/",
+            ".alt-hero h1",
+            ".alt-hero__lead",
+            ".alt-hero__actions",
+            "home-hero",
+        ),
+        (
+            "/kontakt/",
+            ".alt-contact-page__intro h1",
+            ".contact-offert__lead",
+            ".contact-offert__mail",
+            "kontakt-offert",
+        ),
+    )
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        try:
+            page = browser.new_page(viewport={"width": 1280, "height": 900})
+            for path, title_sel, desc_sel, cta_sel, label in checks:
+                page.goto(
+                    base_url.rstrip("/") + path,
+                    wait_until="domcontentloaded",
+                    timeout=45000,
+                )
+                metrics = page.evaluate(
+                    """([titleSel, descSel, ctaSel]) => {
+                      const title = document.querySelector(titleSel);
+                      const desc = document.querySelector(descSel);
+                      const cta = document.querySelector(ctaSel);
+                      if (!title || !desc || !cta) {
+                        return { missing: true };
+                      }
+                      const tr = title.getBoundingClientRect();
+                      const dr = desc.getBoundingClientRect();
+                      const ar = cta.getBoundingClientRect();
+                      const titleDesc = Math.max(0, dr.top - tr.bottom);
+                      const descCta = Math.max(0, ar.top - dr.bottom);
+                      return { missing: false, titleDesc, descCta };
+                    }""",
+                    [title_sel, desc_sel, cta_sel],
+                )
+                if metrics.get("missing"):
+                    failures.append(f"title-desc-cta/{label}: missing title, copy, or CTA node")
+                    continue
+                td = float(metrics["titleDesc"])
+                dc = float(metrics["descCta"])
+                if dc < 18:
+                    failures.append(
+                        f"title-desc-cta/{label}: desc→CTA gap too small ({dc:.1f}px)"
+                    )
+                if td > 0 and dc < td * min_ratio:
+                    failures.append(
+                        f"title-desc-cta/{label}: desc→CTA ({dc:.1f}px) must be ≥ "
+                        f"{min_ratio}× title→desc ({td:.1f}px)"
+                    )
+            page.close()
+        finally:
+            browser.close()
+    return failures
+
+
 def run_service_hero_dek_layout_qa(base_url: str) -> list[str]:
     """Service heroes: dek width (50% desktop) and spacing above CTA."""
     failures: list[str] = []
@@ -904,7 +985,7 @@ def run_service_hero_dek_layout_qa(base_url: str) -> list[str]:
                                 f"svc-hero-dek/desktop/{slug}: dek too wide "
                                 f"({metrics['dekW']:.0f}px vs inner {metrics['innerW']:.0f}px)"
                             )
-                        if metrics.get("gap", 0) < 24:
+                        if metrics.get("gap", 0) < 26:
                             failures.append(
                                 f"svc-hero-dek/desktop/{slug}: dek–CTA gap too small "
                                 f"({metrics.get('gap')})"
@@ -1227,6 +1308,7 @@ def main() -> int:
             screenshot=screenshot,
             widths=widths,
         )
+        failures.extend(run_title_desc_cta_spacing_qa(base))
         if not args.quick:
             failures.extend(run_desktop_tjanster_dropdown_qa(base))
             failures.extend(run_konserter_ticket_layout_qa(base))

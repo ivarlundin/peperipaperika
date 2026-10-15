@@ -68,6 +68,7 @@ Körningen **failar** vid:
 - **Konsolfel** (`console.error`)
 - **Förbjudna fraser** från `skills/svensk-copy/SKILL.md` (lista i `scripts/qa_lib.py`)
 - Saknad **header** eller **footer** på sidan
+- **Rubrik → text vs text → CTA:** `run_title_desc_cta_spacing_qa` (Festspelning, tjänste-hero, startsida, kontakt `page-hero`) — desc→CTA måste vara tydligt större än title→desc (`--alt-desc-cta-gap` / `--alt-title-desc-gap`)
 
 Bygget kör dessutom asserts i `scripts/build.py` (dash, eyebrows, offert bullets, dubblett-bilder på service-sidor, m.m.).
 

@@ -31,8 +31,13 @@ html {
   --alt-check-gap: 0.55rem;
   --alt-offert-usp-mail-gap: clamp(2rem, 3.75vw, 2.75rem);
   --alt-inner-title-offset: clamp(2rem, 5vw, 3.25rem);
-  --alt-title-desc-gap: clamp(0.45rem, 1vw, 0.65rem);
-  --alt-desc-cta-gap: clamp(1.25rem, 2.75vw, 1.65rem);
+  /*
+   * Copy stack rhythm (site-wide): title → description is always tighter than description → CTA.
+   * Apply margin-bottom on titles/leads/deks and margin-top on .actions (or margin-bottom on copy before CTAs).
+   * Do not use ad-hoc rem gaps for this stack; --alt-heading-content-gap is for heading → grids/lists only.
+   */
+  --alt-title-desc-gap: clamp(0.35rem, 0.85vw, 0.5rem);
+  --alt-desc-cta-gap: clamp(1.65rem, 3.5vw, 2.35rem);
   --alt-heading-content-gap: clamp(1.35rem, 2.75vw, 1.85rem);
   --alt-page-hero-intro-max: none;
   --alt-page-h1-size: clamp(1.625rem, 4.25vw, 2.75rem);
@@ -72,6 +77,18 @@ html {
 body.alt-page > main {
   flex: 1 0 auto;
   width: 100%;
+}
+
+.alt-page :is(
+    .actions,
+    .alt-svc-chapter__actions
+  ):not(
+    .alt-hero__actions,
+    .alt-service-hero__actions,
+    .page-hero__actions,
+    .event-ticket__actions
+  ) {
+  margin-top: var(--alt-desc-cta-gap);
 }
 
 .alt-page img {
@@ -2974,7 +2991,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
-  margin-top: 1rem;
+  margin-top: var(--alt-desc-cta-gap);
 }
 
 .alt-page--inner .btn,
@@ -3530,7 +3547,6 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   --alt-svc-section-label-spacing: 0.14em;
   --alt-svc-section-label-gap: clamp(1.25rem, 2.75vw, 1.65rem);
   --alt-svc-hero-fade-stop: 46%;
-  --alt-svc-hero-dek-cta-gap: clamp(1.75rem, 3.75vw, 2.5rem);
 }
 
 @media (min-width: 901px) {
@@ -4066,7 +4082,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 }
 
 .alt-page--service-banner .alt-service-hero__dek {
-  margin-bottom: var(--alt-svc-hero-dek-cta-gap);
+  margin-bottom: var(--alt-desc-cta-gap);
   max-width: 100%;
 }
 

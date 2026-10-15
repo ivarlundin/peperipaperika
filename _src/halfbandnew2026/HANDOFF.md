@@ -25,7 +25,11 @@ python3 scripts/build.py --output-dir ../../testing/halfbandnew2026 --subpath /t
 - Ingress = vanlig text (ingen bakgrund, border, vänsterkant).
 - Samma vänster/högerkant som menyn (`--alt-pad-left/right`).
 - **Inget utanför grid-containern.** «Full bredd» = hela innehållscontainern (samma kanter som H1 och huvudmeny), aldrig viewport (`100vw`, negativa marginaler eller breakout) om det inte uttryckligen står i uppgiften.
-- **Rubrik → ingress → knapp:** använd alltid `--alt-title-desc-gap` (mindre) och `--alt-desc-cta-gap` (tydligt större) i `alt.css`. Gäller tjänste-hero, inner `page-hero`, kontakt/offert, kapitel med `.actions`, startsidans hero, m.m.
+- **Rubrik → ingress → knapp (global regel):** avståndet mellan beskrivning och CTA ska **alltid** vara tydligt större än mellan rubrik och beskrivning. Tokens i `.alt-page` i `alt.css`:
+  - `--alt-title-desc-gap` — rubrik → ingress/brödtext (tight).
+  - `--alt-desc-cta-gap` — ingress/sista brödtext → `.actions` / primär knapp (luftigare; minst ~3× title-gap i praktiken).
+  - Sätt gap via `margin-bottom` på rubrik/`.lead`/`.alt-service-hero__dek`/`.alt-hero__lead` och `margin-top` på `.actions` (eller `margin-bottom` på copy före CTA). **Inga** lösa `1rem`/`1.25rem` här. Gäller heroes, tjänstekapitel, inner `page-hero`, kontakt/offert, landningssidor med `.actions`, m.m.
+  - `--alt-heading-content-gap` är **inte** samma regel: använd den bara rubrik → FAQ/listor/rutnät (se nedan).
 - **Rubrik → innehåll** (listor, rutnät, kortblock, FAQ): minst `--alt-heading-content-gap` i `alt.css`. Gäller t.ex. «Vanliga frågor» före accordion, tjänstekapitel före grid, inner `h2` före `.media-grid`, samt FAQ-sida efter `page-hero` (`section` med `.alt-faq`). Inget får vara tightare än tokenen; rubrik → brödtext/ingress använder fortfarande `--alt-title-desc-gap`.
 - **Tjänstesidor** (Bröllop, Företag, Fest och mingel): desktop-H1 via `--alt-svc-hero-h1-size` (något mindre än `--alt-hero-h1-size`); beskrivning (`alt-service-hero__dek`) max 50 % bredd på desktop, `text-wrap: balance`.
 - **Fluid rubriker (`clamp`):** delade tokens i `alt.css` — `--alt-hero-h1-size` (start), `--alt-svc-hero-h1-size` (tjänste-hero desktop), `--alt-page-h1-size` (inner `page-hero` / integritet), `--alt-h2-size` (sektioner + `alt-svc-chapter__title`), `--alt-h3-size`. Minskalinjer är satta så långa ord (t.ex. Integritetspolicy, Tilläggstjänster) inte overflow:ar vid 320px; `text-wrap: balance` site-wide på rubriker.
