@@ -3218,6 +3218,8 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   --alt-svc-body-line: 1.65;
   --alt-svc-faq-answer-size: clamp(0.88rem, 2.05vw, 0.98rem);
   --alt-svc-addon-title-size: clamp(1.28rem, 3.25vw, 1.55rem);
+  --alt-svc-hero-overlap: clamp(5.5rem, 13vw, 8.5rem);
+  --alt-svc-hero-fade-stop: 46%;
 }
 
 .alt-page--service-banner .alt-svc-wrap {
@@ -3427,9 +3429,90 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   max-width: none;
 }
 
-/* Service pages: home-hero look, shorter static band (no carousel / typewriter) */
+/* Service pages: shared hero (fade into page + overlap first section) */
 .alt-page--service-banner .alt-inner-main {
   padding-top: 0;
+}
+
+.alt-page--service-banner .alt-service-hero {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  box-sizing: border-box;
+  padding-top: var(--alt-header-total);
+  min-height: max(
+    clamp(20rem, 52svh, 32rem),
+    calc(var(--alt-header-total) + 13.5rem)
+  );
+  overflow: hidden;
+  background: var(--alt-bg);
+  isolation: isolate;
+}
+
+@media (max-width: 900px) {
+  .alt-page--service-banner .alt-service-hero {
+    min-height: max(
+      min(70svh, 560px),
+      calc(var(--alt-header-total) + 12.5rem)
+    );
+  }
+}
+
+.alt-page--service-banner .alt-service-hero__content {
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+  padding-bottom: clamp(2.25rem, 7vw, 4rem);
+}
+
+.alt-page--service-banner .alt-service-hero__img {
+  transform: none;
+}
+
+.alt-page--service-banner .alt-service-hero__media {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 var(--alt-svc-hero-fade-stop),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 var(--alt-svc-hero-fade-stop),
+    transparent 100%
+  );
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+.alt-page--service-banner .alt-service-hero__scrim {
+  background:
+    linear-gradient(180deg, rgba(10, 10, 11, 0.58) 0%, transparent 40%),
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(10, 10, 11, 0.22) 52%,
+      var(--alt-bg) 100%
+    );
+}
+
+.alt-page--service-banner main > .alt-service-hero + section {
+  position: relative;
+  z-index: 2;
+  margin-top: calc(-1 * var(--alt-svc-hero-overlap));
+  padding-top: clamp(1.25rem, 3.5vw, 2.25rem);
+}
+
+.alt-page--service-banner main > .alt-service-hero + section.alt-svc-chapter.section {
+  padding-bottom: clamp(3.5rem, 10vw, 7rem);
 }
 
 .alt-service-hero {
@@ -3456,16 +3539,6 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
       calc(var(--alt-header-total) + 12.5rem)
     );
   }
-}
-
-.alt-page--service-banner .alt-service-hero__content {
-  position: relative;
-  z-index: 2;
-  flex-shrink: 0;
-}
-
-.alt-page--service-banner .alt-service-hero__img {
-  transform: none;
 }
 
 .alt-service-hero__media {
