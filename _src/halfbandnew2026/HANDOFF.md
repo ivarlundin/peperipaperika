@@ -66,7 +66,7 @@ python3 qa_check.py --live --skip-build
 
 ## Öppna / kända
 
-- Framtida funktioner och designreferenser: **[FUTURE_STEPS.md](FUTURE_STEPS.md)** (internt, ingår inte i labs-bygget).
+- Framtida funktioner och designreferenser: **[FUTURE_STEPS.md](FUTURE_STEPS.md)** (internt, ingår inte i labs-bygget). Nästa större repertoar-idé: sökbar låtlista med genre-chips och tvåkolumnslista — se [Downbeat The A-List](https://downbeat.agency/thealist/) och skärmdumpen `docs/future/repertoire-songlist-reference.png` (byggs inte än).
 - Dolda SEO-sidor (`/kompband/`, `/brollopsband-smaland/`, …) får inte länkas från synliga sidor (build assert).
 - `home/index.html` patchas efter bygge (`patch_home_page`).
 - Skills: `.cursor/skills/` (design), `skills/svensk-copy/`.

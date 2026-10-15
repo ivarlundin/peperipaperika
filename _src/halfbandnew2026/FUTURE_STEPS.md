@@ -1,21 +1,25 @@
 # Framtida steg (Halv Fjorton)
 
-Intern planering. Innehållet här byggs inte ut till `testing/halfbandnew2026/` förrän det prioriteras.
+Intern planering. Innehållet här byggs **inte** ut till `testing/halfbandnew2026/` förrän det prioriteras. Referensbilder under `docs/future/` kopieras inte av `build.py`.
 
-## Repertoar som sökbar låtlista
+## Repertoar as searchable song list with genre filter chips, counts, numbered two-column list (song, artist, genre)
 
-- Full repertoire page/list with complete text info for all songs (see Downbeat The A-List reference); Spotify playlist is the index until then.
-- Sida eller sektion under **Repertoar** med sök, genre-filter (chips), antal låtar per genre och numrerad tvåkolumnslista.
-- Designreferens: [Downbeat The A-List](https://downbeat.agency/thealist/)
-- Skärmdump (internt): [repertoire-songlist-reference.png](docs/future/repertoire-songlist-reference.png)
+**Status:** Not to be built yet.
+
+Ersätt eller utöka dagens Spotify-spelare på Lyssna med en full repertoarsida/sektion:
+
+- Sökfält (låt eller artist)
+- Genre-filter som **chips** med antal per genre (t.ex. «ALL SONGS», «ROCK», «POP» …)
+- Sammanfattning: totalt antal låtar (och ev. uppdateringsdatum)
+- **Numrerad tvåkolumnslista** med **låt**, **artist**, **genre** per rad
+
+**Designreferens:** [Downbeat The A-List](https://downbeat.agency/thealist/)
+
+**Skärmdump (repo only, ej labs):** [repertoire-songlist-reference.png](docs/future/repertoire-songlist-reference.png)
 
 ## Referenser (design)
 
 - **Företag**: [Downbeat Corporate](https://downbeat.agency/corporate/)
-
-## Lyssna (videor)
-
-- Replace YouTube auto thumbnails with custom preview images for all videos.
 
 ## Bröllop (bilder)
 
