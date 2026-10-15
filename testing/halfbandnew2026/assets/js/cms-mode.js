@@ -438,7 +438,10 @@
 
           applyImageEntry(imgEl, entry, oldAlt);
 
-          var alt = window.prompt("Alt-text (tillgänglighet):", imgEl.alt || "");
+          var alt = window.prompt(
+            "Alt-text (tillgänglighet):",
+            entry.alt || imgEl.alt || ""
+          );
           if (alt !== null) imgEl.alt = alt;
 
           recordChange(store, {

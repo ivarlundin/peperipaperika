@@ -201,6 +201,18 @@
       "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-06-480w.webp 480w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-06-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-06-1200w.webp 1200w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-06-1920w.webp 1920w"
     },
     {
+      "id": "gallery/halvfjorton-acoustic-trio-white-room.webp",
+      "label": "halvfjorton-acoustic-trio-white-room.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-acoustic-trio-white-room-800w.webp",
+      "variants": {
+        "1600w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-acoustic-trio-white-room-1600w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-acoustic-trio-white-room-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-acoustic-trio-white-room-800w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-acoustic-trio-white-room-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-acoustic-trio-white-room-1600w.webp 1600w",
+      "alt": "Akustisk trio som spelar i ljus festlokal"
+    },
+    {
       "id": "gallery/halvfjorton-active-sound-crew.webp",
       "label": "halvfjorton-active-sound-crew.webp",
       "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-active-sound-crew-800w.webp",
@@ -265,6 +277,18 @@
         "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-garden-sax-barn-800w.webp"
       },
       "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-garden-sax-barn-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-garden-sax-barn-1600w.webp 1600w"
+    },
+    {
+      "id": "gallery/halvfjorton-guitarist-bw-haze.webp",
+      "label": "halvfjorton-guitarist-bw-haze.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-guitarist-bw-haze-800w.webp",
+      "variants": {
+        "1600w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-guitarist-bw-haze-1600w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-guitarist-bw-haze-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-guitarist-bw-haze-800w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-guitarist-bw-haze-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-guitarist-bw-haze-1600w.webp 1600w",
+      "alt": "Gitarrist p\u00e5 scen i r\u00f6k, svartvit bild"
     },
     {
       "id": "gallery/halvfjorton-keys-barn-wedding.webp",
@@ -344,6 +368,42 @@
       "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-sax-red-tent-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-sax-red-tent-1600w.webp 1600w"
     },
     {
+      "id": "gallery/halvfjorton-singer-bw-haze.webp",
+      "label": "halvfjorton-singer-bw-haze.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-bw-haze-800w.webp",
+      "variants": {
+        "1600w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-bw-haze-1600w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-bw-haze-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-bw-haze-800w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-bw-haze-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-bw-haze-1600w.webp 1600w",
+      "alt": "S\u00e5ngare i scenr\u00f6k, svartvit bild"
+    },
+    {
+      "id": "gallery/halvfjorton-singer-bw-patterned-shirt.webp",
+      "label": "halvfjorton-singer-bw-patterned-shirt.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-bw-patterned-shirt-800w.webp",
+      "variants": {
+        "1600w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-bw-patterned-shirt-1600w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-bw-patterned-shirt-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-bw-patterned-shirt-800w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-bw-patterned-shirt-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-bw-patterned-shirt-1600w.webp 1600w",
+      "alt": "S\u00e5ngare i m\u00f6nstrad skjorta, svartvit bild"
+    },
+    {
+      "id": "gallery/halvfjorton-singer-bw-pointing.webp",
+      "label": "halvfjorton-singer-bw-pointing.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-bw-pointing-800w.webp",
+      "variants": {
+        "1600w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-bw-pointing-1600w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-bw-pointing-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-bw-pointing-800w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-bw-pointing-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-bw-pointing-1600w.webp 1600w",
+      "alt": "S\u00e5ngare som pekar mot publiken, svartvit bild"
+    },
+    {
       "id": "gallery/halvfjorton-singer-chandelier-hall.webp",
       "label": "halvfjorton-singer-chandelier-hall.webp",
       "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-chandelier-hall-800w.webp",
@@ -353,6 +413,54 @@
         "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-chandelier-hall-800w.webp"
       },
       "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-chandelier-hall-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-chandelier-hall-1600w.webp 1600w"
+    },
+    {
+      "id": "gallery/halvfjorton-singer-guitar-pink-stage.webp",
+      "label": "halvfjorton-singer-guitar-pink-stage.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-guitar-pink-stage-800w.webp",
+      "variants": {
+        "1600w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-guitar-pink-stage-1600w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-guitar-pink-stage-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-guitar-pink-stage-800w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-guitar-pink-stage-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-guitar-pink-stage-1600w.webp 1600w",
+      "alt": "S\u00e5ngare med gitarr i rosa scenljus"
+    },
+    {
+      "id": "gallery/halvfjorton-singer-guitarist-bw-stage.webp",
+      "label": "halvfjorton-singer-guitarist-bw-stage.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-guitarist-bw-stage-800w.webp",
+      "variants": {
+        "1600w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-guitarist-bw-stage-1600w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-guitarist-bw-stage-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-guitarist-bw-stage-800w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-guitarist-bw-stage-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-guitarist-bw-stage-1600w.webp 1600w",
+      "alt": "S\u00e5ngare och gitarrist p\u00e5 scen, svartvit bild"
+    },
+    {
+      "id": "gallery/halvfjorton-singer-sax-bw-pointing.webp",
+      "label": "halvfjorton-singer-sax-bw-pointing.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-sax-bw-pointing-800w.webp",
+      "variants": {
+        "1600w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-sax-bw-pointing-1600w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-sax-bw-pointing-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-sax-bw-pointing-800w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-sax-bw-pointing-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-sax-bw-pointing-1600w.webp 1600w",
+      "alt": "S\u00e5ngare och saxofon p\u00e5 scen, svartvit bild"
+    },
+    {
+      "id": "gallery/halvfjorton-singer-sax-purple-stage.webp",
+      "label": "halvfjorton-singer-sax-purple-stage.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-sax-purple-stage-800w.webp",
+      "variants": {
+        "1600w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-sax-purple-stage-1600w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-sax-purple-stage-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-sax-purple-stage-800w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-sax-purple-stage-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-sax-purple-stage-1600w.webp 1600w",
+      "alt": "S\u00e5ngare och saxofonist p\u00e5 scen i lila ljus"
     },
     {
       "id": "gallery/halvfjorton-singers-green-tent.webp",
@@ -462,6 +570,18 @@
         "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-trumpet-barn-wedding.webp"
       },
       "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-trumpet-barn-wedding-800w.webp 800w"
+    },
+    {
+      "id": "gallery/halvfjorton-trumpet-sax-bw-stage.webp",
+      "label": "halvfjorton-trumpet-sax-bw-stage.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-trumpet-sax-bw-stage-800w.webp",
+      "variants": {
+        "1600w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-trumpet-sax-bw-stage-1600w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-trumpet-sax-bw-stage-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-trumpet-sax-bw-stage-800w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-trumpet-sax-bw-stage-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-trumpet-sax-bw-stage-1600w.webp 1600w",
+      "alt": "Trumpet och saxofon p\u00e5 scen, svartvit bild"
     },
     {
       "id": "gallery/halvfjorton-warehouse-green-stage.webp",

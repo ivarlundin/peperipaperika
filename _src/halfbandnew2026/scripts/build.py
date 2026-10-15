@@ -1096,14 +1096,24 @@ def service_addon_figure(
 
 GALLERY_STEMS_800_1600 = frozenset(
     {
+        "halvfjorton-acoustic-trio-white-room",
         "halvfjorton-band-forest-bw",
         "halvfjorton-band-pink-haze",
         "halvfjorton-barn-purple-stage",
         "halvfjorton-garden-mingel",
         "halvfjorton-garden-sax-barn",
+        "halvfjorton-guitarist-bw-haze",
         "halvfjorton-keys-guitarists-pink",
+        "halvfjorton-singer-bw-haze",
+        "halvfjorton-singer-bw-patterned-shirt",
+        "halvfjorton-singer-bw-pointing",
+        "halvfjorton-singer-guitar-pink-stage",
+        "halvfjorton-singer-guitarist-bw-stage",
+        "halvfjorton-singer-sax-bw-pointing",
+        "halvfjorton-singer-sax-purple-stage",
         "halvfjorton-stage-blue-dining-hall",
         "halvfjorton-stage-from-above-blue",
+        "halvfjorton-trumpet-sax-bw-stage",
         "halvfjorton-warehouse-green-stage",
     }
 )
