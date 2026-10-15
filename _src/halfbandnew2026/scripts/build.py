@@ -1744,7 +1744,7 @@ def write_pages():
     </section>
     <section class="section section-alt">
       <div class="wrap">
-        <h2>Julkonserter på film</h2>
+        <h2>Lyssna på våra julkonserter</h2>
 {lyssna_video_grid(
     lyssna_video_tile(
         "vV8aavPxYss",
