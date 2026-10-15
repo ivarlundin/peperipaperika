@@ -2793,7 +2793,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 }
 
 .alt-page--inner .lead,
-.alt-page--inner p,
+.alt-page--inner p:not(.alt-service-hero__dek),
 .alt-page--inner li {
   font-size: 1.0625rem;
   font-weight: var(--font-body-weight);
@@ -3829,7 +3829,12 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   position: relative;
   z-index: 2;
   flex-shrink: 0;
-  padding-bottom: clamp(2.25rem, 7vw, 4rem);
+  width: 100%;
+  max-width: var(--alt-max);
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0.85rem var(--alt-pad-right) clamp(2.25rem, 7vw, 4rem) var(--alt-pad-left);
+  box-sizing: border-box;
 }
 
 .alt-page--service-banner
@@ -4035,7 +4040,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 }
 
 @media (min-width: 901px) {
-  .alt-service-hero__dek {
+  .alt-page--service-banner .alt-service-hero__dek {
     max-width: 50%;
   }
 }
