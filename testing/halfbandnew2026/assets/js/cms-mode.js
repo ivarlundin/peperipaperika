@@ -355,10 +355,35 @@
     });
   }
 
+  function isCmsChrome(el) {
+    return el && el.closest && el.closest(".cms-ui");
+  }
+
+  function blockCmsNavigation(ev) {
+    if (!window.__cmsModeActive) return;
+    var t = ev.target;
+    if (!(t instanceof Element) || isCmsChrome(t)) return;
+    if (t.closest("a[href]")) {
+      ev.preventDefault();
+    }
+    if (t.closest('button[type="submit"], input[type="submit"]')) {
+      ev.preventDefault();
+    }
+  }
+
+  function blockCmsFormSubmit(ev) {
+    if (!window.__cmsModeActive) return;
+    if (!(ev.target instanceof Element) || isCmsChrome(ev.target)) return;
+    ev.preventDefault();
+  }
+
   function boot() {
     if (window.__cmsModeActive) return;
     window.__cmsModeActive = true;
     document.documentElement.classList.add("cms-mode-active");
+
+    document.addEventListener("click", blockCmsNavigation, true);
+    document.addEventListener("submit", blockCmsFormSubmit, true);
 
     var store = readStore();
     applyStoredChanges(store);
@@ -409,6 +434,8 @@
     panel.querySelector(".cms-ui-btn--ghost").addEventListener("click", function () {
       window.__cmsModeActive = false;
       document.documentElement.classList.remove("cms-mode-active");
+      document.removeEventListener("click", blockCmsNavigation, true);
+      document.removeEventListener("submit", blockCmsFormSubmit, true);
       panel.remove();
     });
 
@@ -426,7 +453,7 @@
         if (!window.__cmsModeActive) return;
         var t = ev.target;
         if (!(t instanceof Element)) return;
-        if (t.closest("#cms-mode-panel") || t.closest("#cms-mode-overlay")) return;
+        if (isCmsChrome(t)) return;
 
         var img = t.closest("img[data-cms-id]");
         if (img) {
