@@ -34,7 +34,6 @@ SOULFUL_CHRISTMAS_IMG = "/assets/img/events/a-soulful-christmas-2026"
 SOULFUL_CHRISTMAS_START = "2026-12-12T00:00:00+01:00"
 SOULFUL_CHRISTMAS_END = "2026-12-12T22:00:00+01:00"
 SOULFUL_LUCIA_2025_VIDEO_ID = "CFr_XLrILmY"
-SOULFUL_LUCIA_2025_START = 5491
 SOULFUL_LUCIA_2025_IMG = "/assets/img/events/a-soulful-lucia-2025"
 
 CONTACT_USPS = [
@@ -1543,7 +1542,6 @@ def lyssna_page_video_ld() -> list[str]:
             "Julkonsert med Halv Fjorton, inspelning från lucia 2025.",
             SOULFUL_LUCIA_2025_VIDEO_ID,
             f"{SITE}{SOULFUL_LUCIA_2025_IMG}-1200w.webp",
-            SOULFUL_LUCIA_2025_START,
         ),
         youtube_video_object_ld(
             "A Soulful Christmas 2024 - 8 december, Nygatan 6",
@@ -2125,7 +2123,6 @@ def write_pages():
         "A Soulful Lucia 2025",
         "A Soulful Lucia 2025",
         poster=f"{SOULFUL_LUCIA_2025_IMG}-1200w.webp",
-        start_seconds=SOULFUL_LUCIA_2025_START,
     ),
     lyssna_video_tile(
         "vV8aavPxYss",
