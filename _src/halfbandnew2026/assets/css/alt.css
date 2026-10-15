@@ -34,6 +34,7 @@ html {
   --alt-title-desc-gap: clamp(0.45rem, 1vw, 0.65rem);
   --alt-desc-cta-gap: clamp(1.25rem, 2.75vw, 1.65rem);
   --alt-heading-content-gap: clamp(1.35rem, 2.75vw, 1.85rem);
+  --alt-page-hero-intro-max: none;
   --alt-check-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5.5 12.5 9.5 16.5 18.5 7.5'/%3E%3C/svg%3E");
   --alt-logo-scale: 2.5;
   --alt-logo-size: 3.5rem;
@@ -2733,7 +2734,11 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   letter-spacing: 0;
   line-height: 1.05;
   margin: 0 0 var(--alt-title-desc-gap);
-  max-width: none;
+  max-width: var(--alt-page-hero-intro-max);
+}
+
+.alt-page--inner .page-hero-copy > :is(.lead, .page-hero__actions) {
+  max-width: var(--alt-page-hero-intro-max);
 }
 
 .alt-page--inner .page-hero-copy > .lead:has(+ .page-hero__actions) {
@@ -2803,6 +2808,10 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   .alt-page--inner .faq-grid,
   .alt-page--inner .split {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: center;
+  }
+
+  .alt-page--inner .faq-grid {
     align-items: start;
   }
 }
@@ -3419,7 +3428,9 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   --alt-svc-body-line: 1.65;
   --alt-svc-faq-answer-size: clamp(0.88rem, 2.05vw, 0.98rem);
   --alt-svc-addon-title-size: clamp(1.28rem, 3.25vw, 1.55rem);
-  --alt-svc-hero-overlap: clamp(5.5rem, 13vw, 8.5rem);
+  --alt-svc-section-label-size: clamp(0.6875rem, 1.45vw, 0.75rem);
+  --alt-svc-section-label-spacing: 0.14em;
+  --alt-svc-section-label-gap: clamp(1.25rem, 2.75vw, 1.65rem);
   --alt-svc-hero-fade-stop: 46%;
 }
 
@@ -3509,7 +3520,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 .alt-page--service-banner .alt-svc-chapter--split .alt-svc-chapter__split {
   display: grid;
   gap: clamp(2rem, 6vw, 3.5rem);
-  align-items: start;
+  align-items: center;
 }
 
 .alt-page--service-banner .alt-svc-chapter--closing {
@@ -3567,7 +3578,6 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
 @media (min-width: 901px) {
   .alt-page--service-banner :is(
-      .alt-svc-addon-grid,
       .alt-svc-chapter--split .alt-svc-chapter__split,
       .wrap.grid-2,
       .wrap.split
@@ -3577,18 +3587,22 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
     width: 100%;
     max-width: none;
     gap: clamp(1.5rem, 3vw, 2.5rem);
-    align-items: start;
+    align-items: center;
   }
 
-  .alt-page--service-banner .alt-svc-chapter--split:not(.alt-svc-chapter--festspelning)
-    .alt-svc-chapter__split {
-    align-items: center;
+  .alt-page--service-banner :is(.alt-svc-addon-grid, .alt-faq__list--cols) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    width: 100%;
+    max-width: none;
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    align-items: start;
   }
 }
 
 .alt-page--service-banner .alt-svc-chapter--festspelning .alt-svc-chapter__split {
   width: 100%;
-  align-items: start;
+  align-items: center;
   gap: clamp(1.5rem, 4vw, 2.75rem);
 }
 
@@ -3606,10 +3620,6 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   width: 100%;
 }
 
-.alt-page--service-banner main > .alt-service-hero + section.alt-svc-chapter--festspelning {
-  padding-top: clamp(2rem, 5vw, 3rem);
-}
-
 @media (min-width: 901px) {
   .alt-page--service-banner .alt-svc-chapter--festspelning .alt-svc-chapter__split {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -3618,12 +3628,12 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 }
 
 .alt-page--service-banner .alt-svc-section-label {
-  margin: 0 0 var(--alt-heading-content-gap);
-  font-family: var(--font-body);
-  font-size: var(--alt-svc-body-size);
+  margin: 0 0 var(--alt-svc-section-label-gap);
+  font-family: var(--font-sans);
+  font-size: var(--alt-svc-section-label-size);
   font-weight: 500;
   line-height: 1.35;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--alt-svc-section-label-spacing);
   text-transform: uppercase;
   color: var(--alt-muted);
   max-width: none;
@@ -3711,7 +3721,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
     clamp(20rem, 52svh, 32rem),
     calc(var(--alt-header-total) + 13.5rem)
   );
-  overflow: hidden;
+  overflow: visible;
   background: var(--alt-bg);
   isolation: isolate;
 }
@@ -3793,9 +3803,9 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
 .alt-page--service-banner main > .alt-service-hero + section {
   position: relative;
-  z-index: 3;
-  margin-top: calc(-1 * var(--alt-svc-hero-overlap));
-  padding-top: clamp(1.25rem, 3.5vw, 2.25rem);
+  z-index: 0;
+  margin-top: 0;
+  padding-top: clamp(2.5rem, 6vw, 4rem);
 }
 
 .alt-page--service-banner main > .alt-service-hero + section.alt-svc-chapter.section {
@@ -3882,6 +3892,10 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   .alt-service-hero h1 {
     max-width: min(42ch, 100%);
   }
+
+  .alt-page--service-banner .alt-service-hero h1 {
+    max-width: 100%;
+  }
 }
 
 .alt-service-hero h1 .alt-hero__typewriter {
@@ -3895,6 +3909,10 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   text-wrap: balance;
 }
 
+.alt-page--service-banner .alt-service-hero h1 .alt-hero__typewriter {
+  max-width: 100%;
+}
+
 .alt-service-hero h1 .alt-hero__typewriter-ghost,
 .alt-service-hero h1 .alt-hero__typewriter-live {
   grid-area: 1 / 1;
@@ -3903,6 +3921,10 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   max-width: 100%;
   white-space: normal;
   text-wrap: balance;
+}
+
+.alt-page--service-banner .alt-service-hero h1 {
+  overflow: visible;
 }
 
 .alt-service-hero h1 .alt-hero__typewriter-ghost {
@@ -3966,15 +3988,15 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 }
 
 /* Lyssna: page intro width + YouTube preview tiles + modal */
+@media (min-width: 901px) {
+  .alt-page--lyssna {
+    --alt-page-hero-intro-max: 50%;
+  }
+}
+
 .alt-page--lyssna .page-hero-copy h1,
 .alt-page--lyssna .page-hero-copy .lead {
   text-wrap: balance;
-}
-
-@media (min-width: 901px) {
-  .alt-page--lyssna .page-hero-copy {
-    max-width: 50%;
-  }
 }
 
 .alt-page--inner .lyssna-video-grid {
