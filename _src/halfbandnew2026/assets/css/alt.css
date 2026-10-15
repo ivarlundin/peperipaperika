@@ -366,11 +366,7 @@ body.alt-page > main {
   color: var(--alt-ink);
 }
 
-<<<<<<< HEAD
 /* Button UI nested inside block/card links (e.g. event ticket): keep readable on card hover */
-=======
-/* Button UI nested inside block/card links (e.g. event ticket) - keep readable on card hover */
->>>>>>> 33efb2d (Konserter: whole ticket card clickable via stretched link)
 .alt-page a:not([class*="alt-btn"]) .alt-btn {
   text-decoration: none;
 }
@@ -1451,26 +1447,12 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   gap: 0.45rem;
 }
 
-.alt-facts__item::before {
-  content: "";
+.alt-facts__icon {
   flex-shrink: 0;
-  width: 1em;
-  height: 1em;
-  background-color: currentColor;
+  width: 18px;
+  height: 18px;
+  display: block;
   opacity: 0.9;
-  -webkit-mask-image: var(--alt-check-icon);
-  mask-image: var(--alt-check-icon);
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
-  -webkit-mask-size: contain;
-  mask-size: contain;
-}
-
-.alt-facts__item--pin::before {
-  -webkit-mask-image: var(--alt-pin-icon);
-  mask-image: var(--alt-pin-icon);
 }
 
 .alt-facts__region {

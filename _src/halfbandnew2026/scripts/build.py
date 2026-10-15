@@ -42,6 +42,35 @@ HOME_OFFERT_USPS: list[tuple[str, str]] = [
     ("Växjö, Småland", "pin"),
 ]
 
+ALT_ICON_CHECK_SVG = (
+    '<svg class="alt-facts__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" '
+    'aria-hidden="true">'
+    '<path d="M5.5 12.5 9.5 16.5 18.5 7.5" stroke="currentColor" stroke-width="1.75" '
+    'stroke-linecap="round" stroke-linejoin="round"/>'
+    "</svg>"
+)
+
+ALT_ICON_PIN_SVG = (
+    '<svg class="alt-facts__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" '
+    'aria-hidden="true">'
+    '<path d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11Z" stroke="currentColor" '
+    'stroke-width="1.5" stroke-linejoin="round"/>'
+    '<circle cx="12" cy="10" r="2.25" stroke="currentColor" stroke-width="1.5"/>'
+    "</svg>"
+)
+
+
+def home_alt_facts_block() -> str:
+    return f"""      <div class="alt-facts">
+        <div class="alt-facts__inner">
+          <div class="alt-facts__items">
+            <span class="alt-facts__item">{ALT_ICON_CHECK_SVG}Åttamannaband</span>
+            <span class="alt-facts__item">{ALT_ICON_CHECK_SVG}Blåssektion</span>
+          </div>
+          <span class="alt-facts__region alt-facts__item">{ALT_ICON_PIN_SVG}Växjö, Småland</span>
+        </div>
+      </div>"""
+
 
 def offert_usp_list_markup(usps: list[tuple[str, str]] | list[str]) -> str:
     lines: list[str] = []
@@ -2030,6 +2059,12 @@ def patch_home_page():
     html = html.replace(
         '<span class="alt-facts__placeholder">Grundat [ÅR - fyll i]</span>',
         "<span>Grundat 2018</span>",
+    )
+    html = re.sub(
+        r"      <div class=\"alt-facts\">[\s\S]*?      </div>\n    </section>",
+        home_alt_facts_block() + "\n    </section>",
+        html,
+        count=1,
     )
     if 'src="/assets/js/alt-nav.js"' not in html:
         html = html.replace(

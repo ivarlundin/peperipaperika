@@ -639,6 +639,73 @@ def run_event_ticket_stretched_link_qa(base_url: str) -> list[str]:
     return failures
 
 
+def run_alt_facts_icons_qa(base_url: str) -> list[str]:
+    """Home USP strip: inline check/pin SVGs before each fact item."""
+    failures: list[str] = []
+    url = base_url.rstrip("/") + "/?qa=alt-facts"
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        try:
+            page = browser.new_page(viewport={"width": 1280, "height": 900})
+            page.goto(url, wait_until="domcontentloaded", timeout=45000)
+            page.wait_for_timeout(200)
+            items = page.locator(".alt-facts .alt-facts__item")
+            if items.count() != 3:
+                failures.append(
+                    f"alt-facts-icons: expected 3 fact items, got {items.count()}"
+                )
+            icons = page.locator(".alt-facts .alt-facts__icon")
+            if icons.count() != 3:
+                failures.append(
+                    f"alt-facts-icons: expected 3 inline icons, got {icons.count()}"
+                )
+            for index in range(icons.count()):
+                hidden = icons.nth(index).get_attribute("aria-hidden")
+                if hidden != "true":
+                    failures.append(
+                        f"alt-facts-icons: icon {index} missing aria-hidden=true"
+                    )
+            metrics = page.evaluate(
+                """() => {
+                  const strip = document.querySelector('.alt-facts');
+                  if (!strip) return { missing: true };
+                  const itemEls = [...strip.querySelectorAll('.alt-facts__item')];
+                  const checks = itemEls.filter((el) => el.querySelector("path[d*='5.5 12.5']"));
+                  const pins = itemEls.filter((el) => el.querySelector('circle[cx="12"]'));
+                  const aligned = itemEls.every((el) => {
+                    const icon = el.querySelector('.alt-facts__icon');
+                    if (!icon) return false;
+                    const ir = icon.getBoundingClientRect();
+                    const tr = el.getBoundingClientRect();
+                    const cy = ir.top + ir.height / 2;
+                    const ty = tr.top + tr.height / 2;
+                    return Math.abs(cy - ty) < 2;
+                  });
+                  return {
+                    missing: false,
+                    checks: checks.length,
+                    pins: pins.length,
+                    aligned,
+                  };
+                }"""
+            )
+            if metrics.get("missing"):
+                failures.append("alt-facts-icons: missing .alt-facts strip")
+            elif metrics.get("checks") != 2:
+                failures.append(
+                    f"alt-facts-icons: expected 2 check icons, got {metrics.get('checks')}"
+                )
+            elif metrics.get("pins") != 1:
+                failures.append(
+                    f"alt-facts-icons: expected 1 pin icon, got {metrics.get('pins')}"
+                )
+            elif not metrics.get("aligned"):
+                failures.append("alt-facts-icons: icons not vertically centered in items")
+        finally:
+            browser.close()
+    return failures
+
+
 def run_konserter_ticket_layout_qa(base_url: str) -> list[str]:
     """Desktop: concert cards align with H1 and fill the content column."""
     failures: list[str] = []
@@ -882,6 +949,7 @@ def main() -> int:
             failures.extend(run_konserter_ticket_layout_qa(base))
             failures.extend(run_event_ticket_stretched_link_qa(base))
             failures.extend(run_button_hover_contrast_qa(base))
+            failures.extend(run_alt_facts_icons_qa(base))
             failures.extend(run_faq_column_stability_qa(base))
     finally:
         if server:
