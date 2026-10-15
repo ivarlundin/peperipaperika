@@ -1097,6 +1097,7 @@ def service_addon_figure(
 
 GALLERY_STEMS_800_1600 = frozenset(
     {
+        "halvfjorton-band-forest-bw",
         "halvfjorton-band-pink-haze",
         "halvfjorton-barn-purple-stage",
         "halvfjorton-garden-mingel",
@@ -1485,11 +1486,12 @@ def gallery_img(
     extra_class: str = "",
 ) -> str:
     base = f"/assets/img/gallery/{stem}"
+    src, srcset = _gallery_src_and_srcset(stem)
     cls = f"content-photo{extra_class}"
     return f"""          <figure class="{cls}">
             <img
-              src="{base}-800w.webp"
-              srcset="{base}-480w.webp 480w, {base}-800w.webp 800w, {base}-1200w.webp 1200w, {base}-1920w.webp 1920w"
+              src="{src}"
+              srcset="{srcset}"
               sizes="{sizes}"
               alt="{esc(alt)}"
               width="{width}"
@@ -2074,15 +2076,10 @@ def write_pages():
         body=f"""    <header class="page-hero compact">
       <div class="page-hero-copy">
         <h1>Om oss</h1>
+        <p>Halv Fjorton är ett coverband från Växjö. Vi var sju från början, och hälften av fjorton är ju sju. Nu är vi åtta, men namnet fick stå kvar. Vårt mål är att ni ska minnas festen länge, och att gästerna fortfarande nynnar på låtarna dagen efter.</p>
       </div>
     </header>
     <section class="section">
-      <div class="wrap">
-        <h2>Vilka är vi?</h2>
-        <p>Halv Fjorton är ett coverband från Växjö. Vi var sju från början, och hälften av fjorton är ju sju. Nu är vi åtta, men namnet fick stå kvar. Vårt mål är att ni ska minnas festen länge, och att gästerna fortfarande nynnar på låtarna dagen efter.</p>
-      </div>
-    </section>
-    <section class="section section-alt">
       <div class="wrap split">
         <div>
           <h2>Vad spelar vi?</h2>
@@ -2090,19 +2087,14 @@ def write_pages():
           <p>Vi är ett coverband med blåssektion, så vi spelar gärna låtar med blåsriff och saxofonsolon. Kort och gott: vi har repertoar för både farfar och de yngre.</p>
         </div>
         <div>
-{gallery_img("halvfjorton-01", "Hela bandet på scen i festsal med publik")}
+{gallery_img("halvfjorton-band-forest-bw", "Hela bandet i kostym i skogen, svartvit bild", width=1600, height=1112)}
         </div>
       </div>
     </section>
-    <section class="section">
+    <section class="section om-oss-members-section">
       <div class="wrap">
         <h2>Bandet</h2>
         <p>Vi består av åtta fasta musiker: sångare, kompmusiker, slagverk och en eminent blåssektion.</p>
-      </div>
-    </section>
-    <section class="section section-alt om-oss-members-section">
-      <div class="wrap">
-        <h2>Medlemmarna</h2>
 {members_compact_grid(om_oss_member_cards)}
       </div>
     </section>
