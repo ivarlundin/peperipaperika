@@ -327,6 +327,18 @@ def run_viewport(browser, viewport: dict, mobile: bool, tag: str) -> None:
             page.add_init_script(SAFE_AREA_INIT)
         page.goto(f"{BASE}{PAGES[slug]['path']}", wait_until="networkidle")
         page.wait_for_timeout(350)
+        reveal_mount = page.evaluate(
+            """() => ({
+              heroReveal: document.querySelector('.alt-service-hero')?.hasAttribute('data-reveal'),
+              contentReveal: document.querySelector('.alt-service-hero__content')?.hasAttribute('data-reveal'),
+              heroOpacity: getComputedStyle(document.querySelector('.alt-service-hero') || document.body).opacity,
+              mediaOpacity: getComputedStyle(document.querySelector('.alt-service-hero__media') || document.body).opacity,
+            })"""
+        )
+        assert not reveal_mount["heroReveal"], f"{slug}/{tag}: hero must not use data-reveal"
+        assert reveal_mount["contentReveal"], f"{slug}/{tag}: hero content should reveal"
+        assert float(reveal_mount["heroOpacity"]) >= 0.99, f"{slug}/{tag}: hero visible before is-in"
+        assert float(reveal_mount["mediaOpacity"]) >= 0.99, f"{slug}/{tag}: hero media visible before is-in"
         page.evaluate(
             """() => {
               document.querySelectorAll('[data-reveal]').forEach((el) => el.classList.add('is-in'));

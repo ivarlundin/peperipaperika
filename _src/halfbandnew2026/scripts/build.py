@@ -937,7 +937,7 @@ def service_hero_banner(
     if ken_burns:
         media_class += " alt-service-hero__media--ken-burns"
     position_attr = f' style="object-position: {position};"' if position else ""
-    return f"""    <header class="alt-service-hero" data-reveal>
+    return f"""    <header class="alt-service-hero">
       <div class="{media_class}" aria-hidden="true">
         <img
           class="alt-service-hero__img"
@@ -952,7 +952,7 @@ def service_hero_banner(
         >
       </div>
       <div class="alt-service-hero__scrim" aria-hidden="true"></div>
-      <div class="alt-service-hero__content">
+      <div class="alt-service-hero__content" data-reveal>
 {service_hero_typewriter_h1(h1, loop_suffixes=loop_suffixes)}
         <p class="alt-service-hero__dek">{esc(description)}</p>
         <div class="alt-service-hero__actions">

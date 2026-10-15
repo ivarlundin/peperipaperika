@@ -2692,6 +2692,26 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   transition: opacity 0.65s var(--alt-ease), transform 0.65s var(--alt-ease);
 }
 
+/* Service hero: photo is full-bleed from first paint; reveal copy only */
+.alt-page--service-banner .alt-service-hero,
+.alt-page--service-banner .alt-service-hero__media,
+.alt-page--service-banner .alt-service-hero__scrim {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+.alt-page--service-banner .alt-service-hero__content[data-reveal] {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.65s var(--alt-ease), transform 0.65s var(--alt-ease);
+}
+
+.alt-page--service-banner .alt-service-hero__content[data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+
 .alt-page [data-reveal].is-in {
   opacity: 1;
   transform: none;
@@ -2699,6 +2719,12 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
 @media (prefers-reduced-motion: reduce) {
   .alt-page [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .alt-page--service-banner .alt-service-hero__content[data-reveal] {
     opacity: 1;
     transform: none;
     transition: none;
