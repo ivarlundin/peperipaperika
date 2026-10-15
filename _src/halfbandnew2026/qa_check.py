@@ -390,7 +390,7 @@ def run_matrix(
 DESKTOP_NAV_SERVICE_LINKS = (
     ("/brollop/", "Bröllop"),
     ("/foretag/", "Företag"),
-    ("/mingel/", "Fest och mingel"),
+    ("/fest-och-mingel/", "Fest och mingel"),
 )
 
 
@@ -461,7 +461,7 @@ BUTTON_HOVER_CONTRAST_PAGES = (
     "/faq/",
     "/brollop/",
     "/foretag/",
-    "/mingel/",
+    "/fest-och-mingel/",
     "/lyssna/",
     "/om-oss/",
 )
@@ -811,7 +811,7 @@ def run_service_hero_ken_burns_qa(base_url: str) -> list[str]:
     checks = (
         ("/brollop/", True, "halvfjorton-03-hero"),
         ("/foretag/", True, "halvfjorton-01"),
-        ("/mingel/", True, "halvfjorton-04"),
+        ("/fest-och-mingel/", True, "halvfjorton-04"),
     )
     with sync_playwright() as p:
         browser = p.chromium.launch()
@@ -859,7 +859,7 @@ def run_service_hero_ken_burns_qa(base_url: str) -> list[str]:
 def run_service_hero_dek_layout_qa(base_url: str) -> list[str]:
     """Service heroes: dek width (50% desktop) and spacing above CTA."""
     failures: list[str] = []
-    paths = ("/brollop/", "/foretag/", "/mingel/")
+    paths = ("/brollop/", "/foretag/", "/fest-och-mingel/")
     with sync_playwright() as p:
         browser = p.chromium.launch()
         try:
@@ -926,7 +926,7 @@ def run_service_split_layout_qa(base_url: str) -> list[str]:
     checks = (
         ("/brollop/", ".alt-svc-chapter--festspelning .alt-svc-chapter__split"),
         ("/foretag/", ".alt-svc-chapter--festspelning .alt-svc-chapter__split"),
-        ("/mingel/", ".alt-svc-chapter--festspelning .alt-svc-chapter__split"),
+        ("/fest-och-mingel/", ".alt-svc-chapter--festspelning .alt-svc-chapter__split"),
     )
     with sync_playwright() as p:
         browser = p.chromium.launch()

@@ -14,7 +14,7 @@ BASE = "http://127.0.0.1:8772/testing/halfbandnew2026"
 PATHS = (
     "/foretag/",
     "/brollop/",
-    "/mingel/",
+    "/fest-och-mingel/",
     "/kompband/",
     "/julkonsert/",
     "/kontakt/",

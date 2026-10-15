@@ -36,6 +36,13 @@
     "image": "https://halvfjorton.se/assets/img/og.jpg",
     "logo": "https://halvfjorton.se/assets/img/h14-logo.svg",
     "email": "halvfjorton@gmail.com",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Fabriksgatan 12",
+      "postalCode": "342 50",
+      "addressLocality": "Vislanda",
+      "addressCountry": "SE"
+    },
     "foundingDate": "2018",
     "genre": [
       "Soul",
@@ -206,7 +213,7 @@
             <ul class="nav-dropdown__menu" id="nav-tjanster" role="menu" aria-labelledby="nav-tjanster-btn" data-nav-dropdown-menu>
               <li role="none"><a role="menuitem" href="/brollop/">Bröllop</a></li>
               <li role="none"><a role="menuitem" href="/foretag/">Företag</a></li>
-              <li role="none"><a role="menuitem" href="/mingel/">Fest och mingel</a></li>
+              <li role="none"><a role="menuitem" href="/fest-och-mingel/">Fest och mingel</a></li>
             </ul>
           </li>
           <li><a href="/konserter/">Konserter</a></li>
@@ -219,6 +226,16 @@
       </nav>
     </div>
   </header>
+  <script>
+(function () {
+  document.documentElement.classList.add("alt-header-state-init");
+  var header = document.querySelector(".alt-header");
+  if (!header) return;
+  if ((window.scrollY || document.documentElement.scrollTop || 0) > 10) {
+    header.classList.add("is-solid");
+  }
+})();
+  </script>
 
   <div class="mobile-menu" id="mobile-menu" data-mobile-menu hidden aria-hidden="true">
     <nav class="mobile-menu__nav" aria-label="Mobilmeny">
@@ -233,7 +250,7 @@
                 <ul class="nav-dropdown__menu" id="mobile-nav-tjanster" role="menu" aria-labelledby="mobile-nav-tjanster-btn" data-nav-dropdown-menu>
               <li role="none"><a role="menuitem" href="/brollop/">Bröllop</a></li>
               <li role="none"><a role="menuitem" href="/foretag/">Företag</a></li>
-              <li role="none"><a role="menuitem" href="/mingel/">Fest och mingel</a></li>
+              <li role="none"><a role="menuitem" href="/fest-och-mingel/">Fest och mingel</a></li>
                 </ul>
               </div>
             </div>
@@ -289,10 +306,10 @@
       <div class="alt-facts">
         <div class="alt-facts__inner">
           <div class="alt-facts__items">
-            <span class="alt-facts__item alt-facts__item--check">Åttamannaband</span>
-            <span class="alt-facts__item alt-facts__item--check">Blåssektion</span>
+            <span class="alt-facts__item"><svg class="alt-facts__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.5 12.5 9.5 16.5 18.5 7.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>Åttamannaband</span>
+            <span class="alt-facts__item"><svg class="alt-facts__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.5 12.5 9.5 16.5 18.5 7.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>Blåssektion</span>
           </div>
-          <span class="alt-facts__region alt-facts__item alt-facts__item--pin">Växjö, Småland</span>
+          <span class="alt-facts__region alt-facts__item"><svg class="alt-facts__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.25" stroke="currentColor" stroke-width="1.5"/></svg>Växjö, Småland</span>
         </div>
       </div>
     </section>
@@ -339,7 +356,7 @@
             <span class="alt-offer-card__arrow">Läs om företag</span>
           </div>
         </a>
-        <a class="alt-offer-card" href="/mingel/">
+        <a class="alt-offer-card" href="/fest-och-mingel/">
           <div class="alt-offer-card__media">
           <img class="alt-offer-card__img" src="/assets/img/gallery/halvfjorton-04-800w.webp" srcset="/assets/img/gallery/halvfjorton-04-480w.webp 480w, /assets/img/gallery/halvfjorton-04-800w.webp 800w, /assets/img/gallery/halvfjorton-04-1200w.webp 1200w, /assets/img/gallery/halvfjorton-04-1920w.webp 1920w" sizes="(max-width: 900px) 27vw, 33vw" alt="Sångare och band på rustik träscen med professionellt scenljus" width="1280" height="853" loading="lazy" decoding="async">
           </div>
@@ -352,61 +369,59 @@
       </div>
     </section>
 
-    <section class="alt-gallery" aria-label="Bilder från spelningar" data-reveal>
+    <section class="alt-gallery" aria-label="Bilder och omdömen från spelningar">
       <div class="alt-gallery__inner">
         <div class="alt-gallery__bento">
-          <figure class="alt-gallery__card alt-gallery__card--feature alt-gallery__card--mono">
-            <img class="alt-gallery__ken" src="/assets/img/gallery/halvfjorton-01-800w.webp" srcset="/assets/img/gallery/halvfjorton-01-480w.webp 480w, /assets/img/gallery/halvfjorton-01-800w.webp 800w, /assets/img/gallery/halvfjorton-01-1200w.webp 1200w, /assets/img/gallery/halvfjorton-01-1920w.webp 1920w" sizes="(max-width: 900px) 94vw, 34vw" alt="Hela bandet på scen i festsal med publik i förgrunden" width="2400" height="1600" loading="eager" decoding="async">
-          </figure>
-          <figure class="alt-gallery__card alt-gallery__card--tall alt-gallery__card--color">
-            <img class="alt-gallery__ken alt-gallery__ken--tall" src="/assets/img/gallery/halvfjorton-02-800w.webp" srcset="/assets/img/gallery/halvfjorton-02-480w.webp 480w, /assets/img/gallery/halvfjorton-02-800w.webp 800w, /assets/img/gallery/halvfjorton-02-1200w.webp 1200w, /assets/img/gallery/halvfjorton-02-1920w.webp 1920w" sizes="(max-width: 900px) 46vw, 18vw" alt="Keyboard och blåssektion på scen i blått ljus och rök" width="1600" height="2400" loading="eager" decoding="async">
-          </figure>
-          <figure class="alt-gallery__card alt-gallery__card--wide-top alt-gallery__card--color">
-            <img class="alt-gallery__ken" src="/assets/img/gallery/halvfjorton-04-800w.webp" srcset="/assets/img/gallery/halvfjorton-04-480w.webp 480w, /assets/img/gallery/halvfjorton-04-800w.webp 800w, /assets/img/gallery/halvfjorton-04-1200w.webp 1200w, /assets/img/gallery/halvfjorton-04-1920w.webp 1920w" sizes="(max-width: 900px) 46vw, 18vw" alt="Två sångare framför mikrofoner på träscen med varm belysning" width="1280" height="853" loading="lazy" decoding="async">
-          </figure>
-          <figure class="alt-gallery__card alt-gallery__card--wide-bottom alt-gallery__card--mono">
-            <img class="alt-gallery__ken" src="/assets/img/gallery/halvfjorton-05-800w.webp" srcset="/assets/img/gallery/halvfjorton-05-480w.webp 480w, /assets/img/gallery/halvfjorton-05-800w.webp 800w, /assets/img/gallery/halvfjorton-05-1200w.webp 1200w, /assets/img/gallery/halvfjorton-05-1920w.webp 1920w" sizes="(max-width: 900px) 94vw, 34vw" alt="Band i rustik lokal med publik i silhuett och blå scenbelysning" width="1280" height="853" loading="lazy" decoding="async">
-          </figure>
-          <figure class="alt-gallery__card alt-gallery__card--sm alt-gallery__card--color">
-            <img class="alt-gallery__ken alt-gallery__ken--tall" src="/assets/img/gallery/halvfjorton-06-800w.webp" srcset="/assets/img/gallery/halvfjorton-06-480w.webp 480w, /assets/img/gallery/halvfjorton-06-800w.webp 800w, /assets/img/gallery/halvfjorton-06-1200w.webp 1200w, /assets/img/gallery/halvfjorton-06-1920w.webp 1920w" sizes="(max-width: 900px) 46vw, 18vw" alt="Sång och slagverk på scen, svartvit bild i dramatiskt ljus" width="1600" height="2400" loading="lazy" decoding="async">
-          </figure>
-          <figure class="alt-gallery__card alt-gallery__card--tall-right alt-gallery__card--mono">
-            <img class="alt-gallery__ken" src="/assets/img/gallery/halvfjorton-03-800w.webp" srcset="/assets/img/gallery/halvfjorton-03-480w.webp 480w, /assets/img/gallery/halvfjorton-03-800w.webp 800w, /assets/img/gallery/halvfjorton-03-1200w.webp 1200w, /assets/img/gallery/halvfjorton-03-1920w.webp 1920w" sizes="(max-width: 900px) 46vw, 18vw" alt="Trummor och feststämning med konfetti bland sittande gäster" width="2400" height="1600" loading="lazy" decoding="async">
-          </figure>
+          <div class="alt-gallery__photo-field">
+            <div class="alt-gallery__strip">
+              <div class="alt-gallery__drift-layer">
+              <figure class="alt-gallery__card alt-gallery__card--feature alt-gallery__card--color">
+                <img class="alt-gallery__ken" src="/assets/img/gallery/halvfjorton-01-800w.webp" srcset="/assets/img/gallery/halvfjorton-01-480w.webp 480w, /assets/img/gallery/halvfjorton-01-800w.webp 800w, /assets/img/gallery/halvfjorton-01-1200w.webp 1200w, /assets/img/gallery/halvfjorton-01-1920w.webp 1920w" sizes="(max-width: 900px) 72vw, 34vw" alt="Hela bandet på scen i festsal med publik i förgrunden" width="2400" height="1600" loading="eager" decoding="async">
+              </figure>
+              <figure class="alt-gallery__card alt-gallery__card--tall alt-gallery__card--color">
+                <img class="alt-gallery__ken alt-gallery__ken--tall" src="/assets/img/gallery/halvfjorton-02-800w.webp" srcset="/assets/img/gallery/halvfjorton-02-480w.webp 480w, /assets/img/gallery/halvfjorton-02-800w.webp 800w, /assets/img/gallery/halvfjorton-02-1200w.webp 1200w, /assets/img/gallery/halvfjorton-02-1920w.webp 1920w" sizes="(max-width: 900px) 72vw, 18vw" alt="Keyboard och blåssektion på scen i blått ljus och rök" width="1600" height="2400" loading="eager" decoding="async">
+              </figure>
+              <figure class="alt-gallery__card alt-gallery__card--wide-top alt-gallery__card--color">
+                <img class="alt-gallery__ken" src="/assets/img/gallery/halvfjorton-04-800w.webp" srcset="/assets/img/gallery/halvfjorton-04-480w.webp 480w, /assets/img/gallery/halvfjorton-04-800w.webp 800w, /assets/img/gallery/halvfjorton-04-1200w.webp 1200w, /assets/img/gallery/halvfjorton-04-1920w.webp 1920w" sizes="(max-width: 900px) 72vw, 18vw" alt="Två sångare framför mikrofoner på träscen med varm belysning" width="1280" height="853" loading="lazy" decoding="async">
+              </figure>
+              <figure class="alt-gallery__card alt-gallery__card--wide-bottom alt-gallery__card--mono">
+                <img class="alt-gallery__ken" src="/assets/img/gallery/halvfjorton-05-800w.webp" srcset="/assets/img/gallery/halvfjorton-05-480w.webp 480w, /assets/img/gallery/halvfjorton-05-800w.webp 800w, /assets/img/gallery/halvfjorton-05-1200w.webp 1200w, /assets/img/gallery/halvfjorton-05-1920w.webp 1920w" sizes="(max-width: 900px) 72vw, 34vw" alt="Band i rustik lokal med publik i silhuett och blå scenbelysning" width="1280" height="853" loading="lazy" decoding="async">
+              </figure>
+              <figure class="alt-gallery__card alt-gallery__card--sm alt-gallery__card--color">
+                <img class="alt-gallery__ken alt-gallery__ken--tall" src="/assets/img/gallery/halvfjorton-06-800w.webp" srcset="/assets/img/gallery/halvfjorton-06-480w.webp 480w, /assets/img/gallery/halvfjorton-06-800w.webp 800w, /assets/img/gallery/halvfjorton-06-1200w.webp 1200w, /assets/img/gallery/halvfjorton-06-1920w.webp 1920w" sizes="(max-width: 900px) 72vw, 18vw" alt="Sång och slagverk på scen, svartvit bild i dramatiskt ljus" width="1600" height="2400" loading="lazy" decoding="async">
+              </figure>
+              <figure class="alt-gallery__card alt-gallery__card--tall-right alt-gallery__card--mono">
+                <img class="alt-gallery__ken" src="/assets/img/gallery/halvfjorton-03-800w.webp" srcset="/assets/img/gallery/halvfjorton-03-480w.webp 480w, /assets/img/gallery/halvfjorton-03-800w.webp 800w, /assets/img/gallery/halvfjorton-03-1200w.webp 1200w, /assets/img/gallery/halvfjorton-03-1920w.webp 1920w" sizes="(max-width: 900px) 72vw, 18vw" alt="Trummor och feststämning med konfetti bland sittande gäster" width="2400" height="1600" loading="lazy" decoding="async">
+              </figure>
+              </div>
+              <figure class="alt-gallery__quote-tile" aria-label="Omdöme">
+                <p class="alt-gallery__quote-mark" aria-hidden="true">“</p>
+                <blockquote class="alt-gallery__quote-text">
+                  <span class="alt-gallery__quote-sr">Earth, Wind &amp; Fire, släng er i väggen!</span>
+                  <p class="alt-gallery__quote-live" aria-hidden="true">
+                    <span data-gallery-quote-typewriter></span>
+                  </p>
+                </blockquote>
+                <figcaption class="alt-gallery__quote-attr">
+                  <span class="alt-gallery__quote-attr-strong">Svensk &quot;fotbollsprofil&quot;</span>
+                  <span class="alt-gallery__quote-attr-muted">Kronovalls slott 2023</span>
+                </figcaption>
+              </figure>
+            </div>
+          </div>
         </div>
-      </div>
-    </section>
-
-
-    <section class="alt-quote" aria-label="Omdöme" data-reveal>
-      <div class="alt-quote__inner">
-        <p class="alt-quote__mark" aria-hidden="true">“</p>
-        <blockquote class="alt-quote__text">
-          <p>Earth, Wind &amp; Fire, släng er i väggen!</p>
-        </blockquote>
-        <p class="alt-quote__attrib">
-          <span class="alt-quote__attrib-line alt-quote__attrib-line--strong">Svensk &quot;fotbollsprofil&quot;</span>
-          <span class="alt-quote__attrib-line">Kronovalls slott 2023</span>
-        </p>
       </div>
     </section>
 
     <section class="alt-contact-offert" id="offert" aria-labelledby="offert-rubrik">
       <div class="alt-contact-offert__wrap contact-offert__grid">
         <div class="contact-offert__copy">
-          <h2 id="offert-rubrik" class="alt-section-heading" aria-label="Begär offert">
-            <span class="alt-section-typewriter" data-alt-section-typewriter aria-hidden="true">
-              <span class="alt-section-typewriter__ghost">Begär offert</span>
-              <span class="alt-section-typewriter__live">
-                <span class="alt-section-typewriter__text" data-section-typewriter-text></span><span class="alt-section-typewriter__caret" aria-hidden="true"></span>
-              </span>
-            </span>
-          </h2>
-          <p class="contact-offert__lead">Skriv datum, plats och vad ni planerar. Vi återkommer med förslag.</p>
+          <h2 id="offert-rubrik">Begär offert</h2>
+        <p class="contact-offert__lead">Skriv datum, plats och vad ni planerar. Vi återkommer med förslag.</p>
           <ul class="list-check">
-            <li>Vi svarar inom 24 timmar</li>
-            <li>Skräddarsytt efter era önskemål</li>
-            <li>Åttamannaband med blås</li>
+            <li>Åttamannaband</li>
+            <li>Blåssektion</li>
+            <li class="list-check__item--pin">Växjö, Småland</li>
           </ul>
           <p class="contact-offert__mail">
             <a class="alt-btn alt-btn--primary" href="mailto:halvfjorton@gmail.com">Föredrar du e-post? Mejla oss här</a>
@@ -417,55 +432,75 @@
             <noscript>
               <p><a href="https://tally.so/r/n0xyqQ">Öppna offertformuläret på Tally</a> om det inte visas här.</p>
             </noscript>
-            <iframe
-              data-tally-src="https://tally.so/embed/n0xyqQ?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1"
-              loading="lazy"
-              title="Offertförfrågan Halv Fjorton"
-              width="100%"
-              height="420"
-              frameborder="0"
-              marginheight="0"
-              marginwidth="0"
-            ></iframe>
+          <iframe
+            data-tally-src="https://tally.so/embed/n0xyqQ?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1"
+            loading="lazy"
+            title="Offertförfrågan Halv Fjorton"
+            width="100%"
+            height="420"
+            frameborder="0"
+            marginheight="0"
+            marginwidth="0"
+          ></iframe>
           </div>
-          <p class="contact-offert__consent">Genom att skicka godkänner du att vi sparar dina uppgifter för att besvara din förfrågan. Läs mer i vår <a href="/integritetspolicy/">integritetspolicy</a>.</p>
+            <p class="contact-offert__consent">Genom att skicka godkänner du att vi sparar dina uppgifter för att besvara din förfrågan. Läs mer i vår <a href="/integritetspolicy/">integritetspolicy</a>.</p>
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="site-footer" aria-label="Sidfot">
+  <footer class="site-footer site-footer--columns" aria-label="Sidfot">
     <div class="site-footer__inner">
-      <div class="site-footer__grid">
+      <div class="site-footer__columns">
         <div class="site-footer__brand">
-          <p class="site-footer__title">Halv Fjorton</p>
-          <p class="site-footer__tagline">Coverband från Växjö, Småland</p>
+          <a class="site-footer__brand-mark" href="/" aria-label="Halv Fjorton">
+            <span class="site-footer__title">Halv Fjorton</span>
+          </a>
+          <p class="site-footer__tagline">Coverband och partyband med rötter i Växjö, Småland.</p>
         </div>
-        <nav class="site-footer__nav" aria-label="Sidfot länkar">
+        <div class="site-footer__col">
+          <p class="site-footer__col-label">Tjänster</p>
           <ul class="site-footer__links">
-            <li><a href="/#tjanster">Tjänster</a></li>
-            <li><a href="/kontakt/">Kontakt</a></li>
+            <li><a href="/brollop/">Bröllop</a></li>
+            <li><a href="/foretag/">Företag</a></li>
+            <li><a href="/fest-och-mingel/">Fest och mingel</a></li>
+          </ul>
+        </div>
+        <div class="site-footer__col">
+          <p class="site-footer__col-label">Läs mer</p>
+          <ul class="site-footer__links">
+            <li><a href="/om-oss/">Om oss</a></li>
             <li><a href="/faq/">FAQ</a></li>
             <li><a href="/lyssna/">Lyssna</a></li>
+            <li><a href="/konserter/">Konserter</a></li>
             <li><a href="/integritetspolicy/">Integritetspolicy</a></li>
           </ul>
-        </nav>
-        <div class="site-footer__aside">
-          <a class="site-footer__social" href="https://www.instagram.com/halvfjorton/" target="_blank" rel="noopener noreferrer">
-            <svg class="site-footer__ig-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.75"/>
-              <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.75"/>
-              <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
-            </svg>
-            <span>Följ oss på Instagram</span>
-          </a>
-          <a class="alt-btn alt-btn--primary site-footer__cta" href="/kontakt/">Kontakta oss</a>
+        </div>
+        <div class="site-footer__col">
+          <p class="site-footer__col-label">Följ oss</p>
+          <ul class="site-footer__links">
+            <li><a class="site-footer__social-link" href="https://www.instagram.com/halvfjorton/" target="_blank" rel="noopener noreferrer"><svg class="alt-btn__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.75"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.75"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg><span>Instagram</span></a></li>
+            <li><a class="site-footer__social-link" href="https://www.youtube.com/@halvfjorton9292" target="_blank" rel="noopener noreferrer"><svg class="alt-btn__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M20.5 7.2a1.6 1.6 0 0 0-1.12-.74C17.7 6.25 12 6.25 12 6.25s-5.7 0-7.38.21a1.6 1.6 0 0 0-1.12.74A16.8 16.8 0 0 0 3 12a16.8 16.8 0 0 0 .5 4.8 1.6 1.6 0 0 0 1.12.74c1.68.21 7.38.21 7.38.21s5.7 0 7.38-.21a1.6 1.6 0 0 0 1.12-.74A16.8 16.8 0 0 0 21 12a16.8 16.8 0 0 0-.5-4.8z" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/><path d="M10.25 15.02V8.98L15.5 12l-5.25 3.02z" fill="currentColor"/></svg><span>YouTube</span></a></li>
+          </ul>
+        </div>
+        <div class="site-footer__col site-footer__col--contact">
+          <p class="site-footer__col-label">Kontakt</p>
+          <ul class="site-footer__links site-footer__links--plain">
+            <li>
+              <address class="site-footer__address">
+                Fabriksgatan 12<br>
+                342 50 Vislanda
+              </address>
+            </li>
+            <li><span class="site-footer__contact-line">Org.nr 769641-5418</span></li>
+            <li><a class="site-footer__email" href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a></li>
+          </ul>
         </div>
       </div>
       <hr class="site-footer__rule" />
-      <p class="site-footer__legal">
-        <span class="site-footer__legal-line">© <span data-footer-year>2026</span> Halv Fjorton ek. för.</span>
-        <span class="site-footer__legal-org">Org.nr 769641-5418</span>
+      <p class="site-footer__legal site-footer__legal--bar">
+        <span class="site-footer__legal-line">© <span data-footer-year>2026</span> Halv Fjorton</span>
+        <span class="site-footer__legal-place">Växjö, Småland</span>
       </p>
     </div>
   </footer>
@@ -477,6 +512,7 @@
   <script src="/assets/js/alt-hero-typewriter.js" defer></script>
   <script src="/assets/js/alt-section-typewriter.js" defer></script>
   <script src="/assets/js/tally-embed.js" defer></script>
+  <script src="/assets/js/alt-gallery-bento.js" defer></script>
   <style>
     .visually-hidden {
       position: absolute !important;

@@ -39,9 +39,9 @@ PAGES = {
         "h1": "Personalfest, kickoff och jubileum",
     },
     "mingel": {
-        "path": "/mingel/",
+        "path": "/fest-och-mingel/",
         "img_stem": "halvfjorton-04",
-        "h1": "Mingelmusik som håller tonen låg",
+        "h1": "Liveband till fest och mingel",
     },
 }
 

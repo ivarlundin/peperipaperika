@@ -14,7 +14,7 @@ Kärnregion: Växjö, Älmhult, Kalmar, Jönköping, Lund, Malmö, Helsingborg (
 ## Tjänster
 - Bröllop: https://halvfjorton.se/brollop/
 - Företag: https://halvfjorton.se/foretag/
-- Fest och mingel: https://halvfjorton.se/mingel/
+- Fest och mingel: https://halvfjorton.se/fest-och-mingel/
 - Egen julkonsert (A Soulful Christmas, Nygatan 6 Växjö sedan 2023): /julkonsert/
 
 ## Viktiga sidor

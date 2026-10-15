@@ -54,7 +54,7 @@ def assert_home_offers(page) -> None:
     fest = page.locator(".alt-offer-card", has_text="Fest och mingel")
     assert fest.count() == 1, "fest och mingel card missing"
     fest_href = fest.get_attribute("href") or ""
-    assert fest_href.endswith("/mingel/"), fest_href
+    assert fest_href.endswith("/fest-och-mingel/"), fest_href
     assert fest.locator("h2").inner_text() == "Fest och mingel"
     assert fest.locator(".alt-offer-card__arrow").inner_text() == "Läs om fest och mingel"
 

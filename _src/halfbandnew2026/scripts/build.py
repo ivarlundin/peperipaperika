@@ -106,7 +106,7 @@ def offert_email_mail_markup() -> str:
 NAV_SERVICES = [
     ("/brollop/", "Bröllop"),
     ("/foretag/", "Företag"),
-    ("/mingel/", "Fest och mingel"),
+    ("/fest-och-mingel/", "Fest och mingel"),
 ]
 
 # Service landing pages kept in build output but omitted from nav, sitemap, and llms.txt.
@@ -122,7 +122,8 @@ HIDDEN_SERVICE_PATHS = frozenset(
 
 SERVICE_LINK_REDIRECTS = {
     "/kompband/": "/brollop/",
-    "/50-arsfest/": "/mingel/",
+    "/50-arsfest/": "/fest-och-mingel/",
+    "/mingel/": "/fest-och-mingel/",
     "/brollopsband-smaland/": "/brollop/",
     "/coverband-skane-malmo/": "/foretag/",
     "/for-eventbolag/": "/foretag/",
@@ -142,7 +143,7 @@ SITEMAP_PATHS = [
     "/foretag/",
     "/julkonsert/",
     "/konserter/",
-    "/mingel/",
+    "/fest-och-mingel/",
     "/om-oss/",
     "/lyssna/",
     "/faq/",
@@ -553,7 +554,7 @@ def modern_footer_markup() -> str:
           <ul class="site-footer__links">
             <li><a href="/brollop/">Bröllop</a></li>
             <li><a href="/foretag/">Företag</a></li>
-            <li><a href="/mingel/">Fest och mingel</a></li>
+            <li><a href="/fest-och-mingel/">Fest och mingel</a></li>
           </ul>
         </div>
         <div class="site-footer__col">
@@ -861,6 +862,7 @@ SERVICE_FAQ_ACCORDION_SCRIPT = (
 )
 TALLY_EMBED_SCRIPT = '  <script src="/assets/js/tally-embed.js" defer></script>\n'
 FORETAG_PAGE_SCRIPTS = f"{SERVICE_FAQ_ACCORDION_SCRIPT}{TALLY_EMBED_SCRIPT}"
+MINGEL_PAGE_SCRIPTS = FORETAG_PAGE_SCRIPTS
 
 SERVICE_OFFER_HERO_IMAGES = {
     "brollop": (
@@ -1077,26 +1079,24 @@ FORETAG_FAQS: tuple[tuple[str, str], ...] = (
 
 MINGEL_FAQS: tuple[tuple[str, str], ...] = (
     (
-        "Hur högt spelar ni på mingel?",
-        "Vi håller volymen så gäster kan prata. Repertoaren är jazzigare och lugnare än på dansbandet, "
-        "men det är samma musiker hela kvällen.",
+        "Kan ni spela både mingel och fest?",
+        "Ja. Många väljer att vi tar hela kvällen, från lugnare musik när gästerna kommer till fullt dansgolv senare.",
     ),
     (
-        "Kan ni spela fest senare samma kväll?",
-        "Det är vårt vanligaste upplägg. Mingel först, paus under middag och tal, sedan fest med mer tryck på dansgolvet.",
+        "Kan ni spela under middagen?",
+        "Ja, vi spelar gärna någon låt vid utvalda tillfällen under sittningen, eller håller i ett musikquiz med gästerna.",
     ),
     (
-        "Kan vi styra stilen?",
-        "Ja. Säg om ni vill ha mer jazz, mer svenskt eller en blandning. Vi anpassar setlistan till er miljö.",
+        "Måste man boka alla åtta musiker?",
+        "När man bokar Halv Fjorton får man hela bandet, alltid. Åtta musiker med full blåssektion ger ett tryck som gör oss till ett coverband utöver det vanliga.",
     ),
     (
-        "Spelar ni utomhus?",
-        "Det beror på väder, el och skydd för utrustningen. Berätta om planen tidigt så kan vi säga om det är rimligt.",
+        "Spelar ni i hela södra Sverige?",
+        "Ja, på förfrågan. Vi spelar ofta i Malmö, Lund, Helsingborg, Växjö, Jönköping, Kalmar, Karlskrona och på Österlen.",
     ),
     (
-        "Vad behöver ni veta vid bokning?",
-        "Datum, adress, ungefärligt antal gäster, om det är bara mingel eller mingel plus fest, "
-        "och ungefärlig sluttid. Resten tar vi i dialog.",
+        "Ingår ljud och ljus?",
+        "Det beror på hur stort eventet är. Vi kan ta med egen utrustning eller använda er leverantör, och ser till att ljudet passar lokalen.",
     ),
 )
 
@@ -1179,15 +1179,15 @@ FORETAG_STANDARD_PAGE = StandardServicePage(
 
 MINGEL_STANDARD_PAGE = StandardServicePage(
     service_key="mingel",
-    hero_h1="Mingelmusik som håller tonen låg",
+    hero_h1="Liveband till fest och mingel",
     hero_dek=(
-        "Vi spelar mingel med blandad repertoar, från jazz till svenska klassiker. "
-        "Det passar när gästerna ska kunna prata och ändå höra att det är livemusik."
+        "Åttamannaband som sätter stämningen, oavsett om kvällen börjar med skål eller går rakt ut på dansgolvet."
     ),
-    split_title="Mingelmusik",
+    split_title="Från första glaset till sista låten",
     split_paragraphs=(
-        "Innan middagen, under fördrink, i foajén eller på en sommaräng. Vi spelar lägre och mer akustiskt i känslan, men med samma musiker, så kvällen kan växa till fest utan att byta band.",
-        "Passar bröllopsmottagning, konferensmiddag, after work och jubileum där första timmen ska vara samtal, inte diskotek.",
+        "Oavsett om det är 50-årsfest, jubileum eller sommarfest på en äng bär vi kvällen hela vägen. "
+        "Vi börjar lågmält medan gästerna minglar, och när talen är hållna och borden dukats av drar vi igång festen på riktigt. "
+        "Vi är flexibla och anpassar upplägget efter er kväll.",
     ),
     split_stem="halvfjorton-02",
     split_alt="Keyboard och blåssektion på scen i blått ljus och rök",
@@ -1195,18 +1195,32 @@ MINGEL_STANDARD_PAGE = StandardServicePage(
         ServiceAddon(
             "halvfjorton-01",
             "Band på stor scen med varmt ljus och publik i festsal",
-            "Festspelning samma kväll",
-            "Många bokar mingel plus fest samma kväll. Det är vårt vanligaste kombinerade upplägg, och det vi rekommenderar när tiden räcker.",
+            "Festspelning",
+            "När det är dags att dansa tar vi över och ställer till med ösigt dansgolv. Två set fullt ös med blåssektion, anpassat efter er publik och kvällens tempo.",
+        ),
+        ServiceAddon(
+            "halvfjorton-03",
+            "Fest med guldkonfetti och trummor bland gäster vid bord",
+            "Middagsunderhållning",
+            "Vi spelar gärna en eller två låtar vid utvalda tillfällen under sittningen. Ett uppskattat inslag är ett interaktivt musikquiz med gästerna, som alltid går hem.",
+            width=1280,
+            height=720,
         ),
         ServiceAddon(
             "halvfjorton-06",
             "Sång och slagverk på scen i dramatiskt ljus",
-            "Skräddarsydd repertoar",
-            "Jazzstandard, soul i dämpat tempo, svenska visor och klassiker. Vill ni ha en tydlig tråd, till exempel bara jazz eller mest svenskt, säger ni det så styr vi dit.",
+            "Mingel",
+            "När gästerna strömmar in spelar vi lugnare musik som låter samtalen flyta. Jazz, soul och svenska visor i en blandning som sätter tonen för kvällen.",
+            width=1280,
+            height=720,
         ),
     ),
     faqs=MINGEL_FAQS,
-    closing_text="Berätta om ert mingel eller mottagning, så återkommer vi med ett förslag.",
+    closing_text=(
+        "Hör av er via formuläret på kontaktsidan. Vi återkommer med upplägg och offert när vi vet plats, tider och vilka delar ni vill boka."
+    ),
+    closing_embed_form=True,
+    closing_email_link="E-post? Klicka här",
 )
 
 
@@ -1677,18 +1691,22 @@ def write_pages():
     )
 
     page(
-        "/mingel/",
-        "Mingelband och jazz till mottagning | Halv Fjorton",
-        "Halv Fjorton spelar mingel med jazz och svenska klassiker. Passar konferensmiddag, bröllopsmottagning och företagsmingel i södra Sverige.",
+        "/fest-och-mingel/",
+        f"Liveband till fest och mingel | {BRAND_TITLE}",
+        (
+            "Åttamannaband till fest och mingel med blåssektion. "
+            "Från lugn stämning till fullt dansgolv i samma kväll."
+        ),
+        breadcrumb_name="Fest och mingel",
         extra_ld=[
             service_ld(
-                "Mingel och mottagning",
-                "Live mingelmusik från traditionell jazz till svenska klassiker.",
-                "/mingel/",
+                "Fest och mingel",
+                "Liveband till fest och mingel med mingel, middagsunderhållning och festspelning.",
+                "/fest-och-mingel/",
             ),
             faq_page_ld(MINGEL_FAQS),
         ],
-        extra_scripts=SERVICE_FAQ_ACCORDION_SCRIPT,
+        extra_scripts=MINGEL_PAGE_SCRIPTS,
         page_class="alt-page--service-banner",
         body=standard_service_page_body(MINGEL_STANDARD_PAGE),
     )
@@ -2213,6 +2231,7 @@ def write_pages():
     )
 
     write_redirect_page("/repertoar/", "/lyssna/#repertoar")
+    write_redirect_page("/mingel/", "/fest-och-mingel/", "Fest och mingel")
 
 
 def write_sitemap():
@@ -2254,7 +2273,7 @@ Kärnregion: Växjö, Älmhult, Kalmar, Jönköping, Lund, Malmö, Helsingborg (
 ## Tjänster
 - Bröllop: {SITE}/brollop/
 - Företag: {SITE}/foretag/
-- Fest och mingel: {SITE}/mingel/
+- Fest och mingel: {SITE}/fest-och-mingel/
 - Egen julkonsert (A Soulful Christmas, Nygatan 6 Växjö sedan 2023): /julkonsert/
 
 ## Viktiga sidor
@@ -2663,7 +2682,7 @@ def assert_hidden_services_excluded(target: Path) -> None:
         "index.html",
         "brollop/index.html",
         "foretag/index.html",
-        "mingel/index.html",
+        "fest-och-mingel/index.html",
         "faq/index.html",
     )
     for rel in visible_samples:
