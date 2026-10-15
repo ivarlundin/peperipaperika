@@ -1325,7 +1325,9 @@ def run_home_bento_qa(base_url: str) -> list[str]:
                     quoteClip,
                     quoteBg: quote ? getComputedStyle(quote).backgroundColor : '',
                     quoteInk,
-                    hasQuoteGhost: !!document.querySelector('.alt-gallery__quote-typewriter-ghost'),
+                    hasQuoteChars: !!document.querySelector(
+                      '.alt-gallery__quote-char'
+                    ),
                     hasQuoteSr: !!document.querySelector('.alt-gallery__quote-sr'),
                     bentoRowCount: getComputedStyle(bento).gridTemplateRows
                       .split(' ')
@@ -1382,8 +1384,10 @@ def run_home_bento_qa(base_url: str) -> list[str]:
                     )
                 if data.get("featH") and data.get("tallH", 0) > data["featH"] * 1.12:
                     failures.append("home-bento: tall keyboard tile must not span more than row 1")
-                if not data.get("hasQuoteGhost") or not data.get("hasQuoteSr"):
-                    failures.append("home-bento: quote needs SR text + layout ghost for typewriter")
+                if not data.get("hasQuoteChars") or not data.get("hasQuoteSr"):
+                    failures.append(
+                        "home-bento: quote needs SR text + prebuilt char spans for typewriter"
+                    )
                 if data.get("cardOpacity", 0) < 0.98:
                     failures.append("home-bento: reveal stagger did not finish (card opacity)")
             page.close()

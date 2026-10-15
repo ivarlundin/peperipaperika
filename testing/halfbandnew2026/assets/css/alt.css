@@ -1642,6 +1642,8 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
 /* Home gallery bento */
 .alt-gallery {
+  --alt-gallery-reveal-duration: 1s;
+  --alt-gallery-reveal-ease: cubic-bezier(0.22, 1, 0.36, 1);
   padding: 0 0 clamp(2.75rem, 5vw, 4rem);
   overflow-x: clip;
   content-visibility: auto;
@@ -1700,8 +1702,8 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   opacity: 0;
   transform: translate3d(0, 14px, 0);
   transition:
-    opacity 0.6s var(--alt-ease),
-    transform 0.6s var(--alt-ease);
+    opacity var(--alt-gallery-reveal-duration) var(--alt-gallery-reveal-ease),
+    transform var(--alt-gallery-reveal-duration) var(--alt-gallery-reveal-ease);
 }
 
 .alt-gallery__quote-mark {
@@ -1734,25 +1736,10 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 .alt-gallery__quote-live {
   position: relative;
   margin: 0;
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr;
-}
-
-.alt-gallery__quote-typewriter-ghost {
-  visibility: hidden;
-  grid-area: 1 / 1;
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: clamp(1.35rem, 4.8vw + 0.65rem, 2.35rem);
-  font-weight: 800;
-  line-height: 1.12;
-  text-wrap: balance;
-  pointer-events: none;
 }
 
 .alt-gallery__quote-live [data-gallery-quote-typewriter] {
-  grid-area: 1 / 1;
+  display: block;
   margin: 0;
   font-family: var(--font-display);
   font-size: clamp(1.35rem, 4.8vw + 0.65rem, 2.35rem);
@@ -1763,21 +1750,12 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   text-wrap: balance;
 }
 
-.alt-gallery__quote-caret {
-  display: inline-block;
-  width: 0.08em;
-  height: 0.95em;
-  margin-left: 0.06em;
-  vertical-align: -0.08em;
-  background: var(--alt-gallery-quote-ink);
-  opacity: 0.75;
-  animation: alt-gallery-quote-caret 1s step-end infinite;
+.alt-gallery__quote-char {
+  visibility: hidden;
 }
 
-@keyframes alt-gallery-quote-caret {
-  50% {
-    opacity: 0;
-  }
+.alt-gallery__quote-char.is-visible {
+  visibility: visible;
 }
 
 .alt-gallery__quote-attr {
@@ -1801,7 +1779,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 .alt-gallery__quote-tile.is-in {
   opacity: 1;
   transform: none;
-  transition-delay: var(--alt-gallery-stagger, 0.38s);
+  transition-delay: var(--alt-gallery-stagger, 0s);
 }
 
 .alt-gallery__card {
@@ -1815,8 +1793,8 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   opacity: 0;
   transform: translate3d(0, 14px, 0) scale(0.985);
   transition:
-    opacity 0.6s var(--alt-ease),
-    transform 0.6s var(--alt-ease);
+    opacity var(--alt-gallery-reveal-duration) var(--alt-gallery-reveal-ease),
+    transform var(--alt-gallery-reveal-duration) var(--alt-gallery-reveal-ease);
   contain: paint;
 }
 
@@ -2673,9 +2651,8 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
     transition: none;
   }
 
-  .alt-gallery__quote-caret {
-    animation: none;
-    opacity: 0;
+  .alt-gallery__quote-char {
+    visibility: visible;
   }
 
   .mobile-menu,
