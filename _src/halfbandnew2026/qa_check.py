@@ -452,6 +452,94 @@ def run_desktop_tjanster_dropdown_qa(base_url: str) -> list[str]:
     return failures
 
 
+FAQ_COLUMN_STABILITY_PATHS = ("/faq/", "/brollop/")
+
+
+def run_faq_column_stability_qa(base_url: str) -> list[str]:
+    """Desktop: opening one FAQ item must not shift siblings horizontally."""
+    failures: list[str] = []
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        try:
+            ctx = browser.new_context(
+                viewport={"width": 1280, "height": 900},
+                device_scale_factor=1,
+            )
+            page = ctx.new_page()
+            for path in FAQ_COLUMN_STABILITY_PATHS:
+                url = base_url.rstrip("/") + path + "?qa=faq-cols"
+                page.goto(url, wait_until="domcontentloaded", timeout=45000)
+                page.wait_for_timeout(200)
+                if path == "/faq/":
+                    primary_cta = page.locator(
+                        ".page-hero__actions a.alt-btn--primary[href*='kontakt']"
+                    )
+                    if primary_cta.count() == 0:
+                        failures.append(
+                            "faq-page-cta: 'Frågor? Kontakta oss' must use alt-btn--primary"
+                        )
+                list_root = page.locator("[data-faq].alt-faq__list--cols")
+                if list_root.count() == 0:
+                    failures.append(f"faq-column-stability: missing two-column list on {path}")
+                    continue
+                col_count = page.evaluate(
+                    """() => {
+                      const list = document.querySelector('[data-faq].alt-faq__list--cols');
+                      if (!list) return 0;
+                      return getComputedStyle(list).gridTemplateColumns.split(' ').filter(Boolean).length;
+                    }"""
+                )
+                if col_count < 2:
+                    failures.append(
+                        f"faq-column-stability: expected 2 grid columns on {path}, got {col_count}"
+                    )
+                    continue
+                items = page.locator("[data-faq] .alt-faq__item")
+                count = items.count()
+                if count == 0:
+                    failures.append(f"faq-column-stability: no FAQ items on {path}")
+                    continue
+
+                def snapshot_lefts() -> list[dict]:
+                    return page.evaluate(
+                        """() => {
+                          const nodes = document.querySelectorAll('[data-faq] .alt-faq__item');
+                          return Array.from(nodes).map((el) => ({
+                            left: Math.round(el.getBoundingClientRect().left),
+                          }));
+                        }"""
+                    )
+
+                for index in range(count):
+                    before = snapshot_lefts()
+                    summary = items.nth(index).locator("summary")
+                    summary.click()
+                    page.wait_for_timeout(400)
+                    after = snapshot_lefts()
+                    if len(before) != len(after):
+                        failures.append(
+                            f"faq-column-stability: item count changed on {path} at index {index}"
+                        )
+                        break
+                    for other in range(count):
+                        if other == index:
+                            continue
+                        delta = abs(before[other]["left"] - after[other]["left"])
+                        if delta > 2:
+                            failures.append(
+                                f"faq-column-stability: {path} item {other} x-shift "
+                                f"{before[other]['left']}→{after[other]['left']}px "
+                                f"when opening item {index}"
+                            )
+                    if items.nth(index).evaluate("el => el.open"):
+                        summary.click()
+                        page.wait_for_timeout(350)
+            ctx.close()
+        finally:
+            browser.close()
+    return failures
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Halv Fjorton QA (binding — see QA.md)")
     parser.add_argument("--skip-build", action="store_true")
@@ -532,6 +620,7 @@ def main() -> int:
         )
         if not args.quick:
             failures.extend(run_desktop_tjanster_dropdown_qa(base))
+            failures.extend(run_faq_column_stability_qa(base))
     finally:
         if server:
             server.terminate()

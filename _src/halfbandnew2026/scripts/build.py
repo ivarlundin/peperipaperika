@@ -148,6 +148,23 @@ def esc(text: str) -> str:
     )
 
 
+def faq_item_markup(question: str, answer: str) -> str:
+    return f"""          <details class="alt-faq__item">
+            <summary class="alt-faq__question">{esc(question)}</summary>
+            <div class="alt-faq__answer">
+              <p>{esc(answer)}</p>
+            </div>
+          </details>"""
+
+
+def faq_list_two_columns(qa_pairs: list[tuple[str, str]]) -> str:
+    """Two-column CSS grid (row order); stable columns + paired row heights when collapsed."""
+    items = "\n".join(faq_item_markup(q, a) for q, a in qa_pairs)
+    return f"""        <div class="alt-faq__list alt-faq__list--cols" data-faq>
+{items}
+        </div>"""
+
+
 def _indent_ld(data: dict) -> str:
     raw = json.dumps(data, indent=2, ensure_ascii=False)
     return "\n".join(f"  {line}" for line in raw.splitlines())
@@ -875,15 +892,7 @@ def wedding_page_body() -> str:
         "(max-width: 900px) 100vw, min(46vw, 640px)",
         figure_class="alt-svc-inline-figure",
     )
-    faq_items = "\n".join(
-        f"""          <details class="alt-faq__item">
-            <summary class="alt-faq__question">{esc(q)}</summary>
-            <div class="alt-faq__answer">
-              <p>{esc(a)}</p>
-            </div>
-          </details>"""
-        for q, a in BROLLOP_FAQS
-    )
+    faq_list = faq_list_two_columns(BROLLOP_FAQS)
     return f"""{hero}
     <section class="alt-svc-chapter section alt-svc-chapter--split alt-svc-chapter--festspelning" data-reveal>
       <div class="alt-svc-wrap alt-svc-chapter__split alt-svc-chapter__layout--copy-first">
@@ -919,9 +928,7 @@ def wedding_page_body() -> str:
     <section class="alt-svc-chapter section" data-reveal>
       <div class="alt-svc-wrap alt-faq">
         <h2 class="alt-svc-chapter__title">Vanliga frågor</h2>
-        <div class="alt-faq__list" data-faq>
-{faq_items}
-        </div>
+{faq_list}
       </div>
     </section>
     <section class="alt-svc-chapter section alt-svc-chapter--closing" data-reveal>
@@ -1792,15 +1799,7 @@ def write_pages():
             "Halv Fjorton EK. FÖR., organisationsnummer 769641-5418. Mejl halvfjorton@gmail.com.",
         ),
     ]
-    faq_items = "\n".join(
-        f"""          <details class="alt-faq__item">
-            <summary class="alt-faq__question">{esc(q)}</summary>
-            <div class="alt-faq__answer">
-              <p>{esc(a)}</p>
-            </div>
-          </details>"""
-        for q, a in faqs
-    )
+    faq_list = faq_list_two_columns(faqs)
     faq_ld_entities = ",\n".join(
         f'''      {{
         "@type": "Question",
@@ -1831,15 +1830,13 @@ def write_pages():
         <h1>Vanliga frågor</h1>
         <p class="lead">Svar på det vi oftast får frågor om.</p>
         <p class="page-hero__actions">
-          <a class="alt-btn alt-btn--ghost" href="/kontakt/">Frågor? Kontakta oss</a>
+          <a class="alt-btn alt-btn--primary" href="/kontakt/">Frågor? Kontakta oss</a>
         </p>
       </div>
     </header>
     <section class="section">
       <div class="wrap alt-faq">
-        <div class="alt-faq__list" data-faq>
-{faq_items}
-        </div>
+{faq_list}
       </div>
     </section>
 """,
