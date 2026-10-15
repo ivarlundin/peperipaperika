@@ -119,7 +119,7 @@ def wait_for_live(base: str, paths: list[str], timeout_s: int = 300) -> None:
         ok = True
         for p, fp_local in local_fps.items():
             url = urljoin(base.rstrip("/") + "/", p.lstrip("/"))
-            if not url.endswith("/") and p != "/":
+            if not url.endswith("/") and p != "/" and not p.endswith(".html"):
                 url = url.rstrip("/") + "/"
             try:
                 live_html = http_get(url + ("?qa=" + str(int(time.time())) if "?" not in url else ""))
