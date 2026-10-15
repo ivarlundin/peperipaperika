@@ -415,6 +415,19 @@ def mobile_menu_close_markup() -> str:
       </button>"""
 
 
+def alt_header_scroll_bootstrap_script() -> str:
+    return """  <script>
+(function () {
+  document.documentElement.classList.add("alt-header-state-init");
+  var header = document.querySelector(".alt-header");
+  if (!header) return;
+  if ((window.scrollY || document.documentElement.scrollTop || 0) > 10) {
+    header.classList.add("is-solid");
+  }
+})();
+  </script>"""
+
+
 def nav_services_dropdown(current_path: str, prefix: str = "", menu_id: str = "nav-tjanster") -> str:
     service_paths = {p for p, _ in NAV_SERVICES}
     expanded = "true" if current_path in service_paths else "false"
@@ -1576,6 +1589,7 @@ def page(
 {nav_block}
     </div>
   </header>
+{alt_header_scroll_bootstrap_script()}
 {mobile_menu}
   <main id="innehall" class="alt-inner-main">
 {body}
@@ -2300,6 +2314,13 @@ def patch_home_page():
         count=1,
         flags=re.MULTILINE,
     )
+    bootstrap = alt_header_scroll_bootstrap_script()
+    if "alt-header-state-init" not in html:
+        html = html.replace(
+            "  </header>\n",
+            "  </header>\n" + bootstrap + "\n",
+            1,
+        )
     if "data-mobile-menu" not in html:
         html = html.replace(
             "  </header>\n\n  <main id=\"innehall\">",

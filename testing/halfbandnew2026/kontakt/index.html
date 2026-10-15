@@ -265,6 +265,16 @@
       </nav>
     </div>
   </header>
+  <script>
+(function () {
+  document.documentElement.classList.add("alt-header-state-init");
+  var header = document.querySelector(".alt-header");
+  if (!header) return;
+  if ((window.scrollY || document.documentElement.scrollTop || 0) > 10) {
+    header.classList.add("is-solid");
+  }
+})();
+  </script>
   <div class="mobile-menu" id="mobile-menu" data-mobile-menu hidden aria-hidden="true">
     <nav class="mobile-menu__nav" aria-label="Mobilmeny">
       <ul class="mobile-menu__list nav-list" data-nav-panel>

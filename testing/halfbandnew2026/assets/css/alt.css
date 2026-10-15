@@ -206,20 +206,12 @@ body.alt-page > main {
     backdrop-filter: blur(18px) saturate(120%);
     border-bottom-color: var(--alt-line);
   }
+}
 
-  .alt-header.is-solid .alt-header__inner {
-    padding-top: 0;
-    padding-bottom: 0;
-    align-items: center;
-  }
-
-  .alt-header.is-solid .alt-nav {
-    align-items: center;
-  }
-
-  .alt-header.is-solid .alt-brand {
-    align-items: center;
-  }
+/* No layout shift on load when toggling is-solid from scroll bootstrap */
+html.alt-header-state-init .alt-header,
+html.alt-header-state-init .alt-header::before {
+  transition: none !important;
 }
 
 .alt-header-scroll-sentinel {
