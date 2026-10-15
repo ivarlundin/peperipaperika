@@ -3183,6 +3183,15 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   --alt-svc-title-size: clamp(1.55rem, 3.1vw, 2.05rem);
   --alt-svc-body-size: clamp(1.02rem, 2.15vw, 1.125rem);
   --alt-svc-body-line: 1.65;
+  --alt-svc-hero-h1-size: clamp(2.05rem, 7.25vw, 2.55rem);
+  --alt-svc-faq-answer-size: clamp(0.88rem, 2.05vw, 0.98rem);
+  --alt-svc-addon-title-size: clamp(1.28rem, 3.25vw, 1.55rem);
+}
+
+@media (min-width: 901px) {
+  .alt-page--service-banner {
+    --alt-svc-hero-h1-size: clamp(2.15rem, 3vw, 3.05rem);
+  }
 }
 
 .alt-page--service-banner .alt-svc-wrap {
@@ -3318,20 +3327,37 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   }
 }
 
-.alt-page--service-banner .alt-svc-addon__title {
-  margin: 0 0 0.45rem;
+.alt-page--service-banner .alt-svc-section-label {
+  margin: 0 0 1rem;
+  font-family: var(--font-body);
   font-size: var(--alt-svc-body-size);
-  font-weight: 600;
-  line-height: var(--alt-svc-body-line);
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--alt-muted);
+  max-width: none;
+}
+
+.alt-page--service-banner .alt-svc-addon__title {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-display);
+  font-size: var(--alt-svc-addon-title-size);
+  font-weight: 700;
+  line-height: 1.2;
+  color: #fff;
 }
 
 .alt-page--service-banner .alt-svc-addon p {
   margin: 0;
 }
 
-.alt-page--service-banner .alt-svc-chapter--addons .alt-svc-chapter__title {
-  font-size: clamp(1.35rem, 2.5vw, 1.65rem);
-  font-weight: 650;
+.alt-page--service-banner .alt-faq__answer,
+.alt-page--service-banner .alt-faq__answer p {
+  font-family: var(--font-body);
+  font-size: var(--alt-svc-faq-answer-size);
+  font-weight: 300;
+  line-height: 1.55;
 }
 
 .alt-page--service-banner .alt-faq__list {
@@ -3421,7 +3447,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
 .alt-service-hero h1 {
   font-family: var(--font-display);
-  font-size: clamp(1.55rem, 5.4vw, 2.15rem);
+  font-size: var(--alt-svc-hero-h1-size, clamp(1.55rem, 5.4vw, 2.15rem));
   font-weight: 800;
   line-height: 1.06;
   letter-spacing: 0;
@@ -3432,9 +3458,12 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
 @media (min-width: 901px) {
   .alt-service-hero h1 {
-    font-size: clamp(1.85rem, 2.6vw, 2.75rem);
     max-width: min(42ch, 100%);
   }
+}
+
+.alt-page--service-banner .alt-service-hero h1 {
+  font-size: var(--alt-svc-hero-h1-size);
 }
 
 .alt-service-hero h1 .alt-hero__typewriter {
