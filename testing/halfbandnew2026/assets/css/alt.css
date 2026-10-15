@@ -238,7 +238,7 @@ html.alt-header-state-init .alt-header::before {
   max-width: var(--alt-max);
   height: 100%;
   margin: 0 auto;
-  padding: 0.65rem var(--alt-pad-right) 0 var(--alt-pad-left);
+  padding: 0 var(--alt-pad-right) 0 var(--alt-pad-left);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -304,7 +304,15 @@ html.alt-header-state-init .alt-header::before {
   }
 }
 
+.alt-page .alt-header .alt-nav__links > li {
+  display: flex;
+  align-items: center;
+}
+
 .alt-page .alt-header .alt-nav__links a:not([class*="alt-btn"]) {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1.25;
   color: #fff;
   text-decoration: none;
   font-size: 0.9375rem;
@@ -461,13 +469,14 @@ html.alt-header-state-init .alt-header::before {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  padding: 0.15rem 0;
+  padding: 0;
   border: 0;
   background: transparent;
   color: #fff;
   font: inherit;
   font-size: 0.9375rem;
   font-weight: 500;
+  line-height: 1.25;
   cursor: pointer;
 }
 
@@ -902,7 +911,8 @@ html.alt-header-state-init .alt-header::before {
 
 @media (max-width: 900px) {
   .alt-header .alt-brand {
-    display: inline-block;
+    display: flex;
+    align-items: center;
     transform-origin: top left;
     transition: transform var(--mobile-menu-motion, 320ms) var(--alt-ease);
   }
@@ -1012,7 +1022,7 @@ html.alt-header-state-init .alt-header::before {
     max-width: 100%;
     height: var(--alt-header);
     box-sizing: border-box;
-    padding: 0.65rem var(--alt-pad-right) 0 var(--alt-pad-left);
+    padding: 0 var(--alt-pad-right) 0 var(--alt-pad-left);
   }
 
   .alt-header__inner > .alt-nav {
