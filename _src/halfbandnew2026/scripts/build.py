@@ -534,6 +534,10 @@ def video_facade(
 LYSSNA_VIDEO_MODAL_SCRIPT = (
     '  <script src="/assets/js/lyssna-video-modal.js" defer></script>\n'
 )
+LYSSNA_REPERTOIRE_JSON = ROOT / "assets/data/lyssna-repertoire.json"
+SPOTIFY_REPERTOIRE_EMBED = (
+    "https://open.spotify.com/embed/playlist/0q8DLuLfZE25an41tppmvu?utm_source=generator"
+)
 
 
 def lyssna_video_tile(video_id: str, label: str, title: str) -> str:
@@ -548,6 +552,24 @@ def lyssna_video_tile(video_id: str, label: str, title: str) -> str:
 
 def lyssna_video_grid(*tiles: str) -> str:
     return "        <div class=\"lyssna-video-grid\">\n" + "\n".join(tiles) + "\n        </div>"
+
+
+def lyssna_repertoire_song_list_markup() -> str:
+    songs = json.loads(LYSSNA_REPERTOIRE_JSON.read_text(encoding="utf-8"))
+    items = "\n".join(
+        f'            <li><span class="lyssna-song-list__track">{esc(s["title"])}</span> '
+        f'<span class="lyssna-song-list__artist">{esc(s["artist"])}</span></li>'
+        for s in songs
+    )
+    return f"""        <ol class="lyssna-song-list" aria-label="Låtar i repertoaren">
+{items}
+        </ol>"""
+
+
+def lyssna_spotify_embed_markup() -> str:
+    return f"""        <div class="lyssna-spotify">
+          <iframe class="lyssna-spotify__embed" src="{SPOTIFY_REPERTOIRE_EMBED}" title="Halv Fjorton repertoar 2026 på Spotify" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>
+        </div>"""
 
 
 PERMANENT_MEMBERS = [
@@ -1608,10 +1630,16 @@ def write_pages():
     <section class="section" id="repertoar">
       <div class="wrap">
         <h2>Repertoar</h2>
-        <p class="lead">Soul, funk, rock och svenska klassiker med åtta musiker och egen blåssektion. Här får ni en bild av vad vi spelar, inte en komplett låtlista.</p>
         <p>Vi bygger kvällar kring funk och soul: Stevie Wonder, Ray Charles, Earth, Wind &amp; Fire. Därtill kommer svenska favoriter som Björn Skifs och Tomas Ledin, och repertoaren är bred nog för blandade sällskap och generationer.</p>
-        <p>Till mingel och mottagning spelar vi lugnare, med jazzstandard, soul i dämpat tempo och svenska klassiker. Vill ni styra tydligt, till exempel mest jazz eller mest svenskt, säger ni till så anpassar vi.</p>
-        <p>Vi tar gärna emot önskemål inför bokning. Om en låt inte redan finns i repertoaren kan vi ofta lära in den när den funkar live med bandet. Mejla <a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a> så tar vi dialogen där.</p>
+        <div class="lyssna-repertoire-split">
+          <div class="lyssna-repertoire-split__list">
+{lyssna_repertoire_song_list_markup()}
+          </div>
+          <div class="lyssna-repertoire-split__spotify">
+{lyssna_spotify_embed_markup()}
+          </div>
+        </div>
+        <p class="lyssna-repertoire-note">Vi tar gärna emot önskemål inför bokning. Om en låt inte redan finns i repertoaren kan vi ofta lära in den när den funkar live med bandet. Mejla <a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a> så tar vi dialogen där.</p>
       </div>
     </section>
 """,

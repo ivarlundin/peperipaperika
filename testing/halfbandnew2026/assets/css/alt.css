@@ -3911,6 +3911,77 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   pointer-events: none;
 }
 
+.alt-page--lyssna .lyssna-repertoire-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1.25rem, 3vw, 2rem);
+  align-items: start;
+  margin-top: 1.25rem;
+}
+
+@media (min-width: 900px) {
+  .alt-page--lyssna .lyssna-repertoire-split {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+.alt-page--lyssna .lyssna-song-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  column-count: 1;
+  column-gap: 1.25rem;
+}
+
+@media (min-width: 600px) {
+  .alt-page--lyssna .lyssna-song-list {
+    column-count: 2;
+  }
+}
+
+.alt-page--lyssna .lyssna-song-list li {
+  break-inside: avoid;
+  margin: 0 0 0.55rem;
+  padding: 0;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.alt-page--lyssna .lyssna-song-list__track {
+  font-weight: 550;
+  color: var(--alt-ink);
+}
+
+.alt-page--lyssna .lyssna-song-list__artist {
+  font-size: 0.8125rem;
+  color: var(--alt-muted);
+}
+
+.alt-page--lyssna .lyssna-spotify {
+  width: 100%;
+  min-width: 0;
+  border-radius: var(--alt-radius);
+  overflow: hidden;
+  border: 1px solid var(--alt-line);
+  background: #111;
+}
+
+.alt-page--lyssna .lyssna-spotify__embed {
+  display: block;
+  width: 100%;
+  min-height: 22rem;
+  height: min(32rem, 70vh);
+  border: 0;
+}
+
+.alt-page--lyssna .lyssna-repertoire-note {
+  margin: clamp(1.35rem, 3vw, 1.75rem) 0 0;
+  max-width: none;
+}
+
 .lyssna-video-modal {
   position: fixed;
   inset: 0;
