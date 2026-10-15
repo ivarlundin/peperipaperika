@@ -24,6 +24,7 @@ python3 scripts/build.py --output-dir ../../testing/halfbandnew2026 --subpath /t
 - **Outfit** rubriker, **Inter** (lätt vikt) brödtext.
 - Ingress = vanlig text (ingen bakgrund, border, vänsterkant).
 - Samma vänster/högerkant som menyn (`--alt-pad-left/right`).
+- **Inget utanför grid-containern.** «Full bredd» = hela innehållscontainern (samma kanter som H1 och huvudmeny), aldrig viewport (`100vw`, negativa marginaler eller breakout) om det inte uttryckligen står i uppgiften.
 - **Rubrik → ingress → knapp:** använd alltid `--alt-title-desc-gap` (mindre) och `--alt-desc-cta-gap` (tydligt större) i `alt.css`. Gäller tjänste-hero, inner `page-hero`, kontakt/offert, kapitel med `.actions`, startsidans hero, m.m.
 - **Rubrik → innehåll** (listor, rutnät, kortblock, FAQ): minst `--alt-heading-content-gap` i `alt.css`. Gäller t.ex. «Vanliga frågor» före accordion, tjänstekapitel före grid, inner `h2` före `.media-grid`, samt FAQ-sida efter `page-hero` (`section` med `.alt-faq`). Inget får vara tightare än tokenen; rubrik → brödtext/ingress använder fortfarande `--alt-title-desc-gap`.
 - **Tjänstesidor** (Bröllop, Företag, Fest och mingel): desktop-H1 via `--alt-svc-hero-h1-size` (något mindre än `--alt-hero-h1-size`); beskrivning (`alt-service-hero__dek`) max 50 % bredd på desktop, `text-wrap: balance`.

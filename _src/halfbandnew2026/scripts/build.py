@@ -1123,7 +1123,7 @@ def soulful_christmas_ticket_card() -> str:
               <img
                 src="{base}-800w.webp"
                 srcset="{base}-480w.webp 480w, {base}-800w.webp 800w, {base}-1200w.webp 1200w"
-                sizes="(max-width: 767px) 100vw, 14rem"
+                sizes="(max-width: 767px) 100vw, 40vw"
                 alt="Affisch för A Soulful Christmas med Halv Fjorton på Nygatan 6"
                 width="1200"
                 height="900"
