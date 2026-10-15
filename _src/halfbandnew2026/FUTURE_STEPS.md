@@ -20,6 +20,7 @@ Intern planering. Innehållet här byggs inte ut till `testing/halfbandnew2026/`
 ## Bröllop (bilder)
 
 - Replace with real wedding photos (hero and innehåll) when professional bröllopsbilder finns.
+- Swap Tilläggstjänster add-on placeholder images (Mingelmusik, Vigselmusik) for final photos when ready.
 
 ## Hero och rörelse (senare)
 
