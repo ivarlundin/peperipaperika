@@ -1,5 +1,5 @@
 (function () {
-  var STORAGE_KEY = "halfbandnew2026-cms-changes-v1";
+  var STORAGE_KEY = "halfbandnew2026-cms-changes-v2";
   var DEFAULT_TYPEWRITER_PHRASES = [
     "bröllopsfesten",
     "kickoffen",
@@ -97,13 +97,51 @@
     return el.children.length === 0;
   }
 
+  function normalizeCmsText(s) {
+    return (s || "").replace(/\s+/g, " ").trim();
+  }
+
+  function isStaleTextChange(ch, el) {
+    if (!el || ch.type !== "text") return false;
+    var current = normalizeCmsText(el.textContent);
+    var oldN = normalizeCmsText(ch.oldValue);
+    var newN = normalizeCmsText(ch.newValue);
+    if (current === newN) return false;
+    if (!oldN) return false;
+    return current !== oldN;
+  }
+
+  function isChangeApplicable(ch, el) {
+    if (!el) return false;
+    if (ch.type === "text") {
+      if (!isLeafTextElement(el)) return false;
+      if (isStaleTextChange(ch, el)) return false;
+      var current = normalizeCmsText(el.textContent);
+      var newN = normalizeCmsText(ch.newValue);
+      return current !== newN;
+    }
+    if (ch.type === "image") return true;
+    return true;
+  }
+
   function sanitizeStore(store) {
     var changed = false;
     Object.keys(store.changes).forEach(function (id) {
       var ch = store.changes[id];
-      if (ch.type !== "text") return;
       var el = document.querySelector('[data-cms-id="' + id + '"]');
-      if (!el || !isLeafTextElement(el)) {
+      if (!el) {
+        delete store.changes[id];
+        changed = true;
+        return;
+      }
+      if (ch.type === "text" && !isLeafTextElement(el)) {
+        delete store.changes[id];
+        changed = true;
+        return;
+      }
+      if (ch.type === "text" && isStaleTextChange(ch, el)) {
+        ch.meta = Object.assign({}, ch.meta, { stale: true, discardedAt: new Date().toISOString() });
+        console.warn("[cmsmode] discarded stale change", id, ch);
         delete store.changes[id];
         changed = true;
       }
@@ -179,7 +217,7 @@
     Object.keys(store.changes).forEach(function (cmsId) {
       var ch = store.changes[cmsId];
       var el = document.querySelector('[data-cms-id="' + cmsId + '"]');
-      if (!el) return;
+      if (!el || !isChangeApplicable(ch, el)) return;
       if (ch.type === "image" && ch.meta && ch.meta.manifestId) {
         loadManifest().then(function (manifest) {
           var entry = (manifest.images || []).find(function (x) {

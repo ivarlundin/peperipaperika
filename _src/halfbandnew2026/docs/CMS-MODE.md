@@ -22,7 +22,9 @@ The stub in `assets/js/cmsmode-stub.js` lazy-loads `cms-mode.js` and `cms-mode.c
 
 ## Panel
 
-Bottom-right panel shows change count, per-change **Ångra** (undo), and **Export changes** (downloads JSON). Changes persist in `localStorage` (`halfbandnew2026-cms-changes-v1`) across page loads until undone or cleared.
+Bottom-right panel shows change count, per-change **Ångra** (undo), and **Export changes** (downloads JSON). Changes persist in `localStorage` (`halfbandnew2026-cms-changes-v2`) across page loads until undone or cleared. On load, entries whose `oldValue` no longer matches the element text are discarded (stale IDs after rebuild).
+
+Build-time `data-cms-id` values are stable hashes from page slug + element location (tag, id/class, sibling ordinal) or image `src`, not a sequential counter.
 
 ## Export JSON format
 

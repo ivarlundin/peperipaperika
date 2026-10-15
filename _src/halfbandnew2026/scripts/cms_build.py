@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 from pathlib import Path
@@ -105,6 +106,51 @@ def _inject_attr(attrs: str, name: str, value: str) -> str:
     return f'{attrs} {name}="{value}"'
 
 
+def _attr_value(attrs: str, name: str) -> str:
+    m = re.search(rf'\b{name}="([^"]*)"', attrs)
+    if m:
+        return m.group(1)
+    m = re.search(rf"\b{name}='([^']*)'", attrs)
+    return m.group(1) if m else ""
+
+
+def _text_location_key(tag: str, attrs: str, ordinal: int) -> str:
+    el_id = _attr_value(attrs, "id")
+    classes = _attr_value(attrs, "class").split()
+    class_bit = "-".join(classes[:2]) if classes else ""
+    if el_id:
+        base = f"{tag}#id-{el_id}"
+    elif class_bit:
+        base = f"{tag}.{class_bit}"
+    else:
+        base = tag
+    return f"{base}@{ordinal}"
+
+
+def _stable_cms_hash(page_slug: str, kind: str, material: str) -> str:
+    digest = hashlib.sha256(f"{page_slug}:{kind}:{material}".encode("utf-8")).hexdigest()
+    return digest[:10]
+
+
+def _make_text_cms_id(page_slug: str, tag: str, attrs: str, counters: dict[str, int]) -> str:
+    el_id = _attr_value(attrs, "id")
+    classes = _attr_value(attrs, "class").split()
+    class_bit = "-".join(classes[:2]) if classes else ""
+    bucket = f"{tag}|{el_id}|{class_bit}"
+    ordinal = counters.get(bucket, 0)
+    counters[bucket] = ordinal + 1
+    location = _text_location_key(tag, attrs, ordinal)
+    short = _stable_cms_hash(page_slug, "text", location)
+    return f"cms-{page_slug}-t-{short}"
+
+
+def _make_image_cms_id(page_slug: str, attrs: str) -> str:
+    src = _attr_value(attrs, "src").split("?")[0]
+    src = re.sub(r"^/assets/img/", "", src)
+    short = _stable_cms_hash(page_slug, "img", src or attrs)
+    return f"cms-{page_slug}-img-{short}"
+
+
 def _skip_anchor_wrapper(attrs: str) -> bool:
     """Card/CTA links wrap block content; edit inner h2/p/span instead."""
     if re.search(r'\bclass="[^"]*\balt-offer-card\b', attrs):
@@ -117,10 +163,9 @@ def _skip_anchor_wrapper(attrs: str) -> bool:
 
 
 def annotate_html(html: str, page_slug: str, source_file: str, url_prefix: str = "") -> str:
-    counter = 0
+    text_counters: dict[str, int] = {}
 
     def repl(match: re.Match[str]) -> str:
-        nonlocal counter
         tag = match.group("tag").lower()
         attrs = match.group("attrs") or ""
         slash = match.group("slash") or ""
@@ -136,8 +181,7 @@ def annotate_html(html: str, page_slug: str, source_file: str, url_prefix: str =
                 return match.group(0)
             if "data-cms-id" in attrs:
                 return match.group(0)
-            counter += 1
-            cid = f"cms-{page_slug}-img-{counter}"
+            cid = _make_image_cms_id(page_slug, attrs)
             attrs = _inject_attr(attrs, "data-cms-id", cid)
             attrs = _inject_attr(attrs, "data-cms-type", "image")
             return f"<img{attrs}{slash}>"
@@ -155,8 +199,7 @@ def annotate_html(html: str, page_slug: str, source_file: str, url_prefix: str =
         if "aria-hidden=\"true\"" in attrs or "aria-hidden='true'" in attrs:
             return match.group(0)
 
-        counter += 1
-        cid = f"cms-{page_slug}-t-{counter}"
+        cid = _make_text_cms_id(page_slug, tag, attrs, text_counters)
         attrs = _inject_attr(attrs, "data-cms-id", cid)
         attrs = _inject_attr(attrs, "data-cms-type", "text")
         return f"<{tag}{attrs}{slash}>"
