@@ -33,6 +33,13 @@ html {
   --alt-logo-scale: 2.5;
   --alt-logo-size: 3.5rem;
   --alt-logo-expand-extra: calc(var(--alt-logo-size) * (var(--alt-logo-scale) - 1));
+  --alt-hero-h1-size: clamp(1.75rem, 11vw, 2.65rem);
+}
+
+@media (min-width: 901px) {
+  .alt-page {
+    --alt-hero-h1-size: clamp(2.85rem, calc(0.85rem + 10vw), 6.5rem);
+  }
 }
 
 .alt-page {
@@ -98,40 +105,64 @@ body.alt-page > main {
 }
 
 /* Text wrapping (site-wide on alt pages) */
-.alt-page :is(h1, h2, h3, h4, h5, h6) {
-  text-wrap: balance;
-}
-
-.alt-page .alt-facts__items > span,
-.alt-page .alt-offer-card__arrow,
-.alt-page :is(.alt-btn, a.alt-btn, button.alt-btn, .btn, a.btn, button.btn),
-.alt-page .nav-list a,
-.alt-page .nav-dropdown__trigger,
-.alt-page .alt-nav__cta-desktop,
-.alt-page .alt-nav__cta-mobile {
-  text-wrap: balance;
-}
-
 .alt-page :where(
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
   p,
   li,
+  dt,
+  dd,
+  figcaption,
+  blockquote,
+  label,
+  summary,
   .lead,
   .contact-offert__lead,
+  .contact-offert__consent,
   .aeo-answer,
   .contact-offert__mail,
   .alt-offer-card p,
+  .alt-offer-card h2,
   .alt-intro p,
   .alt-about p,
   .alt-quote__text p,
-  figcaption,
+  .alt-quote__attrib,
+  .alt-faq__question,
+  .alt-faq__answer,
+  .alt-faq__answer p,
+  .alt-svc-chapter__title,
+  .alt-svc-section-label,
+  .alt-svc-addon__title,
+  .alt-svc-addon p,
+  .alt-svc-chapter__body,
+  .alt-service-hero__dek,
   .site-footer__title,
   .site-footer__tagline,
   .site-footer__links a,
   .site-footer__legal,
   .site-footer__legal-org,
-  .small.muted
+  .small.muted,
+  .alt-facts__items > span,
+  .alt-offer-card__arrow,
+  .alt-btn,
+  a.alt-btn,
+  button.alt-btn,
+  .btn,
+  a.btn,
+  button.btn,
+  .nav-list a,
+  .nav-dropdown__trigger,
+  .alt-nav__cta-desktop,
+  .alt-nav__cta-mobile,
+  .mobile-menu__list a,
+  .mobile-menu__cta
 ) {
   text-wrap: pretty;
+  text-wrap: balance;
 }
 
 /* Header */
@@ -918,6 +949,10 @@ body.alt-page > main {
   .mobile-menu {
     display: none !important;
   }
+
+  .alt-header__menu-close {
+    display: none !important;
+  }
 }
 
 html.alt-page-nav-lock {
@@ -1119,8 +1154,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 .alt-hero h1 {
   position: relative;
   font-family: var(--font-display);
-  /* Mobile: ~11vw so longest line (≈14 chars) fits in 80vw at Outfit 800, tracking 0 */
-  font-size: clamp(1.75rem, 11vw, 2.65rem);
+  font-size: var(--alt-hero-h1-size);
   font-weight: 800;
   line-height: 1.05;
   letter-spacing: 0;
@@ -1130,7 +1164,6 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
 @media (min-width: 901px) {
   .alt-hero h1 {
-    font-size: clamp(2.85rem, calc(0.85rem + 10vw), 6.5rem);
     max-width: 100%;
   }
 }
@@ -3183,15 +3216,8 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   --alt-svc-title-size: clamp(1.55rem, 3.1vw, 2.05rem);
   --alt-svc-body-size: clamp(1.02rem, 2.15vw, 1.125rem);
   --alt-svc-body-line: 1.65;
-  --alt-svc-hero-h1-size: clamp(2.05rem, 7.25vw, 2.55rem);
   --alt-svc-faq-answer-size: clamp(0.88rem, 2.05vw, 0.98rem);
   --alt-svc-addon-title-size: clamp(1.28rem, 3.25vw, 1.55rem);
-}
-
-@media (min-width: 901px) {
-  .alt-page--service-banner {
-    --alt-svc-hero-h1-size: clamp(2.15rem, 3vw, 3.05rem);
-  }
 }
 
 .alt-page--service-banner .alt-svc-wrap {
@@ -3447,23 +3473,18 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
 .alt-service-hero h1 {
   font-family: var(--font-display);
-  font-size: var(--alt-svc-hero-h1-size, clamp(1.55rem, 5.4vw, 2.15rem));
+  font-size: var(--alt-hero-h1-size);
   font-weight: 800;
   line-height: 1.06;
   letter-spacing: 0;
   max-width: min(36ch, 100%);
   margin: 0 0 0.7rem;
-  text-wrap: balance;
 }
 
 @media (min-width: 901px) {
   .alt-service-hero h1 {
     max-width: min(42ch, 100%);
   }
-}
-
-.alt-page--service-banner .alt-service-hero h1 {
-  font-size: var(--alt-svc-hero-h1-size);
 }
 
 .alt-service-hero h1 .alt-hero__typewriter {
@@ -3495,13 +3516,18 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
 .alt-service-hero__dek {
   margin: 0 0 0.85rem;
-  max-width: min(42ch, 100%);
+  max-width: 100%;
   font-family: var(--font-body);
   font-size: clamp(0.98rem, 2.4vw, 1.08rem);
   font-weight: 300;
   line-height: 1.5;
   color: rgba(255, 255, 255, 0.88);
-  text-wrap: balance;
+}
+
+@media (min-width: 901px) {
+  .alt-service-hero__dek {
+    max-width: 50%;
+  }
 }
 
 .alt-service-hero__actions {

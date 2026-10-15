@@ -188,6 +188,16 @@ CHECKS_JS = """
     if (!document.querySelector('.site-footer')) errors.push('missing-footer');
   }
 
+  if (vw >= 901) {
+    const headerClose = document.querySelector('.alt-header__menu-close');
+    if (headerClose) {
+      const st = getComputedStyle(headerClose);
+      if (st.display !== 'none' && st.visibility !== 'hidden' && parseFloat(st.opacity || '1') > 0.01) {
+        errors.push('header-close-visible-desktop');
+      }
+    }
+  }
+
   return { errors, docSW, docCW, vw };
 }
 """
