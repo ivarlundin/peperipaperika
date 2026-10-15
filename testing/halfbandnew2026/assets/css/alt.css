@@ -31,6 +31,8 @@ html {
   --alt-check-gap: 0.55rem;
   --alt-offert-usp-mail-gap: clamp(2rem, 3.75vw, 2.75rem);
   --alt-inner-title-offset: clamp(2rem, 5vw, 3.25rem);
+  --alt-title-desc-gap: clamp(0.45rem, 1vw, 0.65rem);
+  --alt-desc-cta-gap: clamp(1.25rem, 2.75vw, 1.65rem);
   --alt-check-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5.5 12.5 9.5 16.5 18.5 7.5'/%3E%3C/svg%3E");
   --alt-logo-scale: 2.5;
   --alt-logo-size: 3.5rem;
@@ -1186,7 +1188,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   line-height: 1.05;
   letter-spacing: 0;
   max-width: 80vw;
-  margin: 0 0 1.35rem;
+  margin: 0 0 var(--alt-title-desc-gap);
 }
 
 @media (min-width: 901px) {
@@ -1359,7 +1361,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   color: rgba(242, 240, 236, 0.82);
   font-size: clamp(0.98rem, 2vw, 1.15rem);
   max-width: min(44ch, 100%);
-  margin: 0 0 1.65rem;
+  margin: 0 0 var(--alt-desc-cta-gap);
   text-wrap: balance;
 }
 
@@ -1367,7 +1369,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
-  margin: 0.5rem 0 1.85rem;
+  margin: 0 0 1.85rem;
 }
 
 /* Fact strip */
@@ -2003,14 +2005,15 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   font-size: clamp(1.75rem, 3.5vw, 2.5rem);
   font-weight: 700;
   letter-spacing: 0;
-  margin: 0 0 1rem;
+  margin: 0 0 var(--alt-title-desc-gap);
   color: var(--alt-ink);
 }
 
 .alt-page .contact-offert__lead {
   color: var(--alt-muted);
-  margin: 0 0 1.25rem;
+  margin: 0 0 var(--alt-desc-cta-gap);
   max-width: 42ch;
+  text-wrap: balance;
 }
 
 .alt-page .contact-offert__mail {
@@ -2246,7 +2249,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   font-weight: 800;
   letter-spacing: 0;
   line-height: 1.05;
-  margin: 0 0 0.65rem;
+  margin: 0 0 var(--alt-title-desc-gap);
   color: var(--alt-ink);
   text-wrap: balance;
 }
@@ -2728,8 +2731,12 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   font-weight: 800;
   letter-spacing: 0;
   line-height: 1.05;
-  margin: 0 0 0.65rem;
+  margin: 0 0 var(--alt-title-desc-gap);
   max-width: none;
+}
+
+.alt-page--inner .page-hero-copy > .lead:has(+ .page-hero__actions) {
+  margin-bottom: var(--alt-desc-cta-gap);
 }
 
 .alt-page--inner .lead,
@@ -3319,7 +3326,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 }
 
 .alt-page--inner .page-hero-copy .page-hero__actions {
-  margin: 1.15rem 0 0;
+  margin: 0;
 }
 
 @supports (interpolate-size: allow-keywords) {
@@ -3377,6 +3384,16 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   --alt-svc-hero-fade-stop: 46%;
 }
 
+@media (min-width: 901px) {
+  .alt-page--service-banner {
+    --alt-svc-hero-h1-size: clamp(2.5rem, calc(0.7rem + 8.25vw), 5.75rem);
+  }
+
+  .alt-page--service-banner .alt-service-hero h1 {
+    font-size: var(--alt-svc-hero-h1-size);
+  }
+}
+
 .alt-page--service-banner .alt-svc-wrap {
   width: 100%;
   max-width: var(--alt-max);
@@ -3392,7 +3409,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   font-weight: 700;
   line-height: 1.12;
   letter-spacing: -0.02em;
-  margin: 0 0 1.1rem;
+  margin: 0 0 var(--alt-title-desc-gap);
   max-width: 22ch;
   text-wrap: balance;
 }
@@ -3461,7 +3478,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 }
 
 .alt-page--service-banner .alt-svc-chapter__actions {
-  margin-top: 1.25rem;
+  margin-top: var(--alt-desc-cta-gap);
 }
 
 @media (min-width: 901px) {
@@ -3495,7 +3512,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 }
 
 .alt-page--service-banner .alt-svc-chapter__body .actions {
-  margin-top: 1.25rem;
+  margin-top: var(--alt-desc-cta-gap);
 }
 
 .alt-page--service-banner .alt-svc-addon-grid {
@@ -3800,7 +3817,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   line-height: 1.06;
   letter-spacing: 0;
   max-width: min(36ch, 100%);
-  margin: 0 0 0.7rem;
+  margin: 0 0 var(--alt-title-desc-gap);
 }
 
 @media (min-width: 901px) {
@@ -3837,13 +3854,14 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 }
 
 .alt-service-hero__dek {
-  margin: 0 0 0.85rem;
+  margin: 0 0 var(--alt-desc-cta-gap);
   max-width: 100%;
   font-family: var(--font-body);
   font-size: clamp(0.98rem, 2.4vw, 1.08rem);
   font-weight: 300;
   line-height: 1.5;
   color: rgba(255, 255, 255, 0.88);
+  text-wrap: balance;
 }
 
 @media (min-width: 901px) {
