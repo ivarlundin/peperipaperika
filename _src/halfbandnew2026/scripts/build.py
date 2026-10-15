@@ -637,7 +637,7 @@ def member_compact_card(
           </article>"""
     alt = member_avatar_alt(name, line)
     return f"""          <article class="member-compact-card">
-            <img class="member-compact-card__avatar" src="/assets/img/{img_file}" alt="{esc(alt)}" width="120" height="120" loading="lazy" decoding="async">
+            <img class="member-compact-card__avatar" src="/assets/img/{img_file}" alt="{esc(alt)}" width="144" height="144" loading="lazy" decoding="async">
             <div class="member-compact-card__body">
               <h3 class="member-compact-card__name">{esc(name)}</h3>
               <p class="member-compact-card__line">{esc(line)}</p>
@@ -1547,14 +1547,14 @@ def write_pages():
         </div>
       </div>
     </section>
-    <section class="section section-alt">
+    <section class="section section-alt om-oss-members-section">
       <div class="wrap">
         <h2>Permanenta medlemmar</h2>
         <p class="muted">Åtta fasta medlemmar med blås, sång och rytm.</p>
 {members_compact_grid(permanent_member_cards)}
       </div>
     </section>
-    <section class="section">
+    <section class="section om-oss-members-section">
       <div class="wrap">
         <h2>Gästande musiker</h2>
         <p class="muted">Ibland spelar vi med gäster som förstärker blås, sång eller rytm.</p>
