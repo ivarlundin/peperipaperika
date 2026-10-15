@@ -922,8 +922,8 @@ SERVICE_FAQ_ACCORDION_SCRIPT = (
     '  <script src="/assets/js/alt-faq-accordion.js" defer></script>\n'
 )
 TALLY_EMBED_SCRIPT = '  <script src="/assets/js/tally-embed.js" defer></script>\n'
-FORETAG_PAGE_SCRIPTS = f"{SERVICE_FAQ_ACCORDION_SCRIPT}{TALLY_EMBED_SCRIPT}"
-MINGEL_PAGE_SCRIPTS = FORETAG_PAGE_SCRIPTS
+FORETAG_PAGE_SCRIPTS = SERVICE_FAQ_ACCORDION_SCRIPT
+MINGEL_PAGE_SCRIPTS = SERVICE_FAQ_ACCORDION_SCRIPT
 
 # stem, alt, width, height, object-position per slide (ordered list for CMS Hero-bilder).
 SERVICE_HERO_SLIDES: dict[str, list[tuple[str, str, int, int, str]]] = {
@@ -1216,8 +1216,6 @@ class StandardServicePage(NamedTuple):
     faqs: tuple[tuple[str, str], ...]
     closing_text: str
     split_sizes: str = "(max-width: 900px) 100vw, min(46vw, 640px)"
-    closing_embed_form: bool = False
-    closing_email_link: str | None = None
     hero_typewriter_suffixes: tuple[str, ...] | None = None
 
 
@@ -1340,8 +1338,6 @@ FORETAG_STANDARD_PAGE = StandardServicePage(
     closing_text=(
         "Hör av er via formuläret på kontaktsidan. Vi återkommer med upplägg och offert när vi vet plats, tider och vilka delar ni vill boka."
     ),
-    closing_embed_form=True,
-    closing_email_link="E-post? Klicka här",
     hero_typewriter_suffixes=("företagsfest", "personalfest", "kickoff", "jubileum"),
 )
 
@@ -1387,8 +1383,6 @@ MINGEL_STANDARD_PAGE = StandardServicePage(
     closing_text=(
         "Hör av er via formuläret på kontaktsidan. Vi återkommer med upplägg och offert när vi vet plats, tider och vilka delar ni vill boka."
     ),
-    closing_embed_form=True,
-    closing_email_link="E-post? Klicka här",
     hero_typewriter_suffixes=("fest och mingel", "50-årsfesten", "jubileet", "sommarfesten"),
 )
 
@@ -1420,18 +1414,7 @@ def standard_service_page_body(page: StandardServicePage) -> str:
     addon_grid_class = "alt-svc-addon-grid alt-svc-chapter__body"
     if len(page.addons) >= 3:
         addon_grid_class += " alt-svc-addon-grid--cols-3"
-    if page.closing_embed_form:
-        closing_actions = f"""          <div class="alt-svc-closing-form contact-offert__form tally-card">
-{tally_iframe_markup()}
-{contact_form_consent_markup()}
-          </div>"""
-        if page.closing_email_link:
-            closing_actions += f"""
-          <p class="alt-svc-closing__email">
-            <a href="mailto:halvfjorton@gmail.com">{esc(page.closing_email_link)}</a>
-          </p>"""
-    else:
-        closing_actions = """          <div class="actions">
+    closing_actions = """          <div class="actions">
             <a class="alt-btn alt-btn--primary" href="/kontakt/">Kontakta oss</a>
           </div>"""
     return f"""{hero}
