@@ -706,6 +706,105 @@ def run_alt_facts_icons_qa(base_url: str) -> list[str]:
     return failures
 
 
+def run_om_oss_member_cards_qa(base_url: str) -> list[str]:
+    """Om oss: member grid width, typography, and section spacing."""
+    failures: list[str] = []
+    url = base_url.rstrip("/") + "/om-oss/?qa=members"
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        try:
+            for width, label in ((390, "mobile"), (1280, "desktop")):
+                page = browser.new_page(viewport={"width": width, "height": 900})
+                page.goto(url, wait_until="domcontentloaded", timeout=45000)
+                page.wait_for_timeout(200)
+                metrics = page.evaluate(
+                    """() => {
+                      const section = document.querySelector('.om-oss-members-section');
+                      if (!section) {
+                        return { missing: true };
+                      }
+                      const grid = section.querySelector('.member-compact-grid');
+                      const wrap = section.querySelector('.wrap');
+                      const lead = section.querySelector('h2 + .muted');
+                      const h2 = section.querySelector('h2');
+                      const card = section.querySelector('.member-compact-card');
+                      const line = card?.querySelector('.member-compact-card__line');
+                      const avatar = card?.querySelector('.member-compact-card__avatar');
+                      const gr = grid?.getBoundingClientRect();
+                      const wr = wrap?.getBoundingClientRect();
+                      const wrapStyle = wrap ? getComputedStyle(wrap) : null;
+                      const padL = wrapStyle ? parseFloat(wrapStyle.paddingLeft) : 0;
+                      const padR = wrapStyle ? parseFloat(wrapStyle.paddingRight) : 0;
+                      const h2r = h2?.getBoundingClientRect();
+                      const lr = lead?.getBoundingClientRect();
+                      const lineStyle = line ? getComputedStyle(line) : null;
+                      const gridStyle = grid ? getComputedStyle(grid) : null;
+                      const contentLeft = wr ? wr.left + padL : null;
+                      const contentWidth = wr ? wr.width - padL - padR : null;
+                      return {
+                        missing: false,
+                        gridLeft: gr?.left,
+                        contentLeft,
+                        gridWidth: gr?.width,
+                        contentWidth,
+                        gridColCount: gridStyle
+                          ? gridStyle.gridTemplateColumns.trim().split(/\\s+/).length
+                          : 0,
+                        titleLeadGap: lr && h2r ? lr.top - h2r.bottom : null,
+                        leadGridGap: gr && lr ? gr.top - lr.bottom : null,
+                        lineMaxWidth: lineStyle?.maxWidth,
+                        gridCols: gridStyle?.gridTemplateColumns,
+                        avatarPx: avatar ? avatar.getBoundingClientRect().width : null,
+                      };
+                    }"""
+                )
+                if metrics.get("missing"):
+                    failures.append(f"om-oss-members/{label}: missing members section")
+                    continue
+                if abs(metrics["gridLeft"] - metrics["contentLeft"]) > 2:
+                    failures.append(
+                        f"om-oss-members/{label}: grid not aligned with content column "
+                        f"({metrics['gridLeft']} vs {metrics['contentLeft']})"
+                    )
+                if abs(metrics["gridWidth"] - metrics["contentWidth"]) > 4:
+                    failures.append(
+                        f"om-oss-members/{label}: grid not full content width "
+                        f"({metrics['gridWidth']:.0f} vs {metrics['contentWidth']:.0f})"
+                    )
+                if metrics.get("lineMaxWidth") not in ("none", "100%"):
+                    failures.append(
+                        f"om-oss-members/{label}: bio max-width {metrics.get('lineMaxWidth')}"
+                    )
+                title_lead = metrics.get("titleLeadGap")
+                lead_grid = metrics.get("leadGridGap")
+                if title_lead is None or title_lead > 14:
+                    failures.append(
+                        f"om-oss-members/{label}: title–lead gap too large ({title_lead})"
+                    )
+                if lead_grid is None or lead_grid < 28:
+                    failures.append(
+                        f"om-oss-members/{label}: lead–grid gap too small ({lead_grid})"
+                    )
+                if label == "desktop" and metrics.get("gridColCount") != 2:
+                    failures.append(
+                        f"om-oss-members/desktop: expected 2-col grid, "
+                        f"got {metrics.get('gridColCount')} tracks"
+                    )
+                    avatar_px = metrics.get("avatarPx") or 0
+                    if avatar_px < 115:
+                        failures.append(
+                            f"om-oss-members/desktop: avatar too small ({avatar_px:.0f}px)"
+                        )
+                if label == "mobile" and (metrics.get("avatarPx") or 0) < 82:
+                    failures.append(
+                        f"om-oss-members/mobile: avatar too small ({metrics.get('avatarPx')})"
+                    )
+                page.close()
+        finally:
+            browser.close()
+    return failures
+
+
 def run_konserter_ticket_layout_qa(base_url: str) -> list[str]:
     """Desktop: concert cards align with H1 and fill the content column."""
     failures: list[str] = []
@@ -950,6 +1049,7 @@ def main() -> int:
             failures.extend(run_event_ticket_stretched_link_qa(base))
             failures.extend(run_button_hover_contrast_qa(base))
             failures.extend(run_alt_facts_icons_qa(base))
+            failures.extend(run_om_oss_member_cards_qa(base))
             failures.extend(run_faq_column_stability_qa(base))
     finally:
         if server:

@@ -2858,46 +2858,50 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 }
 
 .alt-page--inner .om-oss-members-section h2 {
-  margin-bottom: 0.35rem;
+  margin: 0 0 0.2rem;
 }
 
-.alt-page--inner .om-oss-members-section .muted {
-  margin-top: 0;
-  margin-bottom: 0;
+.alt-page--inner .om-oss-members-section h2 + .muted {
+  margin: 0;
+  max-width: none;
 }
 
-.alt-page--inner .member-compact-grid {
+.alt-page--inner .om-oss-members-section .member-compact-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 0.95rem;
-  margin-top: max(1.45rem, var(--alt-heading-content-gap));
+  gap: 1rem;
+  margin-top: clamp(2rem, 4.5vw, 2.85rem);
   width: 100%;
+  max-width: none;
 }
 
 @media (min-width: 900px) {
-  .alt-page--inner .member-compact-grid {
+  .alt-page--inner .om-oss-members-section .member-compact-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.15rem 1.5rem;
-    margin-top: 1.65rem;
+    gap: 1.25rem 1.65rem;
   }
 }
 
 .alt-page--inner .member-compact-card {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
-  gap: 0.85rem;
+  align-items: center;
+  gap: 1rem;
   text-align: left;
-  padding: 0.15rem 0;
+  padding: 1.1rem 1.2rem;
   min-width: 0;
   width: 100%;
+  max-width: none;
   box-sizing: border-box;
+  border: 1px solid var(--alt-line);
+  border-radius: var(--alt-radius);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .alt-page--inner .member-compact-card__avatar {
-  width: 4.85rem;
-  height: 4.85rem;
-  flex: 0 0 4.85rem;
+  width: 5.5rem;
+  height: 5.5rem;
+  flex: 0 0 5.5rem;
   border-radius: 50%;
   object-fit: cover;
   display: block;
@@ -2905,9 +2909,9 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 }
 
 .alt-page--inner .member-compact-card__avatar--empty {
-  flex: 0 0 4.85rem;
-  width: 4.85rem;
-  height: 4.85rem;
+  flex: 0 0 5.5rem;
+  width: 5.5rem;
+  height: 5.5rem;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid var(--alt-line);
@@ -2915,14 +2919,15 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
 @media (min-width: 900px) {
   .alt-page--inner .member-compact-card {
-    gap: 1rem;
+    gap: 1.15rem;
+    padding: 1.25rem 1.35rem;
   }
 
   .alt-page--inner .member-compact-card__avatar,
   .alt-page--inner .member-compact-card__avatar--empty {
-    width: 6rem;
-    height: 6rem;
-    flex-basis: 6rem;
+    width: 7.5rem;
+    height: 7.5rem;
+    flex-basis: 7.5rem;
   }
 }
 
@@ -2930,12 +2935,13 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   min-width: 0;
   flex: 1 1 auto;
   width: 100%;
+  max-width: none;
 }
 
 .alt-page--inner .member-compact-card__name {
-  margin: 0 0 0.25rem;
+  margin: 0 0 0.35rem;
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: 1.125rem;
   font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 1.2;
@@ -2944,22 +2950,23 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
 @media (min-width: 900px) {
   .alt-page--inner .member-compact-card__name {
-    font-size: 1.0625rem;
+    font-size: 1.3125rem;
   }
 }
 
 .alt-page--inner .member-compact-card__line {
   margin: 0;
-  font-size: 0.875rem;
-  line-height: 1.45;
+  font-size: 0.9375rem;
+  line-height: 1.5;
   color: var(--alt-muted);
   text-align: left;
+  max-width: none;
 }
 
 @media (min-width: 900px) {
   .alt-page--inner .member-compact-card__line {
-    font-size: 0.9375rem;
-    line-height: 1.5;
+    font-size: 1.0625rem;
+    line-height: 1.55;
   }
 }
 

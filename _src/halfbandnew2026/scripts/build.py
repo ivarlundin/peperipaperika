@@ -713,7 +713,7 @@ def member_compact_card(
           </article>"""
     alt = member_avatar_alt(name, line)
     return f"""          <article class="member-compact-card">
-            <img class="member-compact-card__avatar" src="/assets/img/{img_file}" alt="{esc(alt)}" width="144" height="144" loading="lazy" decoding="async">
+            <img class="member-compact-card__avatar" src="/assets/img/{img_file}" alt="{esc(alt)}" width="160" height="160" loading="lazy" decoding="async">
             <div class="member-compact-card__body">
               <h3 class="member-compact-card__name">{esc(name)}</h3>
               <p class="member-compact-card__line">{esc(line)}</p>
