@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Playwright WebKit iPhone: home gallery bento marquee layout and image sharpness."""
+"""Playwright WebKit iPhone + desktop: home gallery bento grid."""
 import subprocess
 import sys
 import time
@@ -8,7 +8,6 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[3]
-VIEWPORT = {"width": 390, "height": 844}
 BASE_URL = "http://127.0.0.1:8765/testing/halfbandnew2026/"
 
 
@@ -23,71 +22,96 @@ def main() -> int:
 
     try:
         with sync_playwright() as p:
-            browser = p.webkit.launch()
+            browser = p.chromium.launch()
             page = browser.new_context(
-                viewport=VIEWPORT,
+                viewport={"width": 390, "height": 844},
                 device_scale_factor=3,
                 is_mobile=True,
                 has_touch=True,
             ).new_page()
             page.goto(BASE_URL, wait_until="networkidle")
-            gallery = page.locator(".alt-gallery")
-            gallery.scroll_into_view_if_needed()
-            page.wait_for_timeout(800)
-
-            col_count = page.locator(".alt-gallery__set").first.locator(
-                ".alt-gallery__col"
-            ).count()
-            assert col_count == 3, f"expected 3 bento columns per set, got {col_count}"
-
-            boxes = page.locator(".alt-gallery__set").first.locator(
-                ".alt-gallery__col"
-            ).evaluate_all(
-                "els => els.map(el => ({ w: el.getBoundingClientRect().width, h: el.getBoundingClientRect().height }))"
+            page.locator(".alt-gallery").scroll_into_view_if_needed()
+            page.evaluate(
+                "document.querySelector('.alt-gallery')?.classList.add('is-in')"
             )
-            for i, box in enumerate(boxes):
-                assert box["w"] >= 88, f"column {i} too narrow: {box['w']}"
-                assert box["h"] >= 260, f"column {i} too short for bento stack: {box['h']}"
+            page.wait_for_timeout(400)
 
-            cards_per_col = page.locator(".alt-gallery__set").first.locator(
-                ".alt-gallery__col"
-            ).first.locator(".alt-gallery__card").count()
-            assert cards_per_col == 2, "each column should stack two cards"
+            card_count = page.locator(".alt-gallery__bento .alt-gallery__card").count()
+            assert card_count == 6, f"expected 6 bento tiles, got {card_count}"
 
-            sharp = page.evaluate(
-                """async () => {
-                  const imgs = [...document.querySelectorAll('.alt-gallery__card img')].slice(0, 6);
-                  for (const img of imgs) {
-                    try { await img.decode(); } catch (e) {}
-                  }
-                  return imgs.map(img => {
-                    const r = img.getBoundingClientRect();
-                    const src = img.currentSrc || img.src;
-                    const okSrc = /-(480|800|1200|1920)w\\./.test(src);
-                    const okWidth = r.width > 0 && r.width <= 130;
-                    return { ok: img.complete && okSrc && okWidth, src, w: r.width };
-                  });
+            cols = page.locator(".alt-gallery__bento").evaluate(
+                "el => getComputedStyle(el).gridTemplateColumns.split(' ').length"
+            )
+            assert cols == 2, f"mobile should be 2 columns, got {cols}"
+
+            bounds = page.evaluate(
+                """() => {
+                  const inner = document.querySelector('.alt-gallery__inner');
+                  const bento = document.querySelector('.alt-gallery__bento');
+                  const ir = inner.getBoundingClientRect();
+                  const br = bento.getBoundingClientRect();
+                  const padL = parseFloat(getComputedStyle(inner).paddingLeft) || 0;
+                  const padR = parseFloat(getComputedStyle(inner).paddingRight) || 0;
+                  return {
+                    contentLeft: ir.left + padL,
+                    contentRight: ir.right - padR,
+                    bLeft: br.left,
+                    bRight: br.right,
+                  };
                 }"""
             )
-            bad = [s for s in sharp if not s.get("ok")]
-            assert not bad, f"gallery images missing or wrong src: {bad}"
+            assert abs(bounds["bLeft"] - bounds["contentLeft"]) < 2
+            assert abs(bounds["bRight"] - bounds["contentRight"]) < 3
 
-            track_width = page.locator(".alt-gallery__track").evaluate(
-                "el => el.getBoundingClientRect().width"
+            desktop = browser.new_context(viewport={"width": 1280, "height": 900}).new_page()
+            desktop.goto(BASE_URL, wait_until="networkidle")
+            desktop.locator(".alt-gallery").scroll_into_view_if_needed()
+            desktop.evaluate(
+                "document.querySelector('.alt-gallery')?.classList.add('is-in')"
             )
-            set_width = page.locator(".alt-gallery__set").first.evaluate(
-                "el => el.getBoundingClientRect().width"
+            desktop.wait_for_timeout(300)
+
+            metrics = desktop.evaluate(
+                """() => {
+                  const inner = document.querySelector('.alt-gallery__inner');
+                  const bento = document.querySelector('.alt-gallery__bento');
+                  const header = document.querySelector('.alt-header__inner');
+                  const ir = inner.getBoundingClientRect();
+                  const br = bento.getBoundingClientRect();
+                  const hr = header.getBoundingClientRect();
+                  const padL = parseFloat(getComputedStyle(inner).paddingLeft) || 0;
+                  const padR = parseFloat(getComputedStyle(inner).paddingRight) || 0;
+                  const contentLeft = ir.left + padL;
+                  const contentRight = ir.right - padR;
+                  const vh = window.innerHeight;
+                  return {
+                    bentoH: br.height,
+                    vh,
+                    insideGrid:
+                      br.left >= contentLeft - 1 &&
+                      br.right <= contentRight + 1 &&
+                      br.left >= hr.left + padL - 1 &&
+                      br.right <= hr.right - padR + 1,
+                    feature: document.querySelector('.alt-gallery__card--feature')?.getBoundingClientRect(),
+                    wide: document.querySelector('.alt-gallery__card--wide-top')?.getBoundingClientRect(),
+                  };
+                }"""
             )
-            assert track_width >= set_width * 1.95, (
-                f"track should contain two sets for loop (track={track_width}, set={set_width})"
+            assert metrics["insideGrid"], "bento must stay inside site content grid"
+            assert metrics["bentoH"] >= metrics["vh"] * 0.68, (
+                f"bento too short: {metrics['bentoH']} vs vh {metrics['vh']}"
             )
+            feat = metrics["feature"]
+            wide = metrics["wide"]
+            assert feat and wide and feat["width"] > wide["width"] * 1.4
+            assert feat["height"] > wide["height"] * 1.35
 
             browser.close()
     finally:
         server.terminate()
         server.wait(timeout=5)
 
-    print("OK: WebKit iPhone gallery bento marquee")
+    print("OK: home gallery bento (mobile 2-col + desktop grid)")
     return 0
 
 
