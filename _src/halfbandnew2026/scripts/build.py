@@ -875,7 +875,7 @@ def wedding_page_body() -> str:
         for q, a in BROLLOP_FAQS
     )
     return f"""{hero}
-    <section class="alt-svc-chapter section alt-svc-chapter--split" data-reveal>
+    <section class="alt-svc-chapter section alt-svc-chapter--split alt-svc-chapter--festspelning" data-reveal>
       <div class="alt-svc-wrap alt-svc-chapter__split alt-svc-chapter__layout--copy-first">
         <div class="alt-svc-chapter__split-copy">
           <h2 class="alt-svc-chapter__title">Festspelning</h2>

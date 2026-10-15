@@ -3525,8 +3525,40 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
     align-items: start;
   }
 
-  .alt-page--service-banner .alt-svc-chapter--split .alt-svc-chapter__split {
+  .alt-page--service-banner .alt-svc-chapter--split:not(.alt-svc-chapter--festspelning)
+    .alt-svc-chapter__split {
     align-items: center;
+  }
+}
+
+.alt-page--service-banner .alt-svc-chapter--festspelning .alt-svc-chapter__split {
+  width: 100%;
+  align-items: start;
+  gap: clamp(1.5rem, 4vw, 2.75rem);
+}
+
+.alt-page--service-banner .alt-svc-chapter--festspelning .alt-svc-chapter__title {
+  margin-top: 0;
+}
+
+.alt-page--service-banner .alt-svc-chapter--festspelning .alt-svc-chapter__split-copy,
+.alt-page--service-banner .alt-svc-chapter--festspelning .alt-svc-chapter__split-media {
+  width: 100%;
+  min-width: 0;
+}
+
+.alt-page--service-banner .alt-svc-chapter--festspelning .alt-svc-inline-figure {
+  width: 100%;
+}
+
+.alt-page--service-banner main > .alt-service-hero + section.alt-svc-chapter--festspelning {
+  padding-top: clamp(2rem, 5vw, 3rem);
+}
+
+@media (min-width: 901px) {
+  .alt-page--service-banner .alt-svc-chapter--festspelning .alt-svc-chapter__split {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: clamp(2rem, 4.5vw, 3.25rem);
   }
 }
 
