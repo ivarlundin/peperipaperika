@@ -150,16 +150,16 @@
         if (live) live.textContent = ch.meta.originalPhrases[0] || "";
       }
     } else if (ch.type === "text") {
-      restoreTextElement(el, ch);
+      restoreTextElement(el, ch, store);
     }
     removeChange(store, id);
   }
 
-  function restoreTextElement(el, ch) {
+  function restoreTextElement(el, ch, store) {
     if (!el || ch.type !== "text") return;
     if (!isLeafTextElement(el)) {
       console.warn("[cmsmode] unsafe undo target, reloading page", ch.cmsId);
-      removeChange(readStore(), ch.cmsId);
+      if (store) removeChange(store, ch.cmsId);
       window.location.reload();
       return;
     }

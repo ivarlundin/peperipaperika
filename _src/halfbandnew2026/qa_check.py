@@ -751,7 +751,11 @@ def run_om_oss_member_cards_qa(base_url: str) -> list[str]:
                           ? gridStyle.gridTemplateColumns.trim().split(/\\s+/).length
                           : 0,
                         titleLeadGap: lr && h2r ? lr.top - h2r.bottom : null,
-                        leadGridGap: gr && lr ? gr.top - lr.bottom : null,
+                        leadGridGap: gr && lr
+                          ? gr.top - lr.bottom
+                          : gr && h2r
+                            ? gr.top - h2r.bottom
+                            : null,
                         lineMaxWidth: lineStyle?.maxWidth,
                         gridCols: gridStyle?.gridTemplateColumns,
                         avatarPx: avatar ? avatar.getBoundingClientRect().width : null,
@@ -777,13 +781,17 @@ def run_om_oss_member_cards_qa(base_url: str) -> list[str]:
                     )
                 title_lead = metrics.get("titleLeadGap")
                 lead_grid = metrics.get("leadGridGap")
-                if title_lead is None or title_lead > 14:
+                if title_lead is not None and title_lead > 14:
                     failures.append(
                         f"om-oss-members/{label}: title–lead gap too large ({title_lead})"
                     )
-                if lead_grid is None or lead_grid < 28:
+                if lead_grid is not None and lead_grid < 28:
                     failures.append(
                         f"om-oss-members/{label}: lead–grid gap too small ({lead_grid})"
+                    )
+                if lead_grid is None:
+                    failures.append(
+                        f"om-oss-members/{label}: could not measure section spacing"
                     )
                 if label == "desktop" and metrics.get("gridColCount") != 2:
                     failures.append(

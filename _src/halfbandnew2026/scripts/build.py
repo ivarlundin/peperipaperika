@@ -712,52 +712,62 @@ def lyssna_spotify_embed_markup() -> str:
         </div>"""
 
 
-PERMANENT_MEMBERS = [
+THE_LICK_VIDEO_URL = "https://www.youtube.com/watch?v=krDxhnaKD7Q"
+
+OM_OSS_MEMBERS = [
+    (
+        "Adam Blidstål",
+        "member-adam.jpg",
+        "Sångare och bandets crooner som charmar hela publiken med sin vassa röst. Lärare på dagarna, frontfigur på kvällarna, och ingen i lokalen går säker.",
+    ),
+    (
+        'Gustav "Gema" Kerrolf',
+        "member-gustav.jpg",
+        "Sångare och slagverkare som sjunger med ena halvan av hjärnan och håller takten med den andra. Ger du honom en bil med släp backar han in i vilken lastficka som helst.",
+    ),
     (
         "Edvin Sydmark",
         "member-edvin.jpg",
-        "Gitarr. Ämneslärare från Ör som också sköter ljudet och har svaghet för varmkorv.",
-    ),
-    (
-        "Jonathan Eryd",
-        "member-jonathan.jpg",
-        "Trummor. Skånsk tvillingfar och bandets äldste, jazzentusiast med humor och ödmjukhet.",
+        "Gitarrist och musiklärare med tajta funkkomp och hjältesolon med dist. Ser du honom lägga ifrån sig gitarren och le: spring. En lek är på väg.",
     ),
     (
         "Ivar Lundin",
         "member-ivar.jpg",
-        "Klaviatur. Multiinstrumentalist i Växjö som balanserar IT med jazz och kreativa arrangemang.",
-    ),
-    (
-        "Nils Biström",
-        "member-nils.jpg",
-        "Trumpet och kör. Trumpetare från Älmhult med brett orkester-cv och en falsett som håller i regn.",
-    ),
-    (
-        "Adam Blidstål",
-        "member-adam.jpg",
-        "Sång. Växjöbo och lärare med stor scennärvaro trots att han är minst musikutbildad i gänget.",
-    ),
-    (
-        "Gustav Magnusson",
-        "member-gustav.jpg",
-        "Sång och slagverk. Musikpedagog från Vislanda som sjunger, spelar och backar med släp.",
+        None,
+        (
+            "Keyboardist och mångsysslare som lever för fusion och groove. Han hjälper varje treklang på traven "
+            f'med några extra ackord och väntar bara på rätt tillfälle att slänga in <a href="{THE_LICK_VIDEO_URL}" '
+            'target="_blank" rel="noopener noreferrer">The Lick</a>. Håll utkik!'
+        ),
     ),
     (
         "Zacharias Averin",
         "member-zacharias.jpg",
-        "Basgitarr. Växjöbo med bredd från jazz till tyngre stilar, alltid med samma energi.",
+        "Basist som säljer bokföring på dagarna och spelar 32-delar på sin femsträngade på kvällarna. Börjar dansgolvet vibrera är det inte en jordbävning, det är Averin som har satt igång förstärkaren.",
+    ),
+    (
+        "Jonathan Eryd",
+        "member-jonathan.jpg",
+        "Trummis och bandets äldste som byter cymbaler oftare än vi byter låtordning. Han kan varenda låt och skickar in till Nyacht or Yacht, podden för yachtrocknördar.",
+    ),
+    (
+        'Nils "Nisse" Biström',
+        "member-nils.jpg",
+        "Trumpetare och ljudtekniker. Ser du en mörk skugga glida längs dansgolvets kant är den inte där för att ta dig. Den är där för att dra ner 3 dB på 250 Hz.",
     ),
     (
         "Olof Ingelsten",
         "member-olof.jpg",
-        "Saxofon och kör. Designer i Malmö som spelar det som gungar och bjuder på trappist.",
+        "Saxofonist vars instrumentsamling börjar likna en liten orkester. Syns inte dansgolvet för rök vet du vem som varit i farten. Olof kör nämligen även ljuset.",
     ),
 ]
 
 
 def member_avatar_alt(name: str, line: str) -> str:
-    role = line.split(".", 1)[0]
+    plain = re.sub(r"<[^>]+>", "", line)
+    role = plain.split(".", 1)[0]
+    if len(role) > 48:
+        role = plain.split(",", 1)[0]
     return f"{name}, {role.lower()}"
 
 
@@ -765,6 +775,7 @@ def member_compact_card(
     name: str = "",
     img_file: str = "",
     line: str = "",
+    line_html: str | None = None,
     placeholder: bool = False,
 ) -> str:
     if placeholder:
@@ -775,14 +786,23 @@ def member_compact_card(
               <p class="member-compact-card__line">Instrument</p>
             </div>
           </article>"""
-    alt = member_avatar_alt(name, line)
+    bio_plain = line if line else re.sub(r"<[^>]+>", "", line_html or "")
+    alt = member_avatar_alt(name, bio_plain)
+    bio_markup = line_html if line_html is not None else esc(line)
     return f"""          <article class="member-compact-card">
             <img class="member-compact-card__avatar" src="/assets/img/{img_file}" alt="{esc(alt)}" width="160" height="160" loading="lazy" decoding="async">
             <div class="member-compact-card__body">
               <h3 class="member-compact-card__name">{esc(name)}</h3>
-              <p class="member-compact-card__line">{esc(line)}</p>
+              <p class="member-compact-card__line">{bio_markup}</p>
             </div>
           </article>"""
+
+
+def om_oss_member_card(entry: tuple) -> str:
+    name, img, *rest = entry
+    if len(rest) == 2 and rest[0] is None:
+        return member_compact_card(name, img, line="", line_html=rest[1])
+    return member_compact_card(name, img, rest[0])
 
 
 def members_compact_grid(cards: str) -> str:
@@ -1701,10 +1721,7 @@ def page(
 
 
 def write_pages():
-    permanent_member_cards = "\n".join(
-        member_compact_card(name, img, line) for name, img, line in PERMANENT_MEMBERS
-    )
-    guest_member_cards = "\n".join(member_compact_card(placeholder=True) for _ in range(3))
+    om_oss_member_cards = "\n".join(om_oss_member_card(entry) for entry in OM_OSS_MEMBERS)
     page(
         "/brollop/",
         "Bröllopsband från Växjö | Halv Fjorton",
@@ -1945,45 +1962,41 @@ def write_pages():
     page(
         "/om-oss/",
         f"Om Halv Fjorton | grundat 2018 i Växjö | {BRAND_TITLE}",
-        "Coverband från Växjö sedan 2018. Åtta musiker, egen blåssektion, egen julkonsert på Nygatan 6. Möt medlemmarna här.",
+        "Coverband från Växjö. Soul, funk och svenska allsångslåtar med blåssektion. Möt bandet och medlemmarna här.",
         breadcrumb_name="Om oss",
         body=f"""    <header class="page-hero compact">
       <div class="page-hero-copy">
-        <h1>Vilka är Halv Fjorton?</h1>
-        <p class="lead">Ett partyband med rötter i Växjö och medlemmar över södra Sverige. Vi började som sju, halva fjorton, och är idag åtta musiker med egen blåssektion.</p>
-        <p>Vi vill skapa fester som folk minns, och vi brinner för att dela musikglädjen med er som bokar och med gästerna på golvet. Som komplett band med dynamisk blåssektion har vi en bred repertoar och stor musikalisk bredd.</p>
+        <h1>Om oss</h1>
       </div>
     </header>
     <section class="section">
+      <div class="wrap">
+        <h2>Vilka är vi?</h2>
+        <p>Halv Fjorton är ett coverband från Växjö. Vi var sju från början, och hälften av fjorton är ju sju. Nu är vi åtta, men namnet fick stå kvar. Vårt mål är att ni ska minnas festen länge, och att gästerna fortfarande nynnar på låtarna dagen efter.</p>
+      </div>
+    </section>
+    <section class="section section-alt">
       <div class="wrap split">
         <div>
-          <h2>Musiken</h2>
-          <p>Huvudinriktningen är funk och soul, med låtar från Stevie Wonder, Ray Charles och Earth, Wind &amp; Fire. Vi blandar in svenska favoriter som Björn Skifs och Tomas Ledin så att olika smaker och åldrar hittar något de känner igen.</p>
-          <p>Styrkan är mångsidigheten. Det som behövs för att göra er kväll speciell försöker vi leverera, utan att det ska kännas som en slumpmässig coverkväll. När ni bokar oss vill vi att festen ska kännas som er egen.</p>
+          <h2>Vad spelar vi?</h2>
+          <p>Vår grund är soul och funk, och därifrån tar vi oss vidare till schlager, rock och svenska allsångslåtar. Det viktigaste är att det svänger. Har vi kul på scen har ni kul på dansgolvet.</p>
+          <p>Vi är ett coverband med blåssektion, så vi spelar gärna låtar med blåsriff och saxofonsolon. Kort och gott: vi har repertoar för både farfar och de yngre.</p>
         </div>
         <div>
 {gallery_img("halvfjorton-01", "Hela bandet på scen i festsal med publik")}
         </div>
       </div>
     </section>
+    <section class="section">
+      <div class="wrap">
+        <h2>Bandet</h2>
+        <p>Vi består av åtta fasta musiker: sångare, kompmusiker, slagverk och en eminent blåssektion.</p>
+      </div>
+    </section>
     <section class="section section-alt om-oss-members-section">
       <div class="wrap">
-        <h2>Permanenta medlemmar</h2>
-        <p class="muted">Åtta fasta medlemmar med blås, sång och rytm.</p>
-{members_compact_grid(permanent_member_cards)}
-      </div>
-    </section>
-    <section class="section om-oss-members-section">
-      <div class="wrap">
-        <h2>Gästande musiker</h2>
-        <p class="muted">Ibland spelar vi med gäster som förstärker blås, sång eller rytm.</p>
-{members_compact_grid(guest_member_cards)}
-      </div>
-    </section>
-    <section class="section section-alt">
-      <div class="wrap">
-        <h2>Föreningen</h2>
-        <p>Vi är <strong>Halv Fjorton EK. FÖR.</strong>, organisationsnummer <strong>769641-5418</strong>. Kontakt: <a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a>, Instagram <a href="https://www.instagram.com/halvfjorton/">@halvfjorton</a>, YouTube <a href="https://www.youtube.com/@halvfjorton9292" rel="noopener noreferrer">@halvfjorton9292</a>.</p>
+        <h2>Medlemmarna</h2>
+{members_compact_grid(om_oss_member_cards)}
       </div>
     </section>
 """,
