@@ -425,38 +425,54 @@ def mobile_menu_block(
 
 
 def modern_footer_markup() -> str:
-    return f"""  <footer class="site-footer" aria-label="Sidfot">
+    return f"""  <footer class="site-footer site-footer--columns" aria-label="Sidfot">
     <div class="site-footer__inner">
-      <div class="site-footer__grid">
+      <div class="site-footer__columns">
         <div class="site-footer__brand">
-          <p class="site-footer__title">Halv Fjorton</p>
-          <p class="site-footer__tagline">Coverband från Växjö, Småland</p>
+          <a class="site-footer__brand-mark" href="/" aria-label="Halv Fjorton">
+            <img src="/assets/img/h14-logo.svg" alt="" width="44" height="44" decoding="async">
+            <span class="site-footer__title">Halv Fjorton</span>
+          </a>
+          <p class="site-footer__tagline">Coverband och partyband med rötter i Växjö, Småland.</p>
         </div>
-        <nav class="site-footer__nav" aria-label="Sidfot länkar">
+        <div class="site-footer__col">
+          <p class="site-footer__col-label">Tjänster</p>
           <ul class="site-footer__links">
-            <li><a href="/#tjanster">Tjänster</a></li>
-            <li><a href="/kontakt/">Kontakt</a></li>
+            <li><a href="/brollop/">Bröllop</a></li>
+            <li><a href="/foretag/">Företag</a></li>
+            <li><a href="/mingel/">Fest och mingel</a></li>
+          </ul>
+        </div>
+        <div class="site-footer__col">
+          <p class="site-footer__col-label">Läs mer</p>
+          <ul class="site-footer__links">
+            <li><a href="/om-oss/">Om oss</a></li>
             <li><a href="/faq/">FAQ</a></li>
             <li><a href="/lyssna/">Lyssna</a></li>
+            <li><a href="/konserter/">Konserter</a></li>
             <li><a href="{FOOTER_INTEGRITETSPOLICY_HREF}">Integritetspolicy</a></li>
           </ul>
-        </nav>
-        <div class="site-footer__aside">
-          <a class="site-footer__social" href="https://www.instagram.com/halvfjorton/" target="_blank" rel="noopener noreferrer">
-            <svg class="site-footer__ig-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.75"/>
-              <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.75"/>
-              <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
-            </svg>
-            <span>Följ oss på Instagram</span>
-          </a>
-          <a class="alt-btn alt-btn--primary site-footer__cta" href="/kontakt/">Kontakta oss</a>
+        </div>
+        <div class="site-footer__col">
+          <p class="site-footer__col-label">Följ oss</p>
+          <ul class="site-footer__links">
+            <li><a href="https://www.instagram.com/halvfjorton/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+            <li><a href="https://www.youtube.com/@halvfjorton9292" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+          </ul>
+        </div>
+        <div class="site-footer__col site-footer__col--contact">
+          <p class="site-footer__col-label">Kontakt</p>
+          <ul class="site-footer__links site-footer__links--plain">
+            <li><span class="site-footer__contact-line">Växjö, Småland</span></li>
+            <li><span class="site-footer__contact-line">Org.nr 769641-5418</span></li>
+            <li><a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a></li>
+          </ul>
         </div>
       </div>
       <hr class="site-footer__rule" />
-      <p class="site-footer__legal">
-        <span class="site-footer__legal-line">© <span data-footer-year>{BUILD_YEAR}</span> Halv Fjorton ek. för.</span>
-        <span class="site-footer__legal-org">Org.nr 769641-5418</span>
+      <p class="site-footer__legal site-footer__legal--bar">
+        <span class="site-footer__legal-line">© <span data-footer-year>{BUILD_YEAR}</span> Halv Fjorton</span>
+        <span class="site-footer__legal-place">Växjö, Småland</span>
       </p>
     </div>
   </footer>"""
@@ -491,6 +507,25 @@ def video_facade(
             <img src="https://i.ytimg.com/vi/{video_id}/hqdefault.jpg" alt="{esc(alt)}" width="{width}" height="{height}" loading="lazy" decoding="async">
           </button>
         </div>"""
+
+
+LYSSNA_VIDEO_MODAL_SCRIPT = (
+    '  <script src="/assets/js/lyssna-video-modal.js" defer></script>\n'
+)
+
+
+def lyssna_video_tile(video_id: str, label: str, title: str) -> str:
+    return f"""        <button type="button" class="lyssna-video-tile" data-lyssna-video="{video_id}" data-lyssna-title="{esc(title)}" aria-label="Spela video: {esc(title)}">
+          <span class="lyssna-video-tile__media">
+            <img class="lyssna-video-tile__thumb" src="https://i.ytimg.com/vi/{video_id}/maxresdefault.jpg" alt="" width="1280" height="720" loading="lazy" decoding="async" data-lyssna-thumb-fallback="https://i.ytimg.com/vi/{video_id}/hqdefault.jpg">
+            <span class="lyssna-video-tile__play" aria-hidden="true"></span>
+            <span class="lyssna-video-tile__label">{esc(label)}</span>
+          </span>
+        </button>"""
+
+
+def lyssna_video_grid(*tiles: str) -> str:
+    return "        <div class=\"lyssna-video-grid\">\n" + "\n".join(tiles) + "\n        </div>"
 
 
 PERMANENT_MEMBERS = [
@@ -1495,56 +1530,52 @@ def write_pages():
         "/lyssna/",
         "Lyssna på Halv Fjorton | film, reel och julkonserter",
         "Se Halv Fjorton live: Signed Sealed Delivered 2025, reel 2022 och julkonserterna A Soulful Christmas.",
-        body="""    <header class="page-hero compact">
+        extra_scripts=LYSSNA_VIDEO_MODAL_SCRIPT,
+        body=f"""    <header class="page-hero compact">
       <div class="page-hero-copy">
         <h1>Lyssna på oss</h1>
         <p class="lead">Filmer från scen och julkonserter, plus en överblick av repertoaren. Samma band som ni bokar till bröllop, företag och mingel.</p>
       </div>
     </header>
-    <section class="section">
-      <div class="wrap media-grid">
-        <article class="media-card">
-          <div class="embed">
-            <iframe src="https://www.youtube-nocookie.com/embed/V2Nb8jMKUCk" title="Signed Sealed Delivered - Halv Fjorton 2025" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
-          </div>
-          <div class="meta">
-            <h2>Signed Sealed Delivered - 2025</h2>
-            <p>Aktuell livefilm. Smakprov på hur vi låter med blås och sång.</p>
-          </div>
-        </article>
-        <article class="media-card">
-          <div class="embed">
-            <iframe src="https://www.youtube-nocookie.com/embed/gm5C41wqYuU" title="Halv Fjorton Reel 2022" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
-          </div>
-          <div class="meta">
-            <h2>Reel 2022</h2>
-            <p>Kortare klipp från spelningar, bra att skicka vidare till den som inte var med.</p>
-          </div>
-        </article>
+    <section class="section" aria-label="Livefilmer">
+      <div class="wrap">
+{lyssna_video_grid(
+    lyssna_video_tile(
+        "V2Nb8jMKUCk",
+        "Signed Sealed Delivered",
+        "Signed Sealed Delivered - Halv Fjorton 2025",
+    ),
+    lyssna_video_tile("gm5C41wqYuU", "Reel 2022", "Halv Fjorton Reel 2022"),
+)}
+        <p class="small muted lyssna-video-intro">Aktuell livefilm och kortare klipp från spelningar.</p>
       </div>
     </section>
     <section class="section section-alt">
       <div class="wrap">
         <h2>Julkonserter på film</h2>
-        <p class="muted">A Soulful Christmas och en julmässa med vänner. Inbäddade från bandets tidigare mediasida.</p>
-        <div class="media-grid">
-          <article class="media-card">
-            <div class="embed"><iframe src="https://www.youtube-nocookie.com/embed/vV8aavPxYss" title="A Soulful Christmas 2024 - 8 december, Nygatan 6" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe></div>
-            <div class="meta"><h3>A Soulful Christmas 2024</h3><p>8 december, Nygatan 6.</p></div>
-          </article>
-          <article class="media-card">
-            <div class="embed"><iframe src="https://www.youtube-nocookie.com/embed/UytyTLnKDWQ" title="A Soulful Christmas 2023 - 3 december, Nygatan 6" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe></div>
-            <div class="meta"><h3>A Soulful Christmas 2023</h3><p>3 december, Nygatan 6.</p></div>
-          </article>
-          <article class="media-card">
-            <div class="embed"><iframe src="https://www.youtube-nocookie.com/embed/lAmSo6wGjqo" title="Halv Fjorton med vänner och mässa - 26 december 2022" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe></div>
-            <div class="meta"><h3>Med vänner och mässa</h3><p>26 december 2022.</p></div>
-          </article>
-          <article class="media-card">
-            <div class="embed"><iframe src="https://www.youtube-nocookie.com/embed/R0fqTXcAbgc" title="A Soulful Christmas 2018" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe></div>
-            <div class="meta"><h3>A Soulful Christmas 2018</h3><p>Tidigare julkonsert.</p></div>
-          </article>
-        </div>
+        <p class="muted">A Soulful Christmas och en julmässa med vänner.</p>
+{lyssna_video_grid(
+    lyssna_video_tile(
+        "vV8aavPxYss",
+        "A Soulful Christmas 2024",
+        "A Soulful Christmas 2024 - 8 december, Nygatan 6",
+    ),
+    lyssna_video_tile(
+        "UytyTLnKDWQ",
+        "A Soulful Christmas 2023",
+        "A Soulful Christmas 2023 - 3 december, Nygatan 6",
+    ),
+    lyssna_video_tile(
+        "lAmSo6wGjqo",
+        "Med vänner och mässa",
+        "Halv Fjorton med vänner och mässa - 26 december 2022",
+    ),
+    lyssna_video_tile(
+        "R0fqTXcAbgc",
+        "A Soulful Christmas 2018",
+        "A Soulful Christmas 2018",
+    ),
+)}
         <p class="small muted">Fler klipp och pressbilder kan läggas här. Se även <a href="https://www.instagram.com/halvfjorton/">Instagram @halvfjorton</a>.</p>
       </div>
     </section>
