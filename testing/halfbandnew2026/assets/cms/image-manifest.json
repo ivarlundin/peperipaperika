@@ -256,6 +256,17 @@
       "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-garden-mingel-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-garden-mingel-1600w.webp 1600w"
     },
     {
+      "id": "gallery/halvfjorton-garden-sax-barn.webp",
+      "label": "halvfjorton-garden-sax-barn.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-garden-sax-barn-800w.webp",
+      "variants": {
+        "1600w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-garden-sax-barn-1600w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-garden-sax-barn-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-garden-sax-barn-800w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-garden-sax-barn-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-garden-sax-barn-1600w.webp 1600w"
+    },
+    {
       "id": "gallery/halvfjorton-keys-colorful-venue.webp",
       "label": "halvfjorton-keys-colorful-venue.webp",
       "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-keys-colorful-venue-800w.webp",
