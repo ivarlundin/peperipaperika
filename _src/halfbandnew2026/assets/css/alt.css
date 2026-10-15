@@ -1674,6 +1674,11 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   width: 100%;
   height: 100%;
   min-height: 0;
+}
+
+.alt-gallery__drift-layer {
+  min-height: 0;
+  min-width: 0;
   will-change: transform;
 }
 
@@ -1775,27 +1780,27 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   transform: none;
 }
 
-.alt-gallery.is-in .alt-gallery__strip > .alt-gallery__card:nth-child(1) {
+.alt-gallery.is-in .alt-gallery__drift-layer > .alt-gallery__card:nth-child(1) {
   transition-delay: 0.04s;
 }
 
-.alt-gallery.is-in .alt-gallery__strip > .alt-gallery__card:nth-child(2) {
+.alt-gallery.is-in .alt-gallery__drift-layer > .alt-gallery__card:nth-child(2) {
   transition-delay: 0.1s;
 }
 
-.alt-gallery.is-in .alt-gallery__strip > .alt-gallery__card:nth-child(3) {
+.alt-gallery.is-in .alt-gallery__drift-layer > .alt-gallery__card:nth-child(3) {
   transition-delay: 0.16s;
 }
 
-.alt-gallery.is-in .alt-gallery__strip > .alt-gallery__card:nth-child(4) {
+.alt-gallery.is-in .alt-gallery__drift-layer > .alt-gallery__card:nth-child(4) {
   transition-delay: 0.22s;
 }
 
-.alt-gallery.is-in .alt-gallery__strip > .alt-gallery__card:nth-child(5) {
+.alt-gallery.is-in .alt-gallery__drift-layer > .alt-gallery__card:nth-child(5) {
   transition-delay: 0.28s;
 }
 
-.alt-gallery.is-in .alt-gallery__strip > .alt-gallery__card:nth-child(6) {
+.alt-gallery.is-in .alt-gallery__drift-layer > .alt-gallery__card:nth-child(6) {
   transition-delay: 0.34s;
 }
 
@@ -1811,27 +1816,27 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   will-change: transform;
 }
 
-.alt-gallery__strip > .alt-gallery__card:nth-child(2) .alt-gallery__ken {
+.alt-gallery__drift-layer > .alt-gallery__card:nth-child(2) .alt-gallery__ken {
   animation-duration: 36s;
   animation-delay: -6s;
 }
 
-.alt-gallery__strip > .alt-gallery__card:nth-child(3) .alt-gallery__ken {
+.alt-gallery__drift-layer > .alt-gallery__card:nth-child(3) .alt-gallery__ken {
   animation-duration: 48s;
   animation-delay: -12s;
 }
 
-.alt-gallery__strip > .alt-gallery__card:nth-child(4) .alt-gallery__ken {
+.alt-gallery__drift-layer > .alt-gallery__card:nth-child(4) .alt-gallery__ken {
   animation-duration: 40s;
   animation-delay: -4s;
 }
 
-.alt-gallery__strip > .alt-gallery__card:nth-child(5) .alt-gallery__ken {
+.alt-gallery__drift-layer > .alt-gallery__card:nth-child(5) .alt-gallery__ken {
   animation-duration: 44s;
   animation-delay: -18s;
 }
 
-.alt-gallery__strip > .alt-gallery__card:nth-child(6) .alt-gallery__ken {
+.alt-gallery__drift-layer > .alt-gallery__card:nth-child(6) .alt-gallery__ken {
   animation-duration: 38s;
   animation-delay: -9s;
 }
@@ -1855,70 +1860,66 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
   .alt-gallery__bento {
     grid-template-columns: repeat(6, minmax(0, 1fr));
-    grid-template-rows:
-      minmax(clamp(62vh, 72vh, 78vh), auto)
-      minmax(min-content, max-content);
-    height: auto;
-    max-height: none;
-  }
-
-  .alt-gallery__photo-field {
-    grid-column: 1 / -1;
-    grid-row: 1;
-    min-height: clamp(62vh, 72vh, 78vh);
-    max-height: 78vh;
-  }
-
-  .alt-gallery__strip {
-    display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    grid-template-rows:
-      minmax(0, 1.05fr)
-      minmax(0, 0.88fr)
-      minmax(0, 0.95fr);
+    grid-template-rows: minmax(0, 1fr) minmax(min-content, auto);
+    height: clamp(72vh, 78vh, 82vh);
+    max-height: 82vh;
     gap: clamp(0.6rem, 1vw, 0.85rem);
-    height: 100%;
+  }
+
+  .alt-gallery__photo-field,
+  .alt-gallery__strip {
+    display: contents;
+  }
+
+  .alt-gallery__drift-layer {
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-template-rows: subgrid;
     animation: alt-gallery-strip-drift 58s ease-in-out infinite alternate;
   }
 
   .alt-gallery__quote-tile {
     grid-column: 1 / span 3;
     grid-row: 2;
-    align-self: start;
+    align-self: stretch;
+    z-index: 2;
   }
 
-  .alt-gallery__strip > .alt-gallery__card--feature {
+  .alt-gallery__drift-layer > .alt-gallery__card--feature {
     grid-column: 1 / span 3;
+    grid-row: 1;
+  }
+
+  .alt-gallery__drift-layer > .alt-gallery__card--tall {
+    grid-column: 4;
     grid-row: 1 / span 2;
   }
 
-  .alt-gallery__strip > .alt-gallery__card--tall {
-    grid-column: 4 / span 1;
-    grid-row: 1 / span 2;
+  .alt-gallery__drift-layer > .alt-gallery__card--wide-top {
+    grid-column: 5;
+    grid-row: 1;
   }
 
-  .alt-gallery__strip > .alt-gallery__card--wide-top {
+  .alt-gallery__drift-layer > .alt-gallery__card--sm {
+    grid-column: 5;
+    grid-row: 1;
+  }
+
+  .alt-gallery__drift-layer > .alt-gallery__card--tall-right {
+    grid-column: 6;
+    grid-row: 1;
+  }
+
+  .alt-gallery__drift-layer > .alt-gallery__card--wide-bottom {
     grid-column: 5 / span 2;
-    grid-row: 1 / span 1;
+    grid-row: 2;
   }
 
-  .alt-gallery__strip > .alt-gallery__card--sm {
-    grid-column: 5 / span 1;
-    grid-row: 2 / span 1;
-  }
-
-  .alt-gallery__strip > .alt-gallery__card--tall-right {
-    grid-column: 6 / span 1;
-    grid-row: 2 / span 2;
-  }
-
-  .alt-gallery__strip > .alt-gallery__card--wide-bottom {
-    grid-column: 1 / span 5;
-    grid-row: 3 / span 1;
-  }
-
-  .alt-gallery__strip > .alt-gallery__card {
+  .alt-gallery__drift-layer > .alt-gallery__card {
     height: 100%;
+    min-height: 0;
   }
 }
 
@@ -1935,34 +1936,43 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
     height: min(100vh, 100dvh);
   }
 
-  .alt-gallery__quote-tile {
-    grid-row: 1;
+  .alt-gallery__photo-field {
+    grid-row: 2;
     grid-column: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .alt-gallery__strip {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    flex: 1;
+    gap: clamp(0.6rem, 1vw, 0.85rem);
+  }
+
+  .alt-gallery__quote-tile {
     min-height: min-content;
     max-height: none;
     flex-shrink: 0;
     z-index: 1;
   }
 
-  .alt-gallery__photo-field {
-    grid-row: 2;
-    grid-column: 1;
-    min-height: 0;
-  }
-
-  .alt-gallery__strip {
+  .alt-gallery__drift-layer {
     display: flex;
     flex-direction: row;
     align-items: stretch;
+    flex: 1;
+    min-height: 0;
     gap: clamp(0.6rem, 1vw, 0.85rem);
-    height: 100%;
     width: max-content;
     min-width: 100%;
     padding-bottom: 0.15rem;
     animation: alt-gallery-strip-drift-mobile 46s ease-in-out infinite alternate;
   }
 
-  .alt-gallery__strip > .alt-gallery__card {
+  .alt-gallery__drift-layer > .alt-gallery__card {
     flex: 0 0 min(72vw, 17.5rem);
     width: min(72vw, 17.5rem);
     height: 100%;
@@ -2691,7 +2701,8 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
     transform: none;
   }
 
-  .alt-gallery__strip {
+  .alt-gallery__strip,
+  .alt-gallery__drift-layer {
     animation: none;
     transform: none;
     will-change: auto;

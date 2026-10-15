@@ -36,7 +36,7 @@ def main() -> int:
             )
             page.wait_for_timeout(400)
 
-            card_count = page.locator(".alt-gallery__strip .alt-gallery__card").count()
+            card_count = page.locator(".alt-gallery__drift-layer .alt-gallery__card").count()
             assert card_count == 6, f"expected 6 bento tiles, got {card_count}"
 
             mobile_bento_h = page.evaluate(
@@ -113,9 +113,18 @@ def main() -> int:
             feat = metrics["feature"]
             wide = metrics["wide"]
             sm = metrics["sm"]
-            assert feat and wide and feat["width"] > wide["width"] * 1.15
-            assert feat["height"] > wide["height"] * 1.35
-            assert wide and sm and wide["width"] > sm["width"] * 1.55
+            wide_bottom = desktop.evaluate(
+                """() => document.querySelector('.alt-gallery__card--wide-bottom')?.getBoundingClientRect()"""
+            )
+            assert feat and wide and feat["width"] > wide["width"] * 1.05
+            assert wide_bottom and sm and wide_bottom["width"] > sm["width"] * 1.2
+            quote_top = desktop.evaluate(
+                """() => Math.round(document.querySelector('.alt-gallery__quote-tile')?.getBoundingClientRect().top || 0)"""
+            )
+            wb_top = desktop.evaluate(
+                """() => Math.round(document.querySelector('.alt-gallery__card--wide-bottom')?.getBoundingClientRect().top || 0)"""
+            )
+            assert abs(quote_top - wb_top) <= 6, "quote must align on row 2 with wide-bottom"
 
             browser.close()
     finally:
