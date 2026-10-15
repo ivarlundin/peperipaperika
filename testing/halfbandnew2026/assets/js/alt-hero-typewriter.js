@@ -127,4 +127,24 @@
   }
 
   document.querySelectorAll("[data-alt-typewriter]").forEach(initTypewriter);
+
+  function isDecorativeHeroHeadlineTarget(node) {
+    if (!node || !node.closest) return false;
+    if (node.closest(".visually-hidden")) return false;
+    var h1 = node.closest(".alt-hero h1, .alt-service-hero h1");
+    if (!h1 || !h1.querySelector("[data-alt-typewriter]")) return false;
+    return !!node.closest(
+      ".alt-hero__title-line, [data-alt-typewriter], .alt-hero__typewriter-live, .alt-hero__typewriter-text, .alt-hero__caret"
+    );
+  }
+
+  document.addEventListener(
+    "selectstart",
+    function (event) {
+      if (isDecorativeHeroHeadlineTarget(event.target)) {
+        event.preventDefault();
+      }
+    },
+    false
+  );
 })();

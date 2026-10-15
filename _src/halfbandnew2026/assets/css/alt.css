@@ -1337,17 +1337,36 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
 @media (max-width: 900px) {
   #alt-hero-rubrik .alt-hero__typewriter {
+    position: relative;
     width: 100%;
     max-width: 100%;
+    min-height: 1.05em;
     white-space: normal;
     text-wrap: balance;
   }
 
-  #alt-hero-rubrik .alt-hero__typewriter-ghost,
+  #alt-hero-rubrik .alt-hero__typewriter-ghost {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    max-width: 100%;
+    max-height: 0;
+    overflow: hidden;
+    margin: 0;
+    white-space: normal;
+    text-wrap: balance;
+  }
+
   #alt-hero-rubrik .alt-hero__typewriter-live,
   #alt-hero-rubrik .alt-hero__typewriter-text {
     white-space: normal;
     text-wrap: balance;
+  }
+
+  #alt-hero-rubrik .alt-hero__typewriter-live {
+    align-self: start;
+    min-height: 0;
   }
 }
 
@@ -1364,7 +1383,17 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 .alt-hero__typewriter-ghost {
   visibility: hidden;
   pointer-events: none;
+  -webkit-user-select: none;
   user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.alt-hero h1:has([data-alt-typewriter]) .alt-hero__title-line,
+.alt-hero h1:has([data-alt-typewriter]) [data-alt-typewriter],
+.alt-hero h1:has([data-alt-typewriter]) [data-alt-typewriter] * {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 
 .alt-hero__typewriter-ghost::after {
