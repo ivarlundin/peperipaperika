@@ -32,7 +32,10 @@ def main() -> int:
             page.goto(BASE_URL, wait_until="networkidle")
             page.locator(".alt-gallery").scroll_into_view_if_needed()
             page.evaluate(
-                "document.querySelector('.alt-gallery')?.classList.add('is-in')"
+                """() => {
+                  document.querySelectorAll('.alt-gallery__card, .alt-gallery__quote-tile')
+                    .forEach((el) => el.classList.add('is-in'));
+                }"""
             )
             page.wait_for_timeout(400)
 
@@ -71,7 +74,10 @@ def main() -> int:
             desktop.goto(BASE_URL, wait_until="networkidle")
             desktop.locator(".alt-gallery").scroll_into_view_if_needed()
             desktop.evaluate(
-                "document.querySelector('.alt-gallery')?.classList.add('is-in')"
+                """() => {
+                  document.querySelectorAll('.alt-gallery__card, .alt-gallery__quote-tile')
+                    .forEach((el) => el.classList.add('is-in'));
+                }"""
             )
             desktop.wait_for_timeout(300)
 
@@ -100,7 +106,13 @@ def main() -> int:
                     feature: document.querySelector('.alt-gallery__card--feature')?.getBoundingClientRect(),
                     wide: document.querySelector('.alt-gallery__card--wide-top')?.getBoundingClientRect(),
                     sm: document.querySelector('.alt-gallery__card--sm')?.getBoundingClientRect(),
-                    kenAnim: getComputedStyle(document.querySelector('.alt-gallery__ken')).animationName,
+                    kenAnim: getComputedStyle(
+                      document.querySelector('.alt-gallery__card--feature .alt-gallery__ken')
+                    ).animationName,
+                    featFilter: getComputedStyle(
+                      document.querySelector('.alt-gallery__card--feature .alt-gallery__ken')
+                    ).filter,
+                    tall: document.querySelector('.alt-gallery__card--tall')?.getBoundingClientRect(),
                   };
                 }"""
             )
@@ -109,7 +121,11 @@ def main() -> int:
                 f"bento too short: {metrics['bentoH']} vs vh {metrics['vh']}"
             )
             assert metrics["cols"] == 6, f"desktop bento should use 6 columns, got {metrics['cols']}"
-            assert metrics["kenAnim"] not in (None, "none"), "Ken Burns animation expected on gallery images"
+            assert metrics["kenAnim"] in (None, "none"), "gallery must not use CSS Ken Burns"
+            assert "grayscale" not in (metrics.get("featFilter") or ""), "feature tile must be in color"
+            tall = metrics.get("tall")
+            if tall and tall["height"] > 0:
+                assert tall["width"] / tall["height"] >= 0.42, "keyboard tile aspect too extreme"
             feat = metrics["feature"]
             wide = metrics["wide"]
             sm = metrics["sm"]
@@ -117,14 +133,21 @@ def main() -> int:
                 """() => document.querySelector('.alt-gallery__card--wide-bottom')?.getBoundingClientRect()"""
             )
             assert feat and wide and feat["width"] > wide["width"] * 1.05
-            assert wide_bottom and sm and wide_bottom["width"] > sm["width"] * 1.2
+            tall_kb = desktop.evaluate(
+                """() => document.querySelector('.alt-gallery__card--tall')?.getBoundingClientRect()"""
+            )
+            assert tall_kb and sm and tall_kb["width"] > sm["width"] * 1.35
             quote_top = desktop.evaluate(
                 """() => Math.round(document.querySelector('.alt-gallery__quote-tile')?.getBoundingClientRect().top || 0)"""
             )
             wb_top = desktop.evaluate(
                 """() => Math.round(document.querySelector('.alt-gallery__card--wide-bottom')?.getBoundingClientRect().top || 0)"""
             )
-            assert abs(quote_top - wb_top) <= 6, "quote must align on row 2 with wide-bottom"
+            wt_top = desktop.evaluate(
+                """() => Math.round(document.querySelector('.alt-gallery__card--wide-top')?.getBoundingClientRect().top || 0)"""
+            )
+            row2_delta = min(abs(quote_top - wb_top), abs(quote_top - wt_top))
+            assert row2_delta <= 18, "quote must share row 2 with photo tiles"
 
             browser.close()
     finally:

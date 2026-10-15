@@ -1245,7 +1245,7 @@ def run_faq_collapsed_row_spacing_qa(base_url: str) -> list[str]:
 
 
 def run_home_bento_qa(base_url: str) -> list[str]:
-    """Home: desktop bento height, asymmetric spans, Ken Burns + reveal."""
+    """Home: desktop bento grid, per-card reveal, quote tile, mobile 2-col compact grid."""
     failures: list[str] = []
     with sync_playwright() as p:
         browser = p.chromium.launch()
@@ -1258,7 +1258,10 @@ def run_home_bento_qa(base_url: str) -> list[str]:
             )
             page.locator(".alt-gallery").scroll_into_view_if_needed()
             page.evaluate(
-                "document.querySelector('.alt-gallery')?.classList.add('is-in')"
+                """() => {
+                  document.querySelectorAll('.alt-gallery__card, .alt-gallery__quote-tile')
+                    .forEach((el) => el.classList.add('is-in'));
+                }"""
             )
             page.wait_for_timeout(350)
             data = page.evaluate(
@@ -1276,10 +1279,9 @@ def run_home_bento_qa(base_url: str) -> list[str]:
                   const feat = document.querySelector('.alt-gallery__card--feature')?.getBoundingClientRect();
                   const wide = document.querySelector('.alt-gallery__card--wide-top')?.getBoundingClientRect();
                   const sm = document.querySelector('.alt-gallery__card--sm')?.getBoundingClientRect();
-                  const ken = document.querySelector('.alt-gallery__ken');
-                  const kenStyle = ken ? getComputedStyle(ken) : null;
-                  const drift = document.querySelector('.alt-gallery__drift-layer');
-                  const driftStyle = drift ? getComputedStyle(drift) : null;
+                  const tall = document.querySelector('.alt-gallery__card--tall')?.getBoundingClientRect();
+                  const featKen = document.querySelector('.alt-gallery__card--feature .alt-gallery__ken');
+                  const kenStyle = featKen ? getComputedStyle(featKen) : null;
                   const firstCard = document.querySelector('.alt-gallery__card');
                   const cardStyle = firstCard ? getComputedStyle(firstCard) : null;
                   const quote = document.querySelector('.alt-gallery__quote-tile');
@@ -1291,6 +1293,14 @@ def run_home_bento_qa(base_url: str) -> list[str]:
                     quoteBox && mutedBox
                       ? mutedBox.bottom > quoteBox.bottom + 1.5
                       : false;
+                  const quoteInk = quote
+                    ? getComputedStyle(document.querySelector('.alt-gallery__quote-live [data-gallery-quote-typewriter]') || quote)
+                        .color
+                    : '';
+                  const tallAspect = tall && tall.height > 0 ? tall.width / tall.height : 0;
+                  const tallRowSpan = document.querySelector('.alt-gallery__card--tall')
+                    ? getComputedStyle(document.querySelector('.alt-gallery__card--tall')).gridRowEnd
+                    : '';
                   return {
                     ok: true,
                     bentoH: br.height,
@@ -1304,13 +1314,19 @@ def run_home_bento_qa(base_url: str) -> list[str]:
                     smW: sm?.width || 0,
                     featH: feat?.height || 0,
                     wideH: wide?.height || 0,
+                    tallH: tall?.height || 0,
+                    tallAspect,
+                    tallRowSpan,
                     kenAnim: kenStyle?.animationName,
-                    stripAnim: driftStyle?.animationName,
+                    featFilter: kenStyle?.filter || '',
                     cardOpacity: cardStyle ? parseFloat(cardStyle.opacity) : 0,
                     hasQuoteTile: !!quote,
                     legacyQuote: !!legacyQuote,
                     quoteClip,
                     quoteBg: quote ? getComputedStyle(quote).backgroundColor : '',
+                    quoteInk,
+                    hasQuoteGhost: !!document.querySelector('.alt-gallery__quote-typewriter-ghost'),
+                    hasQuoteSr: !!document.querySelector('.alt-gallery__quote-sr'),
                     bentoRowCount: getComputedStyle(bento).gridTemplateRows
                       .split(' ')
                       .filter((part) => part.endsWith('px'))
@@ -1349,17 +1365,25 @@ def run_home_bento_qa(base_url: str) -> list[str]:
                     failures.append("home-bento: quote tile must share row 2 with photo tiles")
                 if not data.get("inside"):
                     failures.append("home-bento: grid must stay inside content padding")
-                wideBottom = page.evaluate(
-                    """() => document.querySelector('.alt-gallery__card--wide-bottom')?.getBoundingClientRect().width || 0"""
+                tallW = page.evaluate(
+                    """() => document.querySelector('.alt-gallery__card--tall')?.getBoundingClientRect().width || 0"""
                 )
-                if wideBottom <= data["smW"] * 1.2:
-                    failures.append("home-bento: wide-bottom tile should be wider than small tile")
+                if tallW <= data["smW"] * 1.35:
+                    failures.append("home-bento: keyboard tile should span wider than a single column")
                 if data["featW"] <= data["wideW"] * 1.05:
                     failures.append("home-bento: feature tile should dominate wide-top width")
-                if data.get("kenAnim") in (None, "none"):
-                    failures.append("home-bento: Ken Burns animation inactive on gallery images")
-                if data.get("stripAnim") in (None, "none"):
-                    failures.append("home-bento: photo strip lateral motion inactive on desktop")
+                if data.get("kenAnim") not in (None, "none"):
+                    failures.append("home-bento: gallery images must not use CSS Ken Burns animation")
+                if "grayscale" in (data.get("featFilter") or ""):
+                    failures.append("home-bento: feature image must not be grayscale")
+                if data.get("tallAspect", 0) < 0.42:
+                    failures.append(
+                        f"home-bento: keyboard tile too narrow/tall (aspect {data.get('tallAspect'):.2f})"
+                    )
+                if data.get("featH") and data.get("tallH", 0) > data["featH"] * 1.12:
+                    failures.append("home-bento: tall keyboard tile must not span more than row 1")
+                if not data.get("hasQuoteGhost") or not data.get("hasQuoteSr"):
+                    failures.append("home-bento: quote needs SR text + layout ghost for typewriter")
                 if data.get("cardOpacity", 0) < 0.98:
                     failures.append("home-bento: reveal stagger did not finish (card opacity)")
             page.close()
@@ -1378,21 +1402,19 @@ def run_home_bento_qa(base_url: str) -> list[str]:
             mdata = mobile.evaluate(
                 """() => {
                   const bento = document.querySelector('.alt-gallery__bento');
-                  const drift = document.querySelector('.alt-gallery__drift-layer');
                   const quote = document.querySelector('.alt-gallery__quote-tile');
                   const mutedLine = document.querySelector('.alt-gallery__quote-attr-muted');
                   const vh = window.innerHeight;
                   const br = bento?.getBoundingClientRect();
                   const quoteBox = quote?.getBoundingClientRect();
                   const mutedBox = mutedLine?.getBoundingClientRect();
-                  const driftStyle = drift ? getComputedStyle(drift) : null;
                   const kenStyle = document.querySelector('.alt-gallery__ken')
                     ? getComputedStyle(document.querySelector('.alt-gallery__ken'))
                     : null;
                   return {
                     bentoH: br?.height || 0,
                     vh,
-                    stripAnim: driftStyle?.animationName,
+                    cols: bento ? getComputedStyle(bento).gridTemplateColumns.split(' ').length : 0,
                     kenAnim: kenStyle?.animationName,
                     quote: !!quote,
                     quoteClip:
@@ -1406,14 +1428,18 @@ def run_home_bento_qa(base_url: str) -> list[str]:
                 failures.append(
                     f"home-bento/mobile: bento exceeds 100vh ({mdata['bentoH']:.0f}px)"
                 )
+            if mdata["bentoH"] < mdata["vh"] * 0.62:
+                failures.append(
+                    f"home-bento/mobile: bento too short ({mdata['bentoH']:.0f}px)"
+                )
+            if mdata.get("cols") != 2:
+                failures.append(f"home-bento/mobile: expected 2 columns, got {mdata.get('cols')}")
             if not mdata.get("quote"):
                 failures.append("home-bento/mobile: missing quote tile")
             if mdata.get("quoteClip"):
                 failures.append("home-bento/mobile: quote tile clips attribution text")
-            if mdata.get("stripAnim") in (None, "none"):
-                failures.append("home-bento/mobile: strip lateral motion inactive")
-            if mdata.get("kenAnim") in (None, "none"):
-                failures.append("home-bento/mobile: image pan motion inactive")
+            if mdata.get("kenAnim") not in (None, "none"):
+                failures.append("home-bento/mobile: gallery images must not use CSS Ken Burns")
             mobile.close()
         finally:
             browser.close()
