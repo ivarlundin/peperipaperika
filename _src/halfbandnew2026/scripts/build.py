@@ -814,7 +814,40 @@ SERVICE_HERO_TYPEWRITER_SCRIPT = (
 )
 
 
-def service_hero_typewriter_h1(h1: str) -> str:
+SERVICE_HERO_TYPEWRITER_PREFIX = "Liveband till "
+
+
+def service_hero_typewriter_h1(
+    h1: str,
+    *,
+    loop_suffixes: tuple[str, ...] | None = None,
+) -> str:
+    if loop_suffixes:
+        prefix = SERVICE_HERO_TYPEWRITER_PREFIX
+        if not h1.startswith(prefix):
+            raise ValueError(f"loop hero h1 must start with {prefix!r}: {h1!r}")
+        if h1 != f"{prefix}{loop_suffixes[0]}":
+            raise ValueError(
+                f"hero_h1 must match first loop suffix: {h1!r} vs {prefix}{loop_suffixes[0]!r}"
+            )
+        longest_suffix = max(loop_suffixes, key=len)
+        longest_full = f"{prefix}{longest_suffix}"
+        phrases_attr = esc(json.dumps(list(loop_suffixes), ensure_ascii=False))
+        first = loop_suffixes[0]
+        return f"""        <h1>
+          <span class="visually-hidden">{esc(h1)}</span>
+          <span class="alt-service-hero__h1-stack" aria-hidden="true">
+            <span class="alt-service-hero__h1-ghost">{esc(longest_full)}</span>
+            <span class="alt-service-hero__h1-live">
+              <span class="alt-hero__title-line">{esc(prefix)}</span><span class="alt-hero__typewriter" data-alt-typewriter data-typewriter-phrases="{phrases_attr}">
+              <span class="alt-hero__typewriter-ghost">{esc(longest_suffix)}</span>
+              <span class="alt-hero__typewriter-live">
+                <span class="alt-hero__typewriter-text" data-typewriter-text>{esc(first)}</span><span class="alt-hero__caret" aria-hidden="true"></span>
+              </span>
+            </span>
+            </span>
+          </span>
+        </h1>"""
     phrases_attr = esc(json.dumps([h1], ensure_ascii=False))
     return f"""        <h1>
           <span class="visually-hidden">{esc(h1)}</span>
@@ -894,6 +927,7 @@ def service_hero_banner(
     description: str,
     *,
     ken_burns: bool | None = None,
+    loop_suffixes: tuple[str, ...] | None = None,
 ) -> str:
     stem, alt, width, height, position = SERVICE_OFFER_HERO_IMAGES[service_key]
     if ken_burns is None:
@@ -919,7 +953,7 @@ def service_hero_banner(
       </div>
       <div class="alt-service-hero__scrim" aria-hidden="true"></div>
       <div class="alt-service-hero__content">
-{service_hero_typewriter_h1(h1)}
+{service_hero_typewriter_h1(h1, loop_suffixes=loop_suffixes)}
         <p class="alt-service-hero__dek">{esc(description)}</p>
         <div class="alt-service-hero__actions">
           <a class="alt-btn alt-btn--primary" href="/kontakt/#offert">Kontakta oss</a>
@@ -1051,6 +1085,7 @@ class StandardServicePage(NamedTuple):
     split_sizes: str = "(max-width: 900px) 100vw, min(46vw, 640px)"
     closing_embed_form: bool = False
     closing_email_link: str | None = None
+    hero_typewriter_suffixes: tuple[str, ...] | None = None
 
 
 FORETAG_FAQS: tuple[tuple[str, str], ...] = (
@@ -1174,6 +1209,7 @@ FORETAG_STANDARD_PAGE = StandardServicePage(
     ),
     closing_embed_form=True,
     closing_email_link="E-post? Klicka här",
+    hero_typewriter_suffixes=("företagsfest", "personalfest", "kickoff", "jubileum"),
 )
 
 MINGEL_STANDARD_PAGE = StandardServicePage(
@@ -1220,11 +1256,17 @@ MINGEL_STANDARD_PAGE = StandardServicePage(
     ),
     closing_embed_form=True,
     closing_email_link="E-post? Klicka här",
+    hero_typewriter_suffixes=("fest och mingel", "50-årsfesten", "jubileet", "sommarfesten"),
 )
 
 
 def standard_service_page_body(page: StandardServicePage) -> str:
-    hero = service_hero_banner(page.service_key, page.hero_h1, page.hero_dek)
+    hero = service_hero_banner(
+        page.service_key,
+        page.hero_h1,
+        page.hero_dek,
+        loop_suffixes=page.hero_typewriter_suffixes,
+    )
     split_ps = "\n".join(f"            <p>{esc(p)}</p>" for p in page.split_paragraphs)
     split_figure = wedding_figure(
         page.split_stem,

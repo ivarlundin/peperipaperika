@@ -38,11 +38,13 @@ PAGES = {
         "path": "/foretag/",
         "img_stem": "halvfjorton-01",
         "h1": "Liveband till företagsfest",
+        "suffixes": ("företagsfest", "personalfest", "kickoff", "jubileum"),
     },
     "mingel": {
         "path": "/fest-och-mingel/",
         "img_stem": "halvfjorton-04",
         "h1": "Liveband till fest och mingel",
+        "suffixes": ("fest och mingel", "50-årsfesten", "jubileet", "sommarfesten"),
     },
 }
 
@@ -111,6 +113,23 @@ def assert_service_hero(page, slug: str, label: str) -> None:
     min_h = MOBILE_MIN_HERO if label == "iphone" else 240
     assert data["heroH"] >= min_h, f"{slug}/{label}: hero too short ({data['heroH']} < {min_h})"
     assert data["seoH1"] == spec["h1"], f"{slug}/{label}: SEO h1 mismatch"
+    tw = page.evaluate(
+        """() => {
+          const root = document.querySelector('.alt-service-hero [data-alt-typewriter]');
+          return {
+            once: !!(root && root.hasAttribute('data-typewriter-once')),
+            stack: !!document.querySelector('.alt-service-hero__h1-stack'),
+            ariaHiddenStack: document.querySelector('.alt-service-hero__h1-stack')?.getAttribute('aria-hidden'),
+          };
+        }"""
+    )
+    if "suffixes" in spec:
+        assert tw["stack"], f"{slug}/{label}: loop hero needs h1 stack"
+        assert tw["ariaHiddenStack"] == "true", f"{slug}/{label}: animated layer aria-hidden"
+        assert not tw["once"], f"{slug}/{label}: loop hero must not be typewriter-once"
+    else:
+        assert tw["once"], f"{slug}/{label}: bröllop should type once"
+        assert not tw["stack"], f"{slug}/{label}: once hero should not use h1 stack"
     assert data["hasTypewriterScript"], f"{slug}/{label}: typewriter script missing"
     assert spec["img_stem"] in data["imgSrc"], (
         f"{slug}/{label}: hero image should match offer card stem, got {data['imgSrc']}"
@@ -215,6 +234,32 @@ def assert_service_hero_layout_top(page, slug: str, label: str) -> None:
         )
 
 
+def assert_typewriter_loop(page, slug: str, label: str) -> None:
+    spec = PAGES[slug]
+    suffixes = spec["suffixes"]
+    heights: list[float] = []
+    seen: set[str] = set()
+    for _ in range(24):
+        data = page.evaluate(
+            """() => {
+              const h1 = document.querySelector('.alt-service-hero h1');
+              const text = document.querySelector('.alt-service-hero [data-typewriter-text]');
+              return {
+                h: h1 ? h1.getBoundingClientRect().height : 0,
+                t: text ? text.textContent || '' : '',
+              };
+            }"""
+        )
+        heights.append(float(data["h"]))
+        if data["t"] in suffixes:
+            seen.add(data["t"])
+        page.wait_for_timeout(500)
+    assert max(heights) - min(heights) <= 3, (
+        f"{slug}/{label}: h1 height shift during loop {min(heights)}..{max(heights)}"
+    )
+    assert len(seen) >= 2, f"{slug}/{label}: expected cycling suffixes, saw {seen!r}"
+
+
 def assert_typewriter_motion(page, slug: str, label: str) -> None:
     spec = PAGES[slug]
     layout = page.evaluate(
@@ -261,8 +306,10 @@ def assert_reduced_motion_h1(browser, slug: str = "brollop") -> None:
         })""",
         [PAGES[slug]["h1"]],
     )
-    assert data["seoH1"] == PAGES[slug]["h1"]
-    assert data["live"] == PAGES[slug]["h1"]
+    spec = PAGES[slug]
+    expected_live = spec["suffixes"][0] if "suffixes" in spec else spec["h1"]
+    assert data["seoH1"] == spec["h1"]
+    assert data["live"] == expected_live
     assert data["caretHidden"] is True
     ctx.close()
 
@@ -287,8 +334,10 @@ def run_viewport(browser, viewport: dict, mobile: bool, tag: str) -> None:
         )
         assert_service_hero(page, slug, tag)
         assert_service_hero_layout_top(page, slug, tag)
-        if mobile and slug == "brollop":
+        if slug == "brollop":
             assert_typewriter_motion(page, slug, tag)
+        if "suffixes" in PAGES[slug]:
+            assert_typewriter_loop(page, slug, tag)
         ctx.close()
 
 
@@ -306,7 +355,8 @@ def main() -> int:
             run_viewport(browser, MOBILE, True, "iphone")
             run_viewport(browser, DESKTOP_1024, False, "desktop-1024")
             run_viewport(browser, DESKTOP, False, "desktop")
-            assert_reduced_motion_h1(browser)
+            for rm_slug in PAGES:
+                assert_reduced_motion_h1(browser, rm_slug)
             browser.close()
     finally:
         server.terminate()

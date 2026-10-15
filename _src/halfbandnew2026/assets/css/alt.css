@@ -4448,6 +4448,48 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   overflow: visible;
 }
 
+.alt-service-hero__h1-stack {
+  display: grid;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.alt-service-hero__h1-ghost,
+.alt-service-hero__h1-live {
+  grid-area: 1 / 1;
+  align-self: start;
+  justify-self: start;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  white-space: normal;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.alt-service-hero__h1-ghost {
+  visibility: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+
+.alt-service-hero h1 .alt-hero__title-line {
+  display: inline;
+  margin: 0;
+  white-space: normal;
+  text-wrap: balance;
+  line-height: inherit;
+}
+
+.alt-service-hero h1 .alt-service-hero__h1-live .alt-hero__typewriter {
+  display: inline-grid;
+  width: auto;
+  max-width: 100%;
+  min-width: 0;
+  vertical-align: baseline;
+}
+
 .alt-service-hero h1 .alt-hero__typewriter-ghost {
   visibility: hidden;
   pointer-events: none;
