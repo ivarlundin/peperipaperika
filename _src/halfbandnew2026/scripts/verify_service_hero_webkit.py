@@ -32,7 +32,7 @@ PAGES = {
     "brollop": {
         "path": "/brollop/",
         "img_stem": "halvfjorton-03",
-        "h1": "Bröllop",
+        "h1": "Liveband till bröllop",
     },
     "foretag": {
         "path": "/foretag/",

@@ -1103,7 +1103,7 @@ MINGEL_FAQS: tuple[tuple[str, str], ...] = (
 
 BROLLOP_STANDARD_PAGE = StandardServicePage(
     service_key="brollop",
-    hero_h1="Bröllop",
+    hero_h1="Liveband till bröllop",
     hero_dek=(
         "Avsluta dagen på ett storslaget sätt med ett bröllopsband som ger er och era gäster en kväll ni sent glömmer."
     ),
