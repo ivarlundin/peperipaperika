@@ -4684,11 +4684,6 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   border: 0;
 }
 
-.alt-page--lyssna .lyssna-repertoire-note {
-  margin: clamp(1.35rem, 3vw, 1.75rem) 0 0;
-  max-width: none;
-}
-
 .lyssna-video-modal {
   position: fixed;
   inset: 0;
