@@ -2787,7 +2787,7 @@ def assert_footer_styles_in_css(alt_css: Path) -> None:
 
 
 _UNPREFIXED_LABS_ASSET = re.compile(
-    r"""(?P<attr>href|src|data-tally-src|srcset|imagesrcset)=(?P<q>["'])/assets/"""
+    r"""(?P<attr>href|src|data-tally-src|srcset|imagesrcset|content)=(?P<q>["'])/assets/"""
 )
 
 
@@ -2826,11 +2826,12 @@ def run_build(output_dir: Path | None = None, subpath: str = "") -> None:
     write_home_jsonld()
     patch_home_page()
     rewrite_root_relative_urls(OUT_ROOT, subpath)
+    # Labs output must never ship with root-absolute /assets/ (see b4a2667 manual-copy incident).
+    assert_labs_asset_urls(OUT_ROOT, subpath)
     assert_no_ai_dashes_in_build(OUT_ROOT)
     assert_no_eyebrows_in_build(OUT_ROOT)
     assert_no_duplicate_gallery_images_on_page(OUT_ROOT)
     assert_offert_bullet_cap(OUT_ROOT)
-    assert_labs_asset_urls(OUT_ROOT, subpath)
     assert_hidden_services_excluded(OUT_ROOT)
     assert_integritetspolicy_links_in_build(OUT_ROOT)
     assert_footer_styles_in_css(OUT_ROOT / "assets" / "css" / "alt.css")
