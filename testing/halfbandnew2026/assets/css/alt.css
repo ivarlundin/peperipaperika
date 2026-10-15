@@ -3530,6 +3530,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   --alt-svc-section-label-spacing: 0.14em;
   --alt-svc-section-label-gap: clamp(1.25rem, 2.75vw, 1.65rem);
   --alt-svc-hero-fade-stop: 46%;
+  --alt-svc-hero-dek-cta-gap: clamp(1.75rem, 3.75vw, 2.5rem);
 }
 
 @media (min-width: 901px) {
@@ -4064,9 +4065,16 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   text-wrap: balance;
 }
 
+.alt-page--service-banner .alt-service-hero__dek {
+  margin-bottom: var(--alt-svc-hero-dek-cta-gap);
+  max-width: 100%;
+}
+
 @media (min-width: 901px) {
   .alt-page--service-banner .alt-service-hero__dek {
     max-width: 50%;
+    width: 50%;
+    box-sizing: border-box;
   }
 }
 

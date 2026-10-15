@@ -856,6 +856,70 @@ def run_service_hero_ken_burns_qa(base_url: str) -> list[str]:
     return failures
 
 
+def run_service_hero_dek_layout_qa(base_url: str) -> list[str]:
+    """Service heroes: dek width (50% desktop) and spacing above CTA."""
+    failures: list[str] = []
+    paths = ("/brollop/", "/foretag/", "/mingel/")
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        try:
+            for width, label, expect_half in ((1280, "desktop", True), (390, "mobile", False)):
+                for path in paths:
+                    page = browser.new_page(viewport={"width": width, "height": 900})
+                    page.goto(
+                        base_url.rstrip("/") + path,
+                        wait_until="domcontentloaded",
+                        timeout=45000,
+                    )
+                    metrics = page.evaluate(
+                        """() => {
+                          const content = document.querySelector('.alt-service-hero__content');
+                          const dek = document.querySelector('.alt-service-hero__dek');
+                          const actions = document.querySelector('.alt-service-hero__actions');
+                          if (!content || !dek || !actions) return { missing: true };
+                          const cr = content.getBoundingClientRect();
+                          const dr = dek.getBoundingClientRect();
+                          const ar = actions.getBoundingClientRect();
+                          const ds = getComputedStyle(dek);
+                          const innerW = cr.width
+                            - parseFloat(getComputedStyle(content).paddingLeft)
+                            - parseFloat(getComputedStyle(content).paddingRight);
+                          return {
+                            missing: false,
+                            innerW,
+                            dekW: dr.width,
+                            maxWidth: ds.maxWidth,
+                            gap: ar.top - dr.bottom,
+                          };
+                        }"""
+                    )
+                    slug = path.strip("/")
+                    if metrics.get("missing"):
+                        failures.append(f"svc-hero-dek/{label}/{slug}: missing hero dek or CTA")
+                        page.close()
+                        continue
+                    if expect_half:
+                        if metrics["dekW"] > metrics["innerW"] * 0.52:
+                            failures.append(
+                                f"svc-hero-dek/desktop/{slug}: dek too wide "
+                                f"({metrics['dekW']:.0f}px vs inner {metrics['innerW']:.0f}px)"
+                            )
+                        if metrics.get("gap", 0) < 24:
+                            failures.append(
+                                f"svc-hero-dek/desktop/{slug}: dek–CTA gap too small "
+                                f"({metrics.get('gap')})"
+                            )
+                    elif metrics["dekW"] < metrics["innerW"] * 0.85:
+                        failures.append(
+                            f"svc-hero-dek/mobile/{slug}: dek should be full width "
+                            f"({metrics['dekW']:.0f}px vs inner {metrics['innerW']:.0f}px)"
+                        )
+                    page.close()
+        finally:
+            browser.close()
+    return failures
+
+
 def run_service_split_layout_qa(base_url: str) -> list[str]:
     """Service pages: first split/grid block aligned to content column."""
     failures: list[str] = []
@@ -1172,6 +1236,7 @@ def main() -> int:
             failures.extend(run_om_oss_member_cards_qa(base))
             failures.extend(run_service_split_layout_qa(base))
             failures.extend(run_service_hero_ken_burns_qa(base))
+            failures.extend(run_service_hero_dek_layout_qa(base))
             failures.extend(run_faq_column_stability_qa(base))
     finally:
         if server:
