@@ -3638,8 +3638,8 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  padding: 1.05rem 2.25rem 1.05rem 0;
+  gap: clamp(0.75rem, 2vw, 1rem);
+  padding: 1.05rem 0;
   font-family: var(--font-display);
   font-size: clamp(1.05rem, 2.4vw, 1.2rem);
   font-weight: 600;
@@ -3663,7 +3663,8 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   flex-shrink: 0;
   width: 0.5rem;
   height: 0.5rem;
-  margin-top: 0.1rem;
+  margin: 0;
+  align-self: center;
   border-right: 2px solid currentColor;
   border-bottom: 2px solid currentColor;
   transform: rotate(45deg);
@@ -3673,7 +3674,6 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
 .alt-page--inner .alt-faq__item[open] .alt-faq__question::after {
   transform: rotate(225deg);
-  margin-top: 0.35rem;
 }
 
 .alt-page--inner .alt-faq__item[open] .alt-faq__question {
