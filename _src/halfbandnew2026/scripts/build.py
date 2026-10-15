@@ -47,8 +47,8 @@ CONTACT_USPS = [
 ]
 
 HOME_OFFERT_USPS: list[tuple[str, str]] = [
-    ("Åttamannaband", "check"),
-    ("Blåssektion", "check"),
+    ("Svar inom 24 timmar", "check"),
+    ("Åttamannaband med blåssektion", "check"),
 ]
 
 ALT_ICON_CHECK_SVG = (
@@ -2444,7 +2444,7 @@ def patch_home_page():
     alt_offert = contact_offert_section(
         section_class="alt-contact-offert",
         wrap_class="alt-contact-offert__wrap contact-offert__grid",
-        lead="Skriv datum, plats och vad ni planerar. Vi återkommer med förslag.",
+        lead="Skriv datum, plats och vad ni planerar, så återkommer vi med tillgänglighet och förslag.",
         usps=HOME_OFFERT_USPS,
     )
     if re.search(r'<section class="alt-contact-offert"', html):

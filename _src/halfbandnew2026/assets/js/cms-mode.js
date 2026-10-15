@@ -165,23 +165,47 @@
     });
   }
 
-  function exportJson(store) {
+  function buildExportPayload(store) {
     var list = Object.keys(store.changes).map(function (id) {
       return store.changes[id];
     });
-    var payload = {
+    return {
       version: 1,
       site: "halfbandnew2026",
       exportedAt: new Date().toISOString(),
       page: pagePath(),
       changes: list,
     };
+  }
+
+  function exportJson(store) {
+    var payload = buildExportPayload(store);
     var blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
     var a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
     a.download = "cms-export-" + new Date().toISOString().replace(/[:.]/g, "-") + ".json";
     a.click();
     URL.revokeObjectURL(a.href);
+  }
+
+  function copyExportJson(store, feedbackEl) {
+    var text = JSON.stringify(buildExportPayload(store), null, 2);
+    function showCopied() {
+      if (!feedbackEl) return;
+      feedbackEl.textContent = "Kopierat";
+      window.setTimeout(function () {
+        feedbackEl.textContent = "";
+      }, 2000);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text).then(showCopied).catch(function () {
+        window.prompt("Kopiera export JSON:", text);
+        showCopied();
+      });
+    }
+    window.prompt("Kopiera export JSON:", text);
+    showCopied();
+    return Promise.resolve();
   }
 
   function pauseTypewriter(root) {
@@ -395,7 +419,11 @@
       '<p class="cms-panel__title">CMS mode</p>' +
       '<p class="cms-panel__count" data-cms-count></p>' +
       '<ul id="cms-mode-changes"></ul>' +
-      '<button type="button" class="cms-ui-btn cms-ui-btn--primary">Export changes</button>' +
+      '<div class="cms-panel__actions">' +
+      '<button type="button" class="cms-ui-btn cms-ui-btn--primary" data-cms-export>Export changes</button>' +
+      '<button type="button" class="cms-ui-btn" data-cms-copy>Copy to clipboard</button>' +
+      "</div>" +
+      '<p class="cms-panel__feedback" data-cms-copy-feedback aria-live="polite"></p>' +
       '<button type="button" class="cms-ui-btn cms-ui-btn--ghost">Avsluta CMS mode</button>';
     document.body.appendChild(panel);
 
@@ -427,8 +455,12 @@
 
     refreshPanel();
 
-    panel.querySelector(".cms-ui-btn--primary").addEventListener("click", function () {
+    panel.querySelector("[data-cms-export]").addEventListener("click", function () {
       exportJson(store);
+    });
+
+    panel.querySelector("[data-cms-copy]").addEventListener("click", function () {
+      copyExportJson(store, panel.querySelector("[data-cms-copy-feedback]"));
     });
 
     panel.querySelector(".cms-ui-btn--ghost").addEventListener("click", function () {

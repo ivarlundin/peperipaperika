@@ -105,6 +105,17 @@ def _inject_attr(attrs: str, name: str, value: str) -> str:
     return f'{attrs} {name}="{value}"'
 
 
+def _skip_anchor_wrapper(attrs: str) -> bool:
+    """Card/CTA links wrap block content; edit inner h2/p/span instead."""
+    if re.search(r'\bclass="[^"]*\balt-offer-card\b', attrs):
+        return True
+    if re.search(r"\bclass='[^']*\balt-offer-card\b", attrs):
+        return True
+    if "alt-btn" in attrs:
+        return True
+    return False
+
+
 def annotate_html(html: str, page_slug: str, source_file: str, url_prefix: str = "") -> str:
     counter = 0
 
@@ -136,6 +147,8 @@ def annotate_html(html: str, page_slug: str, source_file: str, url_prefix: str =
         if not _in_editable_region(html, pos) or _should_skip_region(html, pos):
             return match.group(0)
         if "data-cms-id" in attrs:
+            return match.group(0)
+        if tag == "a" and _skip_anchor_wrapper(attrs):
             return match.group(0)
         if tag == "a" and 'class="' in attrs and "alt-btn__icon" in attrs:
             return match.group(0)

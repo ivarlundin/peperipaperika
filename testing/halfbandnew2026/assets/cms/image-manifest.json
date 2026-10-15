@@ -212,6 +212,17 @@
       "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-active-sound-crew-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-active-sound-crew-1600w.webp 1600w"
     },
     {
+      "id": "gallery/halvfjorton-band-forest-bw.webp",
+      "label": "halvfjorton-band-forest-bw.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-band-forest-bw-800w.webp",
+      "variants": {
+        "1600w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-band-forest-bw-1600w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-band-forest-bw-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-band-forest-bw-800w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-band-forest-bw-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-band-forest-bw-1600w.webp 1600w"
+    },
+    {
       "id": "gallery/halvfjorton-band-pink-haze.webp",
       "label": "halvfjorton-band-pink-haze.webp",
       "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-band-pink-haze-800w.webp",

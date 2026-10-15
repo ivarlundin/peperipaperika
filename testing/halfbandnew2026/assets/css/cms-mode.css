@@ -167,6 +167,21 @@ body.alt-page .cms-ui textarea {
   background: #323238;
 }
 
+#cms-mode-panel.cms-ui .cms-panel__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.25rem;
+}
+
+#cms-mode-panel.cms-ui .cms-panel__feedback {
+  min-height: 1.1rem;
+  margin: 0 0 0.35rem;
+  font-size: 12px;
+  font-weight: 600;
+  color: #86efac;
+}
+
 #cms-mode-panel.cms-ui .cms-ui-btn--primary {
   background: linear-gradient(180deg, var(--cms-accent), var(--cms-accent-hover));
   border-color: transparent;
