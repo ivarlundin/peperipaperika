@@ -11,6 +11,7 @@ DASH_CHARS = ("\u2013", "\u2014")
 
 # Hard-fail subset of skills/svensk-copy/SKILL.md (visible main). Expand as legacy copy is cleaned.
 FORBIDDEN_PHRASES: tuple[str, ...] = (
+    "huvudtjänst",
     "boka nu",
     "missa inte",
     "säkra ert datum",

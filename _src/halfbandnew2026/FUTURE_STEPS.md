@@ -17,6 +17,10 @@ Intern planering. Innehållet här byggs inte ut till `testing/halfbandnew2026/`
 
 - Replace YouTube auto thumbnails with custom preview images for all videos.
 
+## Bröllop (bilder)
+
+- Replace with real wedding photos (hero and innehåll) when professional bröllopsbilder finns.
+
 ## Hero och rörelse (senare)
 
 - Ken Burns-effekt i hero på **Företag** och **Fest och mingel**, med utvalda bilder per sida.

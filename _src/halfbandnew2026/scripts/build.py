@@ -769,8 +769,8 @@ BROLLOP_FAQS: tuple[tuple[str, str], ...] = (
 
 SERVICE_OFFER_HERO_IMAGES = {
     "brollop": (
-        "halvfjorton-03-hero",
-        "Bröllopsfest med guldkonfetti och livemusik från Halv Fjorton",
+        "halvfjorton-01-hero",
+        "Hela bandet på scen med varmt ljus och publik i festsal",
         2400,
         1600,
         "center",
