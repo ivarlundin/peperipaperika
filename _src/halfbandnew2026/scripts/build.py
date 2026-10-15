@@ -5,9 +5,15 @@ import argparse
 import json
 import re
 import shutil
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import NamedTuple
+
+_SCRIPTS_DIR = Path(__file__).resolve().parent
+if str(_SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(_SCRIPTS_DIR))
+from cms_build import run_cms_build_steps  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT_ROOT = ROOT
@@ -2460,6 +2466,18 @@ def patch_home_page():
             '  <script src="/assets/js/alt-nav.js" defer></script>',
             '  <script src="/assets/js/alt-nav.js" defer></script>\n  <script src="/assets/js/tally-embed.js" defer></script>',
         )
+    home_tw_phrases = esc(
+        json.dumps(
+            ["bröllopsfesten", "kickoffen", "50-årsfesten", "julfesten", "företagsfesten"],
+            ensure_ascii=False,
+        )
+    )
+    html = re.sub(
+        r'(<span class="alt-hero__typewriter" data-alt-typewriter)(?!\s+data-typewriter-phrases)',
+        rf'\1 data-typewriter-phrases="{home_tw_phrases}"',
+        html,
+        count=1,
+    )
     if 'alt-hero-typewriter.js' not in html:
         html = html.replace(
             '  <script src="/assets/js/alt-nav.js" defer></script>',
@@ -2826,6 +2844,7 @@ def run_build(output_dir: Path | None = None, subpath: str = "") -> None:
     write_home_jsonld()
     patch_home_page()
     rewrite_root_relative_urls(OUT_ROOT, subpath)
+    run_cms_build_steps(OUT_ROOT, ROOT, normalize_subpath(subpath))
     # Labs output must never ship with root-absolute /assets/ (see b4a2667 manual-copy incident).
     assert_labs_asset_urls(OUT_ROOT, subpath)
     assert_no_ai_dashes_in_build(OUT_ROOT)

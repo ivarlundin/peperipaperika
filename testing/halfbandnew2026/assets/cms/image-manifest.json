@@ -1,0 +1,506 @@
+{
+  "version": 1,
+  "generated": true,
+  "images": [
+    {
+      "id": "events/a-soulful-christmas-2026.webp",
+      "label": "a-soulful-christmas-2026.webp",
+      "default": "/testing/halfbandnew2026/assets/img/events/a-soulful-christmas-2026.webp",
+      "variants": {
+        "1200w": "/testing/halfbandnew2026/assets/img/events/a-soulful-christmas-2026-1200w.webp",
+        "480w": "/testing/halfbandnew2026/assets/img/events/a-soulful-christmas-2026-480w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/events/a-soulful-christmas-2026-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/events/a-soulful-christmas-2026.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/events/a-soulful-christmas-2026-480w.webp 480w, /testing/halfbandnew2026/assets/img/events/a-soulful-christmas-2026-800w.webp 800w, /testing/halfbandnew2026/assets/img/events/a-soulful-christmas-2026-1200w.webp 1200w"
+    },
+    {
+      "id": "events/a-soulful-lucia-2025.webp",
+      "label": "a-soulful-lucia-2025.webp",
+      "default": "/testing/halfbandnew2026/assets/img/events/a-soulful-lucia-2025.webp",
+      "variants": {
+        "1200w": "/testing/halfbandnew2026/assets/img/events/a-soulful-lucia-2025-1200w.webp",
+        "480w": "/testing/halfbandnew2026/assets/img/events/a-soulful-lucia-2025-480w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/events/a-soulful-lucia-2025-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/events/a-soulful-lucia-2025.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/events/a-soulful-lucia-2025-480w.webp 480w, /testing/halfbandnew2026/assets/img/events/a-soulful-lucia-2025-800w.webp 800w, /testing/halfbandnew2026/assets/img/events/a-soulful-lucia-2025-1200w.webp 1200w"
+    },
+    {
+      "id": "favicon.png",
+      "label": "favicon.png",
+      "default": "/testing/halfbandnew2026/assets/img/favicon.png",
+      "variants": {
+        "default": "/testing/halfbandnew2026/assets/img/favicon.png"
+      },
+      "srcset": ""
+    },
+    {
+      "id": "fest.jpg",
+      "label": "fest.jpg",
+      "default": "/testing/halfbandnew2026/assets/img/fest.jpg",
+      "variants": {
+        "default": "/testing/halfbandnew2026/assets/img/fest.jpg"
+      },
+      "srcset": ""
+    },
+    {
+      "id": "gallery/halvfjorton-01-hero.webp",
+      "label": "halvfjorton-01-hero.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-01-hero-480w.webp",
+      "variants": {
+        "1200w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-01-hero-1200w.webp",
+        "1920w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-01-hero-1920w.webp",
+        "480w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-01-hero-480w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-01-hero-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-01-hero-480w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-01-hero-480w.webp 480w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-01-hero-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-01-hero-1200w.webp 1200w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-01-hero-1920w.webp 1920w"
+    },
+    {
+      "id": "gallery/halvfjorton-01.webp",
+      "label": "halvfjorton-01.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-01.webp",
+      "variants": {
+        "1200w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-01-1200w.webp",
+        "1920w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-01-1920w.webp",
+        "480w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-01-480w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-01-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-01.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-01-480w.webp 480w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-01-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-01-1200w.webp 1200w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-01-1920w.webp 1920w"
+    },
+    {
+      "id": "gallery/halvfjorton-02-hero.webp",
+      "label": "halvfjorton-02-hero.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-02-hero-480w.webp",
+      "variants": {
+        "1200w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-02-hero-1200w.webp",
+        "1920w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-02-hero-1920w.webp",
+        "480w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-02-hero-480w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-02-hero-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-02-hero-480w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-02-hero-480w.webp 480w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-02-hero-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-02-hero-1200w.webp 1200w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-02-hero-1920w.webp 1920w"
+    },
+    {
+      "id": "gallery/halvfjorton-02.webp",
+      "label": "halvfjorton-02.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-02.webp",
+      "variants": {
+        "1200w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-02-1200w.webp",
+        "1920w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-02-1920w.webp",
+        "480w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-02-480w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-02-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-02.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-02-480w.webp 480w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-02-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-02-1200w.webp 1200w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-02-1920w.webp 1920w"
+    },
+    {
+      "id": "gallery/halvfjorton-03-hero.webp",
+      "label": "halvfjorton-03-hero.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-03-hero-480w.webp",
+      "variants": {
+        "1200w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-03-hero-1200w.webp",
+        "1920w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-03-hero-1920w.webp",
+        "480w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-03-hero-480w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-03-hero-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-03-hero-480w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-03-hero-480w.webp 480w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-03-hero-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-03-hero-1200w.webp 1200w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-03-hero-1920w.webp 1920w"
+    },
+    {
+      "id": "gallery/halvfjorton-03.webp",
+      "label": "halvfjorton-03.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-03.webp",
+      "variants": {
+        "1200w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-03-1200w.webp",
+        "1920w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-03-1920w.webp",
+        "480w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-03-480w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-03-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-03.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-03-480w.webp 480w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-03-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-03-1200w.webp 1200w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-03-1920w.webp 1920w"
+    },
+    {
+      "id": "gallery/halvfjorton-04-hero.webp",
+      "label": "halvfjorton-04-hero.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-04-hero-480w.webp",
+      "variants": {
+        "1200w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-04-hero-1200w.webp",
+        "1920w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-04-hero-1920w.webp",
+        "480w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-04-hero-480w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-04-hero-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-04-hero-480w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-04-hero-480w.webp 480w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-04-hero-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-04-hero-1200w.webp 1200w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-04-hero-1920w.webp 1920w"
+    },
+    {
+      "id": "gallery/halvfjorton-04.webp",
+      "label": "halvfjorton-04.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-04.webp",
+      "variants": {
+        "1200w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-04-1200w.webp",
+        "1920w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-04-1920w.webp",
+        "480w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-04-480w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-04-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-04.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-04-480w.webp 480w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-04-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-04-1200w.webp 1200w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-04-1920w.webp 1920w"
+    },
+    {
+      "id": "gallery/halvfjorton-05-hero.webp",
+      "label": "halvfjorton-05-hero.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-05-hero-480w.webp",
+      "variants": {
+        "1200w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-05-hero-1200w.webp",
+        "1920w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-05-hero-1920w.webp",
+        "480w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-05-hero-480w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-05-hero-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-05-hero-480w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-05-hero-480w.webp 480w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-05-hero-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-05-hero-1200w.webp 1200w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-05-hero-1920w.webp 1920w"
+    },
+    {
+      "id": "gallery/halvfjorton-05.webp",
+      "label": "halvfjorton-05.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-05.webp",
+      "variants": {
+        "1200w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-05-1200w.webp",
+        "1920w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-05-1920w.webp",
+        "480w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-05-480w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-05-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-05.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-05-480w.webp 480w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-05-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-05-1200w.webp 1200w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-05-1920w.webp 1920w"
+    },
+    {
+      "id": "gallery/halvfjorton-06-hero.webp",
+      "label": "halvfjorton-06-hero.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-06-hero-480w.webp",
+      "variants": {
+        "1200w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-06-hero-1200w.webp",
+        "1920w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-06-hero-1920w.webp",
+        "480w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-06-hero-480w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-06-hero-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-06-hero-480w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-06-hero-480w.webp 480w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-06-hero-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-06-hero-1200w.webp 1200w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-06-hero-1920w.webp 1920w"
+    },
+    {
+      "id": "gallery/halvfjorton-06.webp",
+      "label": "halvfjorton-06.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-06.webp",
+      "variants": {
+        "1200w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-06-1200w.webp",
+        "1920w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-06-1920w.webp",
+        "480w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-06-480w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-06-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-06.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-06-480w.webp 480w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-06-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-06-1200w.webp 1200w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-06-1920w.webp 1920w"
+    },
+    {
+      "id": "gallery/halvfjorton-active-sound-crew.webp",
+      "label": "halvfjorton-active-sound-crew.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-active-sound-crew-800w.webp",
+      "variants": {
+        "1600w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-active-sound-crew-1600w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-active-sound-crew-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-active-sound-crew-800w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-active-sound-crew-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-active-sound-crew-1600w.webp 1600w"
+    },
+    {
+      "id": "gallery/halvfjorton-band-pink-haze.webp",
+      "label": "halvfjorton-band-pink-haze.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-band-pink-haze-800w.webp",
+      "variants": {
+        "1600w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-band-pink-haze-1600w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-band-pink-haze-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-band-pink-haze-800w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-band-pink-haze-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-band-pink-haze-1600w.webp 1600w"
+    },
+    {
+      "id": "gallery/halvfjorton-barn-purple-stage.webp",
+      "label": "halvfjorton-barn-purple-stage.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-barn-purple-stage-800w.webp",
+      "variants": {
+        "1600w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-barn-purple-stage-1600w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-barn-purple-stage-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-barn-purple-stage-800w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-barn-purple-stage-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-barn-purple-stage-1600w.webp 1600w"
+    },
+    {
+      "id": "gallery/halvfjorton-garden-mingel.webp",
+      "label": "halvfjorton-garden-mingel.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-garden-mingel-800w.webp",
+      "variants": {
+        "1600w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-garden-mingel-1600w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-garden-mingel-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-garden-mingel-800w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-garden-mingel-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-garden-mingel-1600w.webp 1600w"
+    },
+    {
+      "id": "gallery/halvfjorton-keys-colorful-venue.webp",
+      "label": "halvfjorton-keys-colorful-venue.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-keys-colorful-venue-800w.webp",
+      "variants": {
+        "1600w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-keys-colorful-venue-1600w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-keys-colorful-venue-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-keys-colorful-venue-800w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-keys-colorful-venue-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-keys-colorful-venue-1600w.webp 1600w"
+    },
+    {
+      "id": "gallery/halvfjorton-keys-guitarists-pink.webp",
+      "label": "halvfjorton-keys-guitarists-pink.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-keys-guitarists-pink-800w.webp",
+      "variants": {
+        "1600w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-keys-guitarists-pink-1600w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-keys-guitarists-pink-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-keys-guitarists-pink-800w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-keys-guitarists-pink-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-keys-guitarists-pink-1600w.webp 1600w"
+    },
+    {
+      "id": "gallery/halvfjorton-keys-tent-purple.webp",
+      "label": "halvfjorton-keys-tent-purple.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-keys-tent-purple-800w.webp",
+      "variants": {
+        "1600w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-keys-tent-purple-1600w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-keys-tent-purple-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-keys-tent-purple-800w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-keys-tent-purple-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-keys-tent-purple-1600w.webp 1600w"
+    },
+    {
+      "id": "gallery/halvfjorton-singer-chandelier-hall.webp",
+      "label": "halvfjorton-singer-chandelier-hall.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-chandelier-hall-800w.webp",
+      "variants": {
+        "1600w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-chandelier-hall-1600w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-chandelier-hall-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-chandelier-hall-800w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-chandelier-hall-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-singer-chandelier-hall-1600w.webp 1600w"
+    },
+    {
+      "id": "gallery/halvfjorton-stage-blue-dining-hall.webp",
+      "label": "halvfjorton-stage-blue-dining-hall.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-blue-dining-hall-800w.webp",
+      "variants": {
+        "1600w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-blue-dining-hall-1600w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-blue-dining-hall-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-blue-dining-hall-800w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-blue-dining-hall-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-blue-dining-hall-1600w.webp 1600w"
+    },
+    {
+      "id": "gallery/halvfjorton-stage-blue-room.webp",
+      "label": "halvfjorton-stage-blue-room.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-blue-room-800w.webp",
+      "variants": {
+        "1600w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-blue-room-1600w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-blue-room-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-blue-room-800w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-blue-room-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-blue-room-1600w.webp 1600w"
+    },
+    {
+      "id": "gallery/halvfjorton-stage-from-above-blue.webp",
+      "label": "halvfjorton-stage-from-above-blue.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-from-above-blue-800w.webp",
+      "variants": {
+        "1600w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-from-above-blue-1600w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-from-above-blue-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-from-above-blue-800w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-from-above-blue-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-from-above-blue-1600w.webp 1600w"
+    },
+    {
+      "id": "gallery/halvfjorton-stage-purple-smoke.webp",
+      "label": "halvfjorton-stage-purple-smoke.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-purple-smoke-800w.webp",
+      "variants": {
+        "1600w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-purple-smoke-1600w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-purple-smoke-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-purple-smoke-800w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-purple-smoke-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-purple-smoke-1600w.webp 1600w"
+    },
+    {
+      "id": "gallery/halvfjorton-stage-red-blue.webp",
+      "label": "halvfjorton-stage-red-blue.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-red-blue-800w.webp",
+      "variants": {
+        "1600w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-red-blue-1600w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-red-blue-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-red-blue-800w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-red-blue-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-red-blue-1600w.webp 1600w"
+    },
+    {
+      "id": "gallery/halvfjorton-stage-red-smoke.webp",
+      "label": "halvfjorton-stage-red-smoke.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-red-smoke-800w.webp",
+      "variants": {
+        "1600w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-red-smoke-1600w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-red-smoke-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-red-smoke-800w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-red-smoke-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-stage-red-smoke-1600w.webp 1600w"
+    },
+    {
+      "id": "gallery/halvfjorton-tent-party-guests.webp",
+      "label": "halvfjorton-tent-party-guests.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-tent-party-guests-800w.webp",
+      "variants": {
+        "1600w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-tent-party-guests-1600w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-tent-party-guests-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-tent-party-guests-800w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-tent-party-guests-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-tent-party-guests-1600w.webp 1600w"
+    },
+    {
+      "id": "gallery/halvfjorton-warehouse-green-stage.webp",
+      "label": "halvfjorton-warehouse-green-stage.webp",
+      "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-warehouse-green-stage-800w.webp",
+      "variants": {
+        "1600w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-warehouse-green-stage-1600w.webp",
+        "800w": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-warehouse-green-stage-800w.webp",
+        "default": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-warehouse-green-stage-800w.webp"
+      },
+      "srcset": "/testing/halfbandnew2026/assets/img/gallery/halvfjorton-warehouse-green-stage-800w.webp 800w, /testing/halfbandnew2026/assets/img/gallery/halvfjorton-warehouse-green-stage-1600w.webp 1600w"
+    },
+    {
+      "id": "h14-logo.svg",
+      "label": "h14-logo.svg",
+      "default": "/testing/halfbandnew2026/assets/img/h14-logo.svg",
+      "variants": {
+        "default": "/testing/halfbandnew2026/assets/img/h14-logo.svg"
+      },
+      "srcset": ""
+    },
+    {
+      "id": "hero.jpg",
+      "label": "hero.jpg",
+      "default": "/testing/halfbandnew2026/assets/img/hero.jpg",
+      "variants": {
+        "default": "/testing/halfbandnew2026/assets/img/hero.jpg"
+      },
+      "srcset": ""
+    },
+    {
+      "id": "logo-mark.png",
+      "label": "logo-mark.png",
+      "default": "/testing/halfbandnew2026/assets/img/logo-mark.png",
+      "variants": {
+        "default": "/testing/halfbandnew2026/assets/img/logo-mark.png"
+      },
+      "srcset": ""
+    },
+    {
+      "id": "logo.svg",
+      "label": "logo.svg",
+      "default": "/testing/halfbandnew2026/assets/img/logo.svg",
+      "variants": {
+        "default": "/testing/halfbandnew2026/assets/img/logo.svg"
+      },
+      "srcset": ""
+    },
+    {
+      "id": "member-adam.jpg",
+      "label": "member-adam.jpg",
+      "default": "/testing/halfbandnew2026/assets/img/member-adam.jpg",
+      "variants": {
+        "default": "/testing/halfbandnew2026/assets/img/member-adam.jpg"
+      },
+      "srcset": ""
+    },
+    {
+      "id": "member-edvin.jpg",
+      "label": "member-edvin.jpg",
+      "default": "/testing/halfbandnew2026/assets/img/member-edvin.jpg",
+      "variants": {
+        "default": "/testing/halfbandnew2026/assets/img/member-edvin.jpg"
+      },
+      "srcset": ""
+    },
+    {
+      "id": "member-gustav.jpg",
+      "label": "member-gustav.jpg",
+      "default": "/testing/halfbandnew2026/assets/img/member-gustav.jpg",
+      "variants": {
+        "default": "/testing/halfbandnew2026/assets/img/member-gustav.jpg"
+      },
+      "srcset": ""
+    },
+    {
+      "id": "member-ivar.jpg",
+      "label": "member-ivar.jpg",
+      "default": "/testing/halfbandnew2026/assets/img/member-ivar.jpg",
+      "variants": {
+        "default": "/testing/halfbandnew2026/assets/img/member-ivar.jpg"
+      },
+      "srcset": ""
+    },
+    {
+      "id": "member-jonathan.jpg",
+      "label": "member-jonathan.jpg",
+      "default": "/testing/halfbandnew2026/assets/img/member-jonathan.jpg",
+      "variants": {
+        "default": "/testing/halfbandnew2026/assets/img/member-jonathan.jpg"
+      },
+      "srcset": ""
+    },
+    {
+      "id": "member-nils.jpg",
+      "label": "member-nils.jpg",
+      "default": "/testing/halfbandnew2026/assets/img/member-nils.jpg",
+      "variants": {
+        "default": "/testing/halfbandnew2026/assets/img/member-nils.jpg"
+      },
+      "srcset": ""
+    },
+    {
+      "id": "member-olof.jpg",
+      "label": "member-olof.jpg",
+      "default": "/testing/halfbandnew2026/assets/img/member-olof.jpg",
+      "variants": {
+        "default": "/testing/halfbandnew2026/assets/img/member-olof.jpg"
+      },
+      "srcset": ""
+    },
+    {
+      "id": "member-zacharias.jpg",
+      "label": "member-zacharias.jpg",
+      "default": "/testing/halfbandnew2026/assets/img/member-zacharias.jpg",
+      "variants": {
+        "default": "/testing/halfbandnew2026/assets/img/member-zacharias.jpg"
+      },
+      "srcset": ""
+    },
+    {
+      "id": "og.jpg",
+      "label": "og.jpg",
+      "default": "/testing/halfbandnew2026/assets/img/og.jpg",
+      "variants": {
+        "default": "/testing/halfbandnew2026/assets/img/og.jpg"
+      },
+      "srcset": ""
+    },
+    {
+      "id": "stage.jpg",
+      "label": "stage.jpg",
+      "default": "/testing/halfbandnew2026/assets/img/stage.jpg",
+      "variants": {
+        "default": "/testing/halfbandnew2026/assets/img/stage.jpg"
+      },
+      "srcset": ""
+    }
+  ]
+}

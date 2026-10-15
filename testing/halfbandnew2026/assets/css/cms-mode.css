@@ -1,0 +1,212 @@
+html.cms-mode-active,
+html.cms-mode-active body {
+  scroll-padding-bottom: 5rem;
+}
+
+.cms-mode-active [data-cms-id][data-cms-type="text"]:not([contenteditable="true"]) {
+  cursor: text;
+  outline: 1px dashed transparent;
+  outline-offset: 2px;
+  transition: outline-color 0.12s ease, background-color 0.12s ease;
+}
+
+.cms-mode-active [data-cms-id][data-cms-type="text"]:hover:not([contenteditable="true"]) {
+  outline-color: rgba(56, 189, 248, 0.85);
+  background-color: rgba(56, 189, 248, 0.08);
+}
+
+.cms-mode-active img[data-cms-id] {
+  cursor: pointer;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  transition: outline-color 0.12s ease;
+}
+
+.cms-mode-active img[data-cms-id]:hover {
+  outline-color: rgba(251, 191, 36, 0.9);
+}
+
+.cms-mode-active [contenteditable="true"] {
+  outline: 2px solid rgba(56, 189, 248, 0.95) !important;
+  background-color: rgba(255, 255, 255, 0.04);
+  caret-color: #38bdf8;
+}
+
+.cms-mode-active [data-alt-typewriter].cms-typewriter-paused .alt-hero__caret,
+.cms-mode-active [data-alt-typewriter].cms-typewriter-paused .alt-section-typewriter__caret {
+  visibility: hidden;
+}
+
+#cms-mode-panel {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 100000;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 0.875rem;
+  color: #f4f4f5;
+  background: rgba(15, 15, 18, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 0.75rem 0.85rem;
+  min-width: 14rem;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(10px);
+}
+
+#cms-mode-panel .cms-panel__title {
+  font-weight: 650;
+  margin: 0 0 0.35rem;
+  letter-spacing: 0.02em;
+}
+
+#cms-mode-panel .cms-panel__count {
+  margin: 0 0 0.65rem;
+  opacity: 0.85;
+}
+
+#cms-mode-panel button {
+  font: inherit;
+  cursor: pointer;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: #27272a;
+  color: inherit;
+  padding: 0.45rem 0.65rem;
+}
+
+#cms-mode-panel button.cms-panel__export {
+  width: 100%;
+  background: linear-gradient(180deg, #3b82f6, #2563eb);
+  border-color: transparent;
+  font-weight: 600;
+}
+
+#cms-mode-panel button.cms-panel__exit {
+  margin-top: 0.45rem;
+  width: 100%;
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
+#cms-mode-changes {
+  max-height: 10rem;
+  overflow: auto;
+  margin: 0 0 0.55rem;
+  padding: 0;
+  list-style: none;
+}
+
+#cms-mode-changes li {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.78rem;
+}
+
+#cms-mode-changes li button {
+  flex-shrink: 0;
+  padding: 0.15rem 0.4rem;
+  font-size: 0.72rem;
+}
+
+#cms-mode-changes .cms-change-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#cms-mode-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+#cms-mode-picker {
+  width: min(42rem, 100%);
+  max-height: min(32rem, 90vh);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: #18181b;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #fafafa;
+  font-family: system-ui, sans-serif;
+}
+
+#cms-mode-picker header {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#cms-mode-picker .cms-picker-grid {
+  padding: 0.75rem;
+  overflow: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
+  gap: 0.5rem;
+}
+
+#cms-mode-picker .cms-picker-item {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0.35rem;
+  cursor: pointer;
+  background: #27272a;
+  text-align: center;
+  font-size: 0.68rem;
+}
+
+#cms-mode-picker .cms-picker-item img {
+  width: 100%;
+  height: 4.5rem;
+  object-fit: cover;
+  border-radius: 4px;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+#cms-mode-picker .cms-picker-item:hover {
+  border-color: #fbbf24;
+}
+
+#cms-typewriter-editor {
+  width: min(28rem, 100%);
+  background: #18181b;
+  border-radius: 12px;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #fafafa;
+  font-family: system-ui, sans-serif;
+}
+
+#cms-typewriter-editor textarea {
+  width: 100%;
+  min-height: 8rem;
+  font: inherit;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: #09090b;
+  color: inherit;
+  padding: 0.5rem;
+  resize: vertical;
+}
+
+#cms-typewriter-editor .cms-tw-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.65rem;
+  justify-content: flex-end;
+}
