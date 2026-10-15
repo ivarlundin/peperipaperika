@@ -2,15 +2,13 @@
 
 Förslag endast. Publiceras inte i `build.py` förrän Ivar godkänner.
 
-Sidstruktur enligt Bröllop-standard (samma sektioner som mallen bygger): banner, huvudsplit text+bild, tilläggstjänster (2), FAQ (5), kontakt. CTA **Kontakta oss** endast i banner och avslut.
-
-Bildförslag i parentes för implementering.
+Sidstruktur: banner, huvudsplit text+bild, tilläggstjänster (3), FAQ (5), kontakt. CTA **Kontakta oss** i banner; **E-post? Klicka här** i avslut (formulär på kontaktsidan).
 
 ---
 
 ## Meta description
 
-Festband till personalfest, kickoff och jubileum i Malmö, Lund, Växjö och Småland. Artistkomp och särskilda musikmoment går att boka. Offert via kontaktformulär.
+Coverband till personalfest, kickoff och jubileum från Växjö. Flexibelt upplägg med mingel, fest och tillval som middagsunderhållning. Hela södra Sverige. Offert via kontaktformulär.
 
 ---
 
@@ -18,7 +16,7 @@ Festband till personalfest, kickoff och jubileum i Malmö, Lund, Växjö och Sm�
 
 **H1 (typewriter):** Personalfest, kickoff och jubileum
 
-**Ingress:** Vi spelar på företagsfester i Skåne och Småland med åtta musiker, trumpet och saxofon. Vanligt är två set festmusik, ofta efter mingel.
+**Ingress:** Oavsett tillfälle levererar vi en medryckande upplevelse som lyfter stämningen. Åtta musiker med blåssektion, från första minglet till sista dansen.
 
 **CTA:** Kontakta oss → `/kontakt/#offert`
 
@@ -26,15 +24,15 @@ Festband till personalfest, kickoff och jubileum i Malmö, Lund, Växjö och Sm�
 
 ## 2. Huvudsplit (text + bild)
 
-**H2:** När företag hör av sig
+**H2:** Upplägg efter ert program
 
 **Bild:** `halvfjorton-02` (keyboard och blås på scen i blått ljus)
 
-Vi planerar kvällen med er: mingel, tal, dans. Soul och funk som passar även om gästlistan är blandad. Mingel till fördrinken, mer tryck efter middagen. Vi anpassar volym och repertoar efter lokalen och programmet.
+Ni berättar hur kvällen ska löpa: mingel, middag, tal, dans. Vi är flexibla och tar fram ett specialupplägg för just er tillställning, med volym och tider som passar lokalen och gästerna.
 
-Vanligt upplägg är mingel 45 till 90 minuter medan gästerna kommer in, paus under middag och tal, därefter ett längre dansblock. Tiderna justerar vi efter er agenda, inte tvärtom. Från Stevie Wonder till Björn Skifs: repertoaren är bred nog att både chefer och nyanställda känner igen något. Trumpet, saxofon och kör ger mer än en liten sättning i hörnet.
+Vanligt upplägg är mingel 45 till 90 minuter medan gästerna kommer in, paus under middag och tal, därefter tar vi över och ställer till med ösigt dansgolv!
 
-Vi utgår från Växjö och spelar i södra Sverige, med medlemmar i bland annat Malmö och Skåne. Rimliga restider i regionen. Halv Fjorton är ekonomisk förening med organisationsnummer, faktura och en bokningskontakt från vår sida.
+Vi utgår från Växjö och spelar i hela södra Sverige efter förfrågan, bland annat i Malmö, Lund, Helsingborg, Österlen, Kalmar, Karlskrona, Jönköping och Älmhult. Vi har F-skatt och skickar faktura, och ni har en bokningskontakt från vår sida hela vägen.
 
 ---
 
@@ -46,13 +44,19 @@ Vi utgår från Växjö och spelar i södra Sverige, med medlemmar i bland annat
 
 **Bild:** `halvfjorton-04` (sångare och band på rustik träscen)
 
-När gästerna strömmar in spelar vi lugnare, med eget litet ljud så samtalen håller. Samma musiker som senare tar dansen. Läs mer om mingel på sidan Fest och mingel.
+När gästerna strömmar in spelar vi lugnare musik som passar under mingel. Jazz eller svenska visor, här blir det blandat.
 
-### Artistkomp och musikmoment
+### Artistkomp
 
 **Bild:** `halvfjorton-03` (fest med konfetti och trummor bland gäster)
 
-Artistkomp till inhyrd artist och särskilda musikmoment går att boka. Fanfar, extra akt eller bakgrund under mingelmat? Säg till. Vi tar fram ett konkret förslag när vi vet datum, plats, antal gäster och ungefärlig sluttid.
+Artistkomp till inhyrd artist och särskilda musikmoment går att boka. Fanfar, extra akt eller bakgrund under mingelmat? Vi tar fram en lösning för era behov!
+
+### Middagsunderhållning
+
+**Bild:** `halvfjorton-06` (sång och slagverk på scen, svartvit bild i dramatiskt ljus)
+
+Vi spelar gärna under middagen. Ett vanligt upplägg är en eller två låtar vid separata tillfällen under sittningen. Ett annat uppskattat moment är interaktivt musikquiz med publiken, som brukar gå hem.
 
 ---
 
@@ -67,13 +71,13 @@ På de flesta företagsfester spelar vi två set partymusik. Mingel eller andra 
 Ja, det är ett av våra vanligaste upplägg. Mingel i mer återhållen stil, sedan två set dans när rummet är redo.
 
 **Ingår ljud och ljus?**  
-Tekniska behov tar vi i offerten utifrån lokal och program. Vid större saler eller särskilda önskemål har vi kontakter bland uthyrare.
+Vi kan ordna ljud och ljus om ni saknar leverantör till tillställningen. Har ni redan extern teknik samarbetar vi gärna med dem så att kvällen hänger ihop.
 
-**Tar ni faktura mot företag?**  
-Ja. Faktura mot företag och byrå. En bokningskontakt från vår sida.
+**Kan ni fakturera?**  
+Ja. Vi har F-skatt och skickar faktura.
 
 **Vad behöver ni veta innan offert?**  
-Datum, adress, ungefärligt antal, om det är mingel plus fest, och om lokalen har begränsningar. Resten tar vi i dialogen.
+Datum, adress, ungefärligt antal, om det är mingel plus fest, och om lokalen har begränsningar. Resten tar vi i dialogen med er.
 
 ---
 
@@ -83,12 +87,4 @@ Datum, adress, ungefärligt antal, om det är mingel plus fest, och om lokalen h
 
 Hör av er via formuläret på kontaktsidan. Vi återkommer med upplägg och offert när vi vet plats, tider och vilka delar ni vill boka.
 
-**CTA:** Begär offert → `/kontakt/#offert`
-
----
-
-## Självgranskning (två pass)
-
-Pass 1: Återanvänder befintlig företagstext, polerad. Inga tankstreck i löptext, inga förbjudna fraser (egen blåssektion, hemmaplan, faktiskt, liveupplevelse, komplett band som USP). Inga priser eller telefon. Inga CTA i split eller tillägg.
-
-Pass 2: Bandröst, konkret. Geografi i mening. Citatplaceholder borttagen (läggs till när referenser finns).
+**CTA:** E-post? Klicka här → `/kontakt/#offert`
