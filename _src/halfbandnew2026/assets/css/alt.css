@@ -3854,15 +3854,21 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
     var(--alt-heading-content-gap),
     calc(2 / 3 * var(--alt-svc-chapter-pad-y))
   );
+  /* Service hero H1: clearly below home --alt-hero-h1-size; wraps on all breakpoints */
+  --alt-svc-hero-h1-size: clamp(1.65rem, calc(0.4rem + 5.5vw), 2.5rem);
+}
+
+.alt-page--service-banner .alt-service-hero h1 {
+  font-size: var(--alt-svc-hero-h1-size);
+  max-width: 100%;
+  min-width: 0;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
 }
 
 @media (min-width: 901px) {
   .alt-page--service-banner {
-    --alt-svc-hero-h1-size: clamp(2.5rem, calc(0.7rem + 7.35vw), 5.35rem);
-  }
-
-  .alt-page--service-banner .alt-service-hero h1 {
-    font-size: var(--alt-svc-hero-h1-size);
+    --alt-svc-hero-h1-size: clamp(1.85rem, calc(0.35rem + 3.5vw), 3.25rem);
   }
 }
 
@@ -4407,8 +4413,25 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   align-self: start;
   justify-self: start;
   max-width: 100%;
+  min-width: 0;
   white-space: normal;
   text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.alt-service-hero h1 .alt-hero__typewriter-live {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+}
+
+.alt-service-hero h1 .alt-hero__typewriter-text {
+  display: inline;
+  white-space: normal;
+  text-wrap: balance;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  vertical-align: baseline;
 }
 
 .alt-page--service-banner .alt-service-hero h1 {

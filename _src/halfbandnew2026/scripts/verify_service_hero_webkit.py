@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[3]
 BASE = "http://127.0.0.1:8771/testing/halfbandnew2026"
 MOBILE = {"width": 390, "height": 844}
 DESKTOP = {"width": 1280, "height": 900}
+DESKTOP_1024 = {"width": 1024, "height": 900}
 MOBILE_MIN_HERO = min(844 * 0.7, 560) - 8
 SAFE_AREA_INIT = """
 (() => {
@@ -36,7 +37,7 @@ PAGES = {
     "foretag": {
         "path": "/foretag/",
         "img_stem": "halvfjorton-01",
-        "h1": "Personalfest, kickoff och jubileum",
+        "h1": "Liveband till företagsfest",
     },
     "mingel": {
         "path": "/fest-och-mingel/",
@@ -118,6 +119,29 @@ def assert_service_hero(page, slug: str, label: str) -> None:
     assert data["docSW"] <= data["docCW"] + 1, (
         f"{slug}/{label}: horizontal overflow {data['docSW']} > {data['docCW']}"
     )
+    h1_fit = page.evaluate(
+        """() => {
+          const h1 = document.querySelector('.alt-service-hero h1');
+          if (!h1) return null;
+          const r = h1.getBoundingClientRect();
+          const pad = parseFloat(getComputedStyle(document.documentElement).paddingLeft || 0);
+          const cw = document.documentElement.clientWidth;
+          return {
+            h1Right: r.right,
+            clientWidth: cw,
+            typewriterNowrap: getComputedStyle(
+              document.querySelector('.alt-service-hero h1 .alt-hero__typewriter-text') || h1
+            ).whiteSpace,
+          };
+        }"""
+    )
+    if h1_fit:
+        assert h1_fit["h1Right"] <= h1_fit["clientWidth"] + 1, (
+            f"{slug}/{label}: h1 clips past viewport (right={h1_fit['h1Right']}, cw={h1_fit['clientWidth']})"
+        )
+        assert h1_fit["typewriterNowrap"] in ("normal", "pre-wrap"), (
+            f"{slug}/{label}: typewriter text must wrap (white-space={h1_fit['typewriterNowrap']})"
+        )
     assert not data["hasEyebrow"], f"{slug}/{label}: eyebrow present"
     assert not data["hasDash"], f"{slug}/{label}: dash in copy"
     assert data["headerCount"] == 1 and data["footerCount"] == 1, (
@@ -280,6 +304,7 @@ def main() -> int:
         with sync_playwright() as p:
             browser = p.webkit.launch()
             run_viewport(browser, MOBILE, True, "iphone")
+            run_viewport(browser, DESKTOP_1024, False, "desktop-1024")
             run_viewport(browser, DESKTOP, False, "desktop")
             assert_reduced_motion_h1(browser)
             browser.close()

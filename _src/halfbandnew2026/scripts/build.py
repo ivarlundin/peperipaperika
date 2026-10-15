@@ -1135,7 +1135,7 @@ BROLLOP_STANDARD_PAGE = StandardServicePage(
 
 FORETAG_STANDARD_PAGE = StandardServicePage(
     service_key="foretag",
-    hero_h1="Personalfest, kickoff och jubileum",
+    hero_h1="Liveband till företagsfest",
     hero_dek=(
         "Oavsett tillfälle levererar vi en medryckande upplevelse som lyfter stämningen. "
         "Åtta musiker med blåssektion, från första minglet till sista dansen."
