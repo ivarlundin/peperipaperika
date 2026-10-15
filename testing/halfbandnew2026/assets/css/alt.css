@@ -2162,7 +2162,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 }
 
 .alt-page #repertoar {
-  scroll-margin-top: calc(var(--alt-header-total) + 1rem);
+  scroll-margin-top: calc(var(--alt-header) + 1rem);
 }
 
 .alt-contact-offert {
@@ -2301,45 +2301,48 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 }
 
 .alt-page--inner .alt-legal-page {
-  --alt-svc-title-size: var(--alt-h2-size);
-  --alt-svc-body-size: clamp(1.02rem, 2.15vw, 1.125rem);
-  --alt-svc-body-line: 1.65;
+  --alt-legal-body-size: clamp(0.9rem, 1.45vw, 0.95rem);
+  --alt-legal-body-line: 1.62;
   padding-top: var(--alt-inner-title-offset);
   padding-bottom: clamp(3rem, 8vw, 5rem);
 }
 
-.alt-page--inner .alt-legal-page .alt-svc-chapter__title {
+.alt-page--inner .alt-legal-page__title {
   font-family: var(--font-display);
-  font-size: var(--alt-svc-title-size);
-  font-weight: 700;
-  line-height: 1.12;
+  font-size: var(--alt-page-h1-size);
+  font-weight: 800;
+  line-height: 1.08;
   letter-spacing: -0.02em;
   text-wrap: balance;
-}
-
-.alt-page--inner .alt-legal-page__title {
   max-width: none;
   margin: 0 0 1.25rem;
 }
 
-.alt-page--inner .alt-legal-page__heading {
-  font-size: clamp(0.92rem, 1.65vw, 1.02rem);
+.alt-page--inner .alt-legal-page h2.alt-legal-page__heading {
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 1.9vw, 1.2rem);
   font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
   color: var(--alt-ink);
+  text-wrap: balance;
   max-width: none;
-  margin: 1.75rem 0 0.5rem;
+  margin: 1.75rem 0 0.45rem;
 }
 
-.alt-page--inner .alt-legal-page .alt-svc-chapter__body {
-  font-size: var(--alt-svc-body-size);
+.alt-page--inner .alt-legal-page .alt-legal-page__body {
+  font-size: var(--alt-legal-body-size);
   font-weight: 300;
-  line-height: var(--alt-svc-body-line);
+  line-height: var(--alt-legal-body-line);
   color: var(--alt-muted);
   max-width: 52ch;
 }
 
-.alt-page--inner .alt-legal-page .alt-svc-chapter__body p {
+.alt-page--inner .alt-legal-page .alt-legal-page__body p {
   margin: 0 0 1rem;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
 }
 
 @media (max-width: 900px) {

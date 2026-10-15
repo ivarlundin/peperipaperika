@@ -290,23 +290,23 @@ def tally_iframe_markup() -> str:
 def integritetspolicy_page_body() -> str:
     return f"""    <section class="section alt-legal-page">
       <div class="alt-svc-wrap alt-legal-page__inner">
-        <h1 class="alt-svc-chapter__title alt-legal-page__title">Integritetspolicy</h1>
-        <div class="alt-svc-chapter__body alt-legal-page__body">
-          <p>Denna policy beskriver hur Halv Fjorton ekonomisk förening behandlar personuppgifter när du kontaktar oss via webbplatsen.</p>
-          <h2 class="alt-svc-chapter__title alt-legal-page__heading">Personuppgiftsansvarig</h2>
-          <p>Halv Fjorton ekonomisk förening, organisationsnummer 769641-5418.<br>
+        <h1 class="alt-legal-page__title">Integritetspolicy</h1>
+        <div class="alt-legal-page__body">
+          <p>Denna policy beskriver hur Halv Fjorton behandlar personuppgifter när du kontaktar oss via webbplatsen.</p>
+          <h2 class="alt-legal-page__heading">Personuppgiftsansvarig</h2>
+          <p>Halv Fjorton, organisationsnummer 769641-5418.<br>
 {ORG_STREET_ADDRESS}<br>
 {ORG_POSTAL_CITY_LINE}<br>
 Kontakt: <a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a>.</p>
-          <h2 class="alt-svc-chapter__title alt-legal-page__heading">Vad vi samlar in</h2>
+          <h2 class="alt-legal-page__heading">Vad vi samlar in</h2>
           <p>Namn, e-postadress, telefonnummer om du anger det, och meddelandet du skickar i kontaktformuläret.</p>
-          <h2 class="alt-svc-chapter__title alt-legal-page__heading">Varför</h2>
+          <h2 class="alt-legal-page__heading">Varför</h2>
           <p>Vi använder uppgifterna för att besvara din förfrågan och ta fram offert när det behövs.</p>
-          <h2 class="alt-svc-chapter__title alt-legal-page__heading">Hur länge</h2>
+          <h2 class="alt-legal-page__heading">Hur länge</h2>
           <p>Förfrågningar som inte leder till en bokning raderar vi senast 24 månader efter att de kom in. Uppgifter som hör till en bokning, som avtal och fakturor, sparar vi så länge bokföringslagen kräver.</p>
-          <h2 class="alt-svc-chapter__title alt-legal-page__heading">Delning</h2>
+          <h2 class="alt-legal-page__heading">Delning</h2>
           <p>Vi säljer inte personuppgifter och delar dem inte med tredje part i marknadsföringssyfte.</p>
-          <h2 class="alt-svc-chapter__title alt-legal-page__heading">Dina rättigheter</h2>
+          <h2 class="alt-legal-page__heading">Dina rättigheter</h2>
           <p>Du kan begära tillgång, rättelse eller radering av dina uppgifter. Mejla <a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a>.</p>
         </div>
       </div>
