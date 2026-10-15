@@ -43,7 +43,6 @@ CONTACT_USPS = [
 HOME_OFFERT_USPS: list[tuple[str, str]] = [
     ("Åttamannaband", "check"),
     ("Blåssektion", "check"),
-    ("Växjö, Småland", "pin"),
 ]
 
 ALT_ICON_CHECK_SVG = (
@@ -2586,7 +2585,7 @@ def rewrite_root_relative_urls(target: Path, subpath: str) -> None:
 _EYEBROW_IN_HTML = re.compile(r"""class\s*=\s*["'][^"']*\beyebrow\b""", re.IGNORECASE)
 
 
-def assert_offert_bullet_cap(target: Path, max_items: int = 3) -> None:
+def assert_offert_bullet_cap(target: Path, max_items: int = 2) -> None:
     offenders: list[str] = []
     for file_path in target.rglob("*.html"):
         if not file_path.is_file():
