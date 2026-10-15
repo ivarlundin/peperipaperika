@@ -1097,10 +1097,13 @@ def service_addon_figure(
 
 GALLERY_STEMS_800_1600 = frozenset(
     {
+        "halvfjorton-band-pink-haze",
         "halvfjorton-barn-purple-stage",
         "halvfjorton-garden-mingel",
         "halvfjorton-garden-sax-barn",
+        "halvfjorton-keys-guitarists-pink",
         "halvfjorton-stage-blue-dining-hall",
+        "halvfjorton-stage-from-above-blue",
         "halvfjorton-warehouse-green-stage",
     }
 )
@@ -1353,26 +1356,26 @@ MINGEL_STANDARD_PAGE = StandardServicePage(
         "Vi börjar lågmält medan gästerna minglar, och när talen är hållna och borden dukats av drar vi igång festen på riktigt. "
         "Vi är flexibla och anpassar upplägget efter er kväll.",
     ),
-    split_stem="halvfjorton-02",
-    split_alt="Keyboard och blåssektion på scen i blått ljus och rök",
+    split_stem="halvfjorton-band-pink-haze",
+    split_alt="Musiker på scen med ljus och scenrök",
     addons=(
         ServiceAddon(
-            "halvfjorton-01",
-            "Band på stor scen med varmt ljus och publik i festsal",
+            "halvfjorton-keys-guitarists-pink",
+            "Band som gör sig redo på scen inför publik",
             "Festspelning",
             "När det är dags att dansa tar vi över och ställer till med ösigt dansgolv. Två set fullt ös med blåssektion, anpassat efter er publik och kvällens tempo.",
         ),
         ServiceAddon(
-            "halvfjorton-03",
-            "Fest med guldkonfetti och trummor bland gäster vid bord",
+            "halvfjorton-stage-from-above-blue",
+            "Scen med instrument sett ovanifrån",
             "Middagsunderhållning",
             "Vi spelar gärna en eller två låtar vid utvalda tillfällen under sittningen. Ett uppskattat inslag är ett interaktivt musikquiz med gästerna, som alltid går hem.",
             width=1280,
             height=720,
         ),
         ServiceAddon(
-            "halvfjorton-06",
-            "Sång och slagverk på scen i dramatiskt ljus",
+            "halvfjorton-garden-mingel",
+            "Musiker som spelar utomhus",
             "Mingel",
             "När gästerna strömmar in spelar vi lugnare musik som låter samtalen flyta. Jazz, soul och svenska visor i en blandning som sätter tonen för kvällen.",
             width=1280,
