@@ -4555,7 +4555,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 .alt-page--inner .lyssna-video-tile__meta {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   gap: var(--alt-title-desc-gap);
   min-width: 0;
   height: 100%;
@@ -4575,9 +4575,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   --lyssna-play-diameter: 2.76rem;
   --lyssna-play-icon-ratio: 0.425;
   --lyssna-play-icon-nudge: 0.05;
-  position: absolute;
-  left: 50%;
-  top: 50%;
+  position: relative;
   z-index: 2;
   display: flex;
   align-items: center;
@@ -4587,12 +4585,12 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   height: var(--lyssna-play-diameter);
   margin: 0;
   border-radius: 50%;
-  border: 1.5px solid rgba(255, 255, 255, 0.25);
-  background: rgba(0, 0, 0, 0.4);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  background: rgba(0, 0, 0, 0.2);
+  -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(15px);
   box-shadow: none;
-  transform: translate(-50%, -50%);
+  transform: none;
   pointer-events: none;
   color: #fff;
 }
@@ -4607,6 +4605,10 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 @media (min-width: 641px) {
   .alt-page--inner .lyssna-video-tile__play {
     --lyssna-play-diameter: 3.72rem;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     border: 1.5px solid rgba(255, 255, 255, 0.5);
     background: rgba(0, 0, 0, 0.2);
     -webkit-backdrop-filter: blur(15px);

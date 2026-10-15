@@ -660,12 +660,12 @@ def lyssna_video_tile(
     return f"""        <button type="button" class="lyssna-video-tile" data-lyssna-video="{video_id}" data-lyssna-title="{esc(title)}"{start_attr} aria-label="Spela video: {esc(title)}">
           <span class="lyssna-video-tile__media">
             <img class="lyssna-video-tile__thumb" src="{esc(thumb_src)}"{srcset}{sizes} alt="" width="1280" height="720" loading="lazy" decoding="async" data-lyssna-thumb-fallback="{thumb_fallback}">
-            <span class="lyssna-video-tile__play" aria-hidden="true">
-{LYSSNA_TILE_PLAY_ICON}
-            </span>
           </span>
           <span class="lyssna-video-tile__meta">
             <span class="lyssna-video-tile__label">{esc(label)}</span>
+            <span class="lyssna-video-tile__play" aria-hidden="true">
+{LYSSNA_TILE_PLAY_ICON}
+            </span>
           </span>
         </button>"""
 
