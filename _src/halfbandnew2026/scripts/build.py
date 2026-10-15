@@ -1488,17 +1488,17 @@ def write_pages():
         page_class="alt-page--konserter",
         extra_ld=soulful_christmas_event_ld(),
         extra_scripts='  <script src="/assets/js/event-ticket-card.js" defer></script>\n',
-        body=f"""    <header class="page-hero compact">
-      <div class="page-hero-copy">
-        <h1>Konserter</h1>
-        <p class="lead">Vi spelar inte alltid för privata sammankomster utan gör ibland publika konserter, håll utkik här.</p>
-      </div>
-    </header>
-    <section class="section">
-      <div class="wrap event-ticket-wrap">
+        body=f"""    <div class="wrap alt-konserter-page">
+      <header class="page-hero compact alt-konserter-page__hero">
+        <div class="page-hero-copy">
+          <h1>Konserter</h1>
+          <p class="lead">Vi spelar inte alltid för privata sammankomster utan gör ibland publika konserter, håll utkik här.</p>
+        </div>
+      </header>
+      <div class="event-ticket-wrap alt-konserter-page__tickets">
 {soulful_christmas_ticket_card()}
       </div>
-    </section>
+    </div>
 """,
     )
 

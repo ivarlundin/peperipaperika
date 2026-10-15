@@ -455,6 +455,81 @@ def run_desktop_tjanster_dropdown_qa(base_url: str) -> list[str]:
 FAQ_COLUMN_STABILITY_PATHS = ("/faq/", "/brollop/")
 
 
+def run_konserter_ticket_layout_qa(base_url: str) -> list[str]:
+    """Desktop: concert cards align with H1 and fill the content column."""
+    failures: list[str] = []
+    url = base_url.rstrip("/") + "/konserter/?qa=ticket-layout"
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        try:
+            for width in (1280, 1440):
+                ctx = browser.new_context(
+                    viewport={"width": width, "height": 900},
+                    device_scale_factor=1,
+                )
+                page = ctx.new_page()
+                page.goto(url, wait_until="domcontentloaded", timeout=45000)
+                page.wait_for_timeout(200)
+                label = f"konserter-ticket-layout/{width}"
+                metrics = page.evaluate(
+                    """() => {
+                      const layout = document.querySelector('.alt-konserter-page');
+                      const h1 = document.querySelector('.page-hero-copy h1');
+                      const brand = document.querySelector('.alt-brand');
+                      const tickets = [...document.querySelectorAll('.event-ticket')];
+                      if (!layout || !h1 || !brand || tickets.length === 0) {
+                        return { ok: false, reason: 'missing nodes' };
+                      }
+                      const layoutBox = layout.getBoundingClientRect();
+                      const h1Left = h1.getBoundingClientRect().left;
+                      const brandLeft = brand.getBoundingClientRect().left;
+                      const contentLeft = layoutBox.left + parseFloat(getComputedStyle(layout).paddingLeft);
+                      const contentRight = layoutBox.right - parseFloat(getComputedStyle(layout).paddingRight);
+                      const ticketMetrics = tickets.map((el) => {
+                        const r = el.getBoundingClientRect();
+                        return { left: r.left, right: r.right, width: r.width };
+                      });
+                      return {
+                        ok: true,
+                        h1Left,
+                        brandLeft,
+                        contentLeft,
+                        contentRight,
+                        contentWidth: contentRight - contentLeft,
+                        ticketMetrics,
+                      };
+                    }"""
+                )
+                if not metrics.get("ok"):
+                    failures.append(f"{label}: {metrics.get('reason', 'layout check failed')}")
+                    ctx.close()
+                    continue
+                if abs(metrics["h1Left"] - metrics["brandLeft"]) > 2:
+                    failures.append(
+                        f"{label}: H1 left {metrics['h1Left']} != brand left {metrics['brandLeft']}"
+                    )
+                for index, ticket in enumerate(metrics["ticketMetrics"]):
+                    if abs(ticket["left"] - metrics["contentLeft"]) > 2:
+                        failures.append(
+                            f"{label}: ticket {index} left {ticket['left']} "
+                            f"!= content left {metrics['contentLeft']}"
+                        )
+                    if abs(ticket["right"] - metrics["contentRight"]) > 2:
+                        failures.append(
+                            f"{label}: ticket {index} right {ticket['right']} "
+                            f"!= content right {metrics['contentRight']}"
+                        )
+                    if abs(ticket["width"] - metrics["contentWidth"]) > 3:
+                        failures.append(
+                            f"{label}: ticket {index} width {ticket['width']} "
+                            f"!= content width {metrics['contentWidth']}"
+                        )
+                ctx.close()
+        finally:
+            browser.close()
+    return failures
+
+
 def run_faq_column_stability_qa(base_url: str) -> list[str]:
     """Desktop: opening one FAQ item must not shift siblings horizontally."""
     failures: list[str] = []
@@ -620,6 +695,7 @@ def main() -> int:
         )
         if not args.quick:
             failures.extend(run_desktop_tjanster_dropdown_qa(base))
+            failures.extend(run_konserter_ticket_layout_qa(base))
             failures.extend(run_faq_column_stability_qa(base))
     finally:
         if server:

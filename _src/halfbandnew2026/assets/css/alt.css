@@ -4034,6 +4034,49 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   text-wrap: balance;
 }
 
+/* Konserter: hero + ticket cards share one padded column (menu/H1 edges). */
+.alt-page--konserter .alt-konserter-page {
+  width: 100%;
+  max-width: var(--alt-max);
+  margin: 0 auto;
+  padding-left: var(--alt-pad-left);
+  padding-right: var(--alt-pad-right);
+  box-sizing: border-box;
+  padding-bottom: clamp(2rem, 5vw, 3rem);
+}
+
+.alt-page--konserter .alt-konserter-page__hero {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: var(--alt-inner-title-offset) 0 var(--alt-heading-content-gap);
+}
+
+.alt-page--konserter .alt-konserter-page .page-hero-copy {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.alt-page--konserter .alt-konserter-page__tickets {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2.5vw, 1.35rem);
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.alt-page--konserter .alt-konserter-page__tickets .event-ticket {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+}
+
 .alt-page--inner .lyssna-video-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
