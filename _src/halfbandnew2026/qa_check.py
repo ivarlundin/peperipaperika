@@ -1400,6 +1400,109 @@ def run_faq_collapsed_row_spacing_qa(base_url: str) -> list[str]:
     return failures
 
 
+def run_home_bento_qa(base_url: str) -> list[str]:
+    """Home: desktop bento height, asymmetric spans, Ken Burns + reveal."""
+    failures: list[str] = []
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        try:
+            page = browser.new_page(viewport={"width": 1280, "height": 900})
+            page.goto(
+                base_url.rstrip("/") + "/",
+                wait_until="domcontentloaded",
+                timeout=45000,
+            )
+            page.locator(".alt-gallery").scroll_into_view_if_needed()
+            page.evaluate(
+                "document.querySelector('.alt-gallery')?.classList.add('is-in')"
+            )
+            page.wait_for_timeout(350)
+            data = page.evaluate(
+                """() => {
+                  const inner = document.querySelector('.alt-gallery__inner');
+                  const bento = document.querySelector('.alt-gallery__bento');
+                  if (!inner || !bento) return { ok: false, reason: 'missing gallery' };
+                  const ir = inner.getBoundingClientRect();
+                  const br = bento.getBoundingClientRect();
+                  const padL = parseFloat(getComputedStyle(inner).paddingLeft) || 0;
+                  const padR = parseFloat(getComputedStyle(inner).paddingRight) || 0;
+                  const contentLeft = ir.left + padL;
+                  const contentRight = ir.right - padR;
+                  const vh = window.innerHeight;
+                  const feat = document.querySelector('.alt-gallery__card--feature')?.getBoundingClientRect();
+                  const wide = document.querySelector('.alt-gallery__card--wide-top')?.getBoundingClientRect();
+                  const sm = document.querySelector('.alt-gallery__card--sm')?.getBoundingClientRect();
+                  const ken = document.querySelector('.alt-gallery__ken');
+                  const kenStyle = ken ? getComputedStyle(ken) : null;
+                  const firstCard = document.querySelector('.alt-gallery__card');
+                  const cardStyle = firstCard ? getComputedStyle(firstCard) : null;
+                  return {
+                    ok: true,
+                    bentoH: br.height,
+                    vh,
+                    cols: getComputedStyle(bento).gridTemplateColumns.split(' ').length,
+                    inside:
+                      br.left >= contentLeft - 1 &&
+                      br.right <= contentRight + 1,
+                    featW: feat?.width || 0,
+                    wideW: wide?.width || 0,
+                    smW: sm?.width || 0,
+                    featH: feat?.height || 0,
+                    wideH: wide?.height || 0,
+                    kenAnim: kenStyle?.animationName,
+                    cardOpacity: cardStyle ? parseFloat(cardStyle.opacity) : 0,
+                  };
+                }"""
+            )
+            if not data.get("ok"):
+                failures.append(f"home-bento: {data.get('reason', 'layout missing')}")
+            else:
+                if data["bentoH"] < data["vh"] * 0.68:
+                    failures.append(
+                        f"home-bento: grid too short ({data['bentoH']:.0f}px vs 68% vh)"
+                    )
+                if data["cols"] != 6:
+                    failures.append(f"home-bento: expected 6 desktop columns, got {data['cols']}")
+                if not data.get("inside"):
+                    failures.append("home-bento: grid must stay inside content padding")
+                if data["wideW"] <= data["smW"] * 1.5:
+                    failures.append("home-bento: wide-top tile should be clearly wider than small tile")
+                if data["featW"] <= data["wideW"] * 1.1:
+                    failures.append("home-bento: feature tile should dominate wide-top width")
+                if data["featH"] <= data["wideH"] * 1.2:
+                    failures.append("home-bento: feature tile should be taller than wide-top")
+                if data.get("kenAnim") in (None, "none"):
+                    failures.append("home-bento: Ken Burns animation inactive on gallery images")
+                if data.get("cardOpacity", 0) < 0.98:
+                    failures.append("home-bento: reveal stagger did not finish (card opacity)")
+            page.close()
+
+            mobile = browser.new_page(
+                viewport={"width": 390, "height": 844},
+                is_mobile=True,
+                has_touch=True,
+            )
+            mobile.goto(
+                base_url.rstrip("/") + "/",
+                wait_until="domcontentloaded",
+                timeout=45000,
+            )
+            mcols = mobile.evaluate(
+                """() => {
+                  const bento = document.querySelector('.alt-gallery__bento');
+                  return bento
+                    ? getComputedStyle(bento).gridTemplateColumns.split(' ').length
+                    : 0;
+                }"""
+            )
+            if mcols != 2:
+                failures.append(f"home-bento: mobile should be 2 columns, got {mcols}")
+            mobile.close()
+        finally:
+            browser.close()
+    return failures
+
+
 def run_faq_column_stability_qa(base_url: str) -> list[str]:
     """Desktop: opening one FAQ item must not shift siblings horizontally."""
     failures: list[str] = []
@@ -1567,6 +1670,7 @@ def main() -> int:
         failures.extend(run_faq_collapsed_row_spacing_qa(base))
         failures.extend(run_alt_header_solid_qa(base))
         failures.extend(run_lyssna_video_preview_qa(base))
+        failures.extend(run_home_bento_qa(base))
         if not args.quick:
             failures.extend(run_desktop_tjanster_dropdown_qa(base))
             failures.extend(run_konserter_ticket_layout_qa(base))
