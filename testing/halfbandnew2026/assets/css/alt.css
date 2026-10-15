@@ -3309,7 +3309,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
 @media (min-width: 901px) {
   .alt-page--service-banner .alt-svc-chapter--split .alt-svc-chapter__split {
-    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     align-items: center;
   }
 
@@ -3344,12 +3344,32 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 .alt-page--service-banner .alt-svc-addon-grid {
   display: grid;
   gap: 1.5rem 2rem;
+  width: 100%;
+  max-width: none;
 }
 
-@media (min-width: 701px) {
-  .alt-page--service-banner .alt-svc-addon-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    max-width: 52rem;
+.alt-page--service-banner .alt-svc-addon-grid.alt-svc-chapter__body {
+  max-width: none;
+}
+
+@media (min-width: 901px) {
+  .alt-page--service-banner :is(
+      .alt-svc-addon-grid,
+      .alt-faq__list,
+      .alt-svc-chapter--split .alt-svc-chapter__split,
+      .wrap.grid-2,
+      .wrap.split
+    ) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    width: 100%;
+    max-width: none;
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    align-items: start;
+  }
+
+  .alt-page--service-banner .alt-svc-chapter--split .alt-svc-chapter__split {
+    align-items: center;
   }
 }
 
@@ -3386,8 +3406,25 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   line-height: 1.55;
 }
 
+.alt-page--inner.alt-page--service-banner .alt-faq,
+.alt-page--service-banner .alt-svc-wrap.alt-faq {
+  max-width: var(--alt-max);
+  width: 100%;
+}
+
 .alt-page--service-banner .alt-faq__list {
-  max-width: 52rem;
+  width: 100%;
+  max-width: none;
+}
+
+.alt-page--service-banner :is(.alt-svc-addon-grid, .wrap.grid-2, .wrap.split, .alt-svc-chapter--split)
+  .alt-svc-chapter__body,
+.alt-page--service-banner .alt-svc-addon-grid.alt-svc-chapter__body {
+  max-width: none;
+}
+
+.alt-page--service-banner .alt-faq__answer p {
+  max-width: none;
 }
 
 /* Service pages: home-hero look, shorter static band (no carousel / typewriter) */
