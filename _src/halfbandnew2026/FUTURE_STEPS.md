@@ -13,6 +13,10 @@ Intern planering. Innehållet här byggs inte ut till `testing/halfbandnew2026/`
 
 - **Företag**: [Downbeat Corporate](https://downbeat.agency/corporate/)
 
+## Lyssna (videor)
+
+- Replace YouTube auto thumbnails with custom preview images for all videos.
+
 ## Hero och rörelse (senare)
 
 - Ken Burns-effekt i hero på **Företag** och **Fest och mingel**, med utvalda bilder per sida.

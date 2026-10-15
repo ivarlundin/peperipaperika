@@ -557,10 +557,28 @@ SPOTIFY_REPERTOIRE_EMBED = (
 )
 
 
-def lyssna_video_tile(video_id: str, label: str, title: str) -> str:
+def lyssna_video_tile(
+    video_id: str,
+    label: str,
+    title: str,
+    poster: str | None = None,
+) -> str:
+    yt_max = f"https://i.ytimg.com/vi/{video_id}/maxresdefault.jpg"
+    yt_hq = f"https://i.ytimg.com/vi/{video_id}/hqdefault.jpg"
+    thumb_src = poster or yt_max
+    thumb_fallback = yt_hq
+    srcset = ""
+    sizes = ""
+    if poster and "/assets/img/gallery/halvfjorton-" in poster and poster.endswith("-1200w.webp"):
+        stem = poster[: -len("-1200w.webp")]
+        srcset = (
+            f' srcset="{stem}-480w.webp 480w, {stem}-800w.webp 800w, '
+            f'{stem}-1200w.webp 1200w, {stem}-1920w.webp 1920w"'
+        )
+        sizes = ' sizes="(max-width: 900px) 50vw, 36rem"'
     return f"""        <button type="button" class="lyssna-video-tile" data-lyssna-video="{video_id}" data-lyssna-title="{esc(title)}" aria-label="Spela video: {esc(title)}">
           <span class="lyssna-video-tile__media">
-            <img class="lyssna-video-tile__thumb" src="https://i.ytimg.com/vi/{video_id}/maxresdefault.jpg" alt="" width="1280" height="720" loading="lazy" decoding="async" data-lyssna-thumb-fallback="https://i.ytimg.com/vi/{video_id}/hqdefault.jpg">
+            <img class="lyssna-video-tile__thumb" src="{esc(thumb_src)}"{srcset}{sizes} alt="" width="1280" height="720" loading="lazy" decoding="async" data-lyssna-thumb-fallback="{thumb_fallback}">
             <span class="lyssna-video-tile__play" aria-hidden="true"></span>
             <span class="lyssna-video-tile__label">{esc(label)}</span>
           </span>
@@ -1616,6 +1634,7 @@ def write_pages():
         "V2Nb8jMKUCk",
         "Signed Sealed Delivered",
         "Signed Sealed Delivered - Halv Fjorton 2025",
+        poster="/assets/img/gallery/halvfjorton-01-1200w.webp",
     ),
     lyssna_video_tile("gm5C41wqYuU", "Reel 2022", "Halv Fjorton Reel 2022"),
 )}

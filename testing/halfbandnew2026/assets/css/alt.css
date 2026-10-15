@@ -2108,7 +2108,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 }
 
 .alt-page--inner .alt-legal-page {
-  --alt-svc-title-size: clamp(1.55rem, 3.1vw, 2.05rem);
+  --alt-svc-title-size: var(--alt-h2-size);
   --alt-svc-body-size: clamp(1.02rem, 2.15vw, 1.125rem);
   --alt-svc-body-line: 1.65;
   padding-top: var(--alt-inner-title-offset);
@@ -4132,6 +4132,22 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   background: #111;
 }
 
+.alt-page--inner .lyssna-video-tile__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(10, 10, 11, 0) 0%,
+    rgba(10, 10, 11, 0.08) 38%,
+    rgba(10, 10, 11, 0.45) 62%,
+    rgba(10, 10, 11, 0.82) 82%,
+    rgba(10, 10, 11, 0.94) 100%
+  );
+}
+
 .alt-page--inner .lyssna-video-tile__thumb {
   width: 100%;
   height: 100%;
@@ -4150,13 +4166,14 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 3.25rem;
-  height: 3.25rem;
-  margin: -1.625rem 0 0 -1.625rem;
+  z-index: 2;
+  width: clamp(4rem, 11vw, 4.75rem);
+  height: clamp(4rem, 11vw, 4.75rem);
+  margin: calc(clamp(4rem, 11vw, 4.75rem) / -2) 0 0 calc(clamp(4rem, 11vw, 4.75rem) / -2);
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  background: rgba(10, 10, 11, 0.45);
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+  border: 1.5px solid rgba(255, 255, 255, 0.62);
+  background: rgba(10, 10, 11, 0.48);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.42);
   pointer-events: none;
 }
 
@@ -4167,32 +4184,30 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   top: 50%;
   width: 0;
   height: 0;
-  margin: -0.45rem 0 0 -0.28rem;
+  margin: -0.58rem 0 0 -0.34rem;
   border-style: solid;
-  border-width: 0.45rem 0 0.45rem 0.72rem;
+  border-width: 0.58rem 0 0.58rem 0.92rem;
   border-color: transparent transparent transparent #fff;
 }
 
 .alt-page--inner .lyssna-video-tile__label {
   position: absolute;
   left: 0;
-  right: 0;
+  right: auto;
   bottom: 0;
-  padding: 2.25rem 0.75rem 0.65rem;
-  font-family: var(--font-sans);
-  font-size: 0.6875rem;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  line-height: 1.35;
-  text-transform: uppercase;
-  text-align: center;
+  z-index: 2;
+  max-width: 88%;
+  padding: 0 0 clamp(0.75rem, 2vw, 1rem) clamp(0.85rem, 2.4vw, 1.15rem);
+  font-family: var(--font-display);
+  font-size: clamp(0.98rem, 2.35vw, 1.2rem);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.25;
+  text-transform: none;
+  text-align: left;
   color: #fff;
-  background: linear-gradient(
-    180deg,
-    rgba(10, 10, 11, 0) 0%,
-    rgba(10, 10, 11, 0.55) 45%,
-    rgba(10, 10, 11, 0.88) 100%
-  );
+  text-wrap: balance;
+  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.55);
   pointer-events: none;
 }
 
