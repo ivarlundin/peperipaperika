@@ -210,11 +210,12 @@ def assert_typewriter_motion(page, slug: str, label: str) -> None:
         f"{slug}/{label}: h1 layout shift {layout} -> {layout_after}"
     )
     full_len = len(spec["h1"])
-    start_text = page.locator(".alt-service-hero [data-typewriter-text]").inner_text()
-    assert len(start_text) == full_len, f"{slug}/{label}: initial typewriter text"
+    page.wait_for_timeout(max(120, full_len * 90 + 400))
+    done_text = page.locator(".alt-service-hero [data-typewriter-text]").inner_text()
+    assert len(done_text) == full_len, f"{slug}/{label}: typewriter should finish ({done_text!r})"
     page.wait_for_timeout(3200)
-    mid_text = page.locator(".alt-service-hero [data-typewriter-text]").inner_text()
-    assert len(mid_text) < full_len, f"{slug}/{label}: typewriter should delete ({mid_text!r})"
+    later_text = page.locator(".alt-service-hero [data-typewriter-text]").inner_text()
+    assert later_text == done_text, f"{slug}/{label}: typewriter should not delete ({later_text!r})"
 
 
 def assert_reduced_motion_h1(browser, slug: str = "brollop") -> None:

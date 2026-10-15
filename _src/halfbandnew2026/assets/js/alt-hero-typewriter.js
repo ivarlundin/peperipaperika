@@ -22,8 +22,15 @@
     return DEFAULT_PHRASES;
   }
 
+  function sleep(ms) {
+    return new Promise(function (resolve) {
+      window.setTimeout(resolve, ms);
+    });
+  }
+
   function initTypewriter(root) {
     var phrases = parsePhrases(root);
+    var once = root.hasAttribute("data-typewriter-once");
     var ghost = root.querySelector(".alt-hero__typewriter-ghost");
     var textEl = root.querySelector("[data-typewriter-text]");
     var caret = root.querySelector(".alt-hero__caret");
@@ -44,21 +51,43 @@
       }
     }
 
+    function finishOnce() {
+      root.classList.add("is-complete");
+      if (!caret) return;
+      caret.classList.add("is-fading");
+      return sleep(450).then(function () {
+        caret.hidden = true;
+      });
+    }
+
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setPhraseText(phrases[0]);
       if (caret) caret.hidden = true;
+      root.classList.add("is-complete");
+      return;
+    }
+
+    if (once) {
+      var phrase = phrases[0];
+      var charIndex = 0;
+      setPhraseText("");
+
+      function tickOnce() {
+        if (charIndex < phrase.length) {
+          charIndex += 1;
+          setPhraseText(phrase.slice(0, charIndex));
+          return sleep(charMs).then(tickOnce);
+        }
+        return finishOnce();
+      }
+
+      tickOnce();
       return;
     }
 
     var phraseIndex = 0;
     var charIndex = phrases[0].length;
     var deleting = false;
-
-    function sleep(ms) {
-      return new Promise(function (resolve) {
-        window.setTimeout(resolve, ms);
-      });
-    }
 
     function tick() {
       var phrase = phrases[phraseIndex];

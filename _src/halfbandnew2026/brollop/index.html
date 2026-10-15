@@ -307,6 +307,16 @@
       </nav>
     </div>
   </header>
+  <script>
+(function () {
+  document.documentElement.classList.add("alt-header-state-init");
+  var header = document.querySelector(".alt-header");
+  if (!header) return;
+  if ((window.scrollY || document.documentElement.scrollTop || 0) > 10) {
+    header.classList.add("is-solid");
+  }
+})();
+  </script>
   <div class="mobile-menu" id="mobile-menu" data-mobile-menu hidden aria-hidden="true">
     <nav class="mobile-menu__nav" aria-label="Mobilmeny">
       <ul class="mobile-menu__list nav-list" data-nav-panel>
@@ -355,7 +365,7 @@
       <div class="alt-service-hero__content">
         <h1>
           <span class="visually-hidden">Bröllop</span>
-          <span class="alt-hero__typewriter" data-alt-typewriter data-typewriter-phrases="[&quot;Bröllop&quot;]" aria-hidden="true">
+          <span class="alt-hero__typewriter" data-alt-typewriter data-typewriter-once data-typewriter-phrases="[&quot;Bröllop&quot;]" aria-hidden="true">
             <span class="alt-hero__typewriter-ghost">Bröllop</span>
             <span class="alt-hero__typewriter-live">
               <span class="alt-hero__typewriter-text" data-typewriter-text>Bröllop</span><span class="alt-hero__caret" aria-hidden="true"></span>
@@ -374,9 +384,6 @@
           <h2 class="alt-svc-chapter__title">Festspelning</h2>
           <div class="alt-svc-chapter__body">
             <p>När middagen är över och första valsen är dansad drar vi igång festen på riktigt. Vi är ett bröllopsband från Växjö med åtta musiker och blåssektion, och vi tar er genom flera genrer under kvällen. Vi har lång erfarenhet av bröllop och vet vad som får dansgolvet att leva.</p>
-            <div class="actions">
-              <a class="alt-btn alt-btn--primary" href="/kontakt/#offert">Kontakta oss</a>
-            </div>
           </div>
         </div>
         <div class="alt-svc-chapter__split-media">
@@ -407,7 +414,7 @@
               sizes="(max-width: 900px) 100vw, min(42vw, 520px)"
               alt="Sångare och band på rustik träscen med professionellt scenljus"
               width="1280"
-              height="853"
+              height="720"
               loading="lazy"
               decoding="async"
             >
@@ -422,8 +429,8 @@
               srcset="/assets/img/gallery/halvfjorton-06-480w.webp 480w, /assets/img/gallery/halvfjorton-06-800w.webp 800w, /assets/img/gallery/halvfjorton-06-1200w.webp 1200w, /assets/img/gallery/halvfjorton-06-1920w.webp 1920w"
               sizes="(max-width: 900px) 100vw, min(42vw, 520px)"
               alt="Sång och slagverk på scen i dramatiskt ljus"
-              width="1600"
-              height="2400"
+              width="1280"
+              height="720"
               loading="lazy"
               decoding="async"
             >

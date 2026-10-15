@@ -1452,6 +1452,12 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   }
 }
 
+.alt-hero__typewriter.is-complete .alt-hero__caret.is-fading {
+  animation: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .alt-hero__caret,
   .alt-section-typewriter__caret {

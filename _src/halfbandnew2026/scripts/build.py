@@ -818,7 +818,7 @@ def service_hero_typewriter_h1(h1: str) -> str:
     phrases_attr = esc(json.dumps([h1], ensure_ascii=False))
     return f"""        <h1>
           <span class="visually-hidden">{esc(h1)}</span>
-          <span class="alt-hero__typewriter" data-alt-typewriter data-typewriter-phrases="{phrases_attr}" aria-hidden="true">
+          <span class="alt-hero__typewriter" data-alt-typewriter data-typewriter-once data-typewriter-phrases="{phrases_attr}" aria-hidden="true">
             <span class="alt-hero__typewriter-ghost">{esc(h1)}</span>
             <span class="alt-hero__typewriter-live">
               <span class="alt-hero__typewriter-text" data-typewriter-text>{esc(h1)}</span><span class="alt-hero__caret" aria-hidden="true"></span>
