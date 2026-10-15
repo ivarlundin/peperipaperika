@@ -805,6 +805,57 @@ def run_om_oss_member_cards_qa(base_url: str) -> list[str]:
     return failures
 
 
+def run_service_hero_ken_burns_qa(base_url: str) -> list[str]:
+    """Ken Burns hero: enabled on Bröllop only (reusable hook for other services later)."""
+    failures: list[str] = []
+    checks = (
+        ("/brollop/", True, "halvfjorton-03-hero"),
+        ("/foretag/", False, "halvfjorton-01"),
+        ("/mingel/", False, "halvfjorton-04"),
+    )
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        try:
+            for path, expect_ken, stem in checks:
+                page = browser.new_page(viewport={"width": 1280, "height": 900})
+                page.goto(
+                    base_url.rstrip("/") + path,
+                    wait_until="domcontentloaded",
+                    timeout=45000,
+                )
+                data = page.evaluate(
+                    """() => {
+                      const media = document.querySelector('.alt-service-hero__media');
+                      const img = document.querySelector('.alt-service-hero__img');
+                      const imgStyle = img ? getComputedStyle(img) : null;
+                      return {
+                        hasKen: media?.classList.contains('alt-service-hero__media--ken-burns'),
+                        src: img?.getAttribute('src') || '',
+                        anim: imgStyle?.animationName,
+                      };
+                    }"""
+                )
+                label = path.strip("/")
+                if expect_ken:
+                    if not data.get("hasKen"):
+                        failures.append(f"ken-burns/{label}: missing ken-burns media class")
+                    if stem not in (data.get("src") or ""):
+                        failures.append(
+                            f"ken-burns/{label}: expected hero stem {stem}, got {data.get('src')}"
+                        )
+                    if data.get("anim") in (None, "none"):
+                        failures.append(f"ken-burns/{label}: hero image animation not active")
+                else:
+                    if data.get("hasKen"):
+                        failures.append(f"ken-burns/{label}: ken-burns must be off")
+                    if data.get("anim") not in (None, "none"):
+                        failures.append(f"ken-burns/{label}: unexpected hero animation")
+                page.close()
+        finally:
+            browser.close()
+    return failures
+
+
 def run_service_split_layout_qa(base_url: str) -> list[str]:
     """Service pages: first split/grid block aligned to content column."""
     failures: list[str] = []
@@ -1120,6 +1171,7 @@ def main() -> int:
             failures.extend(run_alt_facts_icons_qa(base))
             failures.extend(run_om_oss_member_cards_qa(base))
             failures.extend(run_service_split_layout_qa(base))
+            failures.extend(run_service_hero_ken_burns_qa(base))
             failures.extend(run_faq_column_stability_qa(base))
     finally:
         if server:

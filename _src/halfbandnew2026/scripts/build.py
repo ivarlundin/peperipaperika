@@ -796,13 +796,16 @@ BROLLOP_FAQS: tuple[tuple[str, str], ...] = (
     ),
 )
 
+# Service keys that use Ken Burns on the shared hero (extend for foretag/mingel later).
+SERVICE_HERO_KEN_BURNS_KEYS = frozenset({"brollop"})
+
 SERVICE_OFFER_HERO_IMAGES = {
     "brollop": (
-        "halvfjorton-01-hero",
-        "Hela bandet på scen med varmt ljus och publik i festsal",
+        "halvfjorton-03-hero",
+        "Fest med guldkonfetti och trummor bland gäster vid bord",
         2400,
         1600,
-        "center",
+        "center 38%",
     ),
     "foretag": (
         "halvfjorton-01",
@@ -826,13 +829,16 @@ def service_hero_banner(
     h1: str,
     description: str,
     *,
-    ken_burns: bool = False,
+    ken_burns: bool | None = None,
 ) -> str:
-    stem, alt, width, height, _position = SERVICE_OFFER_HERO_IMAGES[service_key]
+    stem, alt, width, height, position = SERVICE_OFFER_HERO_IMAGES[service_key]
+    if ken_burns is None:
+        ken_burns = service_key in SERVICE_HERO_KEN_BURNS_KEYS
     base = f"/assets/img/gallery/{stem}"
     media_class = "alt-service-hero__media"
     if ken_burns:
         media_class += " alt-service-hero__media--ken-burns"
+    position_attr = f' style="object-position: {position};"' if position else ""
     return f"""    <header class="alt-service-hero" data-reveal>
       <div class="{media_class}" aria-hidden="true">
         <img
@@ -844,7 +850,7 @@ def service_hero_banner(
           width="{width}"
           height="{height}"
           loading="eager"
-          decoding="async"
+          decoding="async"{position_attr}
         >
       </div>
       <div class="alt-service-hero__scrim" aria-hidden="true"></div>
@@ -943,11 +949,10 @@ def wedding_page_body() -> str:
         "brollop",
         "Bröllop",
         "Avsluta dagen på ett storslaget sätt med ett bröllopsband som ger er och era gäster en kväll ni sent glömmer.",
-        ken_burns=True,
     )
     fest_figure = wedding_figure(
-        "halvfjorton-01",
-        "Halv Fjorton spelar på bröllopsfest i Småland",
+        "halvfjorton-05",
+        "Band i rustik lokal med publik i silhuett och blå scenbelysning",
         "(max-width: 900px) 100vw, min(46vw, 640px)",
         figure_class="alt-svc-inline-figure",
     )

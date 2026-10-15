@@ -3514,9 +3514,6 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 }
 
 /* Bröllop: shared service hero (service_hero_banner) + alt-svc-chapter sections only */
-.alt-page--wedding .alt-service-hero__img {
-  object-position: center 42%;
-}
 
 .alt-page--service-banner .alt-svc-chapter.section {
   padding: clamp(3.5rem, 10vw, 7rem) 0;
@@ -3860,26 +3857,36 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   transform: none;
 }
 
+.alt-service-hero__media--ken-burns {
+  --alt-svc-ken-burns-scale-from: 1.04;
+  --alt-svc-ken-burns-scale-to: 1.1;
+  --alt-svc-ken-burns-pan-x: -0.85%;
+  --alt-svc-ken-burns-pan-y: -0.55%;
+  --alt-svc-ken-burns-duration: 42s;
+}
+
 .alt-service-hero__media--ken-burns .alt-service-hero__img {
-  animation: alt-service-hero-ken-burns 34s ease-in-out infinite alternate;
-  transform: scale(1.06) translate3d(0, 0, 0);
+  animation: alt-service-hero-ken-burns var(--alt-svc-ken-burns-duration) ease-in-out infinite
+    alternate;
+  transform: scale(var(--alt-svc-ken-burns-scale-from)) translate3d(0, 0, 0);
   will-change: transform;
 }
 
 @keyframes alt-service-hero-ken-burns {
   from {
-    transform: scale(1.06) translate3d(0, 0, 0);
+    transform: scale(var(--alt-svc-ken-burns-scale-from)) translate3d(0, 0, 0);
   }
 
   to {
-    transform: scale(1.14) translate3d(-1.25%, -0.85%, 0);
+    transform: scale(var(--alt-svc-ken-burns-scale-to))
+      translate3d(var(--alt-svc-ken-burns-pan-x), var(--alt-svc-ken-burns-pan-y), 0);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .alt-service-hero__media--ken-burns .alt-service-hero__img {
     animation: none;
-    transform: scale(1.04) translate3d(0, 0, 0);
+    transform: scale(var(--alt-svc-ken-burns-scale-from)) translate3d(0, 0, 0);
   }
 }
 
