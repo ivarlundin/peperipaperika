@@ -1828,7 +1828,7 @@ def write_pages():
         f"Coverband till företagsfest Malmö och Skåne | {BRAND_TITLE}",
         (
             "Personalfest, kickoff och jubileum med åtta musiker och blåssektion. "
-            "Mingelmusik, artistkomp och middagsunderhållning i Skåne och Småland."
+            "Mingelmusik, artistkomp och middagsunderhållning i Småland, Skåne och hela södra Sverige."
         ),
         breadcrumb_name="Företag",
         extra_ld=[
