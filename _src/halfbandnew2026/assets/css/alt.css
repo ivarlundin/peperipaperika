@@ -9,10 +9,10 @@ html {
 .alt-page {
   --alt-bg: #0a0a0b;
   --alt-bg-elevated: #121214;
-  --alt-gallery-quote-bg: #f2d48a;
-  --alt-gallery-quote-border: rgba(42, 32, 18, 0.12);
+  --alt-gallery-quote-bg: #ff8560;
+  --alt-gallery-quote-border: rgba(10, 10, 11, 0.14);
   --alt-gallery-quote-ink: #0a0a0b;
-  --alt-gallery-quote-muted: #3a3228;
+  --alt-gallery-quote-muted: #2a1812;
   --alt-ink: #f2f0ec;
   --alt-muted: #a8a29c;
   --alt-link: #f2f0ec;
@@ -1707,7 +1707,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 .alt-gallery__quote-mark {
   margin: 0;
   font-family: Georgia, "Times New Roman", Times, serif;
-  font-size: clamp(2.25rem, 6vw, 3.75rem);
+  font-size: clamp(2.75rem, 9vw, 4.5rem);
   font-weight: 900;
   line-height: 0.75;
   color: var(--alt-gallery-quote-ink);
@@ -1744,9 +1744,9 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   grid-area: 1 / 1;
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(0.95rem, 1.35vw + 0.55rem, 1.55rem);
-  font-weight: 700;
-  line-height: 1.2;
+  font-size: clamp(1.35rem, 4.8vw + 0.65rem, 2.35rem);
+  font-weight: 800;
+  line-height: 1.12;
   text-wrap: balance;
   pointer-events: none;
 }
@@ -1755,9 +1755,9 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   grid-area: 1 / 1;
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(0.95rem, 1.35vw + 0.55rem, 1.55rem);
-  font-weight: 700;
-  line-height: 1.2;
+  font-size: clamp(1.35rem, 4.8vw + 0.65rem, 2.35rem);
+  font-weight: 800;
+  line-height: 1.12;
   letter-spacing: 0;
   color: var(--alt-gallery-quote-ink);
   text-wrap: balance;
@@ -1785,7 +1785,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   display: grid;
   gap: 0.15rem;
   font-family: var(--font-sans);
-  font-size: clamp(0.72rem, 0.35vw + 0.62rem, 0.875rem);
+  font-size: clamp(0.78rem, 0.45vw + 0.64rem, 0.9375rem);
   line-height: 1.4;
 }
 
@@ -1822,7 +1822,11 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
 .alt-gallery__card > .alt-gallery__ken {
   position: absolute;
-  inset: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  top: 0;
+  height: 100%;
 }
 
 .alt-gallery__card.is-in {
@@ -1832,14 +1836,11 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 }
 
 .alt-gallery__ken {
-  width: 100%;
-  height: 112%;
-  top: -6%;
   max-width: none;
   object-fit: cover;
   object-position: center;
-  transform: translate3d(0, 0, 0) scale(1.12);
-  transform-origin: center;
+  transform: translate3d(0, 0, 0);
+  transform-origin: center center;
   will-change: transform;
 }
 
@@ -1931,9 +1932,6 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
   .alt-gallery__bento {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: repeat(4, minmax(0, 1fr));
-    height: clamp(68vh, 74vh, 78vh);
-    max-height: 78vh;
   }
 
   .alt-gallery__photo-field,
@@ -1959,27 +1957,35 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 
   .alt-gallery__drift-layer > .alt-gallery__card--wide-bottom {
     grid-column: 1 / -1;
-    grid-row: 3;
+    grid-row: 4;
   }
 
   .alt-gallery__drift-layer > .alt-gallery__card--sm {
     grid-column: 1;
-    grid-row: 4;
+    grid-row: 5;
   }
 
   .alt-gallery__drift-layer > .alt-gallery__card--tall-right {
     grid-column: 2;
-    grid-row: 4;
+    grid-row: 5;
   }
 
   .alt-gallery__quote-tile {
     grid-column: 1 / -1;
-    grid-row: 5;
+    grid-row: 3;
     min-height: min-content;
+    padding: clamp(1rem, 3.5vw, 1.5rem);
   }
 
   .alt-gallery__bento {
-    grid-template-rows: repeat(4, minmax(0, 1fr)) minmax(min-content, auto);
+    grid-template-rows:
+      minmax(0, 1.05fr)
+      minmax(0, 0.95fr)
+      minmax(min-content, auto)
+      minmax(0, 0.9fr)
+      minmax(0, 0.9fr);
+    height: clamp(72vh, 78vh, 84vh);
+    max-height: 84vh;
   }
 
   .alt-gallery__drift-layer > .alt-gallery__card {
@@ -1987,10 +1993,6 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
     height: 100%;
   }
 
-  .alt-gallery__card > .alt-gallery__ken {
-    top: -6%;
-    height: 112%;
-  }
 }
 
 .alt-gallery__placeholder {
@@ -2660,7 +2662,7 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   }
 
   .alt-gallery__ken {
-    transform: translate3d(0, 0, 0) scale(1.08);
+    transform: none;
     will-change: auto;
   }
 
