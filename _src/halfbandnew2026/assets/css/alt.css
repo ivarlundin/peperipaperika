@@ -1341,6 +1341,22 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   }
 }
 
+@media (max-width: 900px) {
+  #alt-hero-rubrik .alt-hero__typewriter {
+    width: 100%;
+    max-width: 100%;
+    white-space: normal;
+    text-wrap: balance;
+  }
+
+  #alt-hero-rubrik .alt-hero__typewriter-ghost,
+  #alt-hero-rubrik .alt-hero__typewriter-live,
+  #alt-hero-rubrik .alt-hero__typewriter-text {
+    white-space: normal;
+    text-wrap: balance;
+  }
+}
+
 .alt-hero__typewriter-ghost,
 .alt-hero__typewriter-live {
   grid-area: 1 / 1;

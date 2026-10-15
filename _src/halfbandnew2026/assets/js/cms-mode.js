@@ -6,6 +6,8 @@
     "50-årsfesten",
     "julfesten",
     "företagsfesten",
+    "kvällen som aldrig tar slut",
+    "oktoberfesten?",
   ];
 
   function assetBase() {

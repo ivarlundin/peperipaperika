@@ -5,6 +5,8 @@
     "50-årsfesten",
     "julfesten",
     "företagsfesten",
+    "kvällen som aldrig tar slut",
+    "oktoberfesten?",
   ];
   var charMs = 85;
   var holdMs = 2800;

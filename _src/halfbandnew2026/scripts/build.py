@@ -2580,7 +2580,15 @@ def patch_home_page():
         )
     home_tw_phrases = esc(
         json.dumps(
-            ["bröllopsfesten", "kickoffen", "50-årsfesten", "julfesten", "företagsfesten"],
+            [
+                "bröllopsfesten",
+                "kickoffen",
+                "50-årsfesten",
+                "julfesten",
+                "företagsfesten",
+                "kvällen som aldrig tar slut",
+                "oktoberfesten?",
+            ],
             ensure_ascii=False,
         )
     )
