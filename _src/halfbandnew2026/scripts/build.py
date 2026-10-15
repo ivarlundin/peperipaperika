@@ -1158,7 +1158,7 @@ FORETAG_STANDARD_PAGE = StandardServicePage(
             "halvfjorton-06",
             "Sång och slagverk på scen i dramatiskt ljus",
             "Artistkomp",
-            "Planerar ni att boka en artist till ert event? Vi har lång erfarenhet av att komp artister, oavsett genre och sättning, och gör framträdandet komplett.",
+            "Planerar ni att boka en artist till ert event? Vi har lång erfarenhet av att kompa artister, oavsett genre och sättning, och gör framträdandet komplett.",
             width=1280,
             height=720,
         ),
