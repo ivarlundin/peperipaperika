@@ -366,7 +366,7 @@ body.alt-page > main {
   color: var(--alt-ink);
 }
 
-/* Button UI nested inside block/card links (e.g. event ticket) — keep readable on card hover */
+/* Button UI nested inside block/card links (e.g. event ticket): keep readable on card hover */
 .alt-page a:not([class*="alt-btn"]) .alt-btn {
   text-decoration: none;
 }

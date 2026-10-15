@@ -36,11 +36,23 @@ CONTACT_USPS = [
     "Sedan 2018",
 ]
 
-HOME_CONTACT_USPS = [
-    "Vi svarar inom 24 timmar",
-    "Skräddarsytt efter era önskemål",
-    "Åttamannaband med blås",
+HOME_OFFERT_USPS: list[tuple[str, str]] = [
+    ("Åttamannaband", "check"),
+    ("Blåssektion", "check"),
+    ("Växjö, Småland", "pin"),
 ]
+
+
+def offert_usp_list_markup(usps: list[tuple[str, str]] | list[str]) -> str:
+    lines: list[str] = []
+    for item in usps:
+        if isinstance(item, tuple):
+            label, kind = item
+            cls = ' class="list-check__item--pin"' if kind == "pin" else ""
+        else:
+            label, cls = item, ""
+        lines.append(f"            <li{cls}>{esc(label)}</li>")
+    return "\n".join(lines)
 
 OFFERT_EMAIL_LINK_TEXT = "Föredrar du e-post? Mejla oss här"
 
@@ -246,7 +258,7 @@ Kontakt: <a href="mailto:halvfjorton@gmail.com">halvfjorton@gmail.com</a>.</p>
 
 
 def kontakt_page_body() -> str:
-    usp_items = "\n".join(f"            <li>{esc(u)}</li>" for u in HOME_CONTACT_USPS)
+    usp_items = offert_usp_list_markup(HOME_OFFERT_USPS)
     return f"""    <section class="alt-contact-page section" id="offert" aria-labelledby="kontakt-rubrik">
       <div class="alt-contact-offert__wrap alt-contact-page__stack">
         <div class="contact-offert__grid">
@@ -288,8 +300,8 @@ def contact_offert_section(
     usps: list[str] | None = None,
     include_mail_button: bool = True,
 ) -> str:
-    usp_list = (usps if usps is not None else CONTACT_USPS)[:3]
-    usp_items = "\n".join(f"            <li>{esc(u)}</li>" for u in usp_list)
+    usp_source = usps if usps is not None else CONTACT_USPS
+    usp_items = offert_usp_list_markup(usp_source[:3])
     lead_html = f'        <p class="contact-offert__lead">{esc(lead)}</p>\n' if lead else ""
     mail_html = offert_email_mail_markup() if include_mail_button else ""
     return f"""    <section class="{section_class}" id="offert" aria-labelledby="offert-rubrik">
@@ -2054,17 +2066,18 @@ def patch_home_page():
         section_class="alt-contact-offert",
         wrap_class="alt-contact-offert__wrap contact-offert__grid",
         lead="Skriv datum, plats och vad ni planerar. Vi återkommer med förslag.",
-        usps=HOME_CONTACT_USPS,
+        usps=HOME_OFFERT_USPS,
     )
-    html = re.sub(
-        r'    <section class="alt-cta"[\s\S]*?</section>',
-        alt_offert,
-        html,
-        count=1,
-    )
-    if "contact-offert__consent" not in html:
+    if re.search(r'<section class="alt-contact-offert"', html):
         html = re.sub(
             r'    <section class="alt-contact-offert"[\s\S]*?</section>',
+            alt_offert,
+            html,
+            count=1,
+        )
+    else:
+        html = re.sub(
+            r'    <section class="alt-cta"[\s\S]*?</section>',
             alt_offert,
             html,
             count=1,
@@ -2400,28 +2413,30 @@ def assert_footer_styles_in_css(alt_css: Path) -> None:
         )
 
 
+_UNPREFIXED_LABS_ASSET = re.compile(
+    r"""(?P<attr>href|src|data-tally-src|srcset|imagesrcset)=(?P<q>["'])/assets/"""
+)
+
+
 def assert_labs_asset_urls(target: Path, subpath: str) -> None:
     prefix = normalize_subpath(subpath)
     if not prefix:
         return
-    needles = (
-        'srcset="/assets/',
-        "srcset='/assets/",
-        'imagesrcset="/assets/',
-        "imagesrcset='/assets/",
-    )
     offenders: list[str] = []
-    for file_path in target.rglob("*.html"):
-        if not file_path.is_file():
+    extensions = {".html", ".css", ".js", ".xml", ".txt"}
+    for file_path in target.rglob("*"):
+        if not file_path.is_file() or file_path.suffix not in extensions:
             continue
         text = file_path.read_text(encoding="utf-8")
-        for needle in needles:
-            if needle in text:
-                offenders.append(f"{file_path.relative_to(target)} ({needle})")
-                break
+        if _UNPREFIXED_LABS_ASSET.search(text):
+            offenders.append(str(file_path.relative_to(target)))
     if offenders:
-        sample = "\n".join(f"  - {line}" for line in offenders[:20])
-        raise SystemExit(f"Build check failed: unprefixed asset URLs in labs output:\n{sample}")
+        sample = "\n".join(f"  - {line}" for line in offenders[:25])
+        extra = f"\n  ... and {len(offenders) - 25} more" if len(offenders) > 25 else ""
+        raise SystemExit(
+            "Build check failed: unprefixed /assets/ URLs in labs output "
+            f"(expected prefix {prefix}):\n{sample}{extra}"
+        )
 
 
 def run_build(output_dir: Path | None = None, subpath: str = "") -> None:
