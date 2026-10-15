@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import html
 import json
 import re
 import sys
@@ -30,7 +31,6 @@ def apply_typewriter(text: str, change: dict) -> str:
     if not phrases:
         return text
     attr = json.dumps(phrases, ensure_ascii=False)
-    # Replace data-typewriter-phrases="..." when old phrases match
     old_phrases = meta.get("originalPhrases") or []
     if old_phrases:
         old_attr = json.dumps(old_phrases, ensure_ascii=False)
@@ -42,6 +42,95 @@ def apply_typewriter(text: str, change: dict) -> str:
                 text,
                 count=1,
             )
+    return text
+
+
+def _stem_from_manifest_id(manifest_id: str) -> str:
+    return Path(manifest_id).stem
+
+
+def _hero_slide_markup(item: dict, index: int) -> str:
+    manifest_id = item.get("manifestId", "")
+    alt = html.escape(item.get("alt") or "", quote=True)
+    stem = _stem_from_manifest_id(manifest_id)
+    if manifest_id == "stage.jpg":
+        base = "/assets/img/stage.jpg"
+        return (
+            f'          <div class="alt-hero__slide">\n'
+            f'            <img src="{base}" sizes="100vw" alt="{alt}" '
+            f'width="2400" height="1600" loading="lazy" decoding="async">\n'
+            f"          </div>"
+        )
+    base = f"/assets/img/gallery/{stem}"
+    first = index == 0
+    loading = "eager" if first else "lazy"
+    fp = ' fetchpriority="high"' if first else ""
+    width, height = ("1280", "853") if "04" in stem or "05" in stem else ("2400", "1600")
+    return (
+        f'          <div class="alt-hero__slide">\n'
+        f'            <img src="{base}-1200w.webp" '
+        f'srcset="{base}-480w.webp 480w, {base}-800w.webp 800w, '
+        f'{base}-1200w.webp 1200w, {base}-1920w.webp 1920w" sizes="100vw" '
+        f'alt="{alt}" width="{width}" height="{height}" loading="{loading}" '
+        f'decoding="async"{fp}>\n'
+        f"          </div>"
+    )
+
+
+def apply_image_list_home(text: str, change: dict) -> str:
+    meta = change.get("meta") or {}
+    new_list = meta.get("newList")
+    if not new_list and change.get("newValue"):
+        try:
+            new_list = json.loads(change["newValue"])
+        except json.JSONDecodeError:
+            new_list = []
+    if not new_list:
+        return text
+    slides = "\n".join(_hero_slide_markup(item, i) for i, item in enumerate(new_list))
+    pattern = (
+        r'(<div class="alt-hero__carousel" data-cms-hero="home">\s*)'
+        r"(.*?)(\s*</div>\s*</div>\s*<div class=\"alt-hero__scrim\")"
+    )
+    match = re.search(pattern, text, flags=re.DOTALL)
+    if not match:
+        print("skip imageList home: carousel block not found", file=sys.stderr)
+        return text
+    return text[: match.start(2)] + "\n" + slides + "\n        " + text[match.start(3) :]
+
+
+def apply_image_list_service_build(text: str, hero_key: str, item: dict) -> str:
+    stem = _stem_from_manifest_id(item.get("manifestId", ""))
+    alt = item.get("alt", "")
+    pattern = (
+        rf'("{hero_key}": \(\s*")'
+        r'([^"]+)(",\s*")'
+        r'([^"]+)(")'
+    )
+    match = re.search(pattern, text)
+    if not match:
+        print(f"skip imageList service {hero_key}: SERVICE_OFFER_HERO_IMAGES entry not found", file=sys.stderr)
+        return text
+    return (
+        text[: match.start(2)]
+        + stem
+        + text[match.end(2) : match.start(4)]
+        + alt
+        + text[match.end(4) :]
+    )
+
+
+def apply_image_list(change: dict, text: str, source: str) -> str:
+    meta = change.get("meta") or {}
+    hero_key = meta.get("heroKey", "")
+    new_list = meta.get("newList") or []
+    if hero_key == "home" and source.endswith("home/index.html"):
+        return apply_image_list_home(text, change)
+    if source.endswith("scripts/build.py") and hero_key in ("brollop", "foretag", "mingel"):
+        if not new_list:
+            return text
+        return apply_image_list_service_build(text, hero_key, new_list[0])
+    print(f"skip imageList: unsupported target {hero_key} in {source}", file=sys.stderr)
     return text
 
 
@@ -83,6 +172,8 @@ def apply_change(root: Path, change: dict) -> bool:
                     old_first = meta["originalPhrases"][0]
                     if old_first in updated:
                         updated = updated.replace(old_first, first, 1)
+    elif ctype == "imageList":
+        updated = apply_image_list(change, text, source)
     else:
         print(f"unknown type {ctype}", file=sys.stderr)
         return False

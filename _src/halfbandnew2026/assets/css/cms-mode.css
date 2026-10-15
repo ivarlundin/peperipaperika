@@ -40,6 +40,100 @@ html.cms-mode-active body {
   visibility: hidden;
 }
 
+.cms-mode-active [data-cms-hero] .alt-hero__slide,
+.cms-mode-active [data-cms-hero] .alt-hero__slide img {
+  animation-play-state: paused;
+}
+
+.cms-mode-active [data-cms-hero] .alt-hero__slide img,
+.cms-mode-active [data-cms-hero] .alt-service-hero__img {
+  opacity: 1 !important;
+}
+
+.cms-hero-edit-btn {
+  position: absolute;
+  top: calc(var(--alt-header-total, 84px) + 0.65rem);
+  right: 1rem;
+  z-index: 4;
+  width: auto;
+  padding: 0.45rem 0.75rem;
+  font-size: 13px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+#cms-hero-editor.cms-ui {
+  width: min(46rem, 100%);
+  max-height: min(36rem, 92vh);
+  overflow: auto;
+  background: var(--cms-bg-surface);
+  border-radius: 14px;
+  border: 1px solid var(--cms-border);
+  color: var(--cms-fg);
+  padding: 0 0 1rem;
+}
+
+#cms-hero-editor .cms-hero-editor__hint {
+  margin: 0;
+  padding: 0.5rem 1rem;
+  font-size: 12px;
+  color: var(--cms-fg-muted);
+}
+
+#cms-hero-editor .cms-hero-editor__list {
+  list-style: none;
+  margin: 0;
+  padding: 0 0.75rem;
+}
+
+#cms-hero-editor .cms-hero-editor__item {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr auto;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+#cms-hero-editor .cms-hero-editor__thumb {
+  width: 3.5rem;
+  height: 2.5rem;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+#cms-hero-editor .cms-hero-editor__alt {
+  grid-column: 2 / -1;
+  width: 100%;
+  font: inherit;
+  font-size: 12px;
+  padding: 0.35rem 0.45rem;
+  border-radius: 6px;
+  border: 1px solid var(--cms-border);
+  background: #09090b;
+  color: var(--cms-fg);
+}
+
+#cms-hero-editor .cms-hero-editor__item-actions {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+
+#cms-hero-editor .cms-hero-editor__item-actions .cms-ui-btn {
+  width: auto;
+  padding: 0.2rem 0.45rem;
+  font-size: 11px;
+}
+
+#cms-hero-editor .cms-hero-editor__add {
+  padding: 0.65rem 1rem 0.25rem;
+  font-size: 13px;
+}
+
+#cms-hero-editor .cms-hero-editor__grid {
+  max-height: 12rem;
+}
+
 /* --- CMS chrome: isolated from .alt-page site styles --- */
 
 body.alt-page .cms-ui {

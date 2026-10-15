@@ -128,6 +128,7 @@
     var changed = false;
     Object.keys(store.changes).forEach(function (id) {
       var ch = store.changes[id];
+      if (ch.type === "imageList") return;
       var el = document.querySelector('[data-cms-id="' + id + '"]');
       if (!el) {
         delete store.changes[id];
@@ -216,6 +217,7 @@
   function applyStoredChanges(store) {
     Object.keys(store.changes).forEach(function (cmsId) {
       var ch = store.changes[cmsId];
+      if (ch.type === "imageList") return;
       var el = document.querySelector('[data-cms-id="' + cmsId + '"]');
       if (!el || !isChangeApplicable(ch, el)) return;
       if (ch.type === "image" && ch.meta && ch.meta.manifestId) {
@@ -503,6 +505,15 @@
     store = readStore();
     applyStoredChanges(store);
 
+    var heroDeps = {
+      loadManifest: loadManifest,
+      recordChange: recordChange,
+      removeChange: removeChange,
+      pagePath: pagePath,
+      truncate: truncate,
+      refreshPanel: function () {},
+    };
+
     var panel = document.createElement("div");
     panel.id = "cms-mode-panel";
     panel.className = "cms-ui";
@@ -529,12 +540,21 @@
         var li = document.createElement("li");
         var label = document.createElement("span");
         label.className = "cms-change-label";
-        label.textContent = ch.type + ": " + truncate(ch.newValue, 48);
+        if (ch.type === "imageList" && ch.meta && ch.meta.heroKey) {
+          label.textContent =
+            "hero " + ch.meta.heroKey + ": " + (ch.meta.newList || []).length + " bilder";
+        } else {
+          label.textContent = ch.type + ": " + truncate(ch.newValue, 48);
+        }
         var undo = document.createElement("button");
         undo.type = "button";
         undo.className = "cms-ui-btn";
         undo.textContent = "Ångra";
         undo.addEventListener("click", function () {
+          if (ch.type === "imageList" && window.__cmsHeroEditor) {
+            window.__cmsHeroEditor.revertHeroChange(ch, store, heroDeps);
+            return;
+          }
           var el = document.querySelector('[data-cms-id="' + id + '"]');
           if (el) revertElement(el, store);
           refreshPanel();
@@ -545,7 +565,13 @@
       });
     }
 
+    heroDeps.refreshPanel = refreshPanel;
     refreshPanel();
+
+    if (window.__cmsHeroEditor) {
+      window.__cmsHeroEditor.applyStoredHeroLists(store, heroDeps);
+      window.__cmsHeroEditor.mountHeroControls(store, heroDeps);
+    }
 
     panel.querySelector("[data-cms-export]").addEventListener("click", function () {
       exportJson(store);
@@ -584,7 +610,7 @@
         if (isCmsChrome(t)) return;
 
         var img = t.closest("img[data-cms-id]");
-        if (img) {
+        if (img && !img.closest("[data-cms-hero]")) {
           ev.preventDefault();
           ev.stopPropagation();
           openImagePicker(img, store, refreshPanel);

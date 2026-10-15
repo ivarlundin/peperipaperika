@@ -964,7 +964,7 @@ def service_hero_banner(
         media_class += " alt-service-hero__media--ken-burns"
     position_attr = f' style="object-position: {position};"' if position else ""
     return f"""    <header class="alt-service-hero">
-      <div class="{media_class}" aria-hidden="true">
+      <div class="{media_class}" data-cms-hero="{service_key}" aria-hidden="true">
         <img
           class="alt-service-hero__img"
           src="{base}-800w.webp"

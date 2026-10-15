@@ -14,6 +14,7 @@ def cms_asset_version(source_root: Path) -> str:
     blobs: list[bytes] = []
     for rel in (
         "assets/js/cms-mode.js",
+        "assets/js/cms-hero-editor.js",
         "assets/js/cmsmode-stub.js",
         "assets/css/cms-mode.css",
     ):

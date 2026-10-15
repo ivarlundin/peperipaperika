@@ -26,10 +26,22 @@
     var script = document.createElement("script");
     script.src = base + "/assets/js/cms-mode.js" + versionQuery;
     script.onload = function () {
-      window.__cmsModeLoading = false;
-      if (window.__cmsMode && typeof window.__cmsMode.boot === "function") {
-        window.__cmsMode.boot();
-      }
+      var hero = document.createElement("script");
+      hero.src = base + "/assets/js/cms-hero-editor.js" + versionQuery;
+      hero.onload = function () {
+        window.__cmsModeLoading = false;
+        if (window.__cmsMode && typeof window.__cmsMode.boot === "function") {
+          window.__cmsMode.boot();
+        }
+      };
+      hero.onerror = function () {
+        window.__cmsModeLoading = false;
+        console.error("[cmsmode] Failed to load hero editor script");
+        if (window.__cmsMode && typeof window.__cmsMode.boot === "function") {
+          window.__cmsMode.boot();
+        }
+      };
+      document.body.appendChild(hero);
     };
     script.onerror = function () {
       window.__cmsModeLoading = false;
