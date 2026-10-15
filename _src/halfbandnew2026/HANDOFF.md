@@ -24,6 +24,8 @@ python3 scripts/build.py --output-dir ../../testing/halfbandnew2026 --subpath /t
 - **Outfit** rubriker, **Inter** (lätt vikt) brödtext.
 - Ingress = vanlig text (ingen bakgrund, border, vänsterkant).
 - Samma vänster/högerkant som menyn (`--alt-pad-left/right`).
+- **Rubrik → ingress → knapp:** använd alltid `--alt-title-desc-gap` (mindre) och `--alt-desc-cta-gap` (tydligt större) i `alt.css`. Gäller tjänste-hero, inner `page-hero`, kontakt/offert, kapitel med `.actions`, startsidans hero, m.m.
+- **Tjänstesidor** (Bröllop, Företag, Fest och mingel): desktop-H1 via `--alt-svc-hero-h1-size` (något mindre än `--alt-hero-h1-size`); beskrivning (`alt-service-hero__dek`) max 50 % bredd på desktop, `text-wrap: balance`.
 - **En gallery-bild per sida** (`halvfjorton-*`), inte i hero + body.
 - Bilder: `object-fit: cover` med genomtänkt `object-position`, fasta höjder på fullbreddsband; ingen horisontell scroll.
 - Inga tankstreck (–/—), kickers, priser, telefon i copy.
