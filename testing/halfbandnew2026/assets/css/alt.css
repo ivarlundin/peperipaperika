@@ -24,6 +24,9 @@ html {
   --alt-radius: 12px;
   --alt-header: 84px;
   --alt-header-total: calc(var(--alt-header) + env(safe-area-inset-top, 0px));
+  --alt-header-solid-bg: rgba(10, 10, 11, 0.6);
+  --alt-header-solid-blur: blur(18px);
+  --alt-header-solid-blur-mobile: blur(16px);
   --font-display: "Outfit", "Segoe UI", sans-serif;
   --font-sans: "Inter", "Segoe UI", sans-serif;
   --font-body-weight: 330;
@@ -211,27 +214,26 @@ body.alt-page > main {
     backdrop-filter 0.35s var(--alt-ease);
 }
 
+.alt-header.is-solid .alt-header__inner {
+  height: 100%;
+  padding-top: 0;
+  padding-bottom: 0;
+  align-items: center;
+}
+
+.alt-header.is-solid .alt-nav,
+.alt-header.is-solid .alt-brand,
+.alt-header.is-solid .alt-header__inner > .nav-toggle {
+  align-items: center;
+}
+
 @media (min-width: 901px) {
   .alt-header.is-solid,
   .alt-page--inner .alt-header.is-solid {
-    background: rgba(10, 10, 11, 0.6);
-    -webkit-backdrop-filter: blur(18px) saturate(120%);
-    backdrop-filter: blur(18px) saturate(120%);
+    background: var(--alt-header-solid-bg);
+    -webkit-backdrop-filter: var(--alt-header-solid-blur);
+    backdrop-filter: var(--alt-header-solid-blur);
     border-bottom-color: var(--alt-line);
-  }
-
-  .alt-header.is-solid .alt-header__inner {
-    padding-top: 0;
-    padding-bottom: 0;
-    align-items: center;
-  }
-
-  .alt-header.is-solid .alt-nav {
-    align-items: center;
-  }
-
-  .alt-header.is-solid .alt-brand {
-    align-items: center;
   }
 }
 
@@ -926,9 +928,9 @@ body.alt-page > main {
     position: absolute;
     inset: 0;
     z-index: 0;
-    background: rgba(10, 10, 11, 0.6);
-    -webkit-backdrop-filter: blur(16px) saturate(140%);
-    backdrop-filter: blur(16px) saturate(140%);
+    background: var(--alt-header-solid-bg);
+    -webkit-backdrop-filter: var(--alt-header-solid-blur-mobile);
+    backdrop-filter: var(--alt-header-solid-blur-mobile);
     pointer-events: none;
     transition:
       background 0.35s var(--alt-ease),
@@ -948,6 +950,11 @@ body.alt-page > main {
   body.alt-page:not(.nav-open) .alt-header__inner {
     position: relative;
     z-index: 1;
+  }
+
+  body.alt-page:not(.nav-open) .alt-header.is-solid .alt-brand {
+    display: flex;
+    align-items: center;
   }
 
   .alt-header {

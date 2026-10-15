@@ -62,7 +62,7 @@ python3 qa_check.py --live --skip-build
 
 - Klass `alt-page--service-banner`, gemensam `alt-service-hero` i `build.py`.
 - Hero: `padding-top: var(--alt-header-total)` (= header + safe-area), mobil `min-height: max(min(70svh, 560px), header + innehåll)`.
-- Header: `alt-nav.js` sätter `is-solid` vid scroll; mobil utan blur/bakgrund i toppläge, vid scroll `blur(16px) saturate(140%)` via `::before`.
+- Header: `alt-nav.js` sätter `is-solid` vid scroll. Ihopfälld/solid: `--alt-header-solid-bg` (`rgba(10, 10, 11, 0.6)`) + blur (`--alt-header-solid-blur` desktop, `--alt-header-solid-blur-mobile` på mobil via `::before`, ingen saturate). Innehåll i solid header vertikalt centrerat i `--alt-header`. Öppen mobilmeny: helt solid `var(--alt-bg)`, ingen blur.
 
 ## Öppna / kända
 

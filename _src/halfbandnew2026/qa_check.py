@@ -1145,6 +1145,87 @@ def run_konserter_ticket_layout_qa(base_url: str) -> list[str]:
     return failures
 
 
+def run_alt_header_solid_qa(base_url: str) -> list[str]:
+    """Scrolled header: neutral glass bg and vertically centered bar content."""
+    failures: list[str] = []
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        try:
+            for width, label in ((1280, "desktop"), (390, "mobile")):
+                page = browser.new_page(viewport={"width": width, "height": 900})
+                page.goto(
+                    base_url.rstrip("/") + "/brollop/?qa=header-solid",
+                    wait_until="domcontentloaded",
+                    timeout=45000,
+                )
+                page.evaluate("window.scrollTo(0, 480)")
+                page.wait_for_timeout(250)
+                metrics = page.evaluate(
+                    """() => {
+                      const header = document.querySelector('.alt-header');
+                      if (!header || !header.classList.contains('is-solid')) {
+                        return { missing: true };
+                      }
+                      const inner = header.querySelector('.alt-header__inner');
+                      const brand = header.querySelector('.alt-brand');
+                      const nav = header.querySelector('.alt-nav');
+                      const hr = header.getBoundingClientRect();
+                      const hcy = (hr.top + hr.bottom) / 2;
+                      const brandOff = brand
+                        ? (brand.getBoundingClientRect().top + brand.getBoundingClientRect().bottom) / 2 - hcy
+                        : 0;
+                      const navOff = nav
+                        ? (nav.getBoundingClientRect().top + nav.getBoundingClientRect().bottom) / 2 - hcy
+                        : 0;
+                      const cs = getComputedStyle(header);
+                      const before = getComputedStyle(header, '::before');
+                      const bg = cs.backgroundColor;
+                      const backdrop = cs.backdropFilter || cs.webkitBackdropFilter || '';
+                      const beforeBackdrop =
+                        before.backdropFilter || before.webkitBackdropFilter || '';
+                      const innerPadTop = inner ? parseFloat(getComputedStyle(inner).paddingTop) : 0;
+                      const innerPadBottom = inner ? parseFloat(getComputedStyle(inner).paddingBottom) : 0;
+                      return {
+                        missing: false,
+                        bg,
+                        backdrop,
+                        beforeBackdrop,
+                        brandOff,
+                        navOff,
+                        innerPadTop,
+                        innerPadBottom,
+                        saturated:
+                          backdrop.toLowerCase().includes('saturate') ||
+                          beforeBackdrop.toLowerCase().includes('saturate'),
+                      };
+                    }"""
+                )
+                if metrics.get("missing"):
+                    failures.append(f"header-solid/{label}: header not is-solid after scroll")
+                    page.close()
+                    continue
+                if metrics.get("saturated"):
+                    failures.append(f"header-solid/{label}: backdrop-filter must not use saturate")
+                if abs(metrics.get("brandOff", 0)) > 2.5:
+                    failures.append(
+                        f"header-solid/{label}: logo off-center "
+                        f"({metrics.get('brandOff'):.1f}px)"
+                    )
+                if width >= 900 and nav and abs(metrics.get("navOff", 0)) > 2.5:
+                    failures.append(
+                        f"header-solid/{label}: nav off-center "
+                        f"({metrics.get('navOff'):.1f}px)"
+                    )
+                if metrics.get("innerPadTop", 0) > 0.5 or metrics.get("innerPadBottom", 0) > 0.5:
+                    failures.append(
+                        f"header-solid/{label}: inner vertical padding must be 0 when solid"
+                    )
+                page.close()
+        finally:
+            browser.close()
+    return failures
+
+
 def run_faq_collapsed_row_spacing_qa(base_url: str) -> list[str]:
     """All collapsed FAQ rows: equal item height and tight row rhythm (no answer spill)."""
     failures: list[str] = []
@@ -1403,6 +1484,7 @@ def main() -> int:
         )
         failures.extend(run_title_desc_cta_spacing_qa(base))
         failures.extend(run_faq_collapsed_row_spacing_qa(base))
+        failures.extend(run_alt_header_solid_qa(base))
         if not args.quick:
             failures.extend(run_desktop_tjanster_dropdown_qa(base))
             failures.extend(run_konserter_ticket_layout_qa(base))

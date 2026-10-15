@@ -70,6 +70,7 @@ Körningen **failar** vid:
 - Saknad **header** eller **footer** på sidan
 - **Rubrik → text vs text → CTA:** `run_title_desc_cta_spacing_qa` (Festspelning, tjänste-hero, startsida, kontakt `page-hero`) — desc→CTA måste vara tydligt större än title→desc (`--alt-desc-cta-gap` / `--alt-title-desc-gap`)
 - **FAQ ihopfällda rader:** `run_faq_collapsed_row_spacing_qa` — samma radhöjd och radavstånd i båda kolumner (`/faq/`, `/brollop/`); inget spill från dolda svar
+- **Solid header:** `run_alt_header_solid_qa` — `rgba(10,10,11,0.6)`-glas utan saturate; logo/nav centrerade i baren vid scroll (desktop + mobil)
 
 Bygget kör dessutom asserts i `scripts/build.py` (dash, eyebrows, offert bullets, dubblett-bilder på service-sidor, m.m.).
 
