@@ -1145,6 +1145,81 @@ def run_konserter_ticket_layout_qa(base_url: str) -> list[str]:
     return failures
 
 
+def run_lyssna_video_preview_qa(base_url: str) -> list[str]:
+    """Lyssna: preview tiles only until click; modal embed + a11y hooks."""
+    failures: list[str] = []
+    url = base_url.rstrip("/") + "/lyssna/?qa=video-preview"
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        try:
+            for width, label in ((1280, "desktop"), (390, "mobile")):
+                page = browser.new_page(viewport={"width": width, "height": 900})
+                page.goto(url, wait_until="domcontentloaded", timeout=45000)
+                page.wait_for_timeout(200)
+                metrics = page.evaluate(
+                    """() => {
+                      const grids = [...document.querySelectorAll('.lyssna-video-grid')];
+                      const tiles = [...document.querySelectorAll('.lyssna-video-tile')];
+                      const gridIframe = document.querySelector(
+                        '.lyssna-video-grid iframe, .lyssna-video-grid .embed iframe'
+                      );
+                      const cols = grids[0]
+                        ? getComputedStyle(grids[0]).gridTemplateColumns.split(/\\s+/).filter(Boolean).length
+                        : 0;
+                      const label = document.querySelector('.lyssna-video-tile__label');
+                      const labelStyle = label ? getComputedStyle(label) : null;
+                      return {
+                        tileCount: tiles.length,
+                        gridIframe: !!gridIframe,
+                        cols,
+                        upper: labelStyle?.textTransform === 'uppercase',
+                        letterSpacing: labelStyle
+                          ? parseFloat(labelStyle.letterSpacing) || 0
+                          : 0,
+                      };
+                    }"""
+                )
+                if metrics.get("tileCount", 0) < 4:
+                    failures.append(f"lyssna-video/{label}: expected preview tiles")
+                if metrics.get("gridIframe"):
+                    failures.append(f"lyssna-video/{label}: grid must not contain iframes")
+                if label == "mobile" and metrics.get("cols", 0) != 2:
+                    failures.append(
+                        f"lyssna-video/mobile: expected 2 grid columns, got {metrics.get('cols')}"
+                    )
+                if label == "desktop" and metrics.get("cols", 0) < 2:
+                    failures.append(
+                        f"lyssna-video/desktop: expected multiple grid columns, got {metrics.get('cols')}"
+                    )
+                if not metrics.get("upper"):
+                    failures.append("lyssna-video: tile labels must be uppercase")
+                if metrics.get("letterSpacing", 0) < 1.5:
+                    failures.append("lyssna-video: tile labels need letter-spacing")
+
+                tile = page.locator(".lyssna-video-tile").first
+                tile.click()
+                page.wait_for_timeout(350)
+                modal = page.locator(".lyssna-video-modal:not([hidden])")
+                if modal.count() == 0:
+                    failures.append(f"lyssna-video/{label}: modal did not open")
+                else:
+                    iframe = modal.locator(".lyssna-video-modal__player iframe")
+                    if iframe.count() == 0:
+                        failures.append(f"lyssna-video/{label}: modal missing YouTube iframe")
+                    aria_modal = modal.locator("[aria-modal='true']")
+                    if aria_modal.count() == 0:
+                        failures.append(f"lyssna-video/{label}: missing aria-modal dialog")
+                    close = modal.locator(".lyssna-video-modal__close")
+                    close.click()
+                    page.wait_for_timeout(200)
+                    if page.locator(".lyssna-video-modal__player iframe").count() > 0:
+                        failures.append(f"lyssna-video/{label}: iframe not removed on close")
+                page.close()
+        finally:
+            browser.close()
+    return failures
+
+
 def run_alt_header_solid_qa(base_url: str) -> list[str]:
     """Scrolled header: neutral glass bg and vertically centered bar content."""
     failures: list[str] = []
@@ -1211,7 +1286,7 @@ def run_alt_header_solid_qa(base_url: str) -> list[str]:
                         f"header-solid/{label}: logo off-center "
                         f"({metrics.get('brandOff'):.1f}px)"
                     )
-                if width >= 900 and nav and abs(metrics.get("navOff", 0)) > 2.5:
+                if width >= 900 and abs(metrics.get("navOff", 0)) > 2.5:
                     failures.append(
                         f"header-solid/{label}: nav off-center "
                         f"({metrics.get('navOff'):.1f}px)"
@@ -1485,6 +1560,7 @@ def main() -> int:
         failures.extend(run_title_desc_cta_spacing_qa(base))
         failures.extend(run_faq_collapsed_row_spacing_qa(base))
         failures.extend(run_alt_header_solid_qa(base))
+        failures.extend(run_lyssna_video_preview_qa(base))
         if not args.quick:
             failures.extend(run_desktop_tjanster_dropdown_qa(base))
             failures.extend(run_konserter_ticket_layout_qa(base))

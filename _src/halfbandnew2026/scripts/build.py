@@ -1685,7 +1685,6 @@ def write_pages():
         "V2Nb8jMKUCk",
         "Signed Sealed Delivered",
         "Signed Sealed Delivered - Halv Fjorton 2025",
-        poster="/assets/img/gallery/halvfjorton-01-1200w.webp",
     ),
     lyssna_video_tile("gm5C41wqYuU", "Reel 2022", "Halv Fjorton Reel 2022"),
 )}

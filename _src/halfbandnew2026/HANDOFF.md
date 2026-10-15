@@ -71,6 +71,11 @@ python3 qa_check.py --live --skip-build
 - `home/index.html` patchas efter bygge (`patch_home_page`).
 - Skills: `.cursor/skills/` (design), `skills/svensk-copy/`.
 
+## Lyssna (videor)
+
+- Rutnät: `.lyssna-video-tile` (YouTube `maxresdefault`, `hqdefault` via `error`/`naturalWidth`), ingen iframe förrän klick.
+- Modal: `lyssna-video-modal.js` (autoplay embed, Esc/backdrop/stäng, fokus, scroll-lås). Desktop spelare ~80vh höjd; mobil nästan full höjd.
+
 ## Live
 
 https://labs.ivarlundin.se/testing/halfbandnew2026/

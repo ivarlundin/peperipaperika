@@ -4221,6 +4221,13 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   width: 100%;
 }
 
+@media (min-width: 901px) {
+  .alt-page--inner .lyssna-video-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15.5rem), 1fr));
+    gap: clamp(0.85rem, 2vw, 1.25rem);
+  }
+}
+
 .alt-btn__icon {
   flex-shrink: 0;
 }
@@ -4315,22 +4322,23 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 .alt-page--inner .lyssna-video-tile__label {
   position: absolute;
   left: 0;
-  right: auto;
+  right: 0;
   bottom: 0;
   z-index: 2;
-  max-width: 88%;
-  padding: 0 0 clamp(0.75rem, 2vw, 1rem) clamp(0.85rem, 2.4vw, 1.15rem);
+  padding: clamp(1.75rem, 4vw, 2.25rem) clamp(0.65rem, 2vw, 0.85rem)
+    clamp(0.65rem, 1.8vw, 0.85rem);
   font-family: var(--font-display);
-  font-size: clamp(0.98rem, 2.35vw, 1.2rem);
+  font-size: clamp(0.72rem, 1.85vw, 0.82rem);
   font-weight: 600;
-  letter-spacing: 0.01em;
-  line-height: 1.25;
-  text-transform: none;
+  letter-spacing: 0.14em;
+  line-height: 1.35;
+  text-transform: uppercase;
   text-align: left;
   color: #fff;
   text-wrap: balance;
-  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.55);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.65);
   pointer-events: none;
+  box-sizing: border-box;
 }
 
 .alt-page--lyssna .lyssna-repertoire-split {
@@ -4430,10 +4438,14 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
   justify-content: center;
 }
 
-.lyssna-video-modal__close:hover,
+.lyssna-video-modal__close:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
 .lyssna-video-modal__close:focus-visible {
   background: rgba(255, 255, 255, 0.12);
-  outline: none;
+  outline: 2px solid #fff;
+  outline-offset: 2px;
 }
 
 .lyssna-video-modal__player {
@@ -4454,13 +4466,20 @@ body.alt-page.nav-open .alt-header-scroll-sentinel {
 }
 
 @media (max-width: 767px) {
+  .lyssna-video-modal {
+    align-items: center;
+    padding: max(0.75rem, env(safe-area-inset-top)) max(0.625rem, env(safe-area-inset-right))
+      max(0.75rem, env(safe-area-inset-bottom)) max(0.625rem, env(safe-area-inset-left));
+  }
+
   .lyssna-video-modal__dialog {
-    width: calc(100vw - 1.25rem);
+    width: min(calc(100vw - 1.25rem), calc((100dvh - 5.25rem) * 16 / 9));
     max-width: none;
   }
 
   .lyssna-video-modal__player {
-    height: min(80vh, calc((100vw - 1.25rem) * 9 / 16));
+    height: min(calc(100dvh - 5.25rem), calc((100vw - 1.25rem) * 9 / 16));
+    max-height: calc(100dvh - 5.25rem);
   }
 
   .lyssna-video-modal__close {

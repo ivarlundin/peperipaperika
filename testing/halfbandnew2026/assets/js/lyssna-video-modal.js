@@ -2,11 +2,20 @@
   var tiles = document.querySelectorAll(".lyssna-video-tile[data-lyssna-video]");
   if (!tiles.length) return;
 
+  function useThumbFallback(img) {
+    var fallback = img.getAttribute("data-lyssna-thumb-fallback");
+    if (fallback && img.src !== fallback) {
+      img.src = fallback;
+    }
+  }
+
   document.querySelectorAll("[data-lyssna-thumb-fallback]").forEach(function (img) {
     img.addEventListener("error", function () {
-      var fallback = img.getAttribute("data-lyssna-thumb-fallback");
-      if (fallback && img.src !== fallback) {
-        img.src = fallback;
+      useThumbFallback(img);
+    });
+    img.addEventListener("load", function () {
+      if (img.naturalWidth > 0 && img.naturalWidth < 320) {
+        useThumbFallback(img);
       }
     });
   });
