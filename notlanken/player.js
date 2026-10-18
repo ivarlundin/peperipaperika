@@ -38,8 +38,7 @@ const timelinePlayhead = $('timeline-playhead');
 const timeBarBeat = $('time-barbeat');
 const timeElapsed = $('time-elapsed');
 const timeTotal = $('time-total');
-const tempoSlider = $('tempo');
-const tempoVal = $('tempo-val');
+const speedOptions = $('speed-options');
 const reverbSlider = $('reverb');
 const reverbVal = $('reverb-val');
 const btnMixer = $('btn-mixer');
@@ -671,15 +670,31 @@ btnPlay.addEventListener('click', async () => {
 btnPause.addEventListener('click', () => pause());
 btnStop.addEventListener('click', () => stop());
 
-tempoSlider.addEventListener('input', () => {
-  const pct = Number(tempoSlider.value);
-  tempoVal.textContent = `${pct}%`;
-  engine.rate = pct / 100;
-  if (isPlaying) {
-    const p = currentPositionFromClock();
-    startPlayback(p);
-  }
-});
+const SPEEDS = [0.5, 0.75, 1, 1.1, 1.25, 1.5, 2, 3];
+
+function formatSpeed(s) {
+  return `${String(s).replace('.', ',')}x`;
+}
+
+function setSpeed(speed) {
+  const resumeAt = isPlaying ? currentPositionFromClock() : null;
+  engine.rate = speed;
+  speedOptions.querySelectorAll('button').forEach((b) => {
+    b.setAttribute('aria-pressed', String(Number(b.dataset.speed) === speed));
+  });
+  if (resumeAt != null) startPlayback(resumeAt);
+}
+
+for (const s of SPEEDS) {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'chip speed';
+  b.dataset.speed = String(s);
+  b.textContent = formatSpeed(s);
+  b.setAttribute('aria-pressed', String(s === 1));
+  b.addEventListener('click', () => setSpeed(s));
+  speedOptions.appendChild(b);
+}
 
 reverbSlider.addEventListener('input', () => {
   reverbVal.textContent = `${reverbSlider.value}%`;
