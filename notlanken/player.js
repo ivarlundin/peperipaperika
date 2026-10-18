@@ -31,6 +31,7 @@ const timeline = $('timeline');
 const lane = $('lane');
 const laneTrack = $('lane-track');
 const lanePinned = $('lane-pinned');
+const laneRoll = $('lane-roll');
 const timelineRail = $('timeline-rail');
 const timelineSections = $('timeline-sections');
 const timelineNotes = $('timeline-notes');
@@ -256,14 +257,103 @@ function laneItem(tag, className, time, text) {
   return el;
 }
 
+const ROLL_COLORS = {
+  piano: '#88c0d0',
+  bass: '#a3be8c',
+  brass: '#ebcb8b',
+  other: '#b48ead',
+  drums: '#d08770',
+};
+let rollCtx = null;
+let rollW = 0;
+let rollH = 0;
+let rollMin = 48;
+let rollMax = 72;
+let rollMaxDur = 2;
+
+function setupRoll() {
+  const dpr = window.devicePixelRatio || 1;
+  rollW = lane.clientWidth || 320;
+  rollH = lane.clientHeight || 136;
+  laneRoll.width = Math.round(rollW * dpr);
+  laneRoll.height = Math.round(rollH * dpr);
+  rollCtx = laneRoll.getContext('2d');
+  rollCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  let lo = 127;
+  let hi = 0;
+  let maxDur = 0;
+  for (const e of events) {
+    maxDur = Math.max(maxDur, e.duration);
+    if (e.group === 'drums') continue;
+    lo = Math.min(lo, e.midi);
+    hi = Math.max(hi, e.midi);
+  }
+  if (lo > hi) {
+    lo = 48;
+    hi = 72;
+  }
+  rollMin = lo - 1;
+  rollMax = hi + 1;
+  rollMaxDur = Math.min(10, Math.max(0.5, maxDur));
+}
+
+function drawRoll() {
+  if (!rollCtx) return;
+  const ctx = rollCtx;
+  ctx.clearRect(0, 0, rollW, rollH);
+  if (!events.length) return;
+
+  const top = 54;
+  const bottom = rollH - 24;
+  const h = Math.max(10, bottom - top);
+  const span = rollMax - rollMin;
+  const noteH = Math.max(2, Math.min(7, h / (span + 1)));
+  const windowEnd = position + rollW / lanePps;
+
+  let lo = 0;
+  let hi = events.length;
+  const from = position - rollMaxDur;
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (events[mid].time < from) lo = mid + 1;
+    else hi = mid;
+  }
+
+  for (let i = lo; i < events.length; i++) {
+    const e = events[i];
+    if (e.time > windowEnd) break;
+    const x = (e.time - position) * lanePps;
+    const w = Math.max(2, e.duration * lanePps);
+    if (x + w < 0) continue;
+    const active = e.time <= position && position < e.time + e.duration;
+    ctx.globalAlpha = active ? 1 : 0.7;
+    ctx.fillStyle = ROLL_COLORS[e.group] || ROLL_COLORS.other;
+    if (e.group === 'drums') {
+      ctx.fillRect(x, bottom + 4, Math.min(w, 4), 8);
+      continue;
+    }
+    const y = top + ((rollMax - e.midi) / span) * (h - noteH);
+    ctx.fillRect(x, y, w, noteH);
+    if (active) {
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(x + 0.5, y + 0.5, Math.max(1, w - 1), Math.max(1, noteH - 1));
+    }
+  }
+  ctx.globalAlpha = 1;
+}
+
 function renderLane() {
   laneTrack.innerHTML = '';
   laneSectionEls = [];
   lanePinnedLabel = '';
   if (!midi || !duration) {
     lanePinned.hidden = true;
+    rollCtx = null;
     return;
   }
+  setupRoll();
 
   const width = lane.clientWidth || 320;
   const bars = barStarts(midi, duration);
@@ -302,6 +392,7 @@ function renderLane() {
 function updateLane() {
   if (!midi || !duration) return;
   laneTrack.style.transform = `translateX(${-position * lanePps}px)`;
+  drawRoll();
 
   let current = null;
   let next = null;
