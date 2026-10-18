@@ -9,19 +9,51 @@
 </head>
 <body>
   <main>
-    <h1>Notlåda</h1>
-    <p class="sub">Privat MIDI-spelare</p>
+    <section id="view-list" class="view">
+      <h1>Notlåda</h1>
+      <p class="sub">Privat MIDI-spelare</p>
+      <ul id="song-list" class="song-list" aria-label="Låtar"></ul>
+    </section>
 
-    <ul id="song-list" class="song-list" aria-label="Låtar"></ul>
+    <section id="player" class="view player" hidden>
+      <header class="topbar">
+        <button type="button" id="btn-back" class="ghost" aria-label="Tillbaka till låtlistan">← Låtar</button>
+        <p class="now-playing" id="now-playing"></p>
+        <button type="button" id="btn-mixer" class="ghost" aria-expanded="false" aria-controls="mixer-panel">Mixer</button>
+      </header>
 
-    <section id="player" class="player" hidden>
-      <p class="now-playing" id="now-playing"></p>
+      <div id="mixer-panel" class="mixer-panel" hidden>
+        <div class="mixer-strips">
+          <div id="mixer-groups" class="mixer-groups"></div>
+          <div class="strip strip-aux">
+            <span class="strip-label">Reverb</span>
+            <div class="fader">
+              <input type="range" id="reverb" min="0" max="100" value="12" aria-label="Reverb, våt nivå">
+            </div>
+            <span class="strip-val" id="reverb-val">12%</span>
+          </div>
+          <div class="strip strip-aux strip-master">
+            <span class="strip-label">Master</span>
+            <div class="fader">
+              <input type="range" id="master-vol" min="0" max="100" value="72" aria-label="Master volym">
+            </div>
+            <span class="strip-val" id="master-vol-val">72%</span>
+          </div>
+        </div>
+      </div>
+
       <p class="chord-line" id="chord-line" hidden></p>
 
       <div class="transport">
-        <button type="button" id="btn-play" disabled>Spela</button>
-        <button type="button" id="btn-pause" class="secondary" disabled>Paus</button>
-        <button type="button" id="btn-stop" class="secondary" disabled>Stopp</button>
+        <button type="button" id="btn-play" disabled aria-label="Spela" title="Spela (mellanslag)">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <button type="button" id="btn-pause" class="secondary" disabled aria-label="Paus" title="Paus (mellanslag)">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
+        </button>
+        <button type="button" id="btn-stop" class="secondary" disabled aria-label="Stopp" title="Stopp">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6h12v12H6z"/></svg>
+        </button>
       </div>
 
       <div class="timeline-block">
@@ -48,23 +80,7 @@
       </div>
 
       <div class="panel-actions">
-        <button type="button" id="btn-mixer" class="ghost" aria-expanded="false">Mixer</button>
         <button type="button" id="btn-note" class="ghost">Anteckning</button>
-      </div>
-
-      <div id="mixer-panel" class="mixer-panel" hidden>
-        <p class="mixer-title">Mixer</p>
-        <label class="slider-row">
-          <span>Master</span>
-          <input type="range" id="master-vol" min="0" max="100" value="72">
-          <span id="master-vol-val">72%</span>
-        </label>
-        <label class="slider-row">
-          <span>Reverb</span>
-          <input type="range" id="reverb" min="0" max="100" value="12">
-          <span id="reverb-val">12%</span>
-        </label>
-        <div id="mixer-groups" class="mixer-groups"></div>
       </div>
 
       <div class="notes-panel">
