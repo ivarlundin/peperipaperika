@@ -18,7 +18,9 @@ const engine = new AudioEngine(new URL('./', import.meta.url).href);
 const $ = (id) => document.getElementById(id);
 
 const songList = $('song-list');
+const viewList = $('view-list');
 const playerEl = $('player');
+const btnBack = $('btn-back');
 const nowPlaying = $('now-playing');
 const chordLine = $('chord-line');
 const btnPlay = $('btn-play');
@@ -96,33 +98,71 @@ function isTypingTarget() {
   return tag === 'INPUT' || tag === 'TEXTAREA' || el.isContentEditable;
 }
 
+/** @type {{ file: string, title: string }[]} */
+let songs = [];
+
+function isPlayerView() {
+  return !playerEl.hidden;
+}
+
+function showListView() {
+  stop();
+  currentSong = null;
+  playerEl.hidden = true;
+  viewList.hidden = false;
+  mobileNoteTypes.hidden = true;
+  document.title = 'Notlåda';
+}
+
+function showPlayerView() {
+  viewList.hidden = true;
+  playerEl.hidden = false;
+  mobileNoteTypes.hidden = !isTouchUi;
+  window.scrollTo(0, 0);
+}
+
+function routeFromHash() {
+  const file = decodeURIComponent(location.hash.replace(/^#/, ''));
+  const song = file ? songs.find((s) => s.file === file) : null;
+  if (!song) {
+    if (isPlayerView()) showListView();
+    return;
+  }
+  if (currentSong?.file === song.file && isPlayerView()) return;
+  openSong(song);
+}
+
 async function loadManifest() {
   const res = await fetch('midi/songs.json');
-  const songs = await res.json();
+  songs = await res.json();
   songList.innerHTML = '';
   for (const song of songs) {
     const li = document.createElement('li');
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.textContent = song.title;
-    btn.addEventListener('click', () => selectSong(song, btn));
+    btn.addEventListener('click', () => {
+      engine.ensureContext();
+      location.hash = encodeURIComponent(song.file);
+    });
     li.appendChild(btn);
     songList.appendChild(li);
   }
+  routeFromHash();
 }
 
 
-async function selectSong(song, btn) {
-  await engine.ensureContext();
+async function openSong(song) {
   engine.stopAll();
   isPlaying = false;
   cancelAnimationFrame(raf);
 
-  songList.querySelectorAll('button').forEach((b) => b.removeAttribute('aria-current'));
-  btn?.setAttribute('aria-current', 'true');
-
+  midi = null;
   currentSong = song;
-  playerEl.hidden = false;
+  document.title = `${song.title} – Notlåda`;
+  nowPlaying.textContent = song.title;
+  showPlayerView();
+  updateTransportUi();
   setStatus('Laddar MIDI…');
 
   try {
@@ -137,13 +177,14 @@ async function selectSong(song, btn) {
     setStatus('Laddar ljud…');
     engine.prepared = false;
     await engine.preparePlayback();
+    if (currentSong !== song) return;
     const meta = parseSongMeta(midi);
     sections = meta.sections;
     chords = meta.chords;
     sessionNotes = loadNotes(song.file);
     position = 0;
 
-    nowPlaying.innerHTML = `<strong>${song.title}</strong> · ${song.file}`;
+    if (currentSong !== song) return;
     timeTotal.textContent = formatClock(duration);
     renderTimeline();
     renderNotesList();
@@ -322,30 +363,46 @@ async function seekTo(sec, resumeIfPlaying = false) {
 function buildMixerUi() {
   mixerGroups.innerHTML = '';
   for (const g of GROUPS) {
-    const row = document.createElement('div');
-    row.className = 'mixer-row';
-    row.innerHTML = `
-      <span class="mixer-label">${GROUP_LABELS[g]}</span>
-      <input type="range" min="0" max="100" value="75" data-vol="${g}" aria-label="${GROUP_LABELS[g]} volym">
-      <label><input type="checkbox" data-mute="${g}"> M</label>
-      <label><input type="checkbox" data-solo="${g}"> S</label>
-      <input type="range" min="0" max="100" value="25" data-send="${g}" title="Reverb send" aria-label="${GROUP_LABELS[g]} reverb">
+    const label = GROUP_LABELS[g];
+    const strip = document.createElement('div');
+    strip.className = 'strip';
+    strip.innerHTML = `
+      <span class="strip-label">${label}</span>
+      <div class="fader">
+        <input type="range" min="0" max="100" value="75" data-vol="${g}" aria-label="${label} volym">
+      </div>
+      <span class="strip-val" data-vol-val="${g}">75</span>
+      <div class="strip-buttons">
+        <button type="button" class="chip" data-mute="${g}" aria-pressed="false" aria-label="Tysta ${label}" title="Tysta">M</button>
+        <button type="button" class="chip" data-solo="${g}" aria-pressed="false" aria-label="Solo ${label}" title="Solo">S</button>
+      </div>
+      <label class="send">
+        <span>Rev</span>
+        <input type="range" min="0" max="100" value="20" data-send="${g}" aria-label="${label} reverb-send">
+      </label>
     `;
-    mixerGroups.appendChild(row);
+    mixerGroups.appendChild(strip);
   }
+
   mixerGroups.querySelectorAll('[data-vol]').forEach((el) => {
     el.addEventListener('input', () => {
-      engine.setGroupMixer(el.getAttribute('data-vol'), { volume: el.value / 100 });
+      const g = el.getAttribute('data-vol');
+      mixerGroups.querySelector(`[data-vol-val="${g}"]`).textContent = el.value;
+      engine.setGroupMixer(g, { volume: el.value / 100 });
     });
   });
   mixerGroups.querySelectorAll('[data-mute]').forEach((el) => {
-    el.addEventListener('change', () => {
-      engine.setGroupMixer(el.getAttribute('data-mute'), { mute: el.checked });
+    el.addEventListener('click', () => {
+      const on = el.getAttribute('aria-pressed') !== 'true';
+      el.setAttribute('aria-pressed', String(on));
+      engine.setGroupMixer(el.getAttribute('data-mute'), { mute: on });
     });
   });
   mixerGroups.querySelectorAll('[data-solo]').forEach((el) => {
-    el.addEventListener('change', () => {
-      engine.setGroupMixer(el.getAttribute('data-solo'), { solo: el.checked });
+    el.addEventListener('click', () => {
+      const on = el.getAttribute('aria-pressed') !== 'true';
+      el.setAttribute('aria-pressed', String(on));
+      engine.setGroupMixer(el.getAttribute('data-solo'), { solo: on });
     });
   });
   mixerGroups.querySelectorAll('[data-send]').forEach((el) => {
@@ -476,6 +533,12 @@ btnMixer.addEventListener('click', () => {
 
 btnNote.addEventListener('click', () => openNoteDialog('note'));
 
+btnBack.addEventListener('click', () => {
+  if (location.hash) location.hash = '';
+  else showListView();
+});
+window.addEventListener('hashchange', routeFromHash);
+
 noteTypeRow.querySelectorAll('.type-btn').forEach((b) => {
   b.addEventListener('click', () => {
     pendingNoteType = b.getAttribute('data-type');
@@ -507,6 +570,7 @@ btnClearNotes.addEventListener('click', () => {
 });
 
 document.addEventListener('keydown', (e) => {
+  if (!isPlayerView()) return;
   if (noteDialogOpen) return;
   if (isTypingTarget()) return;
 
@@ -548,11 +612,16 @@ mobileNoteTypes.querySelectorAll('button').forEach((b) => {
 
 function detectTouchUi() {
   isTouchUi = window.matchMedia('(pointer: coarse)').matches;
-  mobileNoteTypes.hidden = !isTouchUi;
+  mobileNoteTypes.hidden = !isTouchUi || !isPlayerView();
   document.querySelector('.notes-hint').hidden = isTouchUi;
 }
 
 buildMixerUi();
 bindTimeline();
 detectTouchUi();
-loadManifest().catch((e) => setStatus(e.message, true));
+loadManifest().catch((e) => {
+  const li = document.createElement('li');
+  li.className = 'status error';
+  li.textContent = `Kunde inte ladda låtlistan: ${e.message}`;
+  songList.appendChild(li);
+});
