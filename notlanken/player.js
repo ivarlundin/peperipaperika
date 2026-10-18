@@ -183,6 +183,7 @@ async function openSong(song) {
     chords = meta.chords;
     sessionNotes = loadNotes(song.file);
     position = 0;
+    buildMixerUi();
 
     if (currentSong !== song) return;
     timeTotal.textContent = formatClock(duration);
@@ -360,25 +361,38 @@ async function seekTo(sec, resumeIfPlaying = false) {
   if (wasPlaying || resumeIfPlaying) await startPlayback(position);
 }
 
+function groupsInSong() {
+  const used = new Set(events.map((e) => e.group));
+  return GROUPS.filter((g) => used.has(g));
+}
+
 function buildMixerUi() {
-  mixerGroups.innerHTML = '';
+  const present = groupsInSong();
   for (const g of GROUPS) {
+    if (!present.includes(g)) engine.setGroupMixer(g, { solo: false, mute: false });
+  }
+
+  mixerGroups.innerHTML = '';
+  for (const g of present) {
     const label = GROUP_LABELS[g];
+    const m = engine.mixer[g];
+    const vol = Math.round(m.volume * 100);
+    const send = Math.round(m.reverbSend * 100);
     const strip = document.createElement('div');
     strip.className = 'strip';
     strip.innerHTML = `
       <span class="strip-label">${label}</span>
       <div class="fader">
-        <input type="range" min="0" max="100" value="75" data-vol="${g}" aria-label="${label} volym">
+        <input type="range" min="0" max="100" value="${vol}" data-vol="${g}" aria-label="${label} volym">
       </div>
-      <span class="strip-val" data-vol-val="${g}">75</span>
+      <span class="strip-val" data-vol-val="${g}">${vol}</span>
       <div class="strip-buttons">
-        <button type="button" class="chip" data-mute="${g}" aria-pressed="false" aria-label="Tysta ${label}" title="Tysta">M</button>
-        <button type="button" class="chip" data-solo="${g}" aria-pressed="false" aria-label="Solo ${label}" title="Solo">S</button>
+        <button type="button" class="chip" data-mute="${g}" aria-pressed="${m.mute}" aria-label="Tysta ${label}" title="Tysta">M</button>
+        <button type="button" class="chip" data-solo="${g}" aria-pressed="${m.solo}" aria-label="Solo ${label}" title="Solo">S</button>
       </div>
       <label class="send">
         <span>Rev</span>
-        <input type="range" min="0" max="100" value="20" data-send="${g}" aria-label="${label} reverb-send">
+        <input type="range" min="0" max="100" value="${send}" data-send="${g}" aria-label="${label} reverb-send">
       </label>
     `;
     mixerGroups.appendChild(strip);
@@ -616,7 +630,6 @@ function detectTouchUi() {
   document.querySelector('.notes-hint').hidden = isTouchUi;
 }
 
-buildMixerUi();
 bindTimeline();
 detectTouchUi();
 loadManifest().catch((e) => {

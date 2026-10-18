@@ -349,8 +349,10 @@ export class AudioEngine {
     const Soundfont = mod.default || mod;
     const file = GM_FALLBACK_MAP[name] || name;
     const url = new URL(`samples/gm-fallback/${file}-mp3.js`, this.baseUrl).href;
+    const out = ac.createGain();
+    this._routeToGroup(out, 'other');
     const player = await Soundfont.instrument(ac, url, {
-      destination: this.groupNodes.other.dry,
+      destination: out,
       gain: 0.35,
     });
     this.gmPlayers.set(name, player);
