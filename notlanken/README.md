@@ -46,7 +46,7 @@ På mobil: använd knapparna **Anteckning** och typ-knapparna längst ned.
 
 ## Mixer & reverb
 
-Öppna **Mixer** för volym per grupp (piano, bas, trummor, blås, övrigt), mute/solo och reverb-send. **Reverb**-reglaget är global våt nivå.
+Öppna **Mixer** för master, global **reverb** (våt nivå), volym per grupp (piano, bas, trummor, blås, övrigt), mute/solo och reverb-send per kanal.
 
 ## Lokal test
 
