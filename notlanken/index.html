@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Notlåda</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <h1>Notlåda</h1>
+    <p class="sub">Privat MIDI-spelare</p>
+
+    <ul id="song-list" class="song-list" aria-label="Låtar"></ul>
+
+    <section id="player" class="player" hidden>
+      <p class="now-playing" id="now-playing"></p>
+      <p class="chord-line" id="chord-line" hidden></p>
+
+      <div class="transport">
+        <button type="button" id="btn-play" disabled>Spela</button>
+        <button type="button" id="btn-pause" class="secondary" disabled>Paus</button>
+        <button type="button" id="btn-stop" class="secondary" disabled>Stopp</button>
+      </div>
+
+      <div class="timeline-block">
+        <div class="timeline" id="timeline" role="slider" aria-label="Tidslinje" tabindex="0">
+          <div class="timeline-rail" id="timeline-rail">
+            <div class="timeline-sections" id="timeline-sections"></div>
+            <div class="timeline-notes" id="timeline-notes"></div>
+            <div class="timeline-playhead" id="timeline-playhead"></div>
+          </div>
+        </div>
+        <div class="time-row">
+          <span id="time-barbeat">takt 1 slag 1</span>
+          <span id="time-elapsed">0:00</span>
+          <span id="time-total">0:00</span>
+        </div>
+      </div>
+
+      <div class="sliders">
+        <label class="slider-row">
+          <span>Tempo</span>
+          <input type="range" id="tempo" min="50" max="150" value="100">
+          <span id="tempo-val">100%</span>
+        </label>
+        <label class="slider-row">
+          <span>Reverb</span>
+          <input type="range" id="reverb" min="0" max="100" value="20">
+          <span id="reverb-val">20%</span>
+        </label>
+      </div>
+
+      <div class="panel-actions">
+        <button type="button" id="btn-mixer" class="ghost" aria-expanded="false">Mixer</button>
+        <button type="button" id="btn-note" class="ghost">Anteckning</button>
+      </div>
+
+      <div id="mixer-panel" class="mixer-panel" hidden>
+        <p class="mixer-title">Mixer</p>
+        <label class="slider-row">
+          <span>Master</span>
+          <input type="range" id="master-vol" min="0" max="100" value="85">
+          <span id="master-vol-val">85%</span>
+        </label>
+        <div id="mixer-groups" class="mixer-groups"></div>
+      </div>
+
+      <div class="notes-panel">
+        <div class="notes-toolbar">
+          <span class="notes-hint">Snabbval: <kbd>B</kbd> fel · <kbd>Ö</kbd>/<kbd>W</kbd> önskemål · <kbd>N</kbd> anteckning</span>
+          <div class="notes-actions">
+            <button type="button" id="btn-copy-notes" class="ghost">Kopiera till urklipp</button>
+            <button type="button" id="btn-clear-notes" class="ghost danger">Rensa</button>
+          </div>
+        </div>
+        <ul id="notes-list" class="notes-list"></ul>
+      </div>
+
+      <p id="status" class="status" role="status"></p>
+    </section>
+  </main>
+
+  <dialog id="note-dialog" class="note-dialog">
+    <form method="dialog" id="note-form">
+      <p class="dialog-title">Ny anteckning</p>
+      <p class="dialog-meta" id="note-dialog-meta"></p>
+      <div class="note-type-row" id="note-type-row">
+        <button type="button" data-type="bug" class="type-btn type-bug">BUG/FEL (B)</button>
+        <button type="button" data-type="onske" class="type-btn type-onske">ÖNSKEMÅL (Ö/W)</button>
+        <button type="button" data-type="note" class="type-btn type-note">Anteckning (N)</button>
+      </div>
+      <textarea id="note-text" rows="3" placeholder="Beskriv för arrangörsboten…" required></textarea>
+      <div class="dialog-actions">
+        <button type="button" id="note-cancel" class="secondary">Avbryt</button>
+        <button type="submit" value="save">Spara</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="mobile-note-types" id="mobile-note-types" hidden>
+    <button type="button" data-type="bug">BUG/FEL</button>
+    <button type="button" data-type="onske">ÖNSKEMÅL</button>
+    <button type="button" data-type="note">Anteckning</button>
+  </div>
+
+  <script type="module" src="player.js"></script>
+</body>
+</html>
