@@ -778,3 +778,50 @@ button.ghost.small {
   z-index: 1;
   pointer-events: none;
 }
+
+/* Single place to add a note: type buttons in the notes panel */
+.note-add {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.note-add-btn {
+  flex: 1 1 auto;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #252932;
+  color: var(--text);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.note-add-btn.type-bug {
+  border-left: 3px solid var(--bug);
+}
+
+.note-add-btn.type-onske {
+  border-left: 3px solid var(--onske);
+}
+
+.note-add-btn.type-note {
+  border-left: 3px solid var(--note);
+}
+
+.note-add-btn kbd {
+  margin-left: 0.3rem;
+  padding: 0 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: #14181f;
+  color: var(--muted);
+  font-size: 0.65rem;
+}
+
+@media (pointer: coarse) {
+  .note-add-btn kbd {
+    display: none;
+  }
+}

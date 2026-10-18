@@ -47,7 +47,7 @@ const mixerPanel = $('mixer-panel');
 const mixerGroups = $('mixer-groups');
 const masterVol = $('master-vol');
 const masterVolVal = $('master-vol-val');
-const btnNote = $('btn-note');
+const noteAdd = $('note-add');
 const notesList = $('notes-list');
 const btnCopyNotes = $('btn-copy-notes');
 const btnClearNotes = $('btn-clear-notes');
@@ -56,9 +56,8 @@ const noteDialog = $('note-dialog');
 const noteForm = $('note-form');
 const noteText = $('note-text');
 const noteDialogMeta = $('note-dialog-meta');
-const noteTypeRow = $('note-type-row');
+const noteDialogTitle = $('note-dialog-title');
 const noteCancel = $('note-cancel');
-const mobileNoteTypes = $('mobile-note-types');
 
 /** @type {{ file: string, title: string } | null} */
 let currentSong = null;
@@ -80,7 +79,6 @@ let scrubbing = false;
 let sessionNotes = [];
 let pendingNoteType = 'note';
 let noteDialogOpen = false;
-let isTouchUi = false;
 
 const GROUP_LABELS = {
   piano: 'Piano',
@@ -114,14 +112,12 @@ function showListView() {
   currentSong = null;
   playerEl.hidden = true;
   viewList.hidden = false;
-  mobileNoteTypes.hidden = true;
   document.title = 'Notlåda';
 }
 
 function showPlayerView() {
   viewList.hidden = true;
   playerEl.hidden = false;
-  mobileNoteTypes.hidden = !isTouchUi;
   window.scrollTo(0, 0);
 }
 
@@ -674,9 +670,7 @@ function openNoteDialog(type = 'note') {
   noteDialogOpen = true;
   noteDialogMeta.textContent = `${formatBarBeat(midi, position)} · ${formatClock(position)}`;
   noteText.value = '';
-  noteTypeRow.querySelectorAll('.type-btn').forEach((b) => {
-    b.classList.toggle('active', b.getAttribute('data-type') === type);
-  });
+  noteDialogTitle.textContent = `Ny anteckning · ${noteTypeLabel(type)}`;
   noteDialog.showModal();
   noteText.focus();
 }
@@ -803,20 +797,15 @@ btnMixer.addEventListener('click', () => {
   btnMixer.setAttribute('aria-expanded', String(open));
 });
 
-btnNote.addEventListener('click', () => openNoteDialog('note'));
+noteAdd.querySelectorAll('button').forEach((b) => {
+  b.addEventListener('click', () => openNoteDialog(b.getAttribute('data-type')));
+});
 
 btnBack.addEventListener('click', () => {
   if (location.hash) location.hash = '';
   else showListView();
 });
 window.addEventListener('hashchange', routeFromHash);
-
-noteTypeRow.querySelectorAll('.type-btn').forEach((b) => {
-  b.addEventListener('click', () => {
-    pendingNoteType = b.getAttribute('data-type');
-    noteTypeRow.querySelectorAll('.type-btn').forEach((x) => x.classList.toggle('active', x === b));
-  });
-});
 
 noteForm.addEventListener('submit', (e) => {
   e.preventDefault();
@@ -878,19 +867,8 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-mobileNoteTypes.querySelectorAll('button').forEach((b) => {
-  b.addEventListener('click', () => openNoteDialog(b.getAttribute('data-type')));
-});
-
-function detectTouchUi() {
-  isTouchUi = window.matchMedia('(pointer: coarse)').matches;
-  mobileNoteTypes.hidden = !isTouchUi || !isPlayerView();
-  document.querySelector('.notes-hint').hidden = isTouchUi;
-}
-
 bindTimeline();
 bindLane();
-detectTouchUi();
 loadManifest().catch((e) => {
   const li = document.createElement('li');
   li.className = 'status error';

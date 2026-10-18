@@ -82,13 +82,13 @@
         <div class="speed-options" id="speed-options"></div>
       </div>
 
-      <div class="panel-actions">
-        <button type="button" id="btn-note" class="ghost">Anteckning</button>
-      </div>
-
       <div class="notes-panel">
         <div class="notes-toolbar">
-          <span class="notes-hint">Snabbval: <kbd>B</kbd> fel · <kbd>Ö</kbd>/<kbd>W</kbd> önskemål · <kbd>N</kbd> anteckning</span>
+          <div class="note-add" id="note-add" role="group" aria-label="Ny anteckning vid aktuell position">
+            <button type="button" data-type="bug" class="note-add-btn type-bug">+ Fel <kbd>B</kbd></button>
+            <button type="button" data-type="onske" class="note-add-btn type-onske">+ Önskemål <kbd>Ö</kbd><kbd>W</kbd></button>
+            <button type="button" data-type="note" class="note-add-btn type-note">+ Anteckning <kbd>N</kbd></button>
+          </div>
           <div class="notes-actions">
             <button type="button" id="btn-copy-notes" class="ghost">Kopiera till urklipp</button>
             <button type="button" id="btn-clear-notes" class="ghost danger">Rensa</button>
@@ -103,13 +103,8 @@
 
   <dialog id="note-dialog" class="note-dialog">
     <form method="dialog" id="note-form">
-      <p class="dialog-title">Ny anteckning</p>
+      <p class="dialog-title" id="note-dialog-title">Ny anteckning</p>
       <p class="dialog-meta" id="note-dialog-meta"></p>
-      <div class="note-type-row" id="note-type-row">
-        <button type="button" data-type="bug" class="type-btn type-bug">BUG/FEL (B)</button>
-        <button type="button" data-type="onske" class="type-btn type-onske">ÖNSKEMÅL (Ö/W)</button>
-        <button type="button" data-type="note" class="type-btn type-note">Anteckning (N)</button>
-      </div>
       <textarea id="note-text" rows="3" placeholder="Beskriv för arrangörsboten…" required></textarea>
       <div class="dialog-actions">
         <button type="button" id="note-cancel" class="secondary">Avbryt</button>
@@ -117,12 +112,6 @@
       </div>
     </form>
   </dialog>
-
-  <div class="mobile-note-types" id="mobile-note-types" hidden>
-    <button type="button" data-type="bug">BUG/FEL</button>
-    <button type="button" data-type="onske">ÖNSKEMÅL</button>
-    <button type="button" data-type="note">Anteckning</button>
-  </div>
 
   <script type="module" src="player.js"></script>
 </body>

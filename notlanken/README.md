@@ -36,7 +36,7 @@ Självhostade samples under `samples/` (piano, bas, trummor, blås + FluidR3-fal
 
 Medan anteckningsrutan är öppen är andra tangenter avstängda så du kan skriva fritt. Uppspelning fortsätter.
 
-På mobil: använd knapparna **Anteckning** och typ-knapparna längst ned.
+Anteckningar skapas på ett ställe: knapparna **+ Fel**, **+ Önskemål** och **+ Anteckning** i anteckningspanelen (samma som tangenterna, och det enda sättet på mobil). Positionen sätts när du trycker och uppspelningen fortsätter.
 
 ## Anteckningar
 
