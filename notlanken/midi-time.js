@@ -66,3 +66,28 @@ export function jumpBars(midi, seconds, deltaBars) {
   const barDur = (60 / bpm) * numerator;
   return Math.max(0, s + deltaBars * barDur);
 }
+
+/**
+ * Start time (seconds) of every bar up to endSeconds, following the
+ * time-signature map.
+ * @param {import('@tonejs/midi').Midi} midi
+ * @param {number} endSeconds
+ */
+export function barStarts(midi, endSeconds) {
+  const ppq = midi.header.ppq;
+  const sigs = midi.header.timeSignatures?.length
+    ? [...midi.header.timeSignatures].sort((a, b) => a.ticks - b.ticks)
+    : [{ ticks: 0, timeSignature: [4, 4] }];
+  const out = [];
+  let tick = 0;
+  let si = 0;
+  for (let guard = 0; guard < 5000; guard++) {
+    const sec = midi.header.ticksToSeconds(tick);
+    if (sec > endSeconds) break;
+    out.push(sec);
+    while (si + 1 < sigs.length && sigs[si + 1].ticks <= tick) si++;
+    const [num, den] = sigs[si].timeSignature;
+    tick += Math.round(ppq * (4 / den)) * num;
+  }
+  return out;
+}
