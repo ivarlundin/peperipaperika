@@ -134,6 +134,9 @@ async function selectSong(song, btn) {
       midi.duration,
       events.length ? events[events.length - 1].time + 0.5 : 0,
     );
+    setStatus('Laddar ljud…');
+    engine.prepared = false;
+    await engine.preparePlayback();
     const meta = parseSongMeta(midi);
     sections = meta.sections;
     chords = meta.chords;
@@ -286,7 +289,7 @@ async function startPlayback(fromSeconds) {
   playStartAc = engine.ac.currentTime;
   isPlaying = true;
   updateTransportUi();
-  await engine.schedule(events, position, duration + 1);
+  engine.schedule(events, position, duration + 1);
   cancelAnimationFrame(raf);
   raf = requestAnimationFrame(tick);
 }
@@ -323,7 +326,7 @@ function buildMixerUi() {
     row.className = 'mixer-row';
     row.innerHTML = `
       <span class="mixer-label">${GROUP_LABELS[g]}</span>
-      <input type="range" min="0" max="100" value="85" data-vol="${g}" aria-label="${GROUP_LABELS[g]} volym">
+      <input type="range" min="0" max="100" value="75" data-vol="${g}" aria-label="${GROUP_LABELS[g]} volym">
       <label><input type="checkbox" data-mute="${g}"> M</label>
       <label><input type="checkbox" data-solo="${g}"> S</label>
       <input type="range" min="0" max="100" value="25" data-send="${g}" title="Reverb send" aria-label="${GROUP_LABELS[g]} reverb">
