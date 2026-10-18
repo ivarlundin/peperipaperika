@@ -156,7 +156,7 @@ export class AudioEngine {
       const m = this.mixer[g];
       const audible = solo ? m.solo && !m.mute : !m.mute;
       const vol = audible ? m.volume : 0;
-      this.groupNodes[g].dry.gain.value = vol * (1 - m.reverbSend);
+      this.groupNodes[g].dry.gain.value = vol;
       this.groupNodes[g].send.gain.value = vol * m.reverbSend;
     }
   }
