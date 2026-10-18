@@ -614,3 +614,126 @@ button.ghost.small {
     padding: 0.45rem;
   }
 }
+
+/* Moving timeline: fixed playhead at the left, next 8 bars scroll in */
+.lane {
+  position: relative;
+  height: 5.25rem;
+  margin-bottom: 0.6rem;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+  background: #12151a;
+  overflow: hidden;
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+}
+
+.lane:active {
+  cursor: grabbing;
+}
+
+.lane-track {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  will-change: transform;
+}
+
+.lane-bar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-left: 1px solid #2a303a;
+}
+
+.lane-bar span {
+  position: absolute;
+  bottom: 0.1rem;
+  left: 0.25rem;
+  font-size: 0.6rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.lane-chord {
+  position: absolute;
+  top: 1.85rem;
+  padding-left: 0.3rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.lane-section,
+.lane-pinned {
+  position: absolute;
+  top: 0.3rem;
+  padding: 0.1rem 0.5rem;
+  border: none;
+  border-radius: 999px;
+  background: #3f5a3a;
+  color: #d8f0cf;
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.lane-section {
+  cursor: pointer;
+}
+
+.lane-pinned {
+  left: 4px;
+  z-index: 2;
+  pointer-events: none;
+  background: #55784e;
+}
+
+.lane-note {
+  position: absolute;
+  bottom: 0.35rem;
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.lane-note.note-bug {
+  background: var(--bug);
+}
+
+.lane-note.note-onske {
+  background: var(--onske);
+}
+
+.lane-note.note-note {
+  background: var(--note);
+}
+
+/* The full-song timeline becomes a slim overview strip */
+.timeline.overview {
+  height: 1.4rem;
+}
+
+.timeline.overview .timeline-marker.section {
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  max-width: none;
+  padding: 0;
+  font-size: 0;
+  background: #5f8a56;
+  overflow: hidden;
+}
+
+.timeline.overview .timeline-marker.note {
+  bottom: 0.2rem;
+}

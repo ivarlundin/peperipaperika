@@ -1,6 +1,7 @@
 import { Midi } from 'https://esm.sh/@tonejs/midi@2.0.28';
 import { AudioEngine, GROUPS } from './audio-engine.js';
 import {
+  barStarts,
   formatBarBeat,
   formatClock,
   jumpBars,
@@ -27,6 +28,9 @@ const btnPlay = $('btn-play');
 const btnPause = $('btn-pause');
 const btnStop = $('btn-stop');
 const timeline = $('timeline');
+const lane = $('lane');
+const laneTrack = $('lane-track');
+const lanePinned = $('lane-pinned');
 const timelineRail = $('timeline-rail');
 const timelineSections = $('timeline-sections');
 const timelineNotes = $('timeline-notes');
@@ -200,7 +204,10 @@ async function openSong(song) {
 function renderTimeline() {
   timelineSections.innerHTML = '';
   timelineNotes.innerHTML = '';
-  if (!duration) return;
+  if (!duration) {
+    renderLane();
+    return;
+  }
 
   for (const m of sections) {
     const pct = (m.time / duration) * 100;
@@ -230,6 +237,150 @@ function renderTimeline() {
     });
     timelineNotes.appendChild(el);
   }
+
+  renderLane();
+}
+
+const LANE_BARS = 8;
+const LANE_PAD = 4;
+let lanePps = 40;
+let laneSectionEls = [];
+let lanePinnedLabel = '';
+let lanePinnedWidth = 0;
+
+function laneItem(tag, className, time, text) {
+  const el = document.createElement(tag);
+  if (tag === 'button') el.type = 'button';
+  el.className = className;
+  el.style.left = `${time * lanePps}px`;
+  if (text != null) el.textContent = text;
+  return el;
+}
+
+function renderLane() {
+  laneTrack.innerHTML = '';
+  laneSectionEls = [];
+  lanePinnedLabel = '';
+  if (!midi || !duration) {
+    lanePinned.hidden = true;
+    return;
+  }
+
+  const width = lane.clientWidth || 320;
+  const bars = barStarts(midi, duration);
+  const barDur = bars.length > 1 ? bars[1] - bars[0] : 2;
+  lanePps = width / (LANE_BARS * barDur);
+  laneTrack.style.width = `${duration * lanePps + width}px`;
+
+  bars.forEach((time, i) => {
+    const line = laneItem('div', 'lane-bar', time);
+    const num = document.createElement('span');
+    num.textContent = String(i + 1);
+    line.appendChild(num);
+    laneTrack.appendChild(line);
+  });
+
+  for (const c of chords) {
+    laneTrack.appendChild(laneItem('span', 'lane-chord', c.time, c.symbol));
+  }
+
+  for (const s of sections) {
+    const el = laneItem('button', 'lane-section', s.time, s.label);
+    el.title = s.label;
+    el.addEventListener('click', () => seekTo(s.time, isPlaying));
+    laneTrack.appendChild(el);
+    laneSectionEls.push(el);
+  }
+
+  for (const n of sessionNotes) {
+    const el = laneItem('button', `lane-note note-${n.type}`, n.time);
+    el.title = n.text;
+    el.addEventListener('click', () => seekTo(n.time, isPlaying));
+    laneTrack.appendChild(el);
+  }
+}
+
+function updateLane() {
+  if (!midi || !duration) return;
+  laneTrack.style.transform = `translateX(${-position * lanePps}px)`;
+
+  let current = null;
+  let next = null;
+  for (const s of sections) {
+    if (s.time <= position + 0.001) current = s;
+    else {
+      next = s;
+      break;
+    }
+  }
+
+  laneSectionEls.forEach((el, i) => {
+    el.style.visibility = sections[i].time <= position + 0.001 ? 'hidden' : 'visible';
+  });
+
+  if (!current) {
+    lanePinned.hidden = true;
+    return;
+  }
+  lanePinned.hidden = false;
+  if (lanePinnedLabel !== current.label) {
+    lanePinned.textContent = current.label;
+    lanePinnedLabel = current.label;
+    lanePinnedWidth = lanePinned.offsetWidth;
+  }
+
+  let shift = 0;
+  if (next) {
+    const nextX = (next.time - position) * lanePps;
+    const right = LANE_PAD + lanePinnedWidth + 6;
+    if (nextX < right) shift = nextX - right;
+  }
+  lanePinned.style.transform = `translateX(${shift}px)`;
+}
+
+function bindLane() {
+  let dragging = false;
+  let moved = false;
+  let startX = 0;
+  let startPos = 0;
+
+  lane.addEventListener('pointerdown', (e) => {
+    if (!duration) return;
+    dragging = true;
+    moved = false;
+    startX = e.clientX;
+    startPos = position;
+  });
+  lane.addEventListener('pointermove', (e) => {
+    if (!dragging) return;
+    const dx = e.clientX - startX;
+    if (!moved) {
+      if (Math.abs(dx) < 5) return;
+      moved = true;
+      scrubbing = true;
+      lane.setPointerCapture(e.pointerId);
+    }
+    position = Math.max(0, Math.min(duration, startPos - dx / lanePps));
+    updatePositionUi();
+  });
+  const end = async (e) => {
+    if (!dragging) return;
+    dragging = false;
+    if (!moved) return;
+    scrubbing = false;
+    try {
+      lane.releasePointerCapture(e.pointerId);
+    } catch {
+      /* ignore */
+    }
+    await seekTo(position, isPlaying);
+  };
+  lane.addEventListener('pointerup', end);
+  lane.addEventListener('pointercancel', end);
+  window.addEventListener('resize', () => {
+    renderLane();
+    updateLane();
+  });
 }
 
 function renderNotesList() {
@@ -287,6 +438,7 @@ function persistNotes() {
 function updatePositionUi() {
   const pct = duration ? (position / duration) * 100 : 0;
   timelinePlayhead.style.left = `${pct}%`;
+  updateLane();
   timeElapsed.textContent = formatClock(position);
   if (midi) timeBarBeat.textContent = formatBarBeat(midi, position);
   const chord = chordAtTime(chords, position);
@@ -631,6 +783,7 @@ function detectTouchUi() {
 }
 
 bindTimeline();
+bindLane();
 detectTouchUi();
 loadManifest().catch((e) => {
   const li = document.createElement('li');
