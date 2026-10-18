@@ -11,6 +11,7 @@ import {
   noteTypeLabel,
   saveNotes,
 } from './session-notes.js';
+import { chordAtTime, parseSongMeta } from './midi-meta.js';
 
 const engine = new AudioEngine(new URL('./', import.meta.url).href);
 
@@ -58,7 +59,10 @@ let currentSong = null;
 /** @type {import('@tonejs/midi').Midi | null} */
 let midi = null;
 let events = [];
-let markers = [];
+/** @type {{ time: number, label: string }[]} */
+let sections = [];
+/** @type {{ time: number, symbol: string }[]} */
+let chords = [];
 let duration = 0;
 let position = 0;
 let isPlaying = false;
@@ -107,28 +111,6 @@ async function loadManifest() {
   }
 }
 
-function collectMarkers(m) {
-  const out = [];
-  if (m.header.markers) {
-    for (const mk of m.header.markers) out.push({ time: mk.time, text: mk.text });
-  }
-  for (const track of m.tracks) {
-    if (track.markers) {
-      for (const mk of track.markers) out.push({ time: mk.time, text: mk.text });
-    }
-  }
-  out.sort((a, b) => a.time - b.time);
-  return out;
-}
-
-function markerAtTime(t) {
-  let text = '';
-  for (const m of markers) {
-    if (m.time <= t + 0.02) text = m.text;
-    else break;
-  }
-  return text;
-}
 
 async function selectSong(song, btn) {
   await engine.ensureContext();
@@ -152,7 +134,9 @@ async function selectSong(song, btn) {
       midi.duration,
       events.length ? events[events.length - 1].time + 0.5 : 0,
     );
-    markers = collectMarkers(midi);
+    const meta = parseSongMeta(midi);
+    sections = meta.sections;
+    chords = meta.chords;
     sessionNotes = loadNotes(song.file);
     position = 0;
 
@@ -173,14 +157,14 @@ function renderTimeline() {
   timelineNotes.innerHTML = '';
   if (!duration) return;
 
-  for (const m of markers) {
+  for (const m of sections) {
     const pct = (m.time / duration) * 100;
     const el = document.createElement('button');
     el.type = 'button';
     el.className = 'timeline-marker section';
     el.style.left = `${pct}%`;
-    el.title = m.text;
-    el.textContent = m.text.length > 10 ? m.text.slice(0, 9) + '…' : m.text;
+    el.title = m.label;
+    el.textContent = m.label.length > 10 ? m.label.slice(0, 9) + '…' : m.label;
     el.addEventListener('click', (e) => {
       e.stopPropagation();
       seekTo(m.time, true);
@@ -260,10 +244,10 @@ function updatePositionUi() {
   timelinePlayhead.style.left = `${pct}%`;
   timeElapsed.textContent = formatClock(position);
   if (midi) timeBarBeat.textContent = formatBarBeat(midi, position);
-  const chord = markerAtTime(position);
+  const chord = chordAtTime(chords, position);
   if (chord) {
     chordLine.hidden = false;
-    chordLine.textContent = `Aktuellt: ${chord}`;
+    chordLine.textContent = `Ackord: ${chord}`;
   } else {
     chordLine.hidden = true;
   }
