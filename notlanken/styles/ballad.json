@@ -1,0 +1,24 @@
+{
+  "id": "ballad",
+  "meter": "4/4",
+  "steps": 8,
+  "beat": 2,
+  "desc": "Ballad: kantslag 2 & 4, mjuk hihat, arpeggio-piano",
+  "swing": 0.5,
+  "fill_beats": 1,
+  "vel": { "hat": 0.7, "rim": 0.9, "kick": 0.85 },
+  "A": {
+    "kick": "x . . . . x . .",
+    "rim": ". . x . . . x .",
+    "hat": "x . x . x . x .",
+    "bass": "R - - - 5 - - -",
+    "piano": "C a a a a a a ."
+  },
+  "B": {
+    "kick": "x . . . . x . .",
+    "snare": ". . x . . . x .",
+    "ride": "x . x . x . x .",
+    "bass": "R - - 5 8 - 5 -",
+    "piano": "C a a a C a a a"
+  }
+}

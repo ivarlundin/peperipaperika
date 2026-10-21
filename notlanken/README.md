@@ -18,11 +18,23 @@ Privat MIDI-spelare för GitHub Pages (`/notlanken/`). Sidan indexeras inte (met
 
 3. Committa båda filerna. Ingen build-steg krävs.
 
-**Tips för arrangörsboten:** lägg ackord/sektioner som MIDI **marker**-events (`Intro`, `Vers`, `Refr`, ackordnamn). De visas på tidslinjen och som “Aktuellt” under uppspelning.
+**Tips för arrangörsboten:** lägg ackord/sektioner som MIDI **marker**-events (`Intro`, `Vers`, `Refr`, ackordnamn). De visas på tidslinjen och som “Aktuellt” under uppspelning. Autokomp läser **bara** dessa markörer — den räknar aldrig ut ackord själv.
+
+## Autokomp
+
+Spelaren kan generera **trummor, bas och piano** från ackord- och delmarkörer.
+
+- Genererar **bara saknade** spår (kanal 10 = trummor, GM 32–39 = bas, GM 0–7 = piano; spårnamn som fallback).
+- Skrivna stämmor (blås, melodi, …) spelas oförändrade. Inga andra instrument genereras.
+- Genererade kanaler märks **(auto)** i mixern, med stor MUTE-knapp.
+- **Komp**-reglaget, stilmeny och variant Auto A/B / A / B sitter ovanför transporten. Stilbyte under uppspelning regenererar från nästa takt utan hängande noter.
+- Standardpiano = **Rhodes** (`samples/rhodes/`). Stilar ligger i `styles/*.json` (portade från Nesticos `grooves.yaml`).
+- Valfri styrinfo: textevent `komp:stil=twelve8` m.m. (se planen).
+- Enhetstest (utan ljud): `node notlanken/tests/autokomp.test.mjs`
 
 ## Ljud
 
-Självhostade samples under `samples/` (piano, bas, trummor, blås + FluidR3-fallback). Se `samples/LICENSES.md` och `scripts/fetch-samples.sh`.
+Självhostade samples under `samples/` (Rhodes, akustiskt piano, bas, trummor, blås + FluidR3-fallback). Se `samples/LICENSES.md` och `scripts/fetch-samples.sh`.
 
 ## Tangenter (desktop)
 

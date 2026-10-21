@@ -1,0 +1,23 @@
+{
+  "id": "six8",
+  "meter": "6/8",
+  "steps": 6,
+  "beat": 1,
+  "desc": "6/8 groove",
+  "swing": 0.5,
+  "fill_beats": 2,
+  "A": {
+    "kick": "X . . x . .",
+    "snare": ". . . X . .",
+    "hat": "x x x x x x",
+    "bass": "R - - 5 - -",
+    "piano": "C - - c - -"
+  },
+  "B": {
+    "kick": "X . x x . .",
+    "snare": ". . . X . x",
+    "ride": "x x x x x x",
+    "bass": "R - 5 8 - 5",
+    "piano": "C - c C - c"
+  }
+}

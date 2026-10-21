@@ -825,3 +825,75 @@ button.ghost.small {
     display: none;
   }
 }
+
+/* Autokomp controls */
+.komp-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  margin-bottom: 0.75rem;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #14181f;
+  font-size: 0.8rem;
+}
+
+.komp-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.komp-field {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--muted);
+}
+
+.komp-field select {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.3rem 0.4rem;
+  font: inherit;
+}
+
+.komp-variant {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.komp-status {
+  flex: 1 1 100%;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.strip-auto .strip-label {
+  color: var(--onske);
+}
+
+.mute-big {
+  width: 100%;
+  min-height: 2.2rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #2a3140;
+  color: var(--text);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.mute-big[aria-pressed="true"] {
+  background: #b5524a;
+  border-color: #b5524a;
+  color: #fff;
+}

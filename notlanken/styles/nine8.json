@@ -1,0 +1,23 @@
+{
+  "id": "nine8",
+  "meter": "9/8",
+  "steps": 9,
+  "beat": 1,
+  "desc": "9/8 groove",
+  "swing": 0.5,
+  "fill_beats": 3,
+  "A": {
+    "kick": "X . . x . . x . .",
+    "snare": ". . . . . . X . .",
+    "hat": "x x x x x x x x x",
+    "bass": "R - - 5 - - 8 - -",
+    "piano": "C - - c - - C - -"
+  },
+  "B": {
+    "kick": "X . . x . . x . x",
+    "snare": ". . . . . . X . .",
+    "ride": "x x x x x x x x x",
+    "bass": "R - 5 5 - 8 8 - A",
+    "piano": "C - c c - C C - c"
+  }
+}
