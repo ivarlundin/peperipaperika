@@ -12,28 +12,24 @@ const GROUP_HEADROOM = {
   other: 0.32,
 };
 
+/** Kick, snare, hats, cymbals only — toms/toys are not played. */
 const DRUM_MAP = {
   35: '36-kick.ogg',
   36: '36-kick.ogg',
-  37: '38-snare.ogg',       // rim / clave (bossa)
+  37: '38-snare.ogg', // rim → snare
   38: '38-snare.ogg',
-  39: '38-snare.ogg',       // clap
-  41: '41-floor-tom.ogg',
+  39: '38-snare.ogg', // clap → snare
   42: '42-closed-hat.ogg',
-  43: '43-high-floor-tom.ogg',
-  44: '42-closed-hat.ogg',  // pedal hi-hat
-  45: '45-low-tom.ogg',
+  44: '42-closed-hat.ogg', // pedal hat
   46: '46-open-hat.ogg',
-  47: '47-mid-tom.ogg',
-  48: '47-mid-tom.ogg',
   49: '49-crash.ogg',
-  50: '50-high-tom.ogg',
   51: '51-ride.ogg',
-  53: '51-ride.ogg',        // ride bell
-  54: '42-closed-hat.ogg',  // tambourine
-  56: '50-high-tom.ogg',    // cowbell
-  70: '42-closed-hat.ogg',  // maracas / shaker
+  53: '51-ride.ogg', // ride bell
 };
+
+function drumSampleFile(midi) {
+  return DRUM_MAP[midi] || null;
+}
 
 const GM_FALLBACK_MAP = {
   violin: 'violin',
@@ -344,7 +340,8 @@ export class AudioEngine {
 
   _triggerDrum(midi, when, duration, velocity) {
     const ac = this.ac;
-    const file = DRUM_MAP[midi] || DRUM_MAP[36];
+    const file = drumSampleFile(midi);
+    if (!file) return; // skip toms / unmapped percussion
     const buf = this.buffers.get(`samples/drums/${file}`);
     if (!buf) return;
     if (when < ac.currentTime - 0.02) return;

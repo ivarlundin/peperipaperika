@@ -4,25 +4,21 @@
  */
 import { bassNote, parseChord, voiceChord } from './chord-parser.js';
 
+/** Only kick / snare / hats / cymbals — no toms, percussion toys, etc. */
 const DRUM_MIDI = {
   kick: 36,
   snare: 38,
-  rim: 37,
-  clap: 39,
+  rim: 38, // rim patterns play as snare
   hat: 42,
   ohat: 46,
-  pedal: 44,
+  pedal: 42,
   ride: 51,
-  bell: 53,
+  bell: 51,
   crash: 49,
-  tamb: 54,
-  shaker: 70,
-  cowbell: 56,
-  tom_hi: 50,
-  tom_mid: 47,
-  tom_lo: 45,
-  floor: 41,
 };
+
+/** GM drum notes we allow to sound (autokomp + written MIDI). */
+export const ALLOWED_DRUM_MIDI = new Set([35, 36, 38, 42, 44, 46, 49, 51, 53]);
 
 const HIT_VEL = { X: 0.72, x: 0.52, o: 0.28 };
 /** Mezzoforte scale applied on top of hit velocities */
@@ -199,14 +195,14 @@ function emitDrums(events, ctx) {
     }
   }
 
-  // fill before next section / end (fill_beats: 0 disables)
+  // fill before next section / end (fill_beats: 0 disables) — snare + kick only
   const fillBeats = style.fill_beats ?? 1;
   if (fillBeats > 0 && (nextIsSection || isLastBar)) {
     const nFill = Math.min(steps, Math.max(2, fillBeats * (style.beat || 2)));
     const start = steps - nFill;
     for (let i = start; i < steps; i++) {
       const h = human(stepTime(t0, i, stepDur, swing, steps), 0.55 * MF * dynScale, humanize);
-      events.push(drumEv(h.time, i % 2 === 0 ? 38 : 47, 0.08, h.velocity));
+      events.push(drumEv(h.time, i % 2 === 0 ? 38 : 36, 0.08, h.velocity));
     }
     if (isLastBar) {
       const h = human(t0 + (steps - 1) * stepDur, 0.75 * MF * dynScale, humanize);
