@@ -113,6 +113,10 @@ export class AudioEngine {
     this.rate = 1;
     this.mixer = {};
     this.prepared = false;
+    /** @type {ReturnType<typeof setInterval> | null} */
+    this._schedTimer = null;
+    /** @type {null | { events: any[], startSeconds: number, endSeconds: number, index: number, originAc: number, originSong: number, sid: number }} */
+    this._schedQueue = null;
     for (const g of GROUPS) {
       this.mixer[g] = { volume: 0.75, mute: false, solo: false, reverbSend: 0.2 };
     }
@@ -188,6 +192,7 @@ export class AudioEngine {
   }
 
   stopAll() {
+    this._clearScheduleTimer();
     for (const src of this.activeSources) {
       try {
         src.stop();
@@ -197,6 +202,14 @@ export class AudioEngine {
     }
     this.activeSources.clear();
     this.sessionId += 1;
+  }
+
+  _clearScheduleTimer() {
+    if (this._schedTimer != null) {
+      clearInterval(this._schedTimer);
+      this._schedTimer = null;
+    }
+    this._schedQueue = null;
   }
 
   async loadBuffer(path) {
@@ -415,19 +428,52 @@ export class AudioEngine {
     return events;
   }
 
+  /**
+   * Lookahead schedule: arm only the next few seconds of notes.
+   * Markers-only autokomp can emit 4000+ events; creating that many
+   * AudioBufferSourceNodes up front is silent-failure-prone on some browsers.
+   */
   schedule(events, startSeconds, endSeconds) {
     if (!this.prepared) return;
     const ac = this.ac;
     if (!ac) return;
-    const sid = this.sessionId;
-    const now = ac.currentTime + 0.06;
+    this._clearScheduleTimer();
+    this._schedQueue = {
+      events,
+      startSeconds,
+      endSeconds,
+      index: 0,
+      originAc: ac.currentTime + 0.06,
+      originSong: startSeconds,
+      sid: this.sessionId,
+    };
+    this._pumpSchedule();
+    this._schedTimer = setInterval(() => this._pumpSchedule(), 200);
+  }
+
+  _pumpSchedule() {
+    const q = this._schedQueue;
+    const ac = this.ac;
+    if (!q || !ac || q.sid !== this.sessionId) {
+      this._clearScheduleTimer();
+      return;
+    }
+
+    const LOOKAHEAD_AC = 3; // seconds of AudioContext time
+    const horizon = ac.currentTime + LOOKAHEAD_AC;
     const gmQueue = [];
 
-    for (const ev of events) {
-      if (ev.time < startSeconds - 0.001) continue;
-      if (ev.time > endSeconds) continue;
-      const when = now + (ev.time - startSeconds) / this.rate;
-      if (sid !== this.sessionId) return;
+    while (q.index < q.events.length) {
+      const ev = q.events[q.index];
+      if (ev.time < q.startSeconds - 0.001) {
+        q.index += 1;
+        continue;
+      }
+      if (ev.time > q.endSeconds) break;
+      const when = q.originAc + (ev.time - q.originSong) / this.rate;
+      if (when > horizon) break;
+      q.index += 1;
+      if (q.sid !== this.sessionId) return;
 
       const { voice, group } = ev;
       const vel = ev.velocity;
@@ -463,17 +509,19 @@ export class AudioEngine {
         this._triggerMelodic('samples/brass_section', ev.midi, when, ev.duration, vel, group);
         continue;
       }
-      gmQueue.push(ev);
+      gmQueue.push({ ev, when });
     }
 
-    if (gmQueue.length && sid === this.sessionId) {
+    if (gmQueue.length && q.sid === this.sessionId) {
       void Promise.all(
-        gmQueue.map((ev) => {
-          const when = now + (ev.time - startSeconds) / this.rate;
-          return this._triggerGm(ev.program, ev.midi, when, ev.duration, ev.velocity);
-        }),
+        gmQueue.map(({ ev, when }) =>
+          this._triggerGm(ev.program, ev.midi, when, ev.duration, ev.velocity)),
       );
     }
+
+    const done = q.index >= q.events.length
+      || (q.events[q.index] && q.events[q.index].time > q.endSeconds);
+    if (done) this._clearScheduleTimer();
   }
 }
 

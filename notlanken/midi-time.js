@@ -1,8 +1,78 @@
 export function formatClock(seconds) {
-  const s = Math.max(0, Math.floor(seconds));
+  const s = Math.max(0, Math.floor(Number.isFinite(seconds) ? seconds : 0));
   const m = Math.floor(s / 60);
   const r = s % 60;
   return `${m}:${String(r).padStart(2, '0')}`;
+}
+
+/**
+ * One bar length in seconds at the start of the piece (first tempo + meter).
+ * Markers-only files often have midi.duration === -Infinity; bar length is
+ * still well-defined from the tempo/time-signature maps.
+ * @param {import('@tonejs/midi').Midi} midi
+ */
+export function estimateBarSeconds(midi) {
+  try {
+    const bpm = midi.header.tempos?.[0]?.bpm || 120;
+    const sig = midi.header.timeSignatures?.[0]?.timeSignature || [4, 4];
+    const [num, den] = sig;
+    const bar = (60 / bpm) * num * (4 / den);
+    return Number.isFinite(bar) && bar > 0 ? bar : 2;
+  } catch {
+    return 2;
+  }
+}
+
+/**
+ * Transport length for a loaded song.
+ *
+ * @tonejs/midi sets `duration` to -Infinity (JSON-null) when there are no note
+ * events — common for markers-only / autokomp charts. Fall back to the last
+ * chord/section marker (+ one bar), last written note, and last tempo time.
+ *
+ * @param {import('@tonejs/midi').Midi} midi
+ * @param {{ writtenEvents?: { time: number }[], chords?: { time: number }[], sections?: { time: number }[] }} [opts]
+ */
+export function songDurationSeconds(midi, opts = {}) {
+  const writtenEvents = opts.writtenEvents || [];
+  const chords = opts.chords || [];
+  const sections = opts.sections || [];
+
+  const finiteTimes = (...vals) =>
+    vals.filter((t) => Number.isFinite(t) && t >= 0);
+
+  const markerEnd = Math.max(
+    0,
+    ...finiteTimes(
+      ...chords.map((c) => c.time),
+      ...sections.map((s) => s.time),
+    ),
+  );
+
+  const lastWritten = writtenEvents.length
+    ? writtenEvents[writtenEvents.length - 1].time + 0.5
+    : 0;
+
+  const raw = midi?.duration;
+  // -Infinity / Infinity / NaN / null / undefined → 0
+  const finiteMidi = Number.isFinite(raw) && raw > 0 ? raw : 0;
+
+  let lastTempoTime = 0;
+  const tempos = midi?.header?.tempos || [];
+  for (const t of tempos) {
+    let sec = t.time;
+    if (!Number.isFinite(sec) && typeof midi.header.ticksToSeconds === 'function') {
+      sec = midi.header.ticksToSeconds(t.ticks);
+    }
+    if (Number.isFinite(sec)) lastTempoTime = Math.max(lastTempoTime, sec);
+  }
+
+  const oneBar = estimateBarSeconds(midi);
+  const fromMarkers = markerEnd > 0 ? markerEnd + oneBar : 0;
+  const fromTempo = lastTempoTime > 0 ? lastTempoTime + oneBar : 0;
+
+  const dur = Math.max(finiteMidi, lastWritten, fromMarkers, fromTempo);
+  return Number.isFinite(dur) ? dur : 0;
 }
 
 function timingAt(midi, seconds) {

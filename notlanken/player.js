@@ -6,6 +6,7 @@ import {
   formatClock,
   jumpBars,
   secondsToBarBeat,
+  songDurationSeconds,
 } from './midi-time.js';
 import {
   loadNotes,
@@ -197,18 +198,8 @@ async function openSong(song) {
     const meta = parseSongMeta(midi);
     sections = meta.sections;
     chords = meta.chords;
-    const markerEnd = Math.max(
-      0,
-      ...chords.map((c) => c.time),
-      ...sections.map((s) => s.time),
-    );
-    const oneBar = estimateBarSeconds(midi);
-    const finiteMidiDur = Number.isFinite(midi.duration) ? midi.duration : 0;
-    duration = Math.max(
-      finiteMidiDur,
-      writtenEvents.length ? writtenEvents[writtenEvents.length - 1].time + 0.5 : 0,
-      markerEnd > 0 ? markerEnd + oneBar : 0,
-    );
+    // Markers-only charts: @tonejs/midi duration is -Infinity — use markers/tempo.
+    duration = songDurationSeconds(midi, { writtenEvents, chords, sections });
     showLoadingModal('Laddar ljudmotor…');
     setStatus('Laddar ljud…');
     engine.prepared = false;
@@ -612,13 +603,28 @@ function tick() {
 async function startPlayback(fromSeconds) {
   if (!midi) return;
   await engine.ensureContext();
+  if (!engine.prepared) {
+    try {
+      await engine.preparePlayback();
+    } catch (err) {
+      setStatus(`Kunde inte ladda ljud: ${err.message || err}`, true);
+      return;
+    }
+  }
   engine.stopAll();
   position = Math.max(0, Math.min(duration, fromSeconds));
   playStartPos = position;
   playStartAc = engine.ac.currentTime;
   isPlaying = true;
   updateTransportUi();
-  engine.schedule(events, position, duration + 1);
+  try {
+    engine.schedule(events, position, duration + 1);
+  } catch (err) {
+    isPlaying = false;
+    updateTransportUi();
+    setStatus(`Kunde inte starta uppspelning: ${err.message || err}`, true);
+    return;
+  }
   cancelAnimationFrame(raf);
   raf = requestAnimationFrame(tick);
 }
@@ -984,17 +990,6 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-
-function estimateBarSeconds(m) {
-  try {
-    const bpm = m.header.tempos?.[0]?.bpm || 120;
-    const sig = m.header.timeSignatures?.[0]?.timeSignature || [4, 4];
-    const [num, den] = sig;
-    return (60 / bpm) * num * (4 / den);
-  } catch {
-    return 2;
-  }
-}
 
 function showLoadingModal(msg) {
   let el = document.getElementById('loading-modal');
