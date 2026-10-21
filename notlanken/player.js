@@ -570,7 +570,7 @@ function updatePositionUi() {
   const chord = chordAtTime(chords, position);
   if (chord) {
     chordLine.hidden = false;
-    chordLine.textContent = `Ackord: ${chord}`;
+    chordLine.textContent = chord;
   } else {
     chordLine.hidden = true;
   }
@@ -773,14 +773,12 @@ function buildMixerUi() {
     strip.className = 'strip' + (auto ? ' strip-auto' : '');
     strip.innerHTML = `
       <span class="strip-label">${label}</span>
-      <button type="button" class="mute-big" data-mute="${g}" aria-pressed="${m.mute}" aria-label="Tysta ${label}">${m.mute ? 'MUTAD' : 'MUTE'}</button>
+      <button type="button" class="mute-big" data-mute="${g}" aria-pressed="${m.mute}" aria-label="Tysta ${label}">${m.mute ? 'Tyst' : 'Ljud'}</button>
       <div class="fader">
         <input type="range" min="0" max="100" value="${vol}" data-vol="${g}" aria-label="${label} volym">
       </div>
       <span class="strip-val" data-vol-val="${g}">${vol}</span>
-      <div class="strip-buttons">
-        <button type="button" class="chip" data-solo="${g}" aria-pressed="${m.solo}" aria-label="Solo ${label}" title="Solo">S</button>
-      </div>
+      <button type="button" class="chip icon" data-solo="${g}" aria-pressed="${m.solo}" aria-label="Solo ${label}" title="Solo">S</button>
       <label class="send">
         <span>Rev</span>
         <input type="range" min="0" max="100" value="${send}" data-send="${g}" aria-label="${label} reverb-send">
@@ -800,7 +798,7 @@ function buildMixerUi() {
     el.addEventListener('click', () => {
       const on = el.getAttribute('aria-pressed') !== 'true';
       el.setAttribute('aria-pressed', String(on));
-      el.textContent = on ? 'MUTAD' : 'MUTE';
+      el.textContent = on ? 'Tyst' : 'Ljud';
       engine.setGroupMixer(el.getAttribute('data-mute'), { mute: on });
     });
   });
@@ -927,7 +925,7 @@ function setSpeed(speed) {
 for (const s of SPEEDS) {
   const b = document.createElement('button');
   b.type = 'button';
-  b.className = 'chip speed';
+  b.className = 'chip';
   b.dataset.speed = String(s);
   b.textContent = formatSpeed(s);
   b.setAttribute('aria-pressed', String(s === 1));
