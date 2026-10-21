@@ -48,7 +48,10 @@ const MF = 0.62;
  * @param {AutokompOpts} opts
  */
 export function generate(timeline, opts) {
-  const style = opts.styles.get(opts.styleId) || opts.styles.get('pop44');
+  const styleId = opts.resolveStyleId
+    ? opts.resolveStyleId(opts.styleId)
+    : (opts.styleId || 'pop-rock');
+  const style = opts.styles.get(styleId) || opts.styles.get('pop-rock');
   if (!style) return [];
 
   const dynScale = opts.dynamics === 'p' ? 0.75 : opts.dynamics === 'f' ? 1.15 : 1;
@@ -88,21 +91,19 @@ export function generate(timeline, opts) {
         isSectionStart, nextIsSection, isLastBar, style, bi,
       });
     }
-    if (want.has('bass') && !chord.nc) {
+    if (want.has('bass')) {
       prevBass = emitBass(events, {
-        grid, steps, stepDur, t0, swing, humanize, dynScale,
-        chord, nextChord, prevBass,
+        grid, steps, stepDur, t0, t1, swing, humanize, dynScale,
+        chords: timeline.chords, prevBass,
       });
     }
-    if (want.has('piano') && !chord.nc) {
+    if (want.has('piano')) {
       const r = emitPiano(events, {
         grid, steps, stepDur, t0, swing, humanize, dynScale,
-        chord, prevVoicing, arpIdx,
+        chords: timeline.chords, prevVoicing, arpIdx,
       });
       prevVoicing = r.voicing;
       arpIdx = r.arpIdx;
-    } else if (chord.nc) {
-      prevVoicing = null;
     }
   }
 
@@ -151,15 +152,12 @@ function sectionChanged(sections, tA, tB) {
 }
 
 function stepTime(t0, step, stepDur, swing, steps) {
-  // For even grids, delay odd 8th-ish steps when swing > 0.5
-  let t = t0 + step * stepDur;
-  if (swing > 0.5 && steps % 2 === 0 && step % 2 === 1) {
-    const pair = stepDur * 2;
-    const straight = stepDur;
-    const swung = pair * swing - (pair - straight);
-    t = t0 + (step - 1) * stepDur + swung;
+  // Triplet grids already encode swing — leave them alone.
+  if (steps % 3 === 0 || !(swing > 0.5) || step % 2 !== 1) {
+    return t0 + step * stepDur;
   }
-  return t;
+  const pair = stepDur * 2;
+  return t0 + (step - 1) * stepDur + pair * swing;
 }
 
 function human(time, vel, on) {
@@ -195,9 +193,10 @@ function emitDrums(events, ctx) {
     }
   }
 
-  // fill before next section / end
-  if (nextIsSection || isLastBar) {
-    const nFill = Math.min(steps, Math.max(2, (style.fill_beats ?? 1) * (style.beat || 2)));
+  // fill before next section / end (fill_beats: 0 disables)
+  const fillBeats = style.fill_beats ?? 1;
+  if (fillBeats > 0 && (nextIsSection || isLastBar)) {
+    const nFill = Math.min(steps, Math.max(2, fillBeats * (style.beat || 2)));
     const start = steps - nFill;
     for (let i = start; i < steps; i++) {
       const h = human(stepTime(t0, i, stepDur, swing, steps), 0.55 * MF * dynScale, humanize);
@@ -222,7 +221,7 @@ function drumEv(time, midi, duration, velocity) {
 
 function emitBass(events, ctx) {
   const {
-    grid, steps, stepDur, t0, swing, humanize, dynScale, chord, nextChord,
+    grid, steps, stepDur, t0, t1, swing, humanize, dynScale, chords,
   } = ctx;
   let prevBass = ctx.prevBass;
   const toks = splitPattern(grid.bass || '');
@@ -237,13 +236,20 @@ function emitBass(events, ctx) {
       if (lastOn) lastOn.duration += stepDur;
       continue;
     }
+    const stepT = stepTime(t0, i, stepDur, swing, steps);
+    const chord = parseChord(chordAt(chords, stepT) || 'N.C.');
+    if (chord.nc) {
+      lastOn = null;
+      continue;
+    }
+    const nextT = i + 1 < steps ? stepTime(t0, i + 1, stepDur, swing, steps) : t1;
+    const nextChord = parseChord(chordAt(chords, nextT) || chord.symbol);
     const note = bassNote(chord, nextChord, tok, prevBass);
     if (note == null) continue;
-    // keep bass in sensible range
     let n = note;
     while (n < 28) n += 12;
     while (n > 55) n -= 12;
-    const h = human(stepTime(t0, i, stepDur, swing, steps), 0.58 * MF * dynScale, humanize);
+    const h = human(stepT, 0.58 * MF * dynScale, humanize);
     const ev = {
       time: h.time,
       duration: stepDur * 0.95,
@@ -264,7 +270,7 @@ function emitBass(events, ctx) {
 
 function emitPiano(events, ctx) {
   const {
-    grid, steps, stepDur, t0, swing, humanize, dynScale, chord,
+    grid, steps, stepDur, t0, swing, humanize, dynScale, chords,
   } = ctx;
   let prevVoicing = ctx.prevVoicing;
   let arpIdx = ctx.arpIdx;
@@ -284,6 +290,14 @@ function emitPiano(events, ctx) {
       continue;
     }
 
+    const stepT = stepTime(t0, i, stepDur, swing, steps);
+    const chord = parseChord(chordAt(chords, stepT) || 'N.C.');
+    if (chord.nc) {
+      held = null;
+      prevVoicing = null;
+      continue;
+    }
+
     const voicing = voiceChord(chord, prevVoicing);
     prevVoicing = voicing;
     if (!voicing.length) continue;
@@ -291,19 +305,19 @@ function emitPiano(events, ctx) {
     const accent = tok === 'C';
     const soft = tok === 'c' || tok === 'a';
     const vel = (accent ? 0.55 : 0.38) * MF * dynScale;
-    const t = stepTime(t0, i, stepDur, swing, steps);
+    const tHit = stepT;
 
     if (tok === 'a') {
       const note = voicing[arpIdx % voicing.length];
       arpIdx += 1;
-      const h = human(t, vel, humanize);
+      const h = human(tHit, vel, humanize);
       const ev = pianoEv(h.time, note, stepDur * 1.6, h.velocity);
       events.push(ev);
       held = [ev];
     } else {
       held = [];
       for (const note of voicing) {
-        const h = human(t, vel * (soft ? 0.9 : 1), humanize);
+        const h = human(tHit, vel * (soft ? 0.9 : 1), humanize);
         const ev = pianoEv(h.time, note, stepDur * 0.95, h.velocity);
         events.push(ev);
         held.push(ev);
@@ -365,8 +379,9 @@ export async function loadStyles(baseUrl) {
   const catRes = await fetch(new URL('styles/catalog.json', baseUrl));
   const catalog = await catRes.json();
   const map = new Map();
+  const ids = [...(catalog.styles || []), ...(catalog.hidden || [])];
   await Promise.all(
-    catalog.styles.map(async (id) => {
+    ids.map(async (id) => {
       const r = await fetch(new URL(`styles/${id}.json`, baseUrl));
       if (r.ok) map.set(id, await r.json());
     }),
@@ -374,7 +389,14 @@ export async function loadStyles(baseUrl) {
   return { catalog, styles: map };
 }
 
+/** Resolve legacy style ids via catalog.aliases. */
+export function resolveStyleId(catalog, id) {
+  if (!id) return catalog?.defaultByMeter?.['4/4'] || 'pop-rock';
+  const aliases = catalog?.aliases || {};
+  return aliases[id] || id;
+}
+
 export function defaultStyleForMeter(catalog, numerator, denominator) {
   const key = `${numerator}/${denominator}`;
-  return catalog.defaultByMeter?.[key] || 'pop44';
+  return catalog.defaultByMeter?.[key] || 'pop-rock';
 }

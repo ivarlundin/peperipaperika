@@ -1,14 +1,25 @@
 {
   "defaultByMeter": {
-    "4/4": "pop44",
+    "4/4": "pop-rock",
+    "12/8": "blues",
     "3/4": "waltz34",
     "6/8": "six8",
-    "9/8": "nine8",
-    "12/8": "twelve8"
+    "9/8": "nine8"
   },
-  "styles": [
-    "pop44", "rock8", "halftime", "shuffle", "halftime_shuffle",
-    "ballad", "waltz34", "six8", "nine8", "twelve8",
-    "twelve8_4otf", "twelve8_ljus", "disco", "funk16", "jazzswing"
-  ]
+  "styles": ["pop-rock", "blues", "jazz", "bossa", "funk"],
+  "hidden": ["waltz34", "six8", "nine8"],
+  "aliases": {
+    "pop44": "pop-rock",
+    "rock8": "pop-rock",
+    "halftime": "pop-rock",
+    "ballad": "pop-rock",
+    "disco": "funk",
+    "funk16": "funk",
+    "shuffle": "blues",
+    "halftime_shuffle": "blues",
+    "twelve8": "blues",
+    "twelve8_4otf": "blues",
+    "twelve8_ljus": "blues",
+    "jazzswing": "jazz"
+  }
 }

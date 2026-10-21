@@ -1,0 +1,32 @@
+{
+  "id": "blues",
+  "name": "Blues",
+  "meter": "4/4",
+  "meters": [
+    "4/4",
+    "12/8"
+  ],
+  "steps": 12,
+  "beat": 3,
+  "desc": "Blues-shuffle på triolrutnät (fungerar även i 12/8). A = shuffle, B = tyngre med ride och boogie-bas",
+  "source": "grooves.yaml shuffle (A); B bygger på shuffle + twelve8 (virvel 2 & 4) med boogie-bas R-3-5-b7-5-3",
+  "swing": 0.5,
+  "fill_beats": 1,
+  "vel": {
+    "hat": 0.85
+  },
+  "A": {
+    "kick": "X . . . . . x . . . . .",
+    "snare": ". . . X . . . . . X . .",
+    "hat": "x . x x . x x . x x . x",
+    "bass": "R - R 5 - 5 8 - 8 5 - 5",
+    "piano": "C - . . . c C - . . . c"
+  },
+  "B": {
+    "kick": "X . . . . x X . . . . .",
+    "snare": ". . . X . . . . . X . o",
+    "ride": "x . x X . x x . x X . x",
+    "bass": "R - R 3 - 3 5 - 7 5 - 3",
+    "piano": "C . c C . c C . c C . c"
+  }
+}

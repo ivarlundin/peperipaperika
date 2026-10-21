@@ -29,7 +29,7 @@ Spelaren kan generera **trummor, bas och piano** från ackord- och delmarkörer.
 - Genererade kanaler märks **(auto)** i mixern, med stor MUTE-knapp.
 - **Komp**-reglaget, stilmeny och variant Auto A/B / A / B sitter ovanför transporten. Stilbyte under uppspelning regenererar från nästa takt utan hängande noter.
 - Standardpiano = **Rhodes** (`samples/rhodes/`). Stilar ligger i `styles/*.json` (portade från Nesticos `grooves.yaml`).
-- Valfri styrinfo: textevent `komp:stil=twelve8` m.m. (se planen).
+- Valfri styrinfo: textevent `komp:stil=twelve8 (alias → blues)` m.m. (se planen).
 - Enhetstest (utan ljud): `node notlanken/tests/autokomp.test.mjs`
 
 ## Ljud

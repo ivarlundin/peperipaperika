@@ -1,0 +1,32 @@
+{
+  "id": "bossa",
+  "name": "Bossa",
+  "meter": "4/4",
+  "steps": 8,
+  "beat": 2,
+  "desc": "Bossa nova: kantslag i clave-figur, bas grund-kvint i punkterad rytm, synkoperat piano",
+  "source": "NY (ingen bossa-groove fanns i Nesticos material); idiomatiskt standardmönster",
+  "swing": 0.5,
+  "fill_beats": 0,
+  "vel": {
+    "kick": 0.75,
+    "hat": 0.6,
+    "rim": 0.9,
+    "ride": 0.7
+  },
+  "A": {
+    "kick": "x . . x x . . x",
+    "rim": "x . . x . . x .",
+    "hat": "x o x o x o x o",
+    "bass": "R - - R 5 - - 5",
+    "piano": "C - . c - . c ."
+  },
+  "B": {
+    "kick": "x . . x x . . x",
+    "rim": "x . . x . . x .",
+    "ride": "x o x o x o x o",
+    "hat": ". . x . . . x .",
+    "bass": "R - - R 5 - - A",
+    "piano": "C - . C . c . C"
+  }
+}

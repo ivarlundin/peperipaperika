@@ -19,6 +19,7 @@ import {
   generate as generateAutokomp,
   loadStyles,
   parseKompDirectives,
+  resolveStyleId,
 } from './autokomp.js';
 
 const engine = new AudioEngine(new URL('./', import.meta.url).href);
@@ -193,20 +194,36 @@ async function openSong(song) {
     midi = new Midi(buf);
     writtenEvents = engine.buildEvents(midi);
     writtenTracks = detectWrittenTracks(midi);
-    duration = Math.max(
-      midi.duration,
-      writtenEvents.length ? writtenEvents[writtenEvents.length - 1].time + 0.5 : 0,
-    );
-    setStatus('Laddar ljud…');
-    engine.prepared = false;
-    await engine.preparePlayback();
-    if (currentSong !== song) return;
     const meta = parseSongMeta(midi);
     sections = meta.sections;
     chords = meta.chords;
+    const markerEnd = Math.max(
+      0,
+      ...chords.map((c) => c.time),
+      ...sections.map((s) => s.time),
+    );
+    const oneBar = estimateBarSeconds(midi);
+    const finiteMidiDur = Number.isFinite(midi.duration) ? midi.duration : 0;
+    duration = Math.max(
+      finiteMidiDur,
+      writtenEvents.length ? writtenEvents[writtenEvents.length - 1].time + 0.5 : 0,
+      markerEnd > 0 ? markerEnd + oneBar : 0,
+    );
+    showLoadingModal('Laddar ljudmotor…');
+    setStatus('Laddar ljud…');
+    engine.prepared = false;
+    try {
+      await engine.preparePlayback();
+    } catch (err) {
+      hideLoadingModal(`Kunde inte ladda ljud: ${err.message || err}`);
+      throw err;
+    }
+    hideLoadingModal();
+    if (currentSong !== song) return;
     kompDirectives = parseKompDirectives(midi);
-    if (kompDirectives.style && styleMap.has(kompDirectives.style)) {
-      kompStyle.value = kompDirectives.style;
+    const stil = resolveStyleId(styleCatalog, kompDirectives.style);
+    if (stil && styleMap.has(stil)) {
+      kompStyle.value = stil;
     } else if (styleCatalog && midi) {
       const sig = midi.header.timeSignatures?.[0]?.timeSignature || [4, 4];
       kompStyle.value = defaultStyleForMeter(styleCatalog, sig[0], sig[1]);
@@ -224,6 +241,7 @@ async function openSong(song) {
     updatePositionUi();
     setStatus('');
   } catch (e) {
+    hideLoadingModal(`Kunde inte ladda: ${e.message}`);
     setStatus(`Kunde inte ladda: ${e.message}`, true);
   }
 }
@@ -635,7 +653,7 @@ function rebuildEvents({ reschedule = true } = {}) {
   autoGroups = new Set();
   const need = missingTracks(writtenTracks);
   if (kompOn && chords.length && need.length && styleMap.size) {
-    const styleId = kompStyle.value || 'pop44';
+    const styleId = resolveStyleId(styleCatalog, kompStyle.value || 'pop-rock');
     const bars = barStarts(midi, duration);
     autoEvents = generateAutokomp(
       { barStarts: bars, chords, sections, duration },
@@ -646,6 +664,7 @@ function rebuildEvents({ reschedule = true } = {}) {
         generate: need,
         dynamics: 'mf',
         styles: styleMap,
+        resolveStyleId: (id) => resolveStyleId(styleCatalog, id),
       },
     );
     for (const e of autoEvents) autoGroups.add(e.group);
@@ -656,6 +675,11 @@ function rebuildEvents({ reschedule = true } = {}) {
   }
   const parts = needLabel();
   kompStatus.textContent = parts;
+  const canGenerate = !!(kompOn && chords.length && missingTracks(writtenTracks).length);
+  kompStyle.disabled = !canGenerate;
+  if (kompVariant) {
+    kompVariant.querySelectorAll('button').forEach((b) => { b.disabled = !canGenerate; });
+  }
   if (reschedule && isPlaying && engine.ac) {
     const p = currentPositionFromClock();
     // Cut hanging notes, then schedule the new mix from the next bar.
@@ -960,6 +984,49 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
+
+function estimateBarSeconds(m) {
+  try {
+    const bpm = m.header.tempos?.[0]?.bpm || 120;
+    const sig = m.header.timeSignatures?.[0]?.timeSignature || [4, 4];
+    const [num, den] = sig;
+    return (60 / bpm) * num * (4 / den);
+  } catch {
+    return 2;
+  }
+}
+
+function showLoadingModal(msg) {
+  let el = document.getElementById('loading-modal');
+  if (!el) {
+    el = document.createElement('dialog');
+    el.id = 'loading-modal';
+    el.className = 'loading-modal';
+    el.innerHTML = `
+      <div class="loading-card">
+        <div class="loading-spinner" aria-hidden="true"></div>
+        <p class="loading-msg" id="loading-msg"></p>
+      </div>
+    `;
+    document.body.appendChild(el);
+  }
+  el.querySelector('#loading-msg').textContent = msg;
+  el.classList.remove('error');
+  if (!el.open) el.showModal();
+}
+
+function hideLoadingModal(errMsg) {
+  const el = document.getElementById('loading-modal');
+  if (!el) return;
+  if (errMsg) {
+    el.classList.add('error');
+    el.querySelector('#loading-msg').textContent = errMsg;
+    setTimeout(() => { if (el.open) el.close(); }, 2200);
+    return;
+  }
+  if (el.open) el.close();
+}
+
 bindTimeline();
 bindLane();
 
@@ -973,10 +1040,10 @@ async function initKompUi() {
     if (!styleMap.has(id)) continue;
     const opt = document.createElement('option');
     opt.value = id;
-    opt.textContent = id;
+    opt.textContent = styleMap.get(id).name || id;
     kompStyle.appendChild(opt);
   }
-  kompStyle.value = 'pop44';
+  kompStyle.value = 'pop-rock';
   kompEnabled.addEventListener('change', () => {
     kompOn = kompEnabled.checked;
     rebuildEvents();

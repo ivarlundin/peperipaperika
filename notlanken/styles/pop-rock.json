@@ -1,0 +1,25 @@
+{
+  "id": "pop-rock",
+  "name": "Pop/Rock",
+  "meter": "4/4",
+  "steps": 8,
+  "beat": 2,
+  "desc": "Rak pop/rock, 8-delar. A = pop44 (vers), B = rock8 (refräng)",
+  "source": "grooves.yaml pop44 (A) + rock8 (B), Nesticos riktiga grooves",
+  "swing": 0.5,
+  "fill_beats": 1,
+  "A": {
+    "kick": "x . . . x x . .",
+    "snare": ". . X . . . X .",
+    "hat": "X x X x X x X x",
+    "bass": "R - . R R - 5 -",
+    "piano": "C - - C - - C -"
+  },
+  "B": {
+    "kick": "X . . . x x . .",
+    "snare": ". . X . . . X .",
+    "hat": "X x X x X x X x",
+    "bass": "R R R R R R R R",
+    "piano": "C c c c C c c c"
+  }
+}

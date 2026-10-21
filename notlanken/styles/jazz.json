@@ -1,0 +1,31 @@
+{
+  "id": "jazz",
+  "name": "Jazz",
+  "meter": "4/4",
+  "steps": 12,
+  "beat": 3,
+  "desc": "Swing: ride-mönster, hihat 2 & 4, walking bass (ackordtoner + kromatisk närmande), Charleston-komp",
+  "source": "grooves.yaml jazzswing (ride, 2 & 4, feathering, Charleston-piano); basraden skriven med explicita ackordtoner i stället för W",
+  "swing": 0.5,
+  "fill_beats": 1,
+  "vel": {
+    "kick": 0.5,
+    "hat": 0.8,
+    "ride": 0.9
+  },
+  "A": {
+    "kick": "o . . . . . . . . . . .",
+    "hat": ". . . x . . . . . x . .",
+    "ride": "x . . X . x x . . X . x",
+    "bass": "R - - 3 - - 5 - - A - -",
+    "piano": "C - - . . c . . . . . ."
+  },
+  "B": {
+    "kick": "o . . . . . o . . . . .",
+    "snare": ". . . . . o . . . . . o",
+    "hat": ". . . x . . . . . x . .",
+    "ride": "x . . X . x x . . X . x",
+    "bass": "R - - 5 - - 3 - - A - -",
+    "piano": ". . c . . . . . C - - ."
+  }
+}
