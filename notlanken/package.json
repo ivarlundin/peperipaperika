@@ -1,0 +1,11 @@
+{
+  "name": "notlanken",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node tests/autokomp.test.mjs && node tests/markers-only-playback.test.mjs"
+  },
+  "devDependencies": {
+    "@tonejs/midi": "2.0.28"
+  }
+}

@@ -6,6 +6,7 @@ import {
   formatClock,
   jumpBars,
   secondsToBarBeat,
+  songDurationSeconds,
 } from './midi-time.js';
 import {
   loadNotes,
@@ -197,18 +198,8 @@ async function openSong(song) {
     const meta = parseSongMeta(midi);
     sections = meta.sections;
     chords = meta.chords;
-    const markerEnd = Math.max(
-      0,
-      ...chords.map((c) => c.time),
-      ...sections.map((s) => s.time),
-    );
-    const oneBar = estimateBarSeconds(midi);
-    const finiteMidiDur = Number.isFinite(midi.duration) ? midi.duration : 0;
-    duration = Math.max(
-      finiteMidiDur,
-      writtenEvents.length ? writtenEvents[writtenEvents.length - 1].time + 0.5 : 0,
-      markerEnd > 0 ? markerEnd + oneBar : 0,
-    );
+    // Markers-only charts: @tonejs/midi duration is -Infinity — use markers/tempo.
+    duration = songDurationSeconds(midi, { writtenEvents, chords, sections });
     showLoadingModal('Laddar ljudmotor…');
     setStatus('Laddar ljud…');
     engine.prepared = false;
@@ -579,7 +570,7 @@ function updatePositionUi() {
   const chord = chordAtTime(chords, position);
   if (chord) {
     chordLine.hidden = false;
-    chordLine.textContent = `Ackord: ${chord}`;
+    chordLine.textContent = chord;
   } else {
     chordLine.hidden = true;
   }
@@ -612,13 +603,28 @@ function tick() {
 async function startPlayback(fromSeconds) {
   if (!midi) return;
   await engine.ensureContext();
+  if (!engine.prepared) {
+    try {
+      await engine.preparePlayback();
+    } catch (err) {
+      setStatus(`Kunde inte ladda ljud: ${err.message || err}`, true);
+      return;
+    }
+  }
   engine.stopAll();
   position = Math.max(0, Math.min(duration, fromSeconds));
   playStartPos = position;
   playStartAc = engine.ac.currentTime;
   isPlaying = true;
   updateTransportUi();
-  engine.schedule(events, position, duration + 1);
+  try {
+    engine.schedule(events, position, duration + 1);
+  } catch (err) {
+    isPlaying = false;
+    updateTransportUi();
+    setStatus(`Kunde inte starta uppspelning: ${err.message || err}`, true);
+    return;
+  }
   cancelAnimationFrame(raf);
   raf = requestAnimationFrame(tick);
 }
@@ -648,14 +654,32 @@ async function seekTo(sec, resumeIfPlaying = false) {
   if (wasPlaying || resumeIfPlaying) await startPlayback(position);
 }
 
+/** Coalesce komp UI refreshes so rapid style/variant swaps stay responsive. */
+let kompRefreshRaf = 0;
+function requestKompRefresh() {
+  if (kompRefreshRaf) cancelAnimationFrame(kompRefreshRaf);
+  kompRefreshRaf = requestAnimationFrame(() => {
+    kompRefreshRaf = 0;
+    const prevGroups = groupsInSong().join(',');
+    rebuildEvents();
+    if (groupsInSong().join(',') !== prevGroups) buildMixerUi();
+    renderLane();
+  });
+}
+
 function rebuildEvents({ reschedule = true } = {}) {
-  autoEvents = [];
-  autoGroups = new Set();
   const need = missingTracks(writtenTracks);
-  if (kompOn && chords.length && need.length && styleMap.size) {
+  const playing = !!(reschedule && isPlaying && engine.ac);
+  const p = playing ? currentPositionFromClock() : position;
+  // Style/variant swaps take effect from the next bar — only regenerate from there
+  // so mid-play changes stay cheap and do not re-arm the whole chart.
+  const from = playing ? nextBarStart(p) : 0;
+
+  let freshAuto = [];
+  if (kompOn && chords.length && need.length && styleMap.size && midi) {
     const styleId = resolveStyleId(styleCatalog, kompStyle.value || 'pop-rock');
     const bars = barStarts(midi, duration);
-    autoEvents = generateAutokomp(
+    freshAuto = generateAutokomp(
       { barStarts: bars, chords, sections, duration },
       {
         styleId,
@@ -665,10 +689,23 @@ function rebuildEvents({ reschedule = true } = {}) {
         dynamics: 'mf',
         styles: styleMap,
         resolveStyleId: (id) => resolveStyleId(styleCatalog, id),
+        fromTime: playing ? from : undefined,
       },
     );
-    for (const e of autoEvents) autoGroups.add(e.group);
   }
+
+  if (playing && from > 0) {
+    autoEvents = [
+      ...autoEvents.filter((e) => e.time < from - 0.001),
+      ...freshAuto,
+    ];
+  } else {
+    autoEvents = freshAuto;
+  }
+
+  autoGroups = new Set();
+  for (const e of autoEvents) autoGroups.add(e.group);
+
   events = [...writtenEvents, ...autoEvents].sort((a, b) => a.time - b.time);
   if (duration && events.length) {
     duration = Math.max(duration, events[events.length - 1].time + 0.5);
@@ -680,21 +717,21 @@ function rebuildEvents({ reschedule = true } = {}) {
   if (kompVariant) {
     kompVariant.querySelectorAll('button').forEach((b) => { b.disabled = !canGenerate; });
   }
-  if (reschedule && isPlaying && engine.ac) {
-    const p = currentPositionFromClock();
-    // Cut hanging notes, then schedule the new mix from the next bar.
-    const next = nextBarStart(p);
+  if (playing) {
+    // Cut hanging notes; written keeps going from now, autokomp from next bar.
+    // Lookahead scheduler only arms a few seconds — must not hang the UI.
     engine.stopAll();
     position = p;
     playStartPos = p;
     playStartAc = engine.ac.currentTime;
-    const from = next;
-    // Keep written notes sounding from now; autokomp changes from next bar.
     const mixed = [
       ...writtenEvents.filter((e) => e.time >= p - 0.001),
       ...autoEvents.filter((e) => e.time >= from - 0.001),
     ].sort((a, b) => a.time - b.time);
     engine.schedule(mixed, p, duration + 1);
+    // Keep the transport RAF alive across stopAll/reschedule.
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(tick);
   }
 }
 
@@ -736,14 +773,14 @@ function buildMixerUi() {
     strip.className = 'strip' + (auto ? ' strip-auto' : '');
     strip.innerHTML = `
       <span class="strip-label">${label}</span>
-      <button type="button" class="mute-big" data-mute="${g}" aria-pressed="${m.mute}" aria-label="Tysta ${label}">${m.mute ? 'MUTAD' : 'MUTE'}</button>
+      <div class="strip-ms">
+        <button type="button" class="mute-big" data-mute="${g}" aria-pressed="${m.mute}" aria-label="Tysta ${label}">${m.mute ? 'Tyst' : 'Ljud'}</button>
+        <button type="button" class="chip icon" data-solo="${g}" aria-pressed="${m.solo}" aria-label="Solo ${label}" title="Solo">S</button>
+      </div>
       <div class="fader">
         <input type="range" min="0" max="100" value="${vol}" data-vol="${g}" aria-label="${label} volym">
       </div>
       <span class="strip-val" data-vol-val="${g}">${vol}</span>
-      <div class="strip-buttons">
-        <button type="button" class="chip" data-solo="${g}" aria-pressed="${m.solo}" aria-label="Solo ${label}" title="Solo">S</button>
-      </div>
       <label class="send">
         <span>Rev</span>
         <input type="range" min="0" max="100" value="${send}" data-send="${g}" aria-label="${label} reverb-send">
@@ -763,7 +800,7 @@ function buildMixerUi() {
     el.addEventListener('click', () => {
       const on = el.getAttribute('aria-pressed') !== 'true';
       el.setAttribute('aria-pressed', String(on));
-      el.textContent = on ? 'MUTAD' : 'MUTE';
+      el.textContent = on ? 'Tyst' : 'Ljud';
       engine.setGroupMixer(el.getAttribute('data-mute'), { mute: on });
     });
   });
@@ -890,7 +927,7 @@ function setSpeed(speed) {
 for (const s of SPEEDS) {
   const b = document.createElement('button');
   b.type = 'button';
-  b.className = 'chip speed';
+  b.className = 'chip';
   b.dataset.speed = String(s);
   b.textContent = formatSpeed(s);
   b.setAttribute('aria-pressed', String(s === 1));
@@ -985,17 +1022,6 @@ document.addEventListener('keydown', (e) => {
 });
 
 
-function estimateBarSeconds(m) {
-  try {
-    const bpm = m.header.tempos?.[0]?.bpm || 120;
-    const sig = m.header.timeSignatures?.[0]?.timeSignature || [4, 4];
-    const [num, den] = sig;
-    return (60 / bpm) * num * (4 / den);
-  } catch {
-    return 2;
-  }
-}
-
 function showLoadingModal(msg) {
   let el = document.getElementById('loading-modal');
   if (!el) {
@@ -1046,14 +1072,10 @@ async function initKompUi() {
   kompStyle.value = 'pop-rock';
   kompEnabled.addEventListener('change', () => {
     kompOn = kompEnabled.checked;
-    rebuildEvents();
-    buildMixerUi();
-    renderLane();
+    requestKompRefresh();
   });
   kompStyle.addEventListener('change', () => {
-    rebuildEvents();
-    buildMixerUi();
-    renderLane();
+    requestKompRefresh();
   });
   kompVariant.querySelectorAll('button').forEach((b) => {
     b.addEventListener('click', () => {
@@ -1061,8 +1083,7 @@ async function initKompUi() {
       kompVariant.querySelectorAll('button').forEach((x) => {
         x.setAttribute('aria-pressed', String(x === b));
       });
-      rebuildEvents();
-      renderLane();
+      requestKompRefresh();
     });
   });
 }

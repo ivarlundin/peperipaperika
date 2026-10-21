@@ -30,7 +30,8 @@ Spelaren kan generera **trummor, bas och piano** från ackord- och delmarkörer.
 - **Komp**-reglaget, stilmeny och variant Auto A/B / A / B sitter ovanför transporten. Stilbyte under uppspelning regenererar från nästa takt utan hängande noter.
 - Standardpiano = **Rhodes** (`samples/rhodes/`). Stilar ligger i `styles/*.json` (portade från Nesticos `grooves.yaml`).
 - Valfri styrinfo: textevent `komp:stil=twelve8 (alias → blues)` m.m. (se planen).
-- Enhetstest (utan ljud): `node notlanken/tests/autokomp.test.mjs`
+- Enhetstest (utan ljud): `cd notlanken && npm i && npm test`
+  (inkl. regression för markers-only `last-christmas-d-v03-markers.mid`)
 
 ## Ljud
 
