@@ -773,12 +773,14 @@ function buildMixerUi() {
     strip.className = 'strip' + (auto ? ' strip-auto' : '');
     strip.innerHTML = `
       <span class="strip-label">${label}</span>
-      <button type="button" class="mute-big" data-mute="${g}" aria-pressed="${m.mute}" aria-label="Tysta ${label}">${m.mute ? 'Tyst' : 'Ljud'}</button>
+      <div class="strip-ms">
+        <button type="button" class="mute-big" data-mute="${g}" aria-pressed="${m.mute}" aria-label="Tysta ${label}">${m.mute ? 'Tyst' : 'Ljud'}</button>
+        <button type="button" class="chip icon" data-solo="${g}" aria-pressed="${m.solo}" aria-label="Solo ${label}" title="Solo">S</button>
+      </div>
       <div class="fader">
         <input type="range" min="0" max="100" value="${vol}" data-vol="${g}" aria-label="${label} volym">
       </div>
       <span class="strip-val" data-vol-val="${g}">${vol}</span>
-      <button type="button" class="chip icon" data-solo="${g}" aria-pressed="${m.solo}" aria-label="Solo ${label}" title="Solo">S</button>
       <label class="send">
         <span>Rev</span>
         <input type="range" min="0" max="100" value="${send}" data-send="${g}" aria-label="${label} reverb-send">
