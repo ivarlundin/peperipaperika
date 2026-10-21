@@ -36,3 +36,10 @@ Verify acoustic-kit terms before replacing; if unclear, swap for CC0 Kenney impa
 ```
 
 Requires `curl`, `ffmpeg`. Total size should stay well under ~50 MB for GitHub Pages.
+
+
+## Rhodes / electric piano (`rhodes/`)
+
+- **Source:** FluidR3 GM `electric_piano_1` per-note MP3 via [gleitz/midi-js-soundfonts](https://github.com/gleitz/midi-js-soundfonts), converted to mono OGG
+- **License:** FluidR3 / Lawrence Berkley National Laboratory soundfont license (free use in software)
+- **Credit:** FluidR3 GM; used as default piano/keys and autokomp piano sound

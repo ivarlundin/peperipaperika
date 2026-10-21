@@ -49,6 +49,7 @@ const GM_FALLBACK_MAP = {
 
 const MELODIC_FOLDERS = [
   'samples/piano',
+  'samples/rhodes',
   'samples/bass',
   'samples/trumpet',
   'samples/trombone',
@@ -110,6 +111,8 @@ export class AudioEngine {
     }
     this.masterVolume = 0.72;
     this.reverbAmount = 0.12;
+    /** Prefer Rhodes samples for piano/keys (written + autokomp). */
+    this.pianoSample = 'rhodes';
   }
 
   async ensureContext() {
@@ -229,6 +232,7 @@ export class AudioEngine {
   async _listFolder(folder) {
     const manifest = {
       piano: ['A1', 'C2', 'Ds2', 'Fs2', 'A2', 'C3', 'Ds3', 'Fs3', 'A3', 'C4', 'Ds4', 'Fs4', 'A4', 'C5', 'Ds5', 'Fs5', 'A5', 'C6'],
+      rhodes: ['C2', 'E2', 'G2', 'C3', 'E3', 'G3', 'C4', 'E4', 'G4', 'C5', 'E5'],
       bass: ['C2', 'E2', 'G2', 'C3', 'E3', 'G3', 'C4', 'E4', 'G4', 'C5'],
       trumpet: ['C2', 'E2', 'G2', 'C3', 'E3', 'G3', 'C4', 'E4', 'G4', 'C5'],
       trombone: ['C2', 'E2', 'G2', 'C3', 'E3', 'G3', 'C4', 'E4', 'G4', 'C5'],
@@ -426,7 +430,10 @@ export class AudioEngine {
         continue;
       }
       if (voice.kind === 'piano') {
-        this._triggerMelodic('samples/piano', ev.midi, when, ev.duration, vel, group);
+        const folder = (voice.sample === 'acoustic' || this.pianoSample === 'acoustic')
+          ? 'samples/piano'
+          : 'samples/rhodes';
+        this._triggerMelodic(folder, ev.midi, when, ev.duration, vel, group);
         continue;
       }
       if (voice.kind === 'bass') {

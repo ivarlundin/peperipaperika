@@ -1,0 +1,14 @@
+{
+  "defaultByMeter": {
+    "4/4": "pop44",
+    "3/4": "waltz34",
+    "6/8": "six8",
+    "9/8": "nine8",
+    "12/8": "twelve8"
+  },
+  "styles": [
+    "pop44", "rock8", "halftime", "shuffle", "halftime_shuffle",
+    "ballad", "waltz34", "six8", "nine8", "twelve8",
+    "twelve8_4otf", "twelve8_ljus", "disco", "funk16", "jazzswing"
+  ]
+}

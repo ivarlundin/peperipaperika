@@ -1,0 +1,23 @@
+{
+  "id": "funk16",
+  "meter": "4/4",
+  "steps": 16,
+  "beat": 4,
+  "desc": "Funk 16-delar",
+  "swing": 0.5,
+  "fill_beats": 1,
+  "A": {
+    "kick": "X . . . . . x . . x . . X . . .",
+    "snare": ". . . o . . X . . . . o . . X .",
+    "hat": "x x x x x x x x x x x x x x x x",
+    "bass": "R . . . . . 5 . . R . . 8 . . .",
+    "piano": "C . . c . . C . . . c . C . . ."
+  },
+  "B": {
+    "kick": "X . . x . . x . . x . . X . . x",
+    "snare": ". . . o . . X . . . . o . . X .",
+    "ride": "x . x x . x x . x . x x . x x .",
+    "bass": "R . . 5 . . 8 . . R . A 8 . . .",
+    "piano": "C . c C . c C . . c C . C . c ."
+  }
+}

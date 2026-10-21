@@ -1,0 +1,23 @@
+{
+  "id": "shuffle",
+  "meter": "4/4",
+  "steps": 12,
+  "beat": 3,
+  "desc": "Shuffle (triolgrund)",
+  "swing": 0.66,
+  "fill_beats": 1,
+  "A": {
+    "kick": "X . . . . . x . . . . .",
+    "snare": ". . . X . . . . . X . .",
+    "hat": "x . x x . x x . x x . x",
+    "bass": "R - R 5 - 5 8 - 8 5 - 5",
+    "piano": "C - . . . c C - . . . c"
+  },
+  "B": {
+    "kick": "X . . . . . x . . x . .",
+    "snare": ". . . X . . . . . X . .",
+    "ride": "x . x x . x x . x x . x",
+    "bass": "R - R 5 - 5 8 - A 5 - 5",
+    "piano": "C - . c . c C - . c . c"
+  }
+}

@@ -42,6 +42,23 @@
         </div>
       </div>
 
+      <div class="komp-bar" id="komp-bar">
+        <label class="komp-toggle">
+          <input type="checkbox" id="komp-enabled" checked>
+          <span>Komp</span>
+        </label>
+        <label class="komp-field">
+          <span>Stil</span>
+          <select id="komp-style" aria-label="Autokomp-stil"></select>
+        </label>
+        <div class="komp-variant" role="group" aria-label="Variant">
+          <button type="button" class="chip" data-variant="auto" aria-pressed="true">Auto A/B</button>
+          <button type="button" class="chip" data-variant="A" aria-pressed="false">A</button>
+          <button type="button" class="chip" data-variant="B" aria-pressed="false">B</button>
+        </div>
+        <span class="komp-status" id="komp-status"></span>
+      </div>
+
       <p class="chord-line" id="chord-line" hidden></p>
 
       <div class="transport">

@@ -13,6 +13,13 @@ import {
   saveNotes,
 } from './session-notes.js';
 import { chordAtTime, parseSongMeta } from './midi-meta.js';
+import { detectWrittenTracks, missingTracks } from './autokomp-detect.js';
+import {
+  defaultStyleForMeter,
+  generate as generateAutokomp,
+  loadStyles,
+  parseKompDirectives,
+} from './autokomp.js';
 
 const engine = new AudioEngine(new URL('./', import.meta.url).href);
 
@@ -58,6 +65,10 @@ const noteText = $('note-text');
 const noteDialogMeta = $('note-dialog-meta');
 const noteDialogTitle = $('note-dialog-title');
 const noteCancel = $('note-cancel');
+const kompEnabled = $('komp-enabled');
+const kompStyle = $('komp-style');
+const kompStatus = $('komp-status');
+const kompVariant = document.querySelector('.komp-variant');
 
 /** @type {{ file: string, title: string } | null} */
 let currentSong = null;
@@ -79,6 +90,16 @@ let scrubbing = false;
 let sessionNotes = [];
 let pendingNoteType = 'note';
 let noteDialogOpen = false;
+let writtenEvents = [];
+let autoEvents = [];
+let writtenTracks = { drums: false, bass: false, piano: false };
+let autoGroups = new Set();
+let styleCatalog = null;
+/** @type {Map<string, object>} */
+let styleMap = new Map();
+let kompOn = true;
+let kompVariantPref = 'auto';
+let kompDirectives = { style: null, sectionStyles: new Map() };
 
 const GROUP_LABELS = {
   piano: 'Piano',
@@ -153,6 +174,7 @@ async function loadManifest() {
 
 
 async function openSong(song) {
+  await kompReady;
   engine.stopAll();
   isPlaying = false;
   cancelAnimationFrame(raf);
@@ -169,10 +191,11 @@ async function openSong(song) {
     const res = await fetch(`midi/${encodeURIComponent(song.file)}`);
     const buf = await res.arrayBuffer();
     midi = new Midi(buf);
-    events = engine.buildEvents(midi);
+    writtenEvents = engine.buildEvents(midi);
+    writtenTracks = detectWrittenTracks(midi);
     duration = Math.max(
       midi.duration,
-      events.length ? events[events.length - 1].time + 0.5 : 0,
+      writtenEvents.length ? writtenEvents[writtenEvents.length - 1].time + 0.5 : 0,
     );
     setStatus('Laddar ljud…');
     engine.prepared = false;
@@ -181,8 +204,16 @@ async function openSong(song) {
     const meta = parseSongMeta(midi);
     sections = meta.sections;
     chords = meta.chords;
+    kompDirectives = parseKompDirectives(midi);
+    if (kompDirectives.style && styleMap.has(kompDirectives.style)) {
+      kompStyle.value = kompDirectives.style;
+    } else if (styleCatalog && midi) {
+      const sig = midi.header.timeSignatures?.[0]?.timeSignature || [4, 4];
+      kompStyle.value = defaultStyleForMeter(styleCatalog, sig[0], sig[1]);
+    }
     sessionNotes = loadNotes(song.file);
     position = 0;
+    rebuildEvents({ reschedule: false });
     buildMixerUi();
 
     if (currentSong !== song) return;
@@ -599,6 +630,66 @@ async function seekTo(sec, resumeIfPlaying = false) {
   if (wasPlaying || resumeIfPlaying) await startPlayback(position);
 }
 
+function rebuildEvents({ reschedule = true } = {}) {
+  autoEvents = [];
+  autoGroups = new Set();
+  const need = missingTracks(writtenTracks);
+  if (kompOn && chords.length && need.length && styleMap.size) {
+    const styleId = kompStyle.value || 'pop44';
+    const bars = barStarts(midi, duration);
+    autoEvents = generateAutokomp(
+      { barStarts: bars, chords, sections, duration },
+      {
+        styleId,
+        variant: kompVariantPref,
+        humanize: true,
+        generate: need,
+        dynamics: 'mf',
+        styles: styleMap,
+      },
+    );
+    for (const e of autoEvents) autoGroups.add(e.group);
+  }
+  events = [...writtenEvents, ...autoEvents].sort((a, b) => a.time - b.time);
+  if (duration && events.length) {
+    duration = Math.max(duration, events[events.length - 1].time + 0.5);
+  }
+  const parts = needLabel();
+  kompStatus.textContent = parts;
+  if (reschedule && isPlaying && engine.ac) {
+    const p = currentPositionFromClock();
+    // Cut hanging notes, then schedule the new mix from the next bar.
+    const next = nextBarStart(p);
+    engine.stopAll();
+    position = p;
+    playStartPos = p;
+    playStartAc = engine.ac.currentTime;
+    const from = next;
+    // Keep written notes sounding from now; autokomp changes from next bar.
+    const mixed = [
+      ...writtenEvents.filter((e) => e.time >= p - 0.001),
+      ...autoEvents.filter((e) => e.time >= from - 0.001),
+    ].sort((a, b) => a.time - b.time);
+    engine.schedule(mixed, p, duration + 1);
+  }
+}
+
+function needLabel() {
+  if (!chords.length) return 'Inga ackordmarkörer – autokomp av';
+  const need = missingTracks(writtenTracks);
+  if (!need.length) return 'Alla spår skrivna – inget genereras';
+  if (!kompOn) return `Komp av (skulle fylla: ${need.join(', ')})`;
+  return `Auto: ${need.join(', ')}`;
+}
+
+function nextBarStart(seconds) {
+  const bars = barStarts(midi, duration + 4);
+  for (const t of bars) {
+    if (t > seconds + 0.02) return t;
+  }
+  return seconds;
+}
+
 function groupsInSong() {
   const used = new Set(events.map((e) => e.group));
   return GROUPS.filter((g) => used.has(g));
@@ -612,20 +703,21 @@ function buildMixerUi() {
 
   mixerGroups.innerHTML = '';
   for (const g of present) {
-    const label = GROUP_LABELS[g];
+    const auto = autoGroups.has(g);
+    const label = auto ? `${GROUP_LABELS[g]} (auto)` : GROUP_LABELS[g];
     const m = engine.mixer[g];
     const vol = Math.round(m.volume * 100);
     const send = Math.round(m.reverbSend * 100);
     const strip = document.createElement('div');
-    strip.className = 'strip';
+    strip.className = 'strip' + (auto ? ' strip-auto' : '');
     strip.innerHTML = `
       <span class="strip-label">${label}</span>
+      <button type="button" class="mute-big" data-mute="${g}" aria-pressed="${m.mute}" aria-label="Tysta ${label}">${m.mute ? 'MUTAD' : 'MUTE'}</button>
       <div class="fader">
         <input type="range" min="0" max="100" value="${vol}" data-vol="${g}" aria-label="${label} volym">
       </div>
       <span class="strip-val" data-vol-val="${g}">${vol}</span>
       <div class="strip-buttons">
-        <button type="button" class="chip" data-mute="${g}" aria-pressed="${m.mute}" aria-label="Tysta ${label}" title="Tysta">M</button>
         <button type="button" class="chip" data-solo="${g}" aria-pressed="${m.solo}" aria-label="Solo ${label}" title="Solo">S</button>
       </div>
       <label class="send">
@@ -647,6 +739,7 @@ function buildMixerUi() {
     el.addEventListener('click', () => {
       const on = el.getAttribute('aria-pressed') !== 'true';
       el.setAttribute('aria-pressed', String(on));
+      el.textContent = on ? 'MUTAD' : 'MUTE';
       engine.setGroupMixer(el.getAttribute('data-mute'), { mute: on });
     });
   });
@@ -869,7 +962,50 @@ document.addEventListener('keydown', (e) => {
 
 bindTimeline();
 bindLane();
-loadManifest().catch((e) => {
+
+async function initKompUi() {
+  const base = new URL('./', import.meta.url).href;
+  const loaded = await loadStyles(base);
+  styleCatalog = loaded.catalog;
+  styleMap = loaded.styles;
+  kompStyle.innerHTML = '';
+  for (const id of styleCatalog.styles) {
+    if (!styleMap.has(id)) continue;
+    const opt = document.createElement('option');
+    opt.value = id;
+    opt.textContent = id;
+    kompStyle.appendChild(opt);
+  }
+  kompStyle.value = 'pop44';
+  kompEnabled.addEventListener('change', () => {
+    kompOn = kompEnabled.checked;
+    rebuildEvents();
+    buildMixerUi();
+    renderLane();
+  });
+  kompStyle.addEventListener('change', () => {
+    rebuildEvents();
+    buildMixerUi();
+    renderLane();
+  });
+  kompVariant.querySelectorAll('button').forEach((b) => {
+    b.addEventListener('click', () => {
+      kompVariantPref = b.getAttribute('data-variant');
+      kompVariant.querySelectorAll('button').forEach((x) => {
+        x.setAttribute('aria-pressed', String(x === b));
+      });
+      rebuildEvents();
+      renderLane();
+    });
+  });
+}
+
+const kompReady = initKompUi().catch((e) => {
+  console.error(e);
+  kompStatus.textContent = 'Kunde inte ladda stilar';
+});
+
+kompReady.then(() => loadManifest()).catch((e) => {
   const li = document.createElement('li');
   li.className = 'status error';
   li.textContent = `Kunde inte ladda låtlistan: ${e.message}`;

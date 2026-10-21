@@ -1,0 +1,23 @@
+{
+  "id": "waltz34",
+  "meter": "3/4",
+  "steps": 6,
+  "beat": 2,
+  "desc": "Vals 3/4",
+  "swing": 0.5,
+  "fill_beats": 1,
+  "A": {
+    "kick": "X . . . . .",
+    "snare": ". . . x . .",
+    "hat": "x . x . x .",
+    "bass": "R - - 5 - -",
+    "piano": "C - - c - -"
+  },
+  "B": {
+    "kick": "X . . x . .",
+    "snare": ". . . X . .",
+    "ride": "x . x . x .",
+    "bass": "R - 5 8 - 5",
+    "piano": "C - c C - c"
+  }
+}
