@@ -37,6 +37,7 @@ const MF = 0.62;
  * @property {('drums'|'bass'|'piano')[]} generate
  * @property {'p'|'mf'|'f'} [dynamics]
  * @property {Map<string, object>} styles  id -> style json
+ * @property {number} [fromTime]  only emit from this song time (mid-play style swap)
  */
 
 /**
@@ -64,7 +65,12 @@ export function generate(timeline, opts) {
   let arpIdx = 0;
 
   const bars = timeline.barStarts;
-  for (let bi = 0; bi < bars.length; bi++) {
+  let startBi = 0;
+  if (opts.fromTime != null && Number.isFinite(opts.fromTime)) {
+    startBi = bars.findIndex((t) => t >= opts.fromTime - 0.001);
+    if (startBi < 0) return [];
+  }
+  for (let bi = startBi; bi < bars.length; bi++) {
     const t0 = bars[bi];
     const t1 = bi + 1 < bars.length ? bars[bi + 1] : timeline.duration;
     if (t1 <= t0) continue;

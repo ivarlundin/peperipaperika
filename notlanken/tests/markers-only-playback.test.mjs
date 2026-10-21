@@ -179,4 +179,55 @@ function generateFor(midi, duration) {
   assert(need.length === 0 && ev.length === 0, `${file}: no autokomp`);
 }
 
+// --- Mid-play style swap: generate fromTime must not treat that bar as song start ---
+{
+  const file = 'last-christmas-d-v03-markers.mid';
+  const midi = loadMidi(file);
+  const meta = parseSongMeta(midi);
+  const duration = songDurationSeconds(midi, {
+    writtenEvents: [],
+    chords: meta.chords,
+    sections: meta.sections,
+  });
+  const bars = barStarts(midi, duration);
+  const from = bars[40]; // ~mid chart
+  const full = generate(
+    { barStarts: bars, chords: meta.chords, sections: meta.sections, duration },
+    {
+      styleId: 'jazz',
+      variant: 'A',
+      humanize: false,
+      generate: ['drums', 'bass', 'piano'],
+      dynamics: 'mf',
+      styles,
+    },
+  );
+  const partial = generate(
+    { barStarts: bars, chords: meta.chords, sections: meta.sections, duration },
+    {
+      styleId: 'jazz',
+      variant: 'A',
+      humanize: false,
+      generate: ['drums', 'bass', 'piano'],
+      dynamics: 'mf',
+      styles,
+      fromTime: from,
+    },
+  );
+  assert(partial.length > 0, 'fromTime emits notes');
+  assert(partial.length < full.length, 'fromTime emits fewer notes than full chart');
+  assert(partial.every((e) => e.time >= from - 0.02), 'fromTime has no notes before cut');
+  // Must not drop a section-start crash on the cut bar (bi===0 false positive)
+  const crashOnCut = partial.filter(
+    (e) => e.group === 'drums' && e.midi === 49 && e.time >= from - 0.02 && e.time < from + 0.05,
+  );
+  const fullCrashAt = full.filter(
+    (e) => e.group === 'drums' && e.midi === 49 && e.time >= from - 0.02 && e.time < from + 0.05,
+  );
+  assert(
+    crashOnCut.length === fullCrashAt.length,
+    'mid-play cut must not invent an extra section crash',
+  );
+}
+
 console.log('markers-only playback regression OK');
