@@ -15,10 +15,13 @@ const GROUP_HEADROOM = {
 const DRUM_MAP = {
   35: '36-kick.ogg',
   36: '36-kick.ogg',
+  37: '38-snare.ogg',       // rim / clave (bossa)
   38: '38-snare.ogg',
+  39: '38-snare.ogg',       // clap
   41: '41-floor-tom.ogg',
   42: '42-closed-hat.ogg',
   43: '43-high-floor-tom.ogg',
+  44: '42-closed-hat.ogg',  // pedal hi-hat
   45: '45-low-tom.ogg',
   46: '46-open-hat.ogg',
   47: '47-mid-tom.ogg',
@@ -26,6 +29,10 @@ const DRUM_MAP = {
   49: '49-crash.ogg',
   50: '50-high-tom.ogg',
   51: '51-ride.ogg',
+  53: '51-ride.ogg',        // ride bell
+  54: '42-closed-hat.ogg',  // tambourine
+  56: '50-high-tom.ogg',    // cowbell
+  70: '42-closed-hat.ogg',  // maracas / shaker
 };
 
 const GM_FALLBACK_MAP = {

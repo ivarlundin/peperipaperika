@@ -1,0 +1,26 @@
+{
+  "id": "funk",
+  "name": "Funk",
+  "meter": "4/4",
+  "steps": 16,
+  "beat": 4,
+  "desc": "16-delsfunk: 16-dels hihat, synkoperad kick, ghost-virvel, slap-aktig 16-delsbas med oktaver, korta piano-stötar",
+  "source": "grooves.yaml funk16 (A); B är funk16 förtätad (öppen hihat på 4-och, synkoperad 16-delsbas med b7 och närmandeton)",
+  "swing": 0.5,
+  "fill_beats": 1,
+  "A": {
+    "kick": "X . . x . . x . . . x . . . . .",
+    "snare": ". . . . X . . o . o . . X . . o",
+    "hat": "X o x o X o x o X o x o X o x o",
+    "bass": "R . . R . . 5 . 8 . R . . . A .",
+    "piano": ". . C . . . . C . . C . . . . ."
+  },
+  "B": {
+    "kick": "X . . x . . x . . . X . . x . .",
+    "snare": ". . . . X . . o . o . . X . o .",
+    "hat": "X o x o X o x o X o x o X o . o",
+    "ohat": ". . . . . . . . . . . . . . x .",
+    "bass": "R . R . . R . 5 . . R . 7 . A .",
+    "piano": ". . C . . . . C . . C . . c . ."
+  }
+}

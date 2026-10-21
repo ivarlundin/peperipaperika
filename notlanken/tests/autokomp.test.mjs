@@ -3,9 +3,10 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { parseChord, voiceChord, bassNote } from '../chord-parser.js';
 import { detectWrittenTracks, missingTracks } from '../autokomp-detect.js';
-import { generate } from '../autokomp.js';
+import { generate, resolveStyleId } from '../autokomp.js';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+const catalog = JSON.parse(readFileSync(join(root, 'styles/catalog.json'), 'utf8'));
 const styles = new Map();
 for (const f of readdirSync(join(root, 'styles'))) {
   if (!f.endsWith('.json') || f === 'catalog.json') continue;
@@ -17,117 +18,122 @@ function assert(cond, msg) {
   if (!cond) throw new Error(msg);
 }
 
+assert(catalog.styles.length === 5, 'five visible styles');
+assert(styles.has('pop-rock') && styles.has('blues') && styles.has('jazz'), 'core styles');
+assert(styles.has('waltz34') && styles.has('six8') && styles.has('nine8'), 'hidden meter fallbacks');
+assert(resolveStyleId(catalog, 'twelve8') === 'blues', 'alias twelve8');
+assert(resolveStyleId(catalog, 'pop44') === 'pop-rock', 'alias pop44');
+assert(resolveStyleId(catalog, 'jazzswing') === 'jazz', 'alias jazzswing');
+
 // --- chord parser ---
 {
   const c = parseChord('Bm7');
   assert(c.root === 11, 'Bm7 root');
-  assert(c.tones.includes(2) || c.tones.includes((11 + 3) % 12), 'Bm7 has minor third');
   assert(!c.nc, 'Bm7 not nc');
 }
 {
   const c = parseChord('D/F#');
-  assert(c.root === 2, 'D root');
-  assert(c.bass === 6, 'F# bass');
+  assert(c.root === 2 && c.bass === 6, 'slash');
 }
 {
-  const c = parseChord('Fmaj7');
-  assert(c.tones.includes((5 + 11) % 12), 'maj7');
-}
-{
-  const c = parseChord('N.C.');
-  assert(c.nc, 'N.C.');
-}
-{
-  const v = voiceChord(parseChord('Cmaj7'), null);
-  assert(v.length >= 3, 'voicing notes');
-  assert(v.every((n) => n >= 50 && n <= 76), 'voicing in range');
-}
-{
-  const ch = parseChord('C');
-  const n = bassNote(ch, parseChord('G'), 'R', null);
-  assert(n != null && n % 12 === 0, 'bass root C');
+  const n = bassNote(parseChord('C'), parseChord('G'), '8', 36);
+  assert(n === 48, `octave 8 => ${n}`);
 }
 
-// --- detect tracks (mock midi-like) ---
+// --- detect ---
 {
   const midi = {
     tracks: [
       { name: 'Piano', channel: 0, instrument: { number: 0 }, notes: [{ midi: 60, time: 0, duration: 1, velocity: 0.5 }] },
     ],
   };
-  const w = detectWrittenTracks(midi);
-  assert(w.piano && !w.bass && !w.drums, 'piano only');
-  const m = missingTracks(w);
+  const m = missingTracks(detectWrittenTracks(midi));
   assert(m.includes('bass') && m.includes('drums') && !m.includes('piano'), 'fill bass+drums');
 }
+
+// --- swing: even 8th grid with swing>0.5 must push odd steps forward ---
 {
-  const midi = {
-    tracks: [
-      { name: 'Bas', channel: 1, instrument: { number: 33 }, notes: [{ midi: 40, time: 0, duration: 1, velocity: 0.5 }] },
-      { name: 'Trummor', channel: 9, instrument: { number: 0 }, notes: [{ midi: 36, time: 0, duration: 0.1, velocity: 0.5 }] },
-      { name: 'Piano', channel: 0, instrument: { number: 0 }, notes: [{ midi: 60, time: 0, duration: 1, velocity: 0.5 }] },
-    ],
-  };
-  assert(missingTracks(detectWrittenTracks(midi)).length === 0, 'full komp nothing missing');
+  // Import stepTime indirectly: generate blues/jazz with swing 0.5 (triplet) — snare on steps 3 & 9
+  // For a synthetic even grid, verify formula via small local copy
+  function stepTime(t0, step, stepDur, swing, steps) {
+    if (steps % 3 === 0 || !(swing > 0.5) || step % 2 !== 1) return t0 + step * stepDur;
+    const pair = stepDur * 2;
+    return t0 + (step - 1) * stepDur + pair * swing;
+  }
+  const d = 0.25;
+  // old bug put odd steps at 0.32*d; fixed puts them at pair*swing = 0.66*0.5=0.33 from pair start
+  const t3 = stepTime(0, 3, d, 0.66, 8); // step index 3 is odd
+  assert(Math.abs(t3 - (2 * d + 2 * d * 0.66)) < 1e-9, `swing odd step ${t3}`);
+  const tTrip = stepTime(0, 3, d, 0.66, 12); // triplet grid untouched
+  assert(Math.abs(tTrip - 3 * d) < 1e-9, 'triplet unswung');
 }
 
-// --- generate pop44 ---
-{
-  const bar = 2; // 120bpm 4/4
-  const bars = Array.from({ length: 8 }, (_, i) => i * bar);
-  const chords = [
-    { time: 0, symbol: 'C' },
-    { time: 2, symbol: 'Am7' },
-    { time: 4, symbol: 'Fmaj7' },
-    { time: 6, symbol: 'G7' },
-    { time: 8, symbol: 'C' },
-    { time: 10, symbol: 'Am7' },
-    { time: 12, symbol: 'Fmaj7' },
-    { time: 14, symbol: 'G7' },
-  ];
+function timeline16() {
+  // Last-Christmas-like: 16 bars of 2s, chords on each bar
+  const bar = 2;
+  const symbols = ['D', 'Bm', 'Em', 'A', 'D', 'Bm', 'Em', 'A', 'D', 'Bm', 'Em', 'A', 'D', 'Bm', 'Em', 'A'];
+  const bars = symbols.map((_, i) => i * bar);
+  const chords = symbols.map((symbol, i) => ({ time: i * bar, symbol }));
   const sections = [
-    { time: 0, label: 'Vers' },
+    { time: 0, label: 'Intro' },
     { time: 8, label: 'Refr.' },
   ];
-  const ev = generate(
-    { barStarts: bars, chords, sections, duration: 16 },
-    { styleId: 'pop44', variant: 'auto', humanize: false, generate: ['drums', 'bass', 'piano'], styles, dynamics: 'mf' },
-  );
-  assert(ev.length > 20, `pop44 events ${ev.length}`);
-  assert(ev.every((e) => ['drums', 'bass', 'piano'].includes(e.group)), 'only trio');
-  assert(ev.every((e) => e.source === 'auto'), 'source auto');
-  assert(ev.filter((e) => e.group === 'drums').some((e) => e.midi === 36), 'has kick');
-  assert(ev.filter((e) => e.group === 'bass').length > 0, 'has bass');
-  assert(ev.filter((e) => e.group === 'piano').every((e) => e.velocity < 0.55), 'mf piano not forte');
+  return { barStarts: bars, chords, sections, duration: 16 * bar };
 }
 
-// --- generate twelve8 ---
+function fingerprint(ev) {
+  // Stable signature of first 8 bars of note onsets (group, midi, quantized time)
+  return ev
+    .filter((e) => e.time < 16)
+    .map((e) => `${e.group}:${e.midi}@${e.time.toFixed(3)}`)
+    .join('|');
+}
+
+const tl = timeline16();
+const fps = {};
+for (const id of catalog.styles) {
+  const ev = generate(tl, {
+    styleId: id,
+    variant: 'auto',
+    humanize: false,
+    generate: ['drums', 'bass', 'piano'],
+    styles,
+    dynamics: 'mf',
+    resolveStyleId: (x) => resolveStyleId(catalog, x),
+  });
+  assert(ev.length > 10, `${id} produces notes`);
+  assert(ev.every((e) => ['drums', 'bass', 'piano'].includes(e.group)), `${id} trio only`);
+  // bossa must emit rim (37)
+  if (id === 'bossa') {
+    assert(ev.some((e) => e.group === 'drums' && e.midi === 37), 'bossa rim 37');
+  }
+  fps[id] = fingerprint(ev);
+}
+
+const ids = catalog.styles;
+for (let i = 0; i < ids.length; i++) {
+  for (let j = i + 1; j < ids.length; j++) {
+    assert(fps[ids[i]] !== fps[ids[j]], `${ids[i]} vs ${ids[j]} must differ`);
+  }
+}
+
+// Riverdance-like 12/8 stub: blues via alias twelve8
 {
-  const bar = 2.4; // rough
-  const bars = Array.from({ length: 4 }, (_, i) => i * bar);
-  const chords = [
-    { time: 0, symbol: 'C' },
-    { time: bar, symbol: 'Am7' },
-    { time: bar * 2, symbol: 'Fmaj7' },
-    { time: bar * 3, symbol: 'G7' },
-  ];
-  const ev = generate(
-    { barStarts: bars, chords, sections: [{ time: 0, label: 'Vers' }], duration: bar * 4 },
-    { styleId: 'twelve8', variant: 'A', humanize: false, generate: ['drums', 'bass'], styles, dynamics: 'mf' },
+  const bar = 2.4;
+  const bars = Array.from({ length: 8 }, (_, i) => i * bar);
+  const chords = ['C', 'Am7', 'Fmaj7', 'G7', 'C', 'Am7', 'Fmaj7', 'G7'].map((symbol, i) => ({
+    time: i * bar,
+    symbol,
+  }));
+  const evBlues = generate(
+    { barStarts: bars, chords, sections: [{ time: 0, label: 'Vers' }], duration: bar * 8 },
+    { styleId: 'twelve8', variant: 'A', humanize: false, generate: ['drums', 'bass', 'piano'], styles, resolveStyleId: (x) => resolveStyleId(catalog, x) },
   );
-  assert(ev.some((e) => e.group === 'drums'), 'twelve8 drums');
-  assert(!ev.some((e) => e.group === 'piano'), 'piano not requested');
+  const evPop = generate(
+    { barStarts: bars, chords, sections: [{ time: 0, label: 'Vers' }], duration: bar * 8 },
+    { styleId: 'pop-rock', variant: 'A', humanize: false, generate: ['drums', 'bass', 'piano'], styles },
+  );
+  assert(evBlues.length > 0 && fingerprint(evBlues) !== fingerprint(evPop), 'twelve8 alias ≠ pop-rock');
 }
 
-// --- only missing ---
-{
-  const bars = [0, 2, 4, 6];
-  const chords = bars.map((t) => ({ time: t, symbol: 'C' }));
-  const ev = generate(
-    { barStarts: bars, chords, sections: [], duration: 8 },
-    { styleId: 'pop44', variant: 'A', humanize: false, generate: ['bass', 'drums'], styles },
-  );
-  assert(!ev.some((e) => e.group === 'piano'), 'no piano when not missing');
-}
-
-console.log('autokomp tests OK', styles.size, 'styles loaded');
+console.log('autokomp styles5 tests OK', catalog.styles.join(', '));

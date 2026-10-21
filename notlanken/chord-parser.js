@@ -219,7 +219,12 @@ export function bassNote(chord, nextChord, token, prevBass = null) {
   const prefer = prevBass ?? 40; // E2-ish
   if (token === 'R') return pcToMidiNear(root, prefer);
   if (token === '5') return pcToMidiNear((root + 7) % 12, prefer);
-  if (token === '8') return pcToMidiNear(root, prefer) + (prefer >= 40 ? 12 : 0);
+  if (token === '8') {
+    const rootMidi = pcToMidiNear(root, prefer);
+    // Always the bar's root an octave up from the low root placement.
+    const low = pcToMidiNear(root, 36);
+    return low + 12;
+  }
   if (token === '3') {
     const third = chord.tones.find((t) => ((t - (chord.root ?? root) + 12) % 12) === 3 || ((t - (chord.root ?? root) + 12) % 12) === 4);
     return pcToMidiNear(third ?? (root + 4) % 12, prefer);
