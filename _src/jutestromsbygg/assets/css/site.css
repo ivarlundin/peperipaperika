@@ -1,13 +1,24 @@
 :root {
-  --jb-bg: #f5f3ee;
-  --jb-surface: #ece9e1;
-  --jb-line: #d6d3c7;
-  --jb-muted: #8a9682;
-  --jb-accent: #4e5b47;
-  --jb-text: #1f2620;
-  --jb-footer-bg: #232b24;
-  --jb-footer-text: #f5f3ee;
-  --jb-on-hero: #f5f3ee;
+  /* Skog & kalk */
+  --jb-bg: #f3f4ef;
+  --jb-surface: #e3e7df;
+  --jb-line: #cdd3ca;
+  --jb-muted: #7f9484;
+  --jb-accent: #3e5646;
+  --jb-text: #1b241e;
+  --jb-footer-bg: #1f2e24;
+  --jb-footer-text: #f3f4ef;
+  --jb-on-hero: #f3f4ef;
+  /* Subpage hero tones (same family) */
+  --page-hero-forest-bg: #1f2e24;
+  --page-hero-forest-text: #f3f4ef;
+  --page-hero-forest-lead: #cdd3ca;
+  --page-hero-sage-bg: #657a6b;
+  --page-hero-sage-text: #f3f4ef;
+  --page-hero-sage-lead: #e3e7df;
+  --page-hero-kalk-bg: #e3e7df;
+  --page-hero-kalk-text: #1b241e;
+  --page-hero-kalk-lead: #3e5646;
   --jb-max: 68rem;
   --jb-pad-x: clamp(1.25rem, 4vw, 2rem);
   --jb-header-h: 4.25rem;
@@ -86,7 +97,7 @@ select:focus-visible {
 
 .site-header.is-solid {
   border-bottom-color: var(--jb-line);
-  box-shadow: 0 1px 0 rgba(31, 38, 32, 0.06);
+  box-shadow: 0 1px 0 rgba(27, 36, 30, 0.06);
 }
 
 .site-header__inner {
@@ -223,7 +234,31 @@ select:focus-visible {
 }
 
 .page-hero {
-  padding: 2.5rem 0 2rem;
+  padding: 2.75rem 0 2.25rem;
+  background: var(--page-hero-bg, var(--jb-bg));
+  color: var(--page-hero-text, var(--jb-text));
+  border-bottom: 1px solid var(--jb-line);
+}
+
+.page-hero--forest {
+  --page-hero-bg: var(--page-hero-forest-bg);
+  --page-hero-text: var(--page-hero-forest-text);
+  --page-hero-lead: var(--page-hero-forest-lead);
+  border-bottom-color: color-mix(in srgb, var(--jb-accent) 55%, var(--page-hero-forest-bg));
+}
+
+.page-hero--sage {
+  --page-hero-bg: var(--page-hero-sage-bg);
+  --page-hero-text: var(--page-hero-sage-text);
+  --page-hero-lead: var(--page-hero-sage-lead);
+  border-bottom-color: color-mix(in srgb, var(--jb-muted) 70%, var(--jb-text));
+}
+
+.page-hero--kalk {
+  --page-hero-bg: var(--page-hero-kalk-bg);
+  --page-hero-text: var(--page-hero-kalk-text);
+  --page-hero-lead: var(--page-hero-kalk-lead);
+  border-bottom-color: var(--jb-line);
 }
 
 .page-hero h1 {
@@ -233,13 +268,13 @@ select:focus-visible {
   line-height: 1.15;
   margin: 0 0 1rem;
   text-wrap: balance;
-  color: var(--jb-text);
+  color: var(--page-hero-text, var(--jb-text));
 }
 
 .page-hero__lead {
   margin: 0;
   max-width: 42rem;
-  color: var(--jb-muted);
+  color: var(--page-hero-lead, var(--jb-muted));
 }
 
 .home-hero {
@@ -283,9 +318,9 @@ select:focus-visible {
   z-index: 1;
   background: linear-gradient(
     180deg,
-    rgba(31, 38, 32, 0.25) 0%,
-    rgba(31, 38, 32, 0.45) 45%,
-    rgba(31, 38, 32, 0.78) 100%
+    rgba(27, 36, 30, 0.22) 0%,
+    rgba(27, 36, 30, 0.48) 45%,
+    rgba(31, 46, 36, 0.82) 100%
   );
   pointer-events: none;
 }

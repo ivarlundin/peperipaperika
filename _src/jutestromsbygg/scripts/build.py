@@ -235,6 +235,15 @@ def footer_markup() -> str:
   <script src="/assets/js/hero-bg.js" defer></script>"""
 
 
+def page_hero_band(modifier: str, title: str, lead: str) -> str:
+    return f"""    <section class="page-hero page-hero--{modifier}">
+      <div class="wrap">
+        <h1>{esc(title)}</h1>
+        <p class="page-hero__lead">{esc(lead)}</p>
+      </div>
+    </section>"""
+
+
 def page_shell(path: str, main_body: str) -> str:
     labs_prefix = LABS_BUILD_PREFIX
     canonical_base = f"https://labs.ivarlundin.se{labs_prefix}" if labs_prefix else SITE
@@ -320,12 +329,7 @@ def tjanster_body() -> str:
             <p>{esc(body)}</p>
           </article>"""
         )
-    return f"""    <section class="page-hero">
-      <div class="wrap">
-        <h1>Tjänster</h1>
-        <p class="page-hero__lead">{esc(LOREM)}</p>
-      </div>
-    </section>
+    return f"""{page_hero_band("forest", "Tjänster", LOREM)}
     <section class="section">
       <div class="wrap">
         <div class="card-grid card-grid--2">
@@ -344,12 +348,7 @@ def referenser_body() -> str:
           <figcaption>{esc(caption)}</figcaption>
         </figure>"""
         )
-    return f"""    <section class="page-hero">
-      <div class="wrap">
-        <h1>Referenser</h1>
-        <p class="page-hero__lead">{esc(LOREM)}</p>
-      </div>
-    </section>
+    return f"""{page_hero_band("sage", "Referenser", LOREM)}
     <section class="section">
       <div class="wrap">
         <div class="gallery-grid" data-cms-gallery>
@@ -360,12 +359,7 @@ def referenser_body() -> str:
 
 
 def kontakt_body() -> str:
-    return f"""    <section class="page-hero">
-      <div class="wrap">
-        <h1>Kontakt</h1>
-        <p class="page-hero__lead">{esc(LOREM_SHORT)}</p>
-      </div>
-    </section>
+    return f"""{page_hero_band("kalk", "Kontakt", LOREM_SHORT)}
     <section class="section">
       <div class="wrap contact-grid">
         <div>
