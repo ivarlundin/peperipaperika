@@ -1,0 +1,30 @@
+{
+  "@context": "https://schema.org",
+  "@type": "GeneralContractor",
+  "name": "Juteströms Bygg",
+  "url": "https://www.jutestromsbygg.se/",
+  "telephone": "+46 70 000 00 00",
+  "email": "kontakt@jutestromsbygg.se",
+  "image": "https://www.jutestromsbygg.se/assets/img/logo-dark.svg",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Gatuadress 1",
+    "postalCode": "000 00",
+    "addressLocality": "Ort",
+    "addressRegion": "Län",
+    "addressCountry": "SE"
+  },
+  "areaServed": {
+    "@type": "GeoCircle",
+    "geoMidpoint": {
+      "@type": "GeoCoordinates",
+      "latitude": 59.33,
+      "longitude": 18.06
+    },
+    "geoRadius": 50000
+  },
+  "founder": {
+    "@type": "Person",
+    "name": "Sam [efternamn]"
+  }
+}
