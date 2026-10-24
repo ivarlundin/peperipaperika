@@ -1,4 +1,4 @@
-# CMS mode (Juteström Bygg)
+# CMS mode (Juteströms Bygg)
 
 CMS mode is an alpha editing layer for the labs preview. Normal visitors are unaffected until an editor activates CMS mode.
 

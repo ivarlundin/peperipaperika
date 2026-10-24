@@ -1,6 +1,6 @@
-# Juteström Bygg (site source)
+# Juteströms Bygg (site source)
 
-Static MVP for **Juteström Bygg** (Sams byggfirma). Labs preview is the build output at `testing/jutestromsbygg/` (do not edit that folder by hand).
+Static MVP for **Juteströms Bygg** (Sams byggfirma). Labs preview is the build output at `testing/jutestromsbygg/` (do not edit that folder by hand).
 
 ## Build
 

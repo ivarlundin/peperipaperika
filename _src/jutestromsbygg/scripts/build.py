@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the Juteström Bygg static site."""
+"""Generate the Juteströms Bygg static site."""
 
 from __future__ import annotations
 
@@ -73,19 +73,19 @@ BENEFITS = [
 
 PAGE_META: dict[str, dict[str, str]] = {
     "/": {
-        "title": "Juteström Bygg | Byggfirma",
-        "description": "Juteström Bygg är Sams byggfirma. Platshållarbeskrivning för startsidan.",
+        "title": "Juteströms Bygg | Byggfirma",
+        "description": "Juteströms Bygg är Sams byggfirma. Platshållarbeskrivning för startsidan.",
     },
     "/tjanster/": {
-        "title": "Tjänster | Juteström Bygg",
-        "description": "Platshållarbeskrivning av tjänster från Juteström Bygg.",
+        "title": "Tjänster | Juteströms Bygg",
+        "description": "Platshållarbeskrivning av tjänster från Juteströms Bygg.",
     },
     "/referenser/": {
-        "title": "Referenser | Juteström Bygg",
-        "description": "Platshållarbeskrivning av referensprojekt från Juteström Bygg.",
+        "title": "Referenser | Juteströms Bygg",
+        "description": "Platshållarbeskrivning av referensprojekt från Juteströms Bygg.",
     },
     "/kontakt/": {
-        "title": "Kontakt | Juteström Bygg",
+        "title": "Kontakt | Juteströms Bygg",
         "description": "Platshållarbeskrivning för kontakt och offertförfrågan.",
     },
 }
@@ -144,7 +144,7 @@ def head_block(
   <meta property="og:description" content="{esc(meta["description"])}">
   <meta property="og:url" content="{og_url}">
   <meta property="og:locale" content="sv_SE">
-  <meta property="og:site_name" content="Juteström Bygg">
+  <meta property="og:site_name" content="Juteströms Bygg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
@@ -172,8 +172,8 @@ def header_markup(current: str) -> str:
     logo = "/assets/img/logo-dark.svg"
     return f"""  <header class="site-header">
     <div class="wrap site-header__inner">
-      <a class="site-logo" href="{nav_path('/', "")}" aria-label="Juteström Bygg, startsida">
-        <img src="{logo}" alt="Juteström Bygg" width="160" height="72" decoding="async">
+      <a class="site-logo" href="{nav_path('/', "")}" aria-label="Juteströms Bygg, startsida">
+        <img src="{logo}" alt="Juteströms Bygg" width="160" height="72" decoding="async">
       </a>
       <nav aria-label="Huvudmeny">
         <ul class="site-nav">
@@ -205,10 +205,10 @@ def footer_markup() -> str:
     return f"""  <footer class="site-footer">
     <div class="wrap site-footer__inner">
       <div>
-        <a class="site-footer__logo" href="{nav_path('/', "")}" aria-label="Juteström Bygg">
-          <img src="{logo}" alt="Juteström Bygg" width="140" height="64" loading="lazy" decoding="async">
+        <a class="site-footer__logo" href="{nav_path('/', "")}" aria-label="Juteströms Bygg">
+          <img src="{logo}" alt="Juteströms Bygg" width="140" height="64" loading="lazy" decoding="async">
         </a>
-        <p class="site-footer__meta">© {BUILD_YEAR} Juteström Bygg. Platshållare.</p>
+        <p class="site-footer__meta">© {BUILD_YEAR} Juteströms Bygg. Platshållare.</p>
       </div>
       <ul class="site-footer__links">
 {links_html}
@@ -252,7 +252,7 @@ def home_body() -> str:
         <div class="home-hero__media">
           <img src="/assets/img/gallery/hero.svg" alt="Platshållarbild startsida" width="1200" height="800" decoding="async">
         </div>
-        <h1>Juteström Bygg</h1>
+        <h1>Juteströms Bygg</h1>
         <p class="page-hero__lead">{esc(LOREM)}</p>
       </div>
     </section>
@@ -531,7 +531,7 @@ def run_build(output_dir: Path | None = None, subpath: str = "") -> None:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Build the Juteström Bygg static site.")
+    parser = argparse.ArgumentParser(description="Build the Juteströms Bygg static site.")
     parser.add_argument("--output-dir", type=Path, default=None)
     parser.add_argument("--subpath", default="", help=f"Labs subpath (default: {LABS_SUBPATH_DEFAULT})")
     args = parser.parse_args()

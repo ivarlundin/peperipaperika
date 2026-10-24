@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Simple QA gate for Juteström Bygg (see README.md)."""
+"""Simple QA gate for Juteströms Bygg (see README.md)."""
 
 from __future__ import annotations
 
