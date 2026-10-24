@@ -231,7 +231,8 @@ def footer_markup() -> str:
       </div>
     </div>
   </footer>
-  <script src="{asset_js}" defer></script>"""
+  <script src="{asset_js}" defer></script>
+  <script src="/assets/js/hero-bg.js" defer></script>"""
 
 
 def page_shell(path: str, main_body: str) -> str:
@@ -264,14 +265,23 @@ def home_body() -> str:
         )
     cards_html = "\n".join(cards)
     hero_src = f"/assets/img/{HOME_HERO_IMAGE}"
+    hero_style = f"--hero-bg-image: url('{hero_src}');"
     return f"""    <section class="home-hero">
-      <div class="home-hero__media" data-cms-hero="home" aria-hidden="true">
-        <img class="home-hero__img" src="{hero_src}" alt="{esc(HOME_HERO_ALT)}" width="1600" height="900" decoding="async" fetchpriority="high">
+      <div class="home-hero__media" data-cms-hero="home" style="{hero_style}" aria-hidden="true">
+        <img class="home-hero__img" src="{hero_src}" alt="" width="1600" height="900" decoding="async" fetchpriority="high" role="presentation" data-cms-alt="{esc(HOME_HERO_ALT)}">
       </div>
       <div class="home-hero__scrim" aria-hidden="true"></div>
       <div class="wrap home-hero__content">
         <h1>Juteströms Bygg</h1>
         <p class="home-hero__lead">{esc(LOREM)}</p>
+      </div>
+    </section>
+    <section class="section section--tight">
+      <div class="wrap">
+        <h2>Titel lorem</h2>
+        <div class="card-grid card-grid--3">
+{cards_html}
+        </div>
       </div>
     </section>
     <section class="section">
@@ -288,9 +298,14 @@ def home_body() -> str:
     </section>
     <section class="section section--tight">
       <div class="wrap">
-        <h2>Titel lorem</h2>
-        <div class="card-grid card-grid--3">
-{cards_html}
+        <div class="home-contact-card">
+          <h2>Titel lorem</h2>
+          <p>{esc(LOREM_SHORT)}</p>
+          <p class="home-contact-card__lines">
+            <a href="tel:+46000000000">[00-000 00 00]</a><br>
+            <a href="mailto:kontakt@exempel.se">kontakt@exempel.se</a>
+          </p>
+          <a class="btn" href="/kontakt/">Kontakt</a>
         </div>
       </div>
     </section>"""
@@ -458,6 +473,18 @@ def _prefix_bare_asset_urls(text: str, prefix: str) -> str:
     )
 
 
+_STYLE_ASSET_URL = re.compile(r"url\((['\"]?)(/assets/[^'\"\)\s]+)\1\)")
+
+
+def _prefix_style_asset_urls(text: str, prefix: str) -> str:
+    def repl(match: re.Match[str]) -> str:
+        quote = match.group(1) or ""
+        path = match.group(2)
+        return f"url({quote}{prefix}{path}{quote})"
+
+    return _STYLE_ASSET_URL.sub(repl, text)
+
+
 def rewrite_root_relative_urls(target: Path, subpath: str) -> None:
     prefix = normalize_subpath(subpath)
     if not prefix:
@@ -491,6 +518,7 @@ def rewrite_root_relative_urls(target: Path, subpath: str) -> None:
         text = file_path.read_text(encoding="utf-8")
         updated = _ROOT_RELATIVE_URL.sub(replace_url, text)
         updated = _prefix_bare_asset_urls(updated, prefix)
+        updated = _prefix_style_asset_urls(updated, prefix)
         if updated != text:
             file_path.write_text(updated, encoding="utf-8")
 

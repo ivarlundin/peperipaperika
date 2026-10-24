@@ -93,9 +93,6 @@ def _page_slug(rel_html: str) -> str:
 
 
 def _source_file_for_page(rel_html: str) -> str:
-    rel = rel_html.replace("\\", "/")
-    if rel == "index.html":
-        return "home/index.html"
     return "scripts/build.py"
 
 
