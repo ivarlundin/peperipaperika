@@ -17,8 +17,8 @@ IMAGE_MANIFEST_DEFAULT_ALT: dict[str, str] = {
     "gallery/projekt-04.svg": "Platshållarbild projekt 4",
     "gallery/projekt-05.svg": "Platshållarbild projekt 5",
     "gallery/projekt-06.svg": "Platshållarbild projekt 6",
-    "gallery/sam-portratt.svg": "Platshållarbild porträtt Sam",
-    "gallery/hero.svg": "Platshållarbild startsida",
+    "gallery/sam-portratt.svg": "Platshållarbild #1",
+    "gallery/byggbil-projekt.svg": "Platshållarbild byggbil vid projekt",
 }
 
 

@@ -354,7 +354,9 @@
       var heroKey = container.getAttribute("data-cms-hero");
       if (!heroKey) return;
       var host =
-        container.closest(".alt-hero__media, .alt-service-hero__media, .alt-hero, .alt-service-hero") ||
+        container.closest(
+          ".home-hero, .alt-hero__media, .alt-service-hero__media, .alt-hero, .alt-service-hero"
+        ) ||
         container;
       if (host.querySelector(".cms-hero-edit-btn")) return;
       var btn = document.createElement("button");

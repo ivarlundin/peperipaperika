@@ -46,7 +46,8 @@ html.cms-mode-active body {
 }
 
 .cms-mode-active [data-cms-hero] .alt-hero__slide img,
-.cms-mode-active [data-cms-hero] .alt-service-hero__img {
+.cms-mode-active [data-cms-hero] .alt-service-hero__img,
+.cms-mode-active [data-cms-hero] .home-hero__img {
   opacity: 1 !important;
 }
 

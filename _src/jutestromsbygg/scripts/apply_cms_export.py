@@ -141,12 +141,40 @@ def apply_image_list_service_build(text: str, hero_key: str, new_list: list[dict
     return text[: match.start()] + replacement + text[match.end() :]
 
 
+def apply_image_list_jb_home_build(text: str, new_list: list[dict]) -> str:
+    if not new_list:
+        return text
+    item = new_list[0]
+    manifest_id = item.get("manifestId", "")
+    alt = item.get("alt") or ""
+    if manifest_id:
+        text = re.sub(
+            r'^HOME_HERO_IMAGE = "[^"]*"',
+            f'HOME_HERO_IMAGE = "{manifest_id}"',
+            text,
+            count=1,
+            flags=re.MULTILINE,
+        )
+    if alt:
+        alt_esc = alt.replace("\\", "\\\\").replace('"', '\\"')
+        text = re.sub(
+            r'^HOME_HERO_ALT = "[^"]*"',
+            f'HOME_HERO_ALT = "{alt_esc}"',
+            text,
+            count=1,
+            flags=re.MULTILINE,
+        )
+    return text
+
+
 def apply_image_list(change: dict, text: str, source: str) -> str:
     meta = change.get("meta") or {}
     hero_key = meta.get("heroKey", "")
     new_list = meta.get("newList") or []
     if hero_key == "home" and source.endswith("home/index.html"):
         return apply_image_list_home(text, change)
+    if hero_key == "home" and source.endswith("scripts/build.py"):
+        return apply_image_list_jb_home_build(text, new_list)
     if source.endswith("scripts/build.py") and hero_key in ("brollop", "foretag", "mingel"):
         if not new_list:
             return text

@@ -24,6 +24,9 @@ SITE = "https://www.jutestromsbygg.se"
 LABS_SUBPATH_DEFAULT = "/testing/jutestromsbygg"
 BUILD_YEAR = datetime.now(timezone.utc).year
 
+HOME_HERO_IMAGE = "gallery/byggbil-projekt.svg"
+HOME_HERO_ALT = "Platshållarbild byggbil vid projekt"
+
 LOREM_SHORT = (
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor "
     "incididunt ut labore et dolore magna aliqua."
@@ -198,21 +201,34 @@ def header_markup(current: str) -> str:
 def footer_markup() -> str:
     links = []
     for href, label in NAV:
-        links.append(f'          <li><a href="{nav_path(href, "")}">{esc(label)}</a></li>')
+        links.append(f'            <li><a href="{nav_path(href, "")}">{esc(label)}</a></li>')
     links_html = "\n".join(links)
     logo = "/assets/img/logo-inverted.svg"
     asset_js = "/assets/js/nav.js"
     return f"""  <footer class="site-footer">
-    <div class="wrap site-footer__inner">
-      <div>
+    <div class="wrap site-footer__grid">
+      <div class="site-footer__col site-footer__brand">
         <a class="site-footer__logo" href="{nav_path('/', "")}" aria-label="Juteströms Bygg">
           <img src="{logo}" alt="Juteströms Bygg" width="140" height="64" loading="lazy" decoding="async">
         </a>
-        <p class="site-footer__meta">© {BUILD_YEAR} Juteströms Bygg. Platshållare.</p>
+        <p class="site-footer__meta">© {BUILD_YEAR} Juteströms Bygg</p>
       </div>
-      <ul class="site-footer__links">
+      <div class="site-footer__col">
+        <p class="site-footer__col-title">Titel lorem</p>
+        <ul class="site-footer__links">
 {links_html}
-      </ul>
+        </ul>
+      </div>
+      <div class="site-footer__col site-footer__contact">
+        <p class="site-footer__col-title">Titel lorem</p>
+        <ul class="site-footer__contact-list">
+          <li>[Gatuadress 1]</li>
+          <li>[000 00 Ort]</li>
+          <li><a href="mailto:kontakt@exempel.se">kontakt@exempel.se</a></li>
+          <li><a href="tel:+46000000000">[00-000 00 00]</a></li>
+          <li>Org.nr [000000-0000]</li>
+        </ul>
+      </div>
     </div>
   </footer>
   <script src="{asset_js}" defer></script>"""
@@ -247,22 +263,24 @@ def home_body() -> str:
           </article>"""
         )
     cards_html = "\n".join(cards)
+    hero_src = f"/assets/img/{HOME_HERO_IMAGE}"
     return f"""    <section class="home-hero">
-      <div class="wrap">
-        <div class="home-hero__media">
-          <img src="/assets/img/gallery/hero.svg" alt="Platshållarbild startsida" width="1200" height="800" decoding="async">
-        </div>
+      <div class="home-hero__media" data-cms-hero="home" aria-hidden="true">
+        <img class="home-hero__img" src="{hero_src}" alt="{esc(HOME_HERO_ALT)}" width="1600" height="900" decoding="async" fetchpriority="high">
+      </div>
+      <div class="home-hero__scrim" aria-hidden="true"></div>
+      <div class="wrap home-hero__content">
         <h1>Juteströms Bygg</h1>
-        <p class="page-hero__lead">{esc(LOREM)}</p>
+        <p class="home-hero__lead">{esc(LOREM)}</p>
       </div>
     </section>
     <section class="section">
       <div class="wrap about-split">
         <div class="about-split__img">
-          <img src="/assets/img/gallery/sam-portratt.svg" alt="Platshållarbild porträtt Sam" width="800" height="1000" loading="lazy" decoding="async">
+          <img src="/assets/img/gallery/sam-portratt.svg" alt="Platshållarbild #1" width="800" height="1000" loading="lazy" decoding="async">
         </div>
         <div>
-          <h2>Om Sam</h2>
+          <h2>Titel lorem</h2>
           <p>{esc(LOREM_LONG)}</p>
           <p>{esc(LOREM)}</p>
         </div>
@@ -270,7 +288,7 @@ def home_body() -> str:
     </section>
     <section class="section section--tight">
       <div class="wrap">
-        <h2>Fördelar</h2>
+        <h2>Titel lorem</h2>
         <div class="card-grid card-grid--3">
 {cards_html}
         </div>
@@ -336,7 +354,7 @@ def kontakt_body() -> str:
     <section class="section">
       <div class="wrap contact-grid">
         <div>
-          <h2>Kontaktuppgifter</h2>
+          <h2>Titel lorem</h2>
           <p>{esc(LOREM_SHORT)}</p>
           <ul class="contact-details">
             <li>Telefon: <span>[00-000 00 00]</span></li>
@@ -345,7 +363,7 @@ def kontakt_body() -> str:
           </ul>
         </div>
         <div>
-          <h2>Offertförfrågan</h2>
+          <h2>Titel lorem</h2>
           <p>{esc(LOREM_SHORT)}</p>
           <form class="offert-form" action="#" method="post" data-offert-placeholder>
             <label>

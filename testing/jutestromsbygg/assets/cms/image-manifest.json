@@ -3,14 +3,23 @@
   "generated": true,
   "images": [
     {
+      "id": "gallery/byggbil-projekt.svg",
+      "label": "byggbil-projekt.svg",
+      "default": "/testing/jutestromsbygg/assets/img/gallery/byggbil-projekt.svg",
+      "variants": {
+        "default": "/testing/jutestromsbygg/assets/img/gallery/byggbil-projekt.svg"
+      },
+      "srcset": "",
+      "alt": "Platsh\u00e5llarbild byggbil vid projekt"
+    },
+    {
       "id": "gallery/hero.svg",
       "label": "hero.svg",
       "default": "/testing/jutestromsbygg/assets/img/gallery/hero.svg",
       "variants": {
         "default": "/testing/jutestromsbygg/assets/img/gallery/hero.svg"
       },
-      "srcset": "",
-      "alt": "Platsh\u00e5llarbild startsida"
+      "srcset": ""
     },
     {
       "id": "gallery/projekt-01.svg",
@@ -80,7 +89,7 @@
         "default": "/testing/jutestromsbygg/assets/img/gallery/sam-portratt.svg"
       },
       "srcset": "",
-      "alt": "Platsh\u00e5llarbild portr\u00e4tt Sam"
+      "alt": "Platsh\u00e5llarbild #1"
     },
     {
       "id": "logo-black.svg",
