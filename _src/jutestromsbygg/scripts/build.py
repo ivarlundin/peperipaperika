@@ -308,13 +308,17 @@ def home_body() -> str:
     <section class="section section--tight">
       <div class="wrap">
         <div class="home-contact-card">
-          <h2>Titel lorem</h2>
-          <p>{esc(LOREM_SHORT)}</p>
-          <p class="home-contact-card__lines">
-            <a href="tel:+46000000000">[00-000 00 00]</a><br>
-            <a href="mailto:kontakt@exempel.se">kontakt@exempel.se</a>
-          </p>
-          <a class="btn" href="/kontakt/">Kontakt</a>
+          <div class="home-contact-card__main">
+            <h2>Titel lorem</h2>
+            <p>{esc(LOREM_SHORT)}</p>
+          </div>
+          <div class="home-contact-card__aside">
+            <p class="home-contact-card__lines">
+              <a href="tel:+46000000000">[00-000 00 00]</a><br>
+              <a href="mailto:kontakt@exempel.se">kontakt@exempel.se</a>
+            </p>
+            <a class="btn" href="/kontakt/">Kontakt</a>
+          </div>
         </div>
       </div>
     </section>"""
