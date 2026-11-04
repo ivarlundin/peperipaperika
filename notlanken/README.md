@@ -1,4 +1,4 @@
-# Notlåda
+# Notlänken ™
 
 Privat MIDI-spelare för GitHub Pages (`/notlanken/`). Sidan indexeras inte (meta `noindex` + `robots.txt`).
 
@@ -28,10 +28,10 @@ Spelaren kan generera **trummor, bas och piano** från ackord- och delmarkörer.
 - Skrivna stämmor (blås, melodi, …) spelas oförändrade. Inga andra instrument genereras.
 - Genererade kanaler märks **(auto)** i mixern, med stor MUTE-knapp.
 - **Komp**-reglaget, stilmeny och variant Auto A/B / A / B sitter ovanför transporten. Stilbyte under uppspelning regenererar från nästa takt utan hängande noter.
-- Standardpiano = **Rhodes** (`samples/rhodes/`). Stilar ligger i `styles/*.json` (portade från Nesticos `grooves.yaml`).
+- Standardpiano = **akustiskt piano** (`samples/piano/`). Rhodes finns kvar i sample-biblioteket. Stilar ligger i `styles/*.json` (portade från Nesticos `grooves.yaml`).
 - Valfri styrinfo: textevent `komp:stil=twelve8 (alias → blues)` m.m. (se planen).
 - Enhetstest (utan ljud): `cd notlanken && npm i && npm test`
-  (inkl. regression för markers-only `last-christmas-d-v03-markers.mid`)
+  (regression för markers-only `midi/archive/last-christmas-d-v03-markers.mid`)
 
 ## Ljud
 

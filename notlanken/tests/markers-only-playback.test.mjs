@@ -6,7 +6,7 @@
  *   barStarts(midi, 0) → [0] only
  *   generate → 0 events (t1 <= t0)
  */
-import { readFileSync, readdirSync } from 'fs';
+import { readFileSync, readdirSync, existsSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { createRequire } from 'module';
@@ -32,7 +32,10 @@ function assert(cond, msg) {
 }
 
 function loadMidi(file) {
-  const buf = readFileSync(join(root, 'midi', file));
+  const primary = join(root, 'midi', file);
+  const archived = join(root, 'midi/archive', file);
+  const path = existsSync(primary) ? primary : archived;
+  const buf = readFileSync(path);
   return new Midi(buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength));
 }
 

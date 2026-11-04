@@ -1,4 +1,4 @@
-# Sample licenses (Notlåda)
+# Sample licenses (Notlänken ™)
 
 All files in this folder are redistributable in this public repository. Keep this file when adding samples.
 
