@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node tests/autokomp.test.mjs && node tests/autokomp-rules.test.mjs && node tests/drum-sample-attack.test.mjs && node tests/markers-only-playback.test.mjs && node tests/song-load-guard.test.mjs && node tests/envelope-schedule.test.mjs && node tests/prepare-cache.test.mjs",
+    "test": "node tests/autokomp.test.mjs && node tests/autokomp-rules.test.mjs && node tests/autokomp-utan-komp-events.test.mjs && node tests/autokomp-style-drums.test.mjs && node tests/drum-map.test.mjs && node tests/drum-sample-attack.test.mjs && node tests/markers-only-playback.test.mjs && node tests/song-load-guard.test.mjs && node tests/envelope-schedule.test.mjs && node tests/prepare-cache.test.mjs",
     "test:e2e": "playwright test"
   },
   "devDependencies": {
