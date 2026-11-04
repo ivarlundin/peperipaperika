@@ -55,7 +55,8 @@ fetch_drums() {
   curl -fsSL "$kit/tom2.mp3" -o /tmp/t2.mp3 && to_ogg /tmp/t2.mp3 "$SAMPLES/drums/47-mid-tom.ogg"
   curl -fsSL "$kit/tom3.mp3" -o /tmp/t3.mp3 && to_ogg /tmp/t3.mp3 "$SAMPLES/drums/50-high-tom.ogg"
   curl -fsSL "$GLEITZ/reverse_cymbal-mp3/C5.mp3" -o /tmp/crash.mp3 && to_ogg /tmp/crash.mp3 "$SAMPLES/drums/49-crash.ogg"
-  curl -fsSL "$GLEITZ/steel_drums-mp3/C5.mp3" -o /tmp/ride.mp3 && to_ogg /tmp/ride.mp3 "$SAMPLES/drums/51-ride.ogg"
+  curl -fsSL "$GLEITZ/reverse_cymbal-mp3/C4.mp3" -o /tmp/ride.mp3 && to_ogg /tmp/ride.mp3 "$SAMPLES/drums/51-ride.ogg"
+  curl -fsSL "$GLEITZ/reverse_cymbal-mp3/C6.mp3" -o /tmp/bell.mp3 && to_ogg /tmp/bell.mp3 "$SAMPLES/drums/53-ride-bell.ogg"
   curl -fsSL "$kit/tom2.mp3" -o /tmp/floor.mp3 && to_ogg /tmp/floor.mp3 "$SAMPLES/drums/41-floor-tom.ogg"
   curl -fsSL "$kit/tom1.mp3" -o /tmp/ht.mp3 && to_ogg /tmp/ht.mp3 "$SAMPLES/drums/43-high-floor-tom.ogg"
 }

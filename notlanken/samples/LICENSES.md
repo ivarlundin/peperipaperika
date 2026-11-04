@@ -19,8 +19,9 @@ All files in this folder are redistributable in this public repository. Keep thi
 | File | Source |
 |------|--------|
 | `36-kick`, `38-snare`, `42-closed-hat`, `45-low-tom`, `47-mid-tom`, `50-high-tom`, `41-floor-tom`, `43-high-floor-tom`, `46-open-hat` | [Tone.js Audio – acoustic-kit](https://github.com/Tonejs/audio/tree/master/drum-samples/acoustic-kit) (cwilso/web-audio-samples lineage) |
-| `49-crash` | FluidR3 `reverse_cymbal` (gleitz mirror), OGG |
-| `51-ride` | FluidR3 `steel_drums` (gleitz mirror), OGG — used as ride substitute |
+| `49-crash` | FluidR3 `reverse_cymbal` C5 (gleitz mirror), OGG |
+| `51-ride` | FluidR3 `reverse_cymbal` C4 (gleitz mirror), OGG — ride body (GM 51) |
+| `53-ride-bell` | FluidR3 `reverse_cymbal` C6 (gleitz mirror), OGG — ride bell (GM 53) |
 
 Verify acoustic-kit terms before replacing; if unclear, swap for CC0 Kenney impacts via `scripts/fetch-samples.sh`.
 

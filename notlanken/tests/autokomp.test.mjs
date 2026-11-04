@@ -105,7 +105,7 @@ for (const id of catalog.styles) {
   assert(ev.every((e) => ['drums', 'bass', 'piano'].includes(e.group)), `${id} trio only`);
   const drumMidi = new Set(ev.filter((e) => e.group === 'drums').map((e) => e.midi));
   for (const m of drumMidi) {
-    assert([36, 38, 42, 46, 49, 51].includes(m), `${id}: unexpected drum midi ${m}`);
+    assert([36, 38, 42, 46, 49, 51, 53].includes(m), `${id}: unexpected drum midi ${m}`);
   }
   // bossa rim pattern lands on snare (no separate rim/tom voice)
   if (id === 'bossa') {
