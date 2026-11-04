@@ -35,7 +35,7 @@ Spelaren kan generera **trummor, bas och piano** från ackord- och delmarkörer.
 
 ## Ljud
 
-Självhostade samples under `samples/` (Rhodes, akustiskt piano, bas, trummor, blås + FluidR3-fallback). Se `samples/LICENSES.md` och `scripts/fetch-samples.sh`.
+Självhostade samples under `samples/` (Salamander-piano, trummor m.m.). **Bas, blås och sax** spelas via FluidR3 soundfonts (laddas från `samples/gm-fallback/` om filen finns, annars gleitz CDN). Se `samples/LICENSES.md` och `scripts/fetch-samples.sh`.
 
 ## Tangenter (desktop)
 

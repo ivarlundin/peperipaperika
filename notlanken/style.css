@@ -275,7 +275,8 @@ button.ghost.small {
 /* —— Moving lane + piano roll —— */
 .lane {
   position: relative;
-  height: 8.5rem;
+  min-height: 10.5rem;
+  height: 10.5rem;
   margin-bottom: var(--space);
   border: 1px solid var(--border);
   border-left: 3px solid var(--accent);
@@ -329,10 +330,22 @@ button.ghost.small {
   position: absolute;
   top: 1.85rem;
   padding-left: 0.3rem;
-  font-size: 1.05rem;
+  font-size: clamp(0.62rem, 2.6vw, 0.92rem);
   font-weight: 600;
-  color: var(--text);
+  color: #e8f2e4;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 5.5rem;
+  line-height: 1.15;
+  pointer-events: none;
+}
+
+.lane-chord-stacked {
+  top: auto;
+  padding: 0 0.15rem;
+  background: rgba(20, 40, 28, 0.45);
+  border-radius: 3px;
 }
 
 .lane-section,
@@ -1307,6 +1320,8 @@ button.ghost {
   font-size: 0.7rem;
   color: rgba(15, 26, 20, 0.85);
   font-style: italic;
+}
+
 .komp-field select,
 .song-search input,
 .note-dialog textarea,

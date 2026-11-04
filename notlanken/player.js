@@ -304,8 +304,8 @@ function renderTimeline() {
   renderLane();
 }
 
-const LANE_BARS = 8;
 const LANE_PAD = 4;
+const LANE_MIN_BAR_PX = 76;
 let lanePps = 40;
 let laneSectionEls = [];
 let lanePinnedLabel = '';
@@ -367,7 +367,7 @@ function drawRoll() {
   ctx.clearRect(0, 0, rollW, rollH);
   if (!events.length) return;
 
-  const top = 54;
+  const top = 62;
   const bottom = rollH - 24;
   const h = Math.max(10, bottom - top);
   const span = rollMax - rollMin;
@@ -407,6 +407,59 @@ function drawRoll() {
   ctx.globalAlpha = 1;
 }
 
+function laneVisibleBars() {
+  const w = lane?.clientWidth || 320;
+  if (w < 380) return 3;
+  if (w < 520) return 4;
+  return 5;
+}
+
+function chordBarIndex(bars, time) {
+  let idx = 0;
+  for (let i = 0; i < bars.length; i++) {
+    if (bars[i] <= time + 0.001) idx = i;
+  }
+  return idx;
+}
+
+function appendLaneChords(bars, barDur) {
+  const barPx = lanePps * barDur;
+  /** @type {Map<number, { time: number, symbol: string }[]>} */
+  const byBar = new Map();
+  for (const c of chords) {
+    const bi = chordBarIndex(bars, c.time);
+    if (!byBar.has(bi)) byBar.set(bi, []);
+    byBar.get(bi).push(c);
+  }
+
+  for (const [bi, list] of byBar) {
+    list.sort((a, b) => a.time - b.time);
+    const barStart = bars[bi] ?? 0;
+    const n = list.length;
+    const slotW = Math.max(28, barPx / n - 3);
+
+    list.forEach((c, idx) => {
+      const el = document.createElement('span');
+      el.className = 'lane-chord' + (n > 1 ? ' lane-chord-stacked' : '');
+      const x = n === 1
+        ? c.time * lanePps
+        : barStart * lanePps + idx * (barPx / n) + 2;
+      el.style.left = `${x}px`;
+      if (n > 1) {
+        el.style.top = `${1.65 + idx * 1.05}rem`;
+        el.style.maxWidth = `${Math.max(32, slotW)}px`;
+      }
+      let label = c.symbol;
+      if (slotW < 52 && label.length > 7) {
+        label = `${label.slice(0, 6)}…`;
+      }
+      el.textContent = label;
+      el.title = c.symbol;
+      laneTrack.appendChild(el);
+    });
+  }
+}
+
 function renderLane() {
   laneTrack.innerHTML = '';
   laneSectionEls = [];
@@ -421,7 +474,8 @@ function renderLane() {
   const width = lane.clientWidth || 320;
   const bars = barStarts(midi, duration);
   const barDur = bars.length > 1 ? bars[1] - bars[0] : 2;
-  lanePps = width / (LANE_BARS * barDur);
+  const visibleBars = laneVisibleBars();
+  lanePps = Math.max(width / (visibleBars * barDur), LANE_MIN_BAR_PX / barDur);
   laneTrack.style.width = `${duration * lanePps + width}px`;
 
   bars.forEach((time, i) => {
@@ -432,9 +486,7 @@ function renderLane() {
     laneTrack.appendChild(line);
   });
 
-  for (const c of chords) {
-    laneTrack.appendChild(laneItem('span', 'lane-chord', c.time, c.symbol));
-  }
+  appendLaneChords(bars, barDur);
 
   for (const s of sections) {
     const el = laneItem('button', 'lane-section', s.time, s.label);

@@ -3,6 +3,34 @@ import { gmInstrumentName } from './gm-programs.js';
 
 const GROUPS = ['piano', 'bass', 'drums', 'brass', 'other'];
 
+/** Natural release tail after MIDI note-off (seconds). */
+const GROUP_RELEASE = {
+  piano: 0.42,
+  bass: 0.55,
+  drums: 0,
+  brass: 0.58,
+  other: 0.5,
+};
+
+/** Minimum held time so staccato MIDI still has body (seconds). */
+const GROUP_MIN_HOLD = {
+  piano: 0.05,
+  bass: 0.07,
+  brass: 0.09,
+  other: 0.08,
+};
+
+/** FluidR3 soundfonts (gleitz) — full multisample, no sparse-zone pitch shift. */
+const MELODIC_SOUNDFONT = {
+  bass: { name: 'electric_bass_finger', group: 'bass' },
+  trumpet: { name: 'trumpet', group: 'brass' },
+  trombone: { name: 'trombone', group: 'brass' },
+  tenor_sax: { name: 'tenor_sax', group: 'brass' },
+  brass_section: { name: 'brass_section', group: 'brass' },
+};
+
+const SOUNDFONT_CDN = 'https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM';
+
 /** Per-group gain before velocity (keeps dense arrangements under headroom) */
 const GROUP_HEADROOM = {
   piano: 0.32,
@@ -53,11 +81,6 @@ const GM_FALLBACK_MAP = {
 const MELODIC_FOLDERS = [
   'samples/piano',
   'samples/rhodes',
-  'samples/bass',
-  'samples/trumpet',
-  'samples/trombone',
-  'samples/tenor_sax',
-  'samples/brass_section',
 ];
 
 function voiceToGroup(voice) {
@@ -102,6 +125,8 @@ export class AudioEngine {
     this.groupNodes = {};
     this.buffers = new Map();
     this.gmPlayers = new Map();
+    /** @type {Map<string, import('soundfont-player').Instrument>} */
+    this.sfPlayers = new Map();
     this.melodicZones = new Map();
     this.sessionId = 0;
     /** @type {Set<AudioBufferSourceNode>} */
@@ -152,7 +177,7 @@ export class AudioEngine {
         const send = this.ac.createGain();
         const filter = this.ac.createBiquadFilter();
         filter.type = 'lowpass';
-        filter.frequency.value = g === 'drums' ? 12000 : g === 'bass' ? 5200 : 7800;
+        filter.frequency.value = g === 'drums' ? 14000 : g === 'bass' ? 6800 : 9800;
         filter.Q.value = 0.7;
         dry.connect(filter);
         filter.connect(this.reverbDry);
@@ -332,7 +357,72 @@ export class AudioEngine {
 
   async _preloadGmFallbacks() {
     const gmNames = new Set(Object.values(GM_FALLBACK_MAP));
-    await Promise.all([...gmNames].map((name) => this.loadGmPlayer(name).catch(() => null)));
+    await Promise.all([
+      ...[...gmNames].map((name) => this.loadGmPlayer(name).catch(() => null)),
+      ...Object.values(MELODIC_SOUNDFONT).map(({ name, group }) =>
+        this.loadSoundfontPlayer(name, group).catch(() => null)),
+    ]);
+  }
+
+  _soundfontUrls(name) {
+    const local = new URL(`samples/gm-fallback/${name}-mp3.js`, this.baseUrl).href;
+    const remote = `${SOUNDFONT_CDN}/${name}-mp3.js`;
+    return [local, remote];
+  }
+
+  async loadSoundfontPlayer(name, group) {
+    const key = `sf:${name}:${group}`;
+    if (this.sfPlayers.has(key)) return this.sfPlayers.get(key);
+    const ac = await this.ensureContext();
+    const mod = await import('https://esm.sh/soundfont-player@0.12.0');
+    const Soundfont = mod.default || mod;
+    const out = ac.createGain();
+    this._routeToGroup(out, group);
+    let player = null;
+    for (const url of this._soundfontUrls(name)) {
+      try {
+        player = await Soundfont.instrument(ac, url, { destination: out, gain: 1 });
+        break;
+      } catch {
+        /* try next URL */
+      }
+    }
+    if (!player) throw new Error(`Soundfont saknas: ${name}`);
+    this.sfPlayers.set(key, player);
+    return player;
+  }
+
+  _sfPlayerForVoice(voiceKind) {
+    const spec = MELODIC_SOUNDFONT[voiceKind];
+    if (!spec) return null;
+    return this.sfPlayers.get(`sf:${spec.name}:${spec.group}`) || null;
+  }
+
+  _triggerSoundfontVoice(voiceKind, midi, when, duration, velocity) {
+    const spec = MELODIC_SOUNDFONT[voiceKind];
+    if (!spec) return false;
+    const player = this._sfPlayerForVoice(voiceKind);
+    if (!player) return false;
+    const group = spec.group;
+    const hold = duration > 0
+      ? Math.max(duration / this.rate, GROUP_MIN_HOLD[group] ?? 0.08)
+      : 0.45;
+    const release = GROUP_RELEASE[group] ?? 0.45;
+    try {
+      const node = player.play(midi, when, {
+        duration: hold + release,
+        gain: scaledGain(velocity, group),
+        attack: 0.012,
+        release,
+      });
+      if (node?.stop) {
+        this.activeSources.add(node);
+        node.onended = () => this.activeSources.delete(node);
+      }
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   _routeToGroup(gainNode, group) {
@@ -340,33 +430,31 @@ export class AudioEngine {
     gainNode.connect(this.groupNodes[group].send);
   }
 
-  _applyNoteEnvelope(gainNode, when, peak, durationSec) {
-    const ac = this.ac;
-    const d = Math.max(0.04, durationSec);
-    const a = 0.006;
-    const r = Math.min(0.14, Math.max(0.05, d * 0.28));
-    const sustainStart = Math.max(a + 0.001, Math.min(d - r, a + (d - a - r) * 0.55));
+  _applyHeldEnvelope(gainNode, when, peak, holdSec, releaseSec) {
+    const h = Math.max(0.008, holdSec);
+    const r = Math.max(0.12, releaseSec);
     gainNode.gain.cancelScheduledValues(when);
     gainNode.gain.setValueAtTime(0.0001, when);
-    gainNode.gain.exponentialRampToValueAtTime(Math.max(peak, 0.0001), when + a);
-    gainNode.gain.setValueAtTime(peak * 0.92, when + sustainStart);
-    gainNode.gain.exponentialRampToValueAtTime(0.0001, when + d);
+    gainNode.gain.exponentialRampToValueAtTime(Math.max(peak, 0.0001), when + 0.01);
+    gainNode.gain.setValueAtTime(peak, when + 0.01);
+    gainNode.gain.setValueAtTime(peak, when + h);
+    gainNode.gain.exponentialRampToValueAtTime(0.0001, when + h + r);
   }
 
-  _startMelodicSample(buf, zoneMidi, targetMidi, when, playDur, peak, group) {
+  _startMelodicSample(buf, zoneMidi, targetMidi, when, holdSec, releaseSec, peak, group) {
     const ac = this.ac;
     const rate = Math.pow(2, (targetMidi - zoneMidi) / 12);
+    const maxLen = buf.duration / rate;
+    const audioLen = Math.min(maxLen, holdSec + releaseSec);
     const src = ac.createBufferSource();
     src.buffer = buf;
     src.playbackRate.value = rate;
     const g = ac.createGain();
-    this._applyNoteEnvelope(g, when, peak, playDur);
+    this._applyHeldEnvelope(g, when, peak, holdSec, releaseSec);
     src.connect(g);
     this._routeToGroup(g, group);
-    const offset = 0;
-    const len = Math.min(playDur, buf.duration / rate);
     try {
-      src.start(when, offset, len);
+      src.start(when, 0, audioLen);
     } catch {
       return null;
     }
@@ -383,46 +471,48 @@ export class AudioEngine {
     if (!pair) return;
 
     const peak = scaledGain(velocity, group);
+    const hold = duration > 0
+      ? Math.max(duration / this.rate, GROUP_MIN_HOLD[group] ?? 0.05)
+      : 0.5;
+    const release = GROUP_RELEASE[group] ?? 0.4;
+
     const playOne = (zone, noteMidi, gainScale) => {
       const buf = this.buffers.get(zone.file);
       if (!buf) return;
-      const rate = Math.pow(2, (noteMidi - zone.midi) / 12);
-      const maxLen = buf.duration / rate;
-      const playDur = duration > 0
-        ? Math.min(duration / this.rate, maxLen)
-        : Math.min(maxLen, 3.2);
       if (when < ac.currentTime - 0.02) return;
-      this._startMelodicSample(buf, zone.midi, noteMidi, when, playDur, peak * gainScale, group);
+      this._startMelodicSample(
+        buf, zone.midi, noteMidi, when, hold, release, peak * gainScale, group,
+      );
     };
 
-    if (pair.upper && pair.t > 0.12 && pair.t < 0.88 && (pair.upper.midi - pair.lower.midi) <= 5) {
+    if (pair.upper && pair.t > 0.15 && pair.t < 0.85 && (pair.upper.midi - pair.lower.midi) <= 4) {
       playOne(pair.lower, midi, 1 - pair.t);
       playOne(pair.upper, midi, pair.t);
       return;
     }
 
-    const zone = pair.upper && pair.t >= 0.98 ? pair.upper : pair.lower;
+    const zone = pair.upper && pair.t >= 0.85 ? pair.upper : pair.lower;
     playOne(zone, midi, 1);
   }
 
   _triggerDrum(midi, when, duration, velocity) {
     const ac = this.ac;
     const file = drumSampleFile(midi);
-    if (!file) return; // skip toms / unmapped percussion
+    if (!file) return;
     const buf = this.buffers.get(`samples/drums/${file}`);
     if (!buf) return;
     if (when < ac.currentTime - 0.02) return;
 
-    const len = duration > 0 ? Math.min(duration / this.rate, buf.duration) : buf.duration;
     const src = ac.createBufferSource();
     src.buffer = buf;
     const g = ac.createGain();
     const peak = scaledGain(velocity, 'drums');
-    this._applyNoteEnvelope(g, when, peak, len);
+    g.gain.setValueAtTime(0.0001, when);
+    g.gain.exponentialRampToValueAtTime(Math.max(peak, 0.0001), when + 0.002);
     src.connect(g);
     this._routeToGroup(g, 'drums');
     try {
-      src.start(when, 0, len);
+      src.start(when, 0);
     } catch {
       return;
     }
@@ -456,9 +546,15 @@ export class AudioEngine {
       return;
     }
     try {
+      const hold = duration > 0
+        ? Math.max(duration / this.rate, GROUP_MIN_HOLD.other)
+        : 0.45;
+      const release = GROUP_RELEASE.other;
       const node = player.play(midi, when, {
-        duration: duration / this.rate,
+        duration: hold + release,
         gain: scaledGain(velocity, 'other'),
+        attack: 0.012,
+        release,
       });
       if (node?.stop) {
         this.activeSources.add(node);
@@ -557,24 +653,15 @@ export class AudioEngine {
         this._triggerMelodic(folder, ev.midi, when, ev.duration, vel, group);
         continue;
       }
+      if (MELODIC_SOUNDFONT[voice.kind]) {
+        if (this._triggerSoundfontVoice(voice.kind, ev.midi, when, ev.duration, vel)) continue;
+      }
       if (voice.kind === 'bass') {
         this._triggerMelodic('samples/bass', ev.midi, when, ev.duration, vel, group);
         continue;
       }
-      if (voice.kind === 'trumpet') {
-        this._triggerMelodic('samples/trumpet', ev.midi, when, ev.duration, vel, group);
-        continue;
-      }
-      if (voice.kind === 'trombone') {
-        this._triggerMelodic('samples/trombone', ev.midi, when, ev.duration, vel, group);
-        continue;
-      }
-      if (voice.kind === 'tenor_sax') {
-        this._triggerMelodic('samples/tenor_sax', ev.midi, when, ev.duration, vel, group);
-        continue;
-      }
-      if (voice.kind === 'brass_section') {
-        this._triggerMelodic('samples/brass_section', ev.midi, when, ev.duration, vel, group);
+      if (voice.kind === 'trumpet' || voice.kind === 'trombone' || voice.kind === 'tenor_sax' || voice.kind === 'brass_section') {
+        this._triggerMelodic(`samples/${voice.kind}`, ev.midi, when, ev.duration, vel, group);
         continue;
       }
       this._triggerGm(ev.program, ev.midi, when, ev.duration, ev.velocity);
