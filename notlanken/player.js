@@ -915,15 +915,16 @@ function updateTransportUi() {
     btnPlayPause.setAttribute('aria-label', isPlaying ? 'Paus' : 'Spela');
     btnPlayPause.title = isPlaying ? 'Paus (mellanslag)' : 'Spela (mellanslag)';
     btnPlayPause.classList.toggle('is-active', isPlaying);
-    if (btnPlayPauseIconPlay) btnPlayPauseIconPlay.hidden = isPlaying;
-    if (btnPlayPauseIconPause) btnPlayPauseIconPause.hidden = !isPlaying;
   }
   btnStop.disabled = !midi || audioBusy;
   if (btnPrev) btnPrev.disabled = !midi || audioBusy;
   if (btnNext) btnNext.disabled = !midi || audioBusy;
   const block = document.querySelector('.transport-block');
   if (block) block.classList.toggle('is-playing', isPlaying);
-  if (btnKompQuick) btnKompQuick.hidden = !autokompApplies();
+  const transportV2 = document.querySelector('.transport-v2');
+  const kompVisible = autokompApplies();
+  if (transportV2) transportV2.classList.toggle('has-komp-chip', kompVisible);
+  if (btnKompQuick) btnKompQuick.hidden = !kompVisible;
   if (lcdTitle && currentSong) {
     lcdTitle.dataset.state = isPlaying ? 'spelar' : audioBusy ? 'laddar' : 'paus';
   }

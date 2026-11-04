@@ -842,6 +842,12 @@ button.ghost.small {
     0 0 0 1px rgba(196, 92, 74, 0.25);
 }
 
+.mixer-track-row.strip-master {
+  margin-left: 0;
+  border-color: #5a6270;
+  box-shadow: none;
+}
+
 .strip-auto .strip-label {
   color: var(--onske);
 }
@@ -1575,6 +1581,15 @@ button.ghost {
 
 .btn-play-main .icon-pause {
   margin-left: 0;
+  display: none;
+}
+
+.btn-play-main.is-active .icon-play {
+  display: none;
+}
+
+.btn-play-main.is-active .icon-pause {
+  display: block;
 }
 
 .btn-round.is-active,
@@ -1645,8 +1660,7 @@ button.ghost {
 }
 
 .note-dialog.nl-dialog,
-.speed-dialog.nl-dialog,
-.mixer-dialog.nl-dialog {
+.speed-dialog.nl-dialog {
   border-radius: 16px;
   border: 3px solid var(--metal-mid);
   background: linear-gradient(180deg, #e8ecf2 0%, #b8c0cc 100%);
@@ -1657,6 +1671,30 @@ button.ghost {
 .mixer-dialog.nl-dialog {
   max-width: min(42rem, calc(100vw - 1.25rem));
   padding: 0.85rem 1rem 1.1rem;
+  border-radius: 16px;
+  border: 3px solid var(--metal-dark);
+  background:
+    repeating-linear-gradient(
+      -14deg,
+      rgba(255, 255, 255, 0.035) 0 2px,
+      rgba(0, 0, 0, 0.07) 2px 4px
+    ),
+    linear-gradient(180deg, #4a5260 0%, #343a44 42%, #242932 100%);
+  color: #e8ecf2;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 12px 28px rgba(0, 0, 0, 0.5);
+}
+
+.mixer-dialog .dialog-head .dialog-title {
+  color: #e8ecf2;
+}
+
+.mixer-dialog .nl-dialog-close {
+  border-color: #4a5560;
+  background: linear-gradient(180deg, #5a6270 0%, #3a4250 100%);
+  color: #e8ecf2;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 .speed-dialog.nl-dialog {
@@ -1749,12 +1787,19 @@ button.ghost {
 }
 
 .progress-time {
-  font-family: "DSEG7 Classic", "Trebuchet MS", monospace;
-  font-size: 0.78rem;
-  letter-spacing: 0.06em;
-  color: var(--text-on-metal);
+  font-family: "DSEG7 Classic", "Departure Mono", "Trebuchet MS", monospace;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  color: #ecf8e4;
   font-variant-numeric: tabular-nums;
-  min-width: 2.75rem;
+  min-width: 2.85rem;
+  padding: 0.1rem 0.35rem;
+  border-radius: 6px;
+  border: 1px solid rgba(168, 210, 152, 0.45);
+  background: rgba(16, 32, 24, 0.72);
+  text-shadow:
+    0 0 10px rgba(200, 235, 180, 0.55),
+    0 1px 2px rgba(0, 0, 0, 0.9);
 }
 
 .progress-remaining {
@@ -1775,32 +1820,47 @@ button.ghost {
 }
 
 .transport-v2 {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: 0.35rem;
+  position: relative;
+  display: block;
   width: 100%;
+  min-height: 4.35rem;
 }
 
 .transport-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.65rem;
+  z-index: 1;
 }
 
 .transport-side {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
   display: flex;
   align-items: center;
   gap: 0.4rem;
+  z-index: 2;
 }
 
 .transport-side-left {
+  left: 0;
   justify-content: flex-start;
 }
 
 .transport-side-right {
+  right: 0;
   justify-content: flex-end;
+  min-width: 5.9rem;
+}
+
+.transport-v2.has-komp-chip .transport-side-right {
+  min-width: auto;
 }
 
 .transport-aux {
@@ -2015,6 +2075,11 @@ button.ghost {
 
 .mixer-track-actions {
   position: relative;
+}
+
+.mixer-track-actions-spacer {
+  width: 2rem;
+  height: 2rem;
 }
 
 .mixer-more-btn {
