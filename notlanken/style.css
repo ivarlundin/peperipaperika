@@ -19,6 +19,9 @@
   --lcd-bg: #c8d9c4;
   --lcd-text: #142030;
   --lcd-glow: #e8f2e4;
+  /** Readable copy on the navy page backdrop (outside metal/green panels) */
+  --text-on-nav-bg: #e2ebe6;
+  --text-on-nav-bg-muted: #c5d4dc;
   --radius: 14px;
   --radius-sm: 10px;
   --space: 0.75rem;
@@ -98,14 +101,32 @@ main.nl-shell {
 }
 
 .sub {
-  color: #2a3540;
   font-size: 0.9rem;
   margin: 0 0 0.35rem;
   font-weight: 600;
 }
 
+.nl-site-brand .sub {
+  color: var(--text-on-nav-bg);
+  text-shadow:
+    0 0 14px rgba(200, 217, 196, 0.42),
+    0 1px 3px rgba(0, 0, 0, 0.55);
+}
+
 #view-list .sub {
   margin-bottom: 0;
+}
+
+.player > .status {
+  color: var(--text-on-nav-bg-muted);
+}
+
+.player > .status.error {
+  color: #f0b0b0;
+}
+
+.topbar .now-playing:not(.visually-hidden) {
+  color: var(--text-on-nav-bg-muted);
 }
 
 h1 {
