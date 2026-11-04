@@ -32,6 +32,7 @@
       <header class="topbar">
         <button type="button" id="btn-back" class="nl-btn nl-btn-pill" aria-label="Tillbaka till låtlistan">← Låtar</button>
         <button type="button" id="btn-copy-link" class="nl-btn nl-btn-pill ghost" title="Kopiera länk till denna låt">Kopiera länk</button>
+        <button type="button" id="btn-speed" class="nl-btn nl-btn-pill" aria-haspopup="dialog" aria-controls="speed-dialog">Hastighet</button>
         <button type="button" id="btn-mixer" class="nl-btn nl-btn-pill" aria-expanded="false" aria-controls="mixer-panel" title="Volym per spår och master" aria-label="Mixer — volym per spår och master">Mixer</button>
       </header>
 
@@ -72,27 +73,7 @@
         </div>
       </div>
 
-      <div class="komp-bar nl-module" id="komp-bar" aria-labelledby="komp-heading">
-        <p class="section-label" id="komp-heading">Autokomp</p>
-        <label class="komp-toggle">
-          <input type="checkbox" id="komp-enabled" checked>
-          <span>Aktivera autokomp</span>
-        </label>
-        <label class="komp-field">
-          <span>Stil</span>
-          <select id="komp-style" aria-label="Autokomp-stil"></select>
-        </label>
-        <div class="komp-variant" role="group" aria-label="Autokomp-variant">
-          <button type="button" class="chip nl-knob-chip" data-variant="auto" aria-pressed="true" aria-label="Auto — växla variant efter sektion">Auto</button>
-          <button type="button" class="chip nl-knob-chip" data-variant="A" aria-pressed="false" aria-label="Variant A">A</button>
-          <button type="button" class="chip nl-knob-chip" data-variant="B" aria-pressed="false" aria-label="Variant B">B</button>
-        </div>
-        <span class="komp-status" id="komp-status"></span>
-        <span class="komp-style-hint" id="komp-style-hint" hidden>Stilmenyn är inaktiv när alla spår redan finns i MIDI-filen.</span>
-      </div>
-
       <div class="transport-block nl-module">
-        <p class="section-label">Transport</p>
         <div class="transport">
           <button type="button" id="btn-play" class="btn-round btn-play-main" disabled aria-label="Spela" aria-pressed="false" title="Spela (mellanslag)">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
@@ -104,22 +85,31 @@
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6h12v12H6z"/></svg>
           </button>
         </div>
-        <p class="control-hint">Mellanslag spelar/pausar · pilar hoppar en takt</p>
       </div>
 
-      <div class="nl-module">
-        <p class="section-label">Nästa takter</p>
-        <p class="control-hint lane-hint">Dra vågrätt för att skrubba i låten</p>
-        <div class="lane" id="lane" aria-label="Rörlig tidslinje, nästa takter">
+      <div class="lane-block">
+        <div class="lane lane-glass" id="lane" aria-label="Rörlig tidslinje — dra vågrätt för att skrubba">
+          <span class="lane-scrub-affordance" aria-hidden="true">↔</span>
           <div class="lane-track" id="lane-track"></div>
           <canvas class="lane-roll" id="lane-roll" aria-hidden="true"></canvas>
           <div class="lane-pinned" id="lane-pinned" hidden></div>
         </div>
       </div>
 
-      <div class="timeline-block nl-module">
-        <p class="section-label">Hela låten</p>
-        <div class="timeline overview" id="timeline" role="slider" aria-label="Tidslinje, dra för att hoppa" tabindex="0" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <div class="komp-bar nl-module" id="komp-bar" hidden>
+        <label class="komp-toggle">
+          <input type="checkbox" id="komp-enabled" checked>
+          <span>Autokomp</span>
+        </label>
+        <div class="komp-style-picker" id="komp-style-picker" hidden>
+          <select id="komp-style" class="visually-hidden" tabindex="-1" aria-hidden="true"></select>
+          <button type="button" id="komp-style-trigger" class="nl-select-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="komp-style-list"></button>
+          <ul id="komp-style-list" class="nl-select-menu" role="listbox" hidden></ul>
+        </div>
+      </div>
+
+      <div class="timeline-block">
+        <div class="timeline overview timeline-glass" id="timeline" role="slider" aria-label="Tidslinje, dra för att hoppa" tabindex="0" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
           <div class="timeline-rail" id="timeline-rail">
             <div class="timeline-sections" id="timeline-sections"></div>
             <div class="timeline-notes" id="timeline-notes"></div>
@@ -128,14 +118,8 @@
         </div>
       </div>
 
-      <div class="speed-row nl-module" role="group" aria-label="Hastighet">
-        <span class="speed-label">Hastighet</span>
-        <div class="speed-options" id="speed-options"></div>
-      </div>
-
       <div class="notes-panel nl-module">
         <p class="section-label">Anteckningar till arrangören</p>
-        <p class="control-hint">Sparas lokalt i webbläsaren per låt</p>
         <div class="notes-toolbar">
           <div class="note-add" id="note-add" role="group" aria-label="Ny anteckning vid aktuell position">
             <button type="button" data-type="bug" class="note-add-btn note-bug">+ Fel <kbd>B</kbd></button>
@@ -153,6 +137,14 @@
       <p id="status" class="status" role="status" aria-live="polite"></p>
     </section>
   </main>
+
+  <dialog id="speed-dialog" class="speed-dialog nl-dialog">
+    <div class="dialog-head">
+      <p class="dialog-title">Hastighet</p>
+      <button type="button" id="speed-close" class="nl-btn nl-btn-pill" aria-label="Stäng">Stäng</button>
+    </div>
+    <div class="speed-options" id="speed-options"></div>
+  </dialog>
 
   <dialog id="note-dialog" class="note-dialog nl-dialog">
     <form method="dialog" id="note-form">

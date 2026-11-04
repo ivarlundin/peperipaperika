@@ -1,0 +1,7 @@
+Copyright (c) 2020, keshikan (https://www.keshikan.net),
+with Reserved Font Name "DSEG".
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+See https://openfontlicense.org
+
+Bundled file: DSEG7Classic-Regular.woff2 (latin 400, from DSEG7 Classic).

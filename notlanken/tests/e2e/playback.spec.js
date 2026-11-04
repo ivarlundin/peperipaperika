@@ -11,6 +11,9 @@ async function waitForSongReady(page) {
 test.describe('Notlänken playback', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(BASE);
+    if (await page.locator('#player').isVisible()) {
+      await page.locator('#btn-back').click();
+    }
     await expect(page.locator('.song-btn')).toHaveCount(3, { timeout: 30_000 });
   });
 
@@ -76,6 +79,32 @@ test.describe('Notlänken playback', () => {
     await page.locator('#btn-pause').click();
     await page.locator('#btn-play').click();
     await expect(page.locator('#btn-pause')).toBeEnabled({ timeout: 30_000 });
+  });
+
+  test('autokomp bar hidden for full arrangement, visible for utan komp', async ({ page }) => {
+    await page.locator('.song-btn').nth(0).click();
+    await waitForSongReady(page);
+    await expect(page.locator('#komp-bar')).toBeHidden();
+
+    await page.locator('#btn-back').click();
+    await expect(page.locator('#view-list')).toBeVisible();
+    await page.locator('.song-btn').nth(1).click();
+    await waitForSongReady(page);
+    await expect(page.locator('#komp-bar')).toBeVisible();
+    await expect(page.locator('#komp-enabled')).toBeChecked();
+    await expect(page.locator('#komp-style-picker')).toBeVisible();
+  });
+
+  test('speed opens in modal with grouped rows', async ({ page }) => {
+    await page.locator('.song-btn').first().click();
+    await waitForSongReady(page);
+    await expect(page.locator('#speed-dialog')).not.toBeVisible();
+    await page.locator('#btn-speed').click();
+    const dialog = page.locator('#speed-dialog');
+    await expect(dialog).toBeVisible();
+    await expect(dialog.locator('.speed-group')).toHaveCount(3);
+    await page.locator('#speed-close').click();
+    await expect(dialog).not.toBeVisible();
   });
 
   test('mobile viewport: logo and song switch', async ({ page }) => {

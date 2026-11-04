@@ -76,8 +76,13 @@ const noteDialogTitle = $('note-dialog-title');
 const noteCancel = $('note-cancel');
 const kompEnabled = $('komp-enabled');
 const kompStyle = $('komp-style');
-const kompStatus = $('komp-status');
-const kompVariant = document.querySelector('.komp-variant');
+const kompBar = $('komp-bar');
+const kompStylePicker = $('komp-style-picker');
+const kompStyleTrigger = $('komp-style-trigger');
+const kompStyleList = $('komp-style-list');
+const btnSpeed = $('btn-speed');
+const speedDialog = $('speed-dialog');
+const speedClose = $('speed-close');
 
 /** @type {{ file: string, title: string } | null} */
 let currentSong = null;
@@ -175,10 +180,12 @@ function showListView() {
   stop();
   if (currentSong?.file) listHighlightFile = currentSong.file;
   currentSong = null;
+  midi = null;
   playerEl.hidden = true;
   viewList.hidden = false;
   document.title = 'Notlänken ™';
   renderSongList(songFilter?.value || '');
+  updateAutokompUi();
   songFilter?.focus({ preventScroll: true });
 }
 
@@ -343,8 +350,10 @@ async function openSong(song) {
     }
     sessionNotes = loadNotes(song.file);
     position = 0;
+    kompOn = true;
     rebuildEvents({ reschedule: false });
     buildMixerUi();
+    updateAutokompUi();
 
     if (!songLoadGuard.isActive(loadToken)) return;
     timeTotal.textContent = formatClock(duration);
@@ -430,6 +439,46 @@ const ROLL_COLORS = {
   other: '#b48ead',
   drums: '#d08770',
 };
+
+/** @param {string} hex */
+function rollRgb(hex) {
+  const h = hex.replace('#', '');
+  return {
+    r: parseInt(h.slice(0, 2), 16),
+    g: parseInt(h.slice(2, 4), 16),
+    b: parseInt(h.slice(4, 6), 16),
+  };
+}
+
+/**
+ * Skeuomorphic glass bar — gradient fill + light top / dark bottom edge (canvas-only, no filters).
+ * @param {CanvasRenderingContext2D} ctx
+ */
+function fillGlassNote(ctx, x, y, w, h, hex, active) {
+  const { r, g, b } = rollRgb(hex);
+  const aTop = active ? 0.95 : 0.78;
+  const aMid = active ? 0.88 : 0.68;
+  const aBot = active ? 0.82 : 0.58;
+  const grad = ctx.createLinearGradient(x, y, x, y + h);
+  grad.addColorStop(0, `rgba(${Math.min(255, r + 48)},${Math.min(255, g + 48)},${Math.min(255, b + 48)},${aTop})`);
+  grad.addColorStop(0.42, `rgba(${r},${g},${b},${aMid})`);
+  grad.addColorStop(1, `rgba(${Math.max(0, r - 42)},${Math.max(0, g - 42)},${Math.max(0, b - 42)},${aBot})`);
+  ctx.fillStyle = grad;
+  ctx.fillRect(x, y, w, h);
+  const hi = active ? 0.58 : 0.38;
+  const lo = active ? 0.38 : 0.28;
+  ctx.strokeStyle = `rgba(255,255,255,${hi})`;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(x + 0.5, y + 0.5);
+  ctx.lineTo(x + Math.max(1, w) - 0.5, y + 0.5);
+  ctx.stroke();
+  ctx.strokeStyle = `rgba(0,0,0,${lo})`;
+  ctx.beginPath();
+  ctx.moveTo(x + 0.5, y + Math.max(1, h) - 0.5);
+  ctx.lineTo(x + Math.max(1, w) - 0.5, y + Math.max(1, h) - 0.5);
+  ctx.stroke();
+}
 let rollCtx = null;
 let rollW = 0;
 let rollH = 0;
@@ -471,6 +520,12 @@ function drawRoll() {
   if (!events.length) return;
 
   const top = 62;
+  const gloss = ctx.createLinearGradient(0, 0, 0, top);
+  gloss.addColorStop(0, 'rgba(255,255,255,0.14)');
+  gloss.addColorStop(0.55, 'rgba(255,255,255,0.04)');
+  gloss.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = gloss;
+  ctx.fillRect(0, 0, rollW, top);
   const bottom = rollH - 24;
   const h = Math.max(10, bottom - top);
   const span = rollMax - rollMin;
@@ -493,21 +548,17 @@ function drawRoll() {
     const w = Math.max(2, e.duration * lanePps);
     if (x + w < 0) continue;
     const active = e.time <= position && position < e.time + e.duration;
-    ctx.globalAlpha = active ? 1 : 0.7;
-    ctx.fillStyle = ROLL_COLORS[e.group] || ROLL_COLORS.other;
+    const color = ROLL_COLORS[e.group] || ROLL_COLORS.other;
     if (e.group === 'drums') {
-      ctx.fillRect(x, bottom + 4, Math.min(w, 4), 8);
+      ctx.globalAlpha = active ? 1 : 0.75;
+      fillGlassNote(ctx, x, bottom + 4, Math.min(w, 5), 8, color, active);
+      ctx.globalAlpha = 1;
       continue;
     }
     const y = top + ((rollMax - e.midi) / span) * (h - noteH);
-    ctx.fillRect(x, y, w, noteH);
-    if (active) {
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 1;
-      ctx.strokeRect(x + 0.5, y + 0.5, Math.max(1, w - 1), Math.max(1, noteH - 1));
-    }
+    ctx.globalAlpha = 1;
+    fillGlassNote(ctx, x, y, w, noteH, color, active);
   }
-  ctx.globalAlpha = 1;
 }
 
 function laneVisibleBars() {
@@ -898,7 +949,36 @@ async function seekTo(sec, resumeIfPlaying = false) {
   if (wasPlaying || resumeIfPlaying) await startPlayback(position);
 }
 
-/** Coalesce komp UI refreshes so rapid style/variant swaps stay responsive. */
+function autokompApplies() {
+  return !!(midi && chords.length && missingTracks(writtenTracks).length);
+}
+
+function syncKompStyleTriggerLabel() {
+  if (!kompStyleTrigger || !kompStyle) return;
+  const opt = kompStyle.selectedOptions?.[0];
+  kompStyleTrigger.textContent = opt?.textContent || kompStyle.value || 'Stil';
+}
+
+function closeKompStyleMenu() {
+  if (!kompStyleList || !kompStyleTrigger) return;
+  kompStyleList.hidden = true;
+  kompStyleTrigger.setAttribute('aria-expanded', 'false');
+}
+
+function updateAutokompUi() {
+  if (!kompBar) return;
+  const applies = autokompApplies();
+  kompBar.hidden = !applies;
+  if (!applies) {
+    closeKompStyleMenu();
+    return;
+  }
+  if (kompEnabled) kompEnabled.checked = kompOn;
+  if (kompStylePicker) kompStylePicker.hidden = !kompOn;
+  syncKompStyleTriggerLabel();
+}
+
+/** Coalesce komp UI refreshes so rapid style swaps stay responsive. */
 let kompRefreshRaf = 0;
 function requestKompRefresh() {
   if (kompRefreshRaf) cancelAnimationFrame(kompRefreshRaf);
@@ -954,20 +1034,7 @@ function rebuildEvents({ reschedule = true } = {}) {
   if (duration && events.length) {
     duration = Math.max(duration, events[events.length - 1].time + 0.5);
   }
-  const canGenerate = !!(kompOn && chords.length && missingTracks(writtenTracks).length);
-  const parts = needLabel();
-  kompStatus.textContent = canGenerate && kompOn
-    ? `${parts} · Auto växlar variant A/B efter sektion.`
-    : parts;
-  kompStyle.disabled = !canGenerate;
-  kompStyle.title = canGenerate
-    ? ''
-    : 'Stil gäller bara när autokomp fyller saknade trummor, bas eller piano i filen.';
-  const styleHint = document.getElementById('komp-style-hint');
-  if (styleHint) styleHint.hidden = canGenerate;
-  if (kompVariant) {
-    kompVariant.querySelectorAll('button').forEach((b) => { b.disabled = !canGenerate; });
-  }
+  updateAutokompUi();
   if (playing) {
     // Cut hanging notes; written keeps going from now, autokomp from next bar.
     // Lookahead scheduler only arms a few seconds — must not hang the UI.
@@ -989,14 +1056,6 @@ function rebuildEvents({ reschedule = true } = {}) {
     cancelAnimationFrame(raf);
     raf = requestAnimationFrame(tick);
   }
-}
-
-function needLabel() {
-  if (!chords.length) return 'Inga ackordmarkörer – autokomp av';
-  const need = missingTracks(writtenTracks);
-  if (!need.length) return 'Alla spår skrivna – inget genereras';
-  if (!kompOn) return `Komp av (skulle fylla: ${need.join(', ')})`;
-  return `Auto: ${need.join(', ')}`;
 }
 
 function nextBarStart(seconds) {
@@ -1174,6 +1233,9 @@ btnPlay.addEventListener('click', async () => {
 btnPause.addEventListener('click', () => pause());
 btnStop.addEventListener('click', () => stop());
 
+btnSpeed?.addEventListener('click', () => speedDialog?.showModal());
+speedClose?.addEventListener('click', () => speedDialog?.close());
+
 const SPEED_GROUPS = [
   { label: 'Långsam', speeds: [0.5, 0.75] },
   { label: 'Normal', speeds: [1, 1.1, 1.25] },
@@ -1196,8 +1258,6 @@ function setSpeed(speed) {
 for (const group of SPEED_GROUPS) {
   const wrap = document.createElement('div');
   wrap.className = 'speed-group';
-  wrap.setAttribute('role', 'group');
-  wrap.setAttribute('aria-label', group.label);
   const lab = document.createElement('span');
   lab.className = 'speed-group-label';
   lab.textContent = group.label;
@@ -1206,11 +1266,10 @@ for (const group of SPEED_GROUPS) {
   for (const s of group.speeds) {
     const b = document.createElement('button');
     b.type = 'button';
-    b.className = 'chip';
+    b.className = 'chip nl-knob-chip';
     b.dataset.speed = String(s);
     b.textContent = formatSpeed(s);
     b.setAttribute('aria-pressed', String(s === 1));
-    b.setAttribute('aria-label', `${formatSpeed(s)} hastighet`);
     b.addEventListener('click', () => setSpeed(s));
     chips.appendChild(b);
   }
@@ -1368,40 +1427,61 @@ if ('serviceWorker' in navigator) {
 }
 
 async function initKompUi() {
+  if (!kompStyle || !kompEnabled) return;
   const base = new URL('./', import.meta.url).href;
   const loaded = await loadStyles(base);
   styleCatalog = loaded.catalog;
   styleMap = loaded.styles;
   kompStyle.innerHTML = '';
+  if (kompStyleList) kompStyleList.innerHTML = '';
   for (const id of styleCatalog.styles) {
     if (!styleMap.has(id)) continue;
+    const name = styleMap.get(id).name || id;
     const opt = document.createElement('option');
     opt.value = id;
-    opt.textContent = styleMap.get(id).name || id;
+    opt.textContent = name;
     kompStyle.appendChild(opt);
+    const li = document.createElement('li');
+    li.role = 'option';
+    li.tabIndex = -1;
+    li.dataset.value = id;
+    li.textContent = name;
+    li.addEventListener('click', () => {
+      kompStyle.value = id;
+      syncKompStyleTriggerLabel();
+      closeKompStyleMenu();
+      requestKompRefresh();
+    });
+    kompStyleList?.appendChild(li);
   }
   kompStyle.value = 'pop-rock';
+  syncKompStyleTriggerLabel();
   kompEnabled.addEventListener('change', () => {
     kompOn = kompEnabled.checked;
+    updateAutokompUi();
     requestKompRefresh();
   });
   kompStyle.addEventListener('change', () => {
+    syncKompStyleTriggerLabel();
     requestKompRefresh();
   });
-  kompVariant.querySelectorAll('button').forEach((b) => {
-    b.addEventListener('click', () => {
-      kompVariantPref = b.getAttribute('data-variant');
-      kompVariant.querySelectorAll('button').forEach((x) => {
-        x.setAttribute('aria-pressed', String(x === b));
-      });
-      requestKompRefresh();
-    });
+  kompStyleTrigger?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (kompStylePicker?.hidden || !kompStyleList) return;
+    const wasHidden = kompStyleList.hidden;
+    kompStyleList.hidden = !wasHidden;
+    kompStyleTrigger.setAttribute('aria-expanded', String(!kompStyleList.hidden));
+    if (!kompStyleList.hidden) {
+      kompStyleList.querySelector(`[data-value="${CSS.escape(kompStyle.value)}"]`)?.focus?.();
+    }
   });
+  kompStyleList?.addEventListener('click', (e) => e.stopPropagation());
+  document.addEventListener('click', () => closeKompStyleMenu());
 }
 
 const kompReady = initKompUi().catch((e) => {
   console.error(e);
-  kompStatus.textContent = 'Kunde inte ladda stilar';
+  setStatus('Kunde inte ladda autokomp-stilar', true);
 });
 
 kompReady.then(() => {
