@@ -497,13 +497,22 @@ button.ghost.small {
   top: 0.35rem;
   right: 0.5rem;
   z-index: 4;
-  font-size: 0.9rem;
+  padding: 0.12rem 0.38rem;
+  border-radius: 6px;
+  font-size: 1rem;
   line-height: 1;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.5);
+  font-weight: 800;
+  color: #d8eeff;
   pointer-events: none;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
-  letter-spacing: -0.08em;
+  letter-spacing: -0.06em;
+  background: rgba(18, 28, 42, 0.72);
+  border: 1px solid rgba(158, 212, 255, 0.55);
+  box-shadow:
+    0 0 10px rgba(43, 127, 212, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  text-shadow:
+    0 0 6px rgba(43, 127, 212, 0.9),
+    0 1px 2px rgba(0, 0, 0, 0.85);
 }
 
 .lane:active {
@@ -1080,7 +1089,7 @@ button.ghost.small {
   font-size: 0.65rem;
 }
 
-@media (pointer: coarse) {
+@media (pointer: coarse), (hover: none) {
   .note-add-btn kbd {
     display: none;
   }

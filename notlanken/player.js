@@ -122,11 +122,8 @@ let kompDirectives = { style: null, sectionStyles: new Map() };
 let audioBusy = false;
 let playbackSeq = 0;
 
-const MIXER_HINT_KEY = 'notlanken-mixer-hint-v1';
 /** @type {string} */
 let listHighlightFile = '';
-let mixerHintTimer = 0;
-
 function cancelInFlightPlayback() {
   playbackSeq += 1;
   audioBusy = false;
@@ -143,16 +140,6 @@ const GROUP_LABELS = {
 function setStatus(msg, isError = false) {
   statusEl.textContent = msg || '';
   statusEl.classList.toggle('error', isError);
-}
-
-function maybeShowMixerHint() {
-  if (localStorage.getItem(MIXER_HINT_KEY)) return;
-  localStorage.setItem(MIXER_HINT_KEY, '1');
-  setStatus('Tips: volym per spår finns under Mixer.');
-  clearTimeout(mixerHintTimer);
-  mixerHintTimer = window.setTimeout(() => {
-    if (statusEl.textContent.startsWith('Tips: volym')) setStatus('');
-  }, 9000);
 }
 
 function copySongLink() {
@@ -393,7 +380,6 @@ async function openSong(song) {
     updatePositionUi();
     setStatus('');
     renderSongList(songFilter?.value || '');
-    maybeShowMixerHint();
   } catch (e) {
     if (!songLoadGuard.isActive(loadToken)) return;
     hideLoadingModal(`Kunde inte ladda: ${e.message}`);
@@ -1320,10 +1306,6 @@ masterVol.addEventListener('input', () => {
   masterVolVal.textContent = `${masterVol.value}%`;
   engine.setMasterVolume(Number(masterVol.value) / 100);
   saveMixerSettings(engine, { masterVol, reverb: reverbSlider });
-});
-
-mixerDialog?.addEventListener('close', () => {
-  if (statusEl.textContent.startsWith('Tips: volym')) setStatus('');
 });
 
 btnCopyLink?.addEventListener('click', copySongLink);
