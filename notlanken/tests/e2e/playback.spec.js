@@ -84,53 +84,37 @@ test.describe('Notlänken playback', () => {
   test('autokomp bar hidden for full arrangement, visible for utan komp', async ({ page }) => {
     await page.locator('.song-btn').nth(0).click();
     await waitForSongReady(page);
+    await page.locator('#player-tab-btn-noter').click();
     await expect(page.locator('#komp-bar')).toBeHidden();
 
     await page.locator('#btn-back').click();
     await expect(page.locator('#view-list')).toBeVisible();
     await page.locator('.song-btn').nth(1).click();
     await waitForSongReady(page);
+    await page.locator('#player-tab-btn-noter').click();
     await expect(page.locator('#komp-bar')).toBeVisible();
     await expect(page.locator('#komp-switch')).toHaveAttribute('aria-checked', 'true');
     await expect(page.locator('#komp-style-picker')).toBeVisible();
   });
 
-  test('player layout: scrub before transport before autokomp', async ({ page }) => {
+  test('player layout: dock scrub before transport', async ({ page }) => {
     await page.locator('.song-btn').nth(1).click();
     await waitForSongReady(page);
-    const laneBeforeTransport = await page.evaluate(() => {
-      const lane = document.querySelector('#lane');
+    const scrubBeforeTransport = await page.evaluate(() => {
+      const scrub = document.querySelector('.progress-scrub');
       const transport = document.querySelector('.transport-block');
-      return lane.compareDocumentPosition(transport) & Node.DOCUMENT_POSITION_FOLLOWING;
+      return scrub.compareDocumentPosition(transport) & Node.DOCUMENT_POSITION_FOLLOWING;
     });
-    const timelineBeforeTransport = await page.evaluate(() => {
-      const timeline = document.querySelector('#timeline');
-      const transport = document.querySelector('.transport-block');
-      return timeline.compareDocumentPosition(transport) & Node.DOCUMENT_POSITION_FOLLOWING;
-    });
-    const transportBeforeKomp = await page.evaluate(() => {
-      const transport = document.querySelector('.transport-block');
-      const komp = document.querySelector('#komp-bar');
-      return transport.compareDocumentPosition(komp) & Node.DOCUMENT_POSITION_FOLLOWING;
-    });
-    expect(laneBeforeTransport).toBeTruthy();
-    expect(timelineBeforeTransport).toBeTruthy();
-    expect(transportBeforeKomp).toBeTruthy();
+    expect(scrubBeforeTransport).toBeTruthy();
   });
 
-  test('mixer opens in modal with overlay dismiss', async ({ page }) => {
+  test('mixer tab shows inline tracks', async ({ page }) => {
     await page.locator('.song-btn').first().click();
     await waitForSongReady(page);
-    await expect(page.locator('#mixer-dialog')).not.toBeVisible();
-    await page.locator('#btn-mixer').click();
-    const dialog = page.locator('#mixer-dialog');
-    await expect(dialog).toBeVisible();
-    await page.keyboard.press('Escape');
-    await expect(dialog).not.toBeVisible();
-    await page.locator('#btn-mixer').click();
-    await expect(dialog).toBeVisible();
-    await page.locator('#mixer-dialog').click({ position: { x: 4, y: 4 } });
-    await expect(dialog).not.toBeVisible();
+    await page.locator('#player-tab-btn-mixer').click();
+    await expect(page.locator('#player-tab-mixer')).toBeVisible();
+    await expect(page.locator('#player-tab-mixer .mixer-track-row').first()).toBeVisible();
+    await expect(page.locator('#reverb')).toBeVisible();
   });
 
   test('speed opens in modal with grouped rows', async ({ page }) => {
