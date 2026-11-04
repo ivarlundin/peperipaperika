@@ -28,10 +28,12 @@ const engine = new AudioEngine(new URL('./', import.meta.url).href);
 const $ = (id) => document.getElementById(id);
 
 const songList = $('song-list');
+const songFilter = $('song-filter');
 const viewList = $('view-list');
 const playerEl = $('player');
 const btnBack = $('btn-back');
 const nowPlaying = $('now-playing');
+const lcdTitle = $('lcd-title');
 const chordLine = $('chord-line');
 const btnPlay = $('btn-play');
 const btnPause = $('btn-pause');
@@ -135,7 +137,8 @@ function showListView() {
   currentSong = null;
   playerEl.hidden = true;
   viewList.hidden = false;
-  document.title = 'Notlåda';
+  document.title = 'Notlänken ™';
+  songFilter?.focus({ preventScroll: true });
 }
 
 function showPlayerView() {
@@ -155,15 +158,28 @@ function routeFromHash() {
   openSong(song);
 }
 
-async function loadManifest() {
-  const res = await fetch('midi/songs.json');
-  songs = await res.json();
+function renderSongList(filter = '') {
+  const q = filter.trim().toLowerCase();
   songList.innerHTML = '';
-  for (const song of songs) {
+  const visible = q
+    ? songs.filter((s) => s.title.toLowerCase().includes(q) || s.file.toLowerCase().includes(q))
+    : songs;
+  if (!visible.length) {
+    const li = document.createElement('li');
+    li.className = 'song-empty';
+    li.textContent = q ? 'Inga träffar – prova ett annat sökord.' : 'Inga låtar i listan.';
+    songList.appendChild(li);
+    return;
+  }
+  for (const song of visible) {
     const li = document.createElement('li');
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.textContent = song.title;
+    btn.className = 'song-btn';
+    const title = document.createElement('span');
+    title.className = 'song-btn-title';
+    title.textContent = song.title;
+    btn.appendChild(title);
     btn.addEventListener('click', () => {
       engine.ensureContext();
       location.hash = encodeURIComponent(song.file);
@@ -171,7 +187,17 @@ async function loadManifest() {
     li.appendChild(btn);
     songList.appendChild(li);
   }
+}
+
+async function loadManifest() {
+  const res = await fetch('midi/songs.json');
+  songs = await res.json();
+  renderSongList(songFilter?.value || '');
   routeFromHash();
+}
+
+if (songFilter) {
+  songFilter.addEventListener('input', () => renderSongList(songFilter.value));
 }
 
 
@@ -183,8 +209,9 @@ async function openSong(song) {
 
   midi = null;
   currentSong = song;
-  document.title = `${song.title} – Notlåda`;
+  document.title = `${song.title} – Notlänken ™`;
   nowPlaying.textContent = song.title;
+  if (lcdTitle) lcdTitle.textContent = song.title;
   showPlayerView();
   updateTransportUi();
   setStatus('Laddar MIDI…');
@@ -564,6 +591,10 @@ function persistNotes() {
 function updatePositionUi() {
   const pct = duration ? (position / duration) * 100 : 0;
   timelinePlayhead.style.left = `${pct}%`;
+  if (duration) {
+    timeline.setAttribute('aria-valuenow', String(Math.round(pct)));
+    timeline.setAttribute('aria-valuetext', `${formatClock(position)} av ${formatClock(duration)}`);
+  }
   updateLane();
   timeElapsed.textContent = formatClock(position);
   if (midi) timeBarBeat.textContent = formatBarBeat(midi, position);
@@ -573,6 +604,7 @@ function updatePositionUi() {
     chordLine.textContent = chord;
   } else {
     chordLine.hidden = true;
+    chordLine.textContent = '';
   }
 }
 

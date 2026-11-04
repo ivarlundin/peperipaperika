@@ -5,7 +5,7 @@ const GROUPS = ['piano', 'bass', 'drums', 'brass', 'other'];
 
 /** Per-group gain before velocity (keeps dense arrangements under headroom) */
 const GROUP_HEADROOM = {
-  piano: 0.28,
+  piano: 0.32,
   bass: 0.4,
   drums: 0.45,
   brass: 0.35,
@@ -111,6 +111,7 @@ export class AudioEngine {
     this.prepared = false;
     /** @type {ReturnType<typeof setInterval> | null} */
     this._schedTimer = null;
+    this._gmPreloadStarted = false;
     /** @type {null | { events: any[], startSeconds: number, endSeconds: number, index: number, originAc: number, originSong: number, sid: number }} */
     this._schedQueue = null;
     for (const g of GROUPS) {
@@ -118,8 +119,10 @@ export class AudioEngine {
     }
     this.masterVolume = 0.72;
     this.reverbAmount = 0.12;
-    /** Prefer Rhodes samples for piano/keys (written + autokomp). */
-    this.pianoSample = 'rhodes';
+    /** Prefer acoustic piano for written charts; Rhodes still available via voice.sample. */
+    this.pianoSample = 'acoustic';
+    /** @type {Record<string, BiquadFilterNode>} */
+    this.groupFilters = {};
   }
 
   async ensureContext() {
@@ -147,9 +150,15 @@ export class AudioEngine {
       for (const g of GROUPS) {
         const dry = this.ac.createGain();
         const send = this.ac.createGain();
-        dry.connect(this.reverbDry);
+        const filter = this.ac.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = g === 'drums' ? 12000 : g === 'bass' ? 5200 : 7800;
+        filter.Q.value = 0.7;
+        dry.connect(filter);
+        filter.connect(this.reverbDry);
         send.connect(this.reverb);
-        this.groupNodes[g] = { dry, send };
+        this.groupNodes[g] = { dry, send, filter };
+        this.groupFilters[g] = filter;
       }
     }
     if (this.ac.state === 'suspended') await this.ac.resume();
@@ -189,14 +198,27 @@ export class AudioEngine {
 
   stopAll() {
     this._clearScheduleTimer();
+    const now = this.ac?.currentTime ?? 0;
     for (const src of this.activeSources) {
       try {
-        src.stop();
+        if (typeof src.stop === 'function') src.stop(now);
       } catch {
-        /* already stopped */
+        try {
+          src.stop();
+        } catch {
+          /* already stopped */
+        }
       }
     }
     this.activeSources.clear();
+    if (this.ac) {
+      for (const g of GROUPS) {
+        const nodes = this.groupNodes[g];
+        if (!nodes) continue;
+        nodes.dry.gain.cancelScheduledValues(now);
+        nodes.send.gain.cancelScheduledValues(now);
+      }
+    }
     this.sessionId += 1;
   }
 
@@ -260,6 +282,22 @@ export class AudioEngine {
     return notes.map((n) => `${n}.ogg`);
   }
 
+  _pickZonePair(zones, midi) {
+    if (!zones?.length) return null;
+    if (zones.length === 1 || midi <= zones[0].midi) return { lower: zones[0], upper: null, t: 0 };
+    const last = zones[zones.length - 1];
+    if (midi >= last.midi) return { lower: last, upper: null, t: 0 };
+    for (let i = 0; i < zones.length - 1; i++) {
+      const a = zones[i];
+      const b = zones[i + 1];
+      if (midi >= a.midi && midi <= b.midi) {
+        const span = b.midi - a.midi || 1;
+        return { lower: a, upper: b, t: (midi - a.midi) / span };
+      }
+    }
+    return { lower: this._pickZone(zones, midi), upper: null, t: 0 };
+  }
+
   _pickZone(zones, midi) {
     let best = zones[0];
     let bestDiff = Infinity;
@@ -286,6 +324,15 @@ export class AudioEngine {
     }
     await Promise.all([...paths].map((p) => this.loadBuffer(p)));
     this.prepared = true;
+    if (!this._gmPreloadStarted) {
+      this._gmPreloadStarted = true;
+      void this._preloadGmFallbacks();
+    }
+  }
+
+  async _preloadGmFallbacks() {
+    const gmNames = new Set(Object.values(GM_FALLBACK_MAP));
+    await Promise.all([...gmNames].map((name) => this.loadGmPlayer(name).catch(() => null)));
   }
 
   _routeToGroup(gainNode, group) {
@@ -295,47 +342,67 @@ export class AudioEngine {
 
   _applyNoteEnvelope(gainNode, when, peak, durationSec) {
     const ac = this.ac;
-    const d = Math.max(0.03, durationSec);
-    const a = 0.004;
-    const r = Math.min(0.08, d * 0.35);
+    const d = Math.max(0.04, durationSec);
+    const a = 0.006;
+    const r = Math.min(0.14, Math.max(0.05, d * 0.28));
+    const sustainStart = Math.max(a + 0.001, Math.min(d - r, a + (d - a - r) * 0.55));
     gainNode.gain.cancelScheduledValues(when);
     gainNode.gain.setValueAtTime(0.0001, when);
     gainNode.gain.exponentialRampToValueAtTime(Math.max(peak, 0.0001), when + a);
-    gainNode.gain.setValueAtTime(peak, when + Math.max(a, d - r));
+    gainNode.gain.setValueAtTime(peak * 0.92, when + sustainStart);
     gainNode.gain.exponentialRampToValueAtTime(0.0001, when + d);
+  }
+
+  _startMelodicSample(buf, zoneMidi, targetMidi, when, playDur, peak, group) {
+    const ac = this.ac;
+    const rate = Math.pow(2, (targetMidi - zoneMidi) / 12);
+    const src = ac.createBufferSource();
+    src.buffer = buf;
+    src.playbackRate.value = rate;
+    const g = ac.createGain();
+    this._applyNoteEnvelope(g, when, peak, playDur);
+    src.connect(g);
+    this._routeToGroup(g, group);
+    const offset = 0;
+    const len = Math.min(playDur, buf.duration / rate);
+    try {
+      src.start(when, offset, len);
+    } catch {
+      return null;
+    }
+    this.activeSources.add(src);
+    src.onended = () => this.activeSources.delete(src);
+    return src;
   }
 
   _triggerMelodic(folder, midi, when, duration, velocity, group) {
     const ac = this.ac;
     const zones = this.melodicZones.get(folder);
     if (!zones?.length) return;
-    const zone = this._pickZone(zones, midi);
-    const buf = this.buffers.get(zone.file);
-    if (!buf) return;
+    const pair = this._pickZonePair(zones, midi);
+    if (!pair) return;
 
-    const rate = Math.pow(2, (midi - zone.midi) / 12);
-    const maxLen = buf.duration / rate;
-    const playDur = duration > 0
-      ? Math.min(duration / this.rate, maxLen)
-      : Math.min(maxLen, 2.5);
-
-    if (when < ac.currentTime - 0.02) return;
-
-    const src = ac.createBufferSource();
-    src.buffer = buf;
-    src.playbackRate.value = rate;
-    const g = ac.createGain();
     const peak = scaledGain(velocity, group);
-    this._applyNoteEnvelope(g, when, peak, playDur);
-    src.connect(g);
-    this._routeToGroup(g, group);
-    try {
-      src.start(when, 0, playDur);
-    } catch {
+    const playOne = (zone, noteMidi, gainScale) => {
+      const buf = this.buffers.get(zone.file);
+      if (!buf) return;
+      const rate = Math.pow(2, (noteMidi - zone.midi) / 12);
+      const maxLen = buf.duration / rate;
+      const playDur = duration > 0
+        ? Math.min(duration / this.rate, maxLen)
+        : Math.min(maxLen, 3.2);
+      if (when < ac.currentTime - 0.02) return;
+      this._startMelodicSample(buf, zone.midi, noteMidi, when, playDur, peak * gainScale, group);
+    };
+
+    if (pair.upper && pair.t > 0.12 && pair.t < 0.88 && (pair.upper.midi - pair.lower.midi) <= 5) {
+      playOne(pair.lower, midi, 1 - pair.t);
+      playOne(pair.upper, midi, pair.t);
       return;
     }
-    this.activeSources.add(src);
-    src.onended = () => this.activeSources.delete(src);
+
+    const zone = pair.upper && pair.t >= 0.98 ? pair.upper : pair.lower;
+    playOne(zone, midi, 1);
   }
 
   _triggerDrum(midi, when, duration, velocity) {
@@ -380,11 +447,15 @@ export class AudioEngine {
     return player;
   }
 
-  async _triggerGm(program, midi, when, duration, velocity) {
+  _triggerGm(program, midi, when, duration, velocity) {
     const name = gmInstrumentName(program);
     const fallback = GM_FALLBACK_MAP[name] || 'violin';
+    const player = this.gmPlayers.get(fallback);
+    if (!player) {
+      this._triggerMelodic('samples/piano', midi, when, duration, velocity * 0.6, 'other');
+      return;
+    }
     try {
-      const player = await this.loadGmPlayer(fallback);
       const node = player.play(midi, when, {
         duration: duration / this.rate,
         gain: scaledGain(velocity, 'other'),
@@ -440,12 +511,13 @@ export class AudioEngine {
       startSeconds,
       endSeconds,
       index: 0,
-      originAc: ac.currentTime + 0.06,
+      originAc: ac.currentTime + 0.025,
       originSong: startSeconds,
       sid: this.sessionId,
     };
     this._pumpSchedule();
-    this._schedTimer = setInterval(() => this._pumpSchedule(), 200);
+    for (let i = 0; i < 8; i++) this._pumpSchedule();
+    this._schedTimer = setInterval(() => this._pumpSchedule(), 100);
   }
 
   _pumpSchedule() {
@@ -456,9 +528,8 @@ export class AudioEngine {
       return;
     }
 
-    const LOOKAHEAD_AC = 3; // seconds of AudioContext time
+    const LOOKAHEAD_AC = 4.5; // seconds of AudioContext time
     const horizon = ac.currentTime + LOOKAHEAD_AC;
-    const gmQueue = [];
 
     while (q.index < q.events.length) {
       const ev = q.events[q.index];
@@ -506,14 +577,7 @@ export class AudioEngine {
         this._triggerMelodic('samples/brass_section', ev.midi, when, ev.duration, vel, group);
         continue;
       }
-      gmQueue.push({ ev, when });
-    }
-
-    if (gmQueue.length && q.sid === this.sessionId) {
-      void Promise.all(
-        gmQueue.map(({ ev, when }) =>
-          this._triggerGm(ev.program, ev.midi, when, ev.duration, ev.velocity)),
-      );
+      this._triggerGm(ev.program, ev.midi, when, ev.duration, ev.velocity);
     }
 
     const done = q.index >= q.events.length

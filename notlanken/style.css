@@ -1,20 +1,30 @@
 :root {
-  --bg: #0f1114;
-  --surface: #1a1d23;
-  --surface-2: #14181f;
-  --surface-3: #12151a;
-  --control: #252932;
-  --border: #2e3440;
-  --text: #eceff4;
-  --muted: #8b95a8;
-  --accent: #c45c4a;
-  --accent-hover: #d96f5c;
-  --radius: 10px;
-  --radius-sm: 8px;
+  --bg: #1a2840;
+  --bg-deep: #0e1628;
+  --surface: #6d9475;
+  --surface-2: #5a8263;
+  --surface-3: #4a6b52;
+  --panel-green: #6d9475;
+  --metal-light: #e8ecf2;
+  --metal-mid: #b8c0cc;
+  --metal-dark: #6a7380;
+  --control: #c5d4c8;
+  --border: #8aa892;
+  --text: #0f1a24;
+  --text-on-metal: #1a2530;
+  --muted: #2a3d32;
+  --accent: #2b7fd4;
+  --accent-hover: #4a9ef0;
+  --accent-warm: #c45c4a;
+  --lcd-bg: #c8d9c4;
+  --lcd-text: #142030;
+  --lcd-glow: #e8f2e4;
+  --radius: 14px;
+  --radius-sm: 10px;
   --space: 0.75rem;
-  --bug: #e06c75;
-  --onske: #ebcb8b;
-  --note: #88c0d0;
+  --bug: #c04050;
+  --onske: #b8860b;
+  --note: #2b7fd4;
 }
 
 *,
@@ -26,28 +36,55 @@
 body {
   margin: 0;
   min-height: 100dvh;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  background: var(--bg);
-  color: var(--text);
+  font-family: "Trebuchet MS", "Segoe UI", Tahoma, sans-serif;
+  background:
+    radial-gradient(ellipse 120% 80% at 50% -20%, #3a5080 0%, transparent 55%),
+    linear-gradient(165deg, var(--bg-deep) 0%, var(--bg) 45%, #243550 100%);
+  color: var(--text-on-metal);
   line-height: 1.5;
 }
 
-main {
-  max-width: 40rem;
+main.nl-shell {
+  max-width: 42rem;
   margin: 0 auto;
-  padding: 1.25rem 1rem 2rem;
+  padding: 1.25rem 1rem 2.5rem;
+}
+
+.nl-panel {
+  padding: 1rem 1.1rem 1.25rem;
+  border-radius: 18px 18px 22px 22px;
+  background:
+    linear-gradient(180deg, var(--metal-light) 0%, var(--metal-mid) 12%, #a8b0bc 100%);
+  border: 2px solid #dfe4ec;
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.45),
+    inset 0 2px 0 rgba(255, 255, 255, 0.65),
+    inset 0 -3px 8px rgba(0, 0, 0, 0.12);
+}
+
+.nl-header h1 {
+  font-family: "Kaushan Script", "Segoe Script", cursive;
+  font-size: clamp(1.65rem, 5vw, 2.1rem);
+  font-weight: 400;
+  margin: 0 0 0.15rem;
+  color: #fff;
+  text-shadow:
+    0 1px 0 var(--metal-dark),
+    0 3px 8px rgba(0, 0, 0, 0.35);
+  letter-spacing: 0.02em;
+}
+
+.sub {
+  color: #2a3540;
+  font-size: 0.9rem;
+  margin: 0 0 1rem;
+  font-weight: 600;
 }
 
 h1 {
   font-size: 1.25rem;
   font-weight: 600;
   margin: 0 0 0.25rem;
-}
-
-.sub {
-  color: var(--muted);
-  font-size: 0.875rem;
-  margin: 0 0 1.25rem;
 }
 
 .song-list {
@@ -59,28 +96,29 @@ h1 {
   gap: 0.5rem;
 }
 
-.song-list button {
+.song-list button,
+.song-list .song-btn {
   width: 100%;
   text-align: left;
   padding: 0.75rem 1rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-  color: var(--text);
+  border: 2px solid var(--metal-dark);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, #f0f3f8 0%, #c8ced8 55%, #aeb6c4 100%);
+  color: var(--text-on-metal);
   font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-}
-
-.song-list button[aria-current="true"] {
-  border-color: var(--accent);
-  background: var(--control);
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .player {
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-  padding: 1rem;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
 }
 
 [hidden] {
@@ -940,5 +978,378 @@ button.ghost.small {
 
   .notes-actions {
     flex: none;
+  }
+}
+
+/* —— UX (behåller befintlig visuell stil) —— */
+.song-search {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 0.85rem;
+}
+
+.song-search-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.song-search input {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+}
+
+.song-search input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.song-list .song-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.song-list .song-btn::after {
+  content: "›";
+  color: var(--muted);
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.song-empty {
+  padding: 0.75rem 0.5rem;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.section-label {
+  margin: 0 0 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.control-hint {
+  margin: 0 0 0.45rem;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.lane-hint {
+  margin-bottom: 0.35rem;
+}
+
+.transport-block {
+  margin-bottom: var(--space);
+}
+
+.transport-block .control-hint {
+  margin-top: 0.35rem;
+  margin-bottom: 0;
+}
+
+@media (max-width: 520px) {
+  .transport-block {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    padding: 0.5rem 0 0.35rem;
+    margin: 0 -0.25rem var(--space);
+    background: linear-gradient(180deg, var(--surface) 70%, transparent);
+  }
+
+  .komp-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .komp-variant {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .komp-variant .chip {
+    flex: 1;
+  }
+}
+
+.komp-bar .section-label {
+  flex: 1 1 100%;
+}
+
+.timeline-block .section-label {
+  margin-bottom: 0.25rem;
+}
+
+.notes-panel .section-label {
+  margin-bottom: 0.15rem;
+}
+
+.notes-panel .control-hint {
+  margin-bottom: 0.5rem;
+}
+
+/* —— Early-2000s skin (LCD + brushed metal + green modules) —— */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.nl-lcd {
+  margin-bottom: var(--space);
+}
+
+.nl-lcd-bezel {
+  padding: 0.45rem;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #d8dee8 0%, #9aa3b0 100%);
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.25),
+    0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.nl-lcd-screen {
+  padding: 0.65rem 0.85rem;
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, var(--lcd-glow) 0%, var(--lcd-bg) 40%, #b4c8ae 100%);
+  border: 2px inset #7a9078;
+  color: var(--lcd-text);
+  font-family: "Trebuchet MS", monospace;
+  box-shadow: inset 0 0 12px rgba(40, 70, 50, 0.15);
+}
+
+.nl-lcd-title {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nl-lcd-chord {
+  margin: 0 0 0.25rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1a5080;
+}
+
+.nl-lcd-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.5rem;
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.nl-lcd-sep {
+  opacity: 0.45;
+}
+
+.nl-module,
+.komp-bar {
+  margin-bottom: var(--space);
+  padding: 0.65rem 0.75rem;
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, #7fa888 0%, var(--panel-green) 35%, #4f7358 100%);
+  border: 2px solid #3d5844;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 4px 10px rgba(0, 0, 0, 0.2);
+  color: #0f1a14;
+}
+
+.nl-module .section-label,
+.komp-bar .section-label {
+  color: rgba(15, 26, 20, 0.75);
+}
+
+.nl-module .control-hint,
+.komp-bar .komp-status,
+.komp-field {
+  color: rgba(15, 26, 20, 0.8);
+}
+
+.topbar {
+  margin-bottom: 0.65rem;
+}
+
+.topbar .nl-btn-pill {
+  flex: none;
+}
+
+.nl-btn,
+.nl-btn-pill,
+button.ghost {
+  border: 2px solid var(--metal-dark);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #f4f6fa 0%, #c5ccd8 100%);
+  color: var(--text-on-metal);
+  font-weight: 700;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), inset 0 1px 0 #fff;
+}
+
+.nl-btn-pill {
+  padding: 0.4rem 0.85rem;
+  font-size: 0.78rem;
+}
+
+.transport {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  margin-bottom: 0.35rem;
+}
+
+.transport button {
+  flex: none;
+  min-height: auto;
+  border: none;
+  padding: 0;
+}
+
+.btn-round {
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at 35% 30%, #fff 0%, #c8d0dc 45%, #8a939f 100%);
+  border: 3px solid #6a7380;
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.35),
+    inset 0 2px 4px rgba(255, 255, 255, 0.7);
+  color: #1a2838;
+  cursor: pointer;
+}
+
+.btn-play-main {
+  width: 4.25rem;
+  height: 4.25rem;
+  border-color: #2a6090;
+  background:
+    radial-gradient(circle at 35% 28%, #9ed4ff 0%, var(--accent) 42%, #1a5080 100%);
+  color: #fff;
+}
+
+.btn-play-main svg {
+  width: 1.75rem;
+  height: 1.75rem;
+  margin-left: 0.15rem;
+}
+
+.btn-round.secondary {
+  width: 2.85rem;
+  height: 2.85rem;
+}
+
+.btn-round svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: currentColor;
+}
+
+.btn-round:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.chip,
+.nl-knob-chip {
+  border-radius: 999px;
+  border: 2px solid #3d5844;
+  background: linear-gradient(180deg, #e8f0ea 0%, #a8c0ae 100%);
+  color: #1a3024;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.chip[aria-pressed="true"],
+.nl-knob-chip[aria-pressed="true"] {
+  background: radial-gradient(circle at 40% 30%, #7ec8ff 0%, var(--accent) 55%, #1a5080 100%);
+  border-color: #1a5080;
+  color: #fff;
+}
+
+.komp-field select,
+.song-search input,
+.note-dialog textarea,
+.notes-edit {
+  background: rgba(255, 255, 255, 0.75);
+  color: var(--lcd-text);
+  border: 2px inset #7a9078;
+}
+
+.lane {
+  border: 2px inset #3d5844;
+  background: rgba(15, 30, 20, 0.35);
+  border-left: 4px solid var(--accent);
+}
+
+.lane-chord {
+  color: #e8f2e4;
+}
+
+.timeline {
+  border: 2px inset #3d5844;
+  background: rgba(15, 30, 20, 0.4);
+}
+
+.timeline-playhead {
+  background: var(--accent);
+  width: 3px;
+}
+
+.mixer-panel {
+  border: 2px solid var(--metal-dark);
+  border-radius: 12px;
+  background: linear-gradient(180deg, #c5ccd8 0%, #8a939f 100%);
+}
+
+.note-dialog.nl-dialog {
+  border-radius: 16px;
+  border: 3px solid var(--metal-mid);
+  background: linear-gradient(180deg, #e8ecf2 0%, #b8c0cc 100%);
+  color: var(--text-on-metal);
+}
+
+.btn-round-sm {
+  min-height: 2.5rem;
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
+  border: 2px solid var(--metal-dark);
+  font-weight: 700;
+}
+
+.btn-ok {
+  background: radial-gradient(circle at 30% 25%, #9ed4ff, var(--accent) 60%, #1a5080);
+  color: #fff;
+}
+
+@media (max-width: 520px) {
+  .transport-block {
+    background: linear-gradient(180deg, rgba(168, 176, 188, 0.95) 70%, transparent);
   }
 }

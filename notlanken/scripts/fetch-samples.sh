@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Download and compress self-hosted samples for Notlåda.
+# Download and compress self-hosted samples for Notlänken ™.
 # Licenses: see ../samples/LICENSES.md
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
