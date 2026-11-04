@@ -492,10 +492,6 @@ button.ghost.small {
   box-shadow: 0 0 10px rgba(43, 127, 212, 0.45);
 }
 
-.lane-scrub-affordance {
-  display: none;
-}
-
 .lane:active {
   cursor: grabbing;
 }

@@ -13,7 +13,7 @@ function openCache() {
 }
 
 /**
- * Fetch with Cache API persistence (same-origin samples + gm-fallback).
+ * Fetch with Cache API persistence (same-origin samples).
  * @param {string} url
  */
 export async function cachedFetch(url) {

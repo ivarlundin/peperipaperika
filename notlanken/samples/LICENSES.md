@@ -25,22 +25,27 @@ All files in this folder are redistributable in this public repository. Keep thi
 
 Do **not** use FluidR3 `reverse_cymbal` or other GM effect presets for play-along drums — they swell in backwards (GM program 120).
 
-Sample URLs are fetched with `?v=salamander-cymbals-2` and service worker cache `notlanken-assets-v2` so older cached reverse-cymbal OGG files are dropped on deploy.
+Sample URLs use `?v=` from `sample-asset-version.js` and service worker cache `notlanken-assets-v3` (install precache of all hosted OGG).
 
 Unused tom OGG files in this folder are legacy; autokomp/playback only load the files listed in `DRUM_MAP` in `audio-engine.js`.
 
-## GM fallback (`gm-fallback/*.js`)
+## Encoding (light play-along set)
 
-- **Source:** gleitz/midi-js-soundfonts `FluidR3_GM` instrument bundles (violin, flute, clarinet, acoustic_guitar_nylon, string_ensemble_1, choir_aahs, synth_strings_1)
-- **License:** Same as FluidR3 GM above
+Hosted melodic/drum samples are **mono Opus in OGG** (~56 kbps), trimmed to ~2–3 s with a short release fade. Zone counts are listed in `sample-manifest.js` (piano 8 zones, bass/brass 5, rhodes 6). Re-encode after fetching:
 
-## Regenerating
+```bash
+node notlanken/scripts/reencode-light-samples.mjs
+```
+
+Rare GM programs not mapped to a local folder fall back to **piano zones** at lower gain (no multi-megabyte soundfont bundles).
+
+## Regenerating from upstream
 
 ```bash
 ./notlanken/scripts/fetch-samples.sh
 ```
 
-Requires `curl`, `ffmpeg`. Total size should stay well under ~50 MB for GitHub Pages.
+Requires `curl`, `ffmpeg`. Then run `node scripts/reencode-light-samples.mjs` if needed. Total hosted audio stays near **~1 MB** for the full zone library.
 
 
 ## Rhodes / electric piano (`rhodes/`)

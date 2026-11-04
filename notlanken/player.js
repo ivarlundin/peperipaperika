@@ -1,4 +1,4 @@
-import { Midi } from 'https://esm.sh/@tonejs/midi@2.0.28';
+import { Midi } from './vendor/tonejs-midi.mjs';
 import { getAudioEngine, GROUPS } from './audio-engine.js';
 import {
   barStarts,
@@ -410,6 +410,14 @@ async function openSong(song) {
       throw err;
     }
     hideLoadingModal();
+    if (typeof console !== 'undefined' && console.info) {
+      const m = engine.getLoadMetrics();
+      console.info('[notlanken] time-to-ready', {
+        ms: Math.round(m.lastPrepareMs),
+        cold: coldLoad,
+        buffers: m.bufferCount,
+      });
+    }
     if (!coldLoad && statusEl.textContent === 'Laddar ljud…') setStatus('');
     if (!songLoadGuard.isActive(loadToken)) return;
 
@@ -1555,7 +1563,7 @@ applyMixerSettings(engine, {
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker
-    .register(new URL('sw.js', import.meta.url), { scope: './' })
+    .register(new URL('sw.js', import.meta.url), { scope: './', type: 'module' })
     .then((reg) => reg.update())
     .catch(() => {});
 }
