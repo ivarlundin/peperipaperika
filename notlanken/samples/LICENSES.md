@@ -25,6 +25,8 @@ All files in this folder are redistributable in this public repository. Keep thi
 
 Do **not** use FluidR3 `reverse_cymbal` or other GM effect presets for play-along drums — they swell in backwards (GM program 120).
 
+Sample URLs are fetched with `?v=salamander-cymbals-2` and service worker cache `notlanken-assets-v2` so older cached reverse-cymbal OGG files are dropped on deploy.
+
 Unused tom OGG files in this folder are legacy; autokomp/playback only load the files listed in `DRUM_MAP` in `audio-engine.js`.
 
 ## GM fallback (`gm-fallback/*.js`)
