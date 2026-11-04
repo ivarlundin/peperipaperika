@@ -534,6 +534,27 @@ button.ghost.small {
 .speed-options {
   display: flex;
   flex-wrap: wrap;
+  gap: 0.55rem 0.85rem;
+  align-items: flex-end;
+}
+
+.speed-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.22rem;
+}
+
+.speed-group-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.speed-group-chips {
+  display: flex;
+  flex-wrap: wrap;
   gap: 0.3rem;
 }
 

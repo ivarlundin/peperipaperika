@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
   <title>Notlänken ™</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Trebuchet+MS:wght@400;700&display=swap" rel="stylesheet">
@@ -30,7 +31,8 @@
     <section id="player" class="view player nl-panel" hidden>
       <header class="topbar">
         <button type="button" id="btn-back" class="nl-btn nl-btn-pill" aria-label="Tillbaka till låtlistan">← Låtar</button>
-        <button type="button" id="btn-mixer" class="nl-btn nl-btn-pill" aria-expanded="false" aria-controls="mixer-panel" title="Volym och reverb per spår">Mixer</button>
+        <button type="button" id="btn-copy-link" class="nl-btn nl-btn-pill ghost" title="Kopiera länk till denna låt">Kopiera länk</button>
+        <button type="button" id="btn-mixer" class="nl-btn nl-btn-pill" aria-expanded="false" aria-controls="mixer-panel" title="Volym och reverb per spår" aria-label="Mixer — volym och reverb per spår">Mixer</button>
       </header>
 
       <div class="nl-lcd" aria-live="polite">
@@ -80,10 +82,10 @@
           <span>Stil</span>
           <select id="komp-style" aria-label="Autokomp-stil"></select>
         </label>
-        <div class="komp-variant" role="group" aria-label="Variant">
-          <button type="button" class="chip nl-knob-chip" data-variant="auto" aria-pressed="true">Auto</button>
-          <button type="button" class="chip nl-knob-chip" data-variant="A" aria-pressed="false">A</button>
-          <button type="button" class="chip nl-knob-chip" data-variant="B" aria-pressed="false">B</button>
+        <div class="komp-variant" role="group" aria-label="Autokomp-variant">
+          <button type="button" class="chip nl-knob-chip" data-variant="auto" aria-pressed="true" aria-label="Auto — växla variant efter sektion">Auto</button>
+          <button type="button" class="chip nl-knob-chip" data-variant="A" aria-pressed="false" aria-label="Variant A">A</button>
+          <button type="button" class="chip nl-knob-chip" data-variant="B" aria-pressed="false" aria-label="Variant B">B</button>
         </div>
         <span class="komp-status" id="komp-status"></span>
         <span class="komp-style-hint" id="komp-style-hint" hidden>Stilmenyn är inaktiv när alla spår redan finns i MIDI-filen.</span>
