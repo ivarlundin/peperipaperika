@@ -30,8 +30,8 @@
 
     <section id="player" class="view player nl-panel" hidden>
       <header class="topbar">
-        <button type="button" id="btn-back" class="nl-btn nl-btn-pill" aria-label="Tillbaka till låtlistan">← Låtar</button>
-        <button type="button" id="btn-copy-link" class="nl-btn nl-btn-pill ghost" title="Kopiera länk till denna låt">Kopiera länk</button>
+        <button type="button" id="btn-back" class="nl-btn nl-btn-pill nl-btn-topbar" aria-label="Tillbaka till låtlistan">← Låtar</button>
+        <button type="button" id="btn-copy-link" class="nl-btn nl-btn-pill nl-btn-topbar" title="Kopiera länk till denna låt">Kopiera länk</button>
       </header>
 
       <div class="nl-lcd" aria-live="polite">
@@ -78,9 +78,6 @@
               <button type="button" id="btn-speed" class="btn-round secondary btn-aux transport-aux" aria-haspopup="dialog" aria-controls="speed-dialog" aria-expanded="false" title="Uppspelningshastighet" aria-label="Hastighet">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10h-2A8 8 0 1 1 12 4V2zm1 5v5.25l4.5 2.67-.75 1.23L11 13V7h2z"/></svg>
               </button>
-              <button type="button" id="btn-mixer" class="btn-round secondary btn-aux transport-aux" aria-haspopup="dialog" aria-controls="mixer-dialog" aria-expanded="false" title="Volym per spår och master" aria-label="Mixer — volym per spår och master">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18V6h2v12H4zm7 0V3h2v15h-2zm7 0V9h2v9h-2z"/></svg>
-              </button>
             </div>
             <div class="transport-center">
               <button type="button" id="btn-prev" class="transport-icon-btn" disabled aria-label="Föregående takt" title="Föregående takt">
@@ -95,6 +92,9 @@
               </button>
             </div>
             <div class="transport-side transport-side-right">
+              <button type="button" id="btn-mixer" class="btn-round secondary btn-aux transport-aux" aria-haspopup="dialog" aria-controls="mixer-dialog" aria-expanded="false" title="Volym per spår och master" aria-label="Mixer — volym per spår och master">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18V6h2v12H4zm7 0V3h2v15h-2zm7 0V9h2v9h-2z"/></svg>
+              </button>
               <button type="button" id="btn-komp-quick" class="transport-komp-chip" hidden aria-label="Autokomp och stil" title="Autokomp">
                 <span class="transport-komp-key" id="transport-komp-key">—</span>
                 <span class="transport-komp-label">Komp</span>
