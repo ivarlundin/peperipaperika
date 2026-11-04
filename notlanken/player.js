@@ -1,5 +1,5 @@
 import { Midi } from 'https://esm.sh/@tonejs/midi@2.0.28';
-import { AudioEngine, GROUPS } from './audio-engine.js';
+import { getAudioEngine, GROUPS } from './audio-engine.js';
 import {
   barStarts,
   formatBarBeat,
@@ -23,8 +23,9 @@ import {
   resolveStyleId,
 } from './autokomp.js';
 import { createSongLoadGuard } from './song-load-guard.js';
+import { applyMixerSettings, saveMixerSettings } from './mixer-settings.js';
 
-const engine = new AudioEngine(new URL('./', import.meta.url).href);
+const engine = getAudioEngine(new URL('./', import.meta.url).href);
 const songLoadGuard = createSongLoadGuard();
 
 const $ = (id) => document.getElementById(id);
@@ -137,7 +138,7 @@ function setStatus(msg, isError = false) {
 function maybeShowMixerHint() {
   if (localStorage.getItem(MIXER_HINT_KEY)) return;
   localStorage.setItem(MIXER_HINT_KEY, '1');
-  setStatus('Tips: volym och reverb per spår finns under Mixer.');
+  setStatus('Tips: volym per spår finns under Mixer.');
   clearTimeout(mixerHintTimer);
   mixerHintTimer = window.setTimeout(() => {
     if (statusEl.textContent.startsWith('Tips: volym')) setStatus('');
@@ -283,10 +284,6 @@ async function openSong(song) {
       sections: loadSections,
     });
 
-    showLoadingModal('Laddar ljudmotor…');
-    setStatus('Laddar ljud…');
-    if (!songLoadGuard.isActive(loadToken)) return;
-
     const loadKompDirectives = parseKompDirectives(loadMidi);
     let loadEvents = loadWrittenEvents;
     if (kompOn && loadChords.length && styleMap.size) {
@@ -310,6 +307,11 @@ async function openSong(song) {
       }
     }
 
+    const coldLoad = !engine.isCoreReady() || engine.willLoadNewInstruments(loadEvents);
+    if (coldLoad) showLoadingModal('Laddar ljudmotor…');
+    setStatus('Laddar ljud…');
+    if (!songLoadGuard.isActive(loadToken)) return;
+
     engine.beginSongPrepare(loadToken);
     try {
       const ready = await engine.prepareInstrumentsForEvents(loadEvents, loadToken);
@@ -322,6 +324,7 @@ async function openSong(song) {
       throw err;
     }
     hideLoadingModal();
+    if (!coldLoad && statusEl.textContent === 'Laddar ljud…') setStatus('');
     if (!songLoadGuard.isActive(loadToken)) return;
 
     midi = loadMidi;
@@ -1021,7 +1024,6 @@ function buildMixerUi() {
     const label = auto ? `${GROUP_LABELS[g]} (auto)` : GROUP_LABELS[g];
     const m = engine.mixer[g];
     const vol = Math.round(m.volume * 100);
-    const send = Math.round(m.reverbSend * 100);
     const strip = document.createElement('div');
     strip.className = 'strip' + (auto ? ' strip-auto' : '');
     strip.innerHTML = `
@@ -1034,10 +1036,6 @@ function buildMixerUi() {
         <input type="range" min="0" max="100" value="${vol}" data-vol="${g}" aria-label="${label} volym">
       </div>
       <span class="strip-val" data-vol-val="${g}">${vol}</span>
-      <label class="send">
-        <span>Rev</span>
-        <input type="range" min="0" max="100" value="${send}" data-send="${g}" aria-label="${label} reverb-send">
-      </label>
     `;
     mixerGroups.appendChild(strip);
   }
@@ -1047,6 +1045,7 @@ function buildMixerUi() {
       const g = el.getAttribute('data-vol');
       mixerGroups.querySelector(`[data-vol-val="${g}"]`).textContent = el.value;
       engine.setGroupMixer(g, { volume: el.value / 100 });
+      saveMixerSettings(engine, { masterVol, reverb: reverbSlider });
     });
   });
   mixerGroups.querySelectorAll('[data-mute]').forEach((el) => {
@@ -1055,6 +1054,7 @@ function buildMixerUi() {
       el.setAttribute('aria-pressed', String(on));
       el.textContent = on ? 'Tyst' : 'Ljud';
       engine.setGroupMixer(el.getAttribute('data-mute'), { mute: on });
+      saveMixerSettings(engine, { masterVol, reverb: reverbSlider });
     });
   });
   mixerGroups.querySelectorAll('[data-solo]').forEach((el) => {
@@ -1062,11 +1062,7 @@ function buildMixerUi() {
       const on = el.getAttribute('aria-pressed') !== 'true';
       el.setAttribute('aria-pressed', String(on));
       engine.setGroupMixer(el.getAttribute('data-solo'), { solo: on });
-    });
-  });
-  mixerGroups.querySelectorAll('[data-send]').forEach((el) => {
-    el.addEventListener('input', () => {
-      engine.setGroupMixer(el.getAttribute('data-send'), { reverbSend: el.value / 100 });
+      saveMixerSettings(engine, { masterVol, reverb: reverbSlider });
     });
   });
 }
@@ -1226,11 +1222,13 @@ for (const group of SPEED_GROUPS) {
 reverbSlider.addEventListener('input', () => {
   reverbVal.textContent = `${reverbSlider.value}%`;
   engine.setReverbAmount(Number(reverbSlider.value) / 100);
+  saveMixerSettings(engine, { masterVol, reverb: reverbSlider });
 });
 
 masterVol.addEventListener('input', () => {
   masterVolVal.textContent = `${masterVol.value}%`;
   engine.setMasterVolume(Number(masterVol.value) / 100);
+  saveMixerSettings(engine, { masterVol, reverb: reverbSlider });
 });
 
 btnMixer.addEventListener('click', () => {
@@ -1358,6 +1356,17 @@ function hideLoadingModal(errMsg) {
 bindTimeline();
 bindLane();
 
+applyMixerSettings(engine, {
+  masterVol,
+  reverb: reverbSlider,
+  masterVolVal,
+  reverbVal,
+});
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register(new URL('sw.js', import.meta.url), { scope: './' }).catch(() => {});
+}
+
 async function initKompUi() {
   const base = new URL('./', import.meta.url).href;
   const loaded = await loadStyles(base);
@@ -1395,7 +1404,10 @@ const kompReady = initKompUi().catch((e) => {
   kompStatus.textContent = 'Kunde inte ladda stilar';
 });
 
-kompReady.then(() => loadManifest()).catch((e) => {
+kompReady.then(() => {
+  void engine.warmupCore();
+  return loadManifest();
+}).catch((e) => {
   const li = document.createElement('li');
   li.className = 'status error';
   li.textContent = `Kunde inte ladda låtlistan: ${e.message}`;

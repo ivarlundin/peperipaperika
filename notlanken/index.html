@@ -32,7 +32,7 @@
       <header class="topbar">
         <button type="button" id="btn-back" class="nl-btn nl-btn-pill" aria-label="Tillbaka till låtlistan">← Låtar</button>
         <button type="button" id="btn-copy-link" class="nl-btn nl-btn-pill ghost" title="Kopiera länk till denna låt">Kopiera länk</button>
-        <button type="button" id="btn-mixer" class="nl-btn nl-btn-pill" aria-expanded="false" aria-controls="mixer-panel" title="Volym och reverb per spår" aria-label="Mixer — volym och reverb per spår">Mixer</button>
+        <button type="button" id="btn-mixer" class="nl-btn nl-btn-pill" aria-expanded="false" aria-controls="mixer-panel" title="Volym per spår och master" aria-label="Mixer — volym per spår och master">Mixer</button>
       </header>
 
       <div class="nl-lcd" aria-live="polite">
@@ -57,9 +57,9 @@
             <span class="strip-label">Reverb</span>
             <div class="strip-ms-spacer" aria-hidden="true"></div>
             <div class="fader">
-              <input type="range" id="reverb" min="0" max="100" value="12" aria-label="Reverb, våt nivå">
+              <input type="range" id="reverb" min="0" max="100" value="8" aria-label="Reverb, gemensam våt nivå">
             </div>
-            <span class="strip-val" id="reverb-val">12%</span>
+            <span class="strip-val" id="reverb-val">8%</span>
           </div>
           <div class="strip strip-aux strip-master">
             <span class="strip-label">Master</span>

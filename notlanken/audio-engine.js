@@ -1,7 +1,19 @@
 import { resolveVoice } from './instruments.js';
 import { gmInstrumentName } from './gm-programs.js';
+import { cachedFetch } from './asset-cache.js';
 
 const GROUPS = ['piano', 'bass', 'drums', 'brass', 'other'];
+
+/** Fixed send levels per group (× master reverb fader). Not user-editable. */
+const INTERNAL_REVERB_SEND = {
+  piano: 0.24,
+  bass: 0.2,
+  drums: 0.1,
+  brass: 0.14,
+  other: 0.22,
+};
+
+const CORE_SAMPLE_FOLDERS = ['samples/piano'];
 
 /** Natural release tail after MIDI note-off (seconds). */
 const GROUP_RELEASE = {
@@ -78,11 +90,6 @@ const GM_FALLBACK_MAP = {
   voice_oohs: 'choir_aahs',
 };
 
-const MELODIC_FOLDERS = [
-  'samples/piano',
-  'samples/rhodes',
-];
-
 function voiceToGroup(voice) {
   if (voice.kind === 'piano') return 'piano';
   if (voice.kind === 'bass') return 'bass';
@@ -93,17 +100,49 @@ function voiceToGroup(voice) {
   return 'other';
 }
 
-function generateImpulseResponse(ac, duration = 1.6, decay = 2.8) {
+/** Small room / short hall (~1.1–1.2 s). */
+function generateImpulseResponse(ac, duration = 1.15, decay = 5.4, level = 0.26) {
   const rate = ac.sampleRate;
   const len = Math.floor(rate * duration);
   const buf = ac.createBuffer(2, len, rate);
   for (let c = 0; c < 2; c++) {
     const ch = buf.getChannelData(c);
     for (let i = 0; i < len; i++) {
-      ch[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, decay) * 0.35;
+      ch[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, decay) * level;
     }
   }
   return buf;
+}
+
+/** Sample folders required for these events (excluding core piano+drums). */
+export function foldersNeededForEvents(events) {
+  const folders = new Set();
+  for (const ev of events) {
+    const { voice } = ev;
+    if (!voice) continue;
+    if (voice.kind === 'piano') {
+      folders.add(voice.sample === 'rhodes' ? 'samples/rhodes' : 'samples/piano');
+    } else if (voice.kind === 'bass') {
+      folders.add('samples/bass');
+    } else if (
+      voice.kind === 'trumpet'
+      || voice.kind === 'trombone'
+      || voice.kind === 'tenor_sax'
+      || voice.kind === 'brass_section'
+    ) {
+      folders.add(`samples/${voice.kind}`);
+    }
+  }
+  for (const f of CORE_SAMPLE_FOLDERS) folders.delete(f);
+  return [...folders];
+}
+
+let sharedEngine = null;
+
+/** One AudioEngine per page session (samples + soundfonts stay in memory). */
+export function getAudioEngine(baseUrl) {
+  if (!sharedEngine) sharedEngine = new AudioEngine(baseUrl);
+  return sharedEngine;
 }
 
 function scaledGain(velocity, group) {
@@ -144,6 +183,7 @@ export class AudioEngine {
     this.master = null;
     this.compressor = null;
     this.reverb = null;
+    this.reverbPreDelay = null;
     this.reverbWet = null;
     this.reverbDry = null;
     this.groupNodes = {};
@@ -158,23 +198,25 @@ export class AudioEngine {
     this.rate = 1;
     this.mixer = {};
     this.prepared = false;
+    this._coreReady = false;
+    /** @type {Set<string>} */
+    this._loadedFolders = new Set();
+    /** @type {Promise<void> | null} */
+    this._warmPromise = null;
+    /** @type {Promise<typeof import('soundfont-player')> | null} */
+    this._soundfontModulePromise = null;
+    this._lastPrepareMs = 0;
     /** @type {number} Latest song-load token allowed to mark prepared. */
     this._prepareToken = 0;
     /** @type {ReturnType<typeof setInterval> | null} */
     this._schedTimer = null;
-    this._gmPreloadStarted = false;
     /** @type {null | { events: any[], startSeconds: number, endSeconds: number, index: number, originAc: number, originSong: number, sid: number }} */
     this._schedQueue = null;
     for (const g of GROUPS) {
-      this.mixer[g] = {
-        volume: 0.75,
-        mute: false,
-        solo: false,
-        reverbSend: g === 'brass' ? 0.12 : 0.2,
-      };
+      this.mixer[g] = { volume: 0.75, mute: false, solo: false };
     }
     this.masterVolume = 0.72;
-    this.reverbAmount = 0.12;
+    this.reverbAmount = 0.08;
     /** Prefer acoustic piano for written charts; Rhodes still available via voice.sample. */
     this.pianoSample = 'acoustic';
     /** @type {Record<string, BiquadFilterNode>} */
@@ -194,9 +236,12 @@ export class AudioEngine {
 
       this.reverbDry = this.ac.createGain();
       this.reverbWet = this.ac.createGain();
+      this.reverbPreDelay = this.ac.createDelay(0.05);
+      this.reverbPreDelay.delayTime.value = 0.016;
       this.reverb = this.ac.createConvolver();
       this.reverb.buffer = generateImpulseResponse(this.ac);
       this.reverbDry.connect(this.master);
+      this.reverbPreDelay.connect(this.reverb);
       this.reverb.connect(this.reverbWet);
       this.reverbWet.connect(this.master);
       this.master.connect(this.compressor);
@@ -212,7 +257,7 @@ export class AudioEngine {
         filter.Q.value = 0.7;
         dry.connect(filter);
         filter.connect(this.reverbDry);
-        send.connect(this.reverb);
+        send.connect(this.reverbPreDelay);
         this.groupNodes[g] = { dry, send, filter };
         this.groupFilters[g] = filter;
       }
@@ -231,9 +276,54 @@ export class AudioEngine {
       const m = this.mixer[g];
       const audible = solo ? m.solo && !m.mute : !m.mute;
       const vol = audible ? m.volume : 0;
+      const sendAmt = INTERNAL_REVERB_SEND[g] ?? 0.2;
       this.groupNodes[g].dry.gain.value = vol;
-      this.groupNodes[g].send.gain.value = vol * m.reverbSend;
+      this.groupNodes[g].send.gain.value = vol * sendAmt;
     }
+  }
+
+  listMixerGroups() {
+    return GROUPS;
+  }
+
+  isCoreReady() {
+    return this._coreReady;
+  }
+
+  getLoadMetrics() {
+    return {
+      coreReady: this._coreReady,
+      lastPrepareMs: this._lastPrepareMs,
+      bufferCount: this.buffers.size,
+      soundfontCount: this.sfPlayers.size,
+    };
+  }
+
+  willLoadNewInstruments(events) {
+    for (const ev of events) {
+      const kind = ev.voice?.kind;
+      if (kind && MELODIC_SOUNDFONT[kind]) {
+        const spec = MELODIC_SOUNDFONT[kind];
+        const key = `sf:${spec.name}:${spec.group}`;
+        if (!this.sfPlayers.has(key)) return true;
+      } else if (kind === 'gm') {
+        const name = gmInstrumentName(ev.program ?? 0);
+        const fb = GM_FALLBACK_MAP[name] || 'violin';
+        if (!this.gmPlayers.has(fb)) return true;
+      }
+    }
+    for (const folder of foldersNeededForEvents(events)) {
+      if (!this._loadedFolders.has(folder)) return true;
+    }
+    return false;
+  }
+
+  warmupCore() {
+    if (this._warmPromise) return this._warmPromise;
+    this._warmPromise = this.ensureCoreSamples(this._prepareToken).finally(() => {
+      this._warmPromise = null;
+    });
+    return this._warmPromise;
   }
 
   setMasterVolume(v) {
@@ -282,7 +372,7 @@ export class AudioEngine {
   async loadBuffer(path) {
     if (this.buffers.has(path)) return this.buffers.get(path);
     const ac = await this.ensureContext();
-    const res = await fetch(this.baseUrl + path);
+    const res = await cachedFetch(this.baseUrl + path);
     if (!res.ok) throw new Error(`Sample saknas: ${path}`);
     const arr = await res.arrayBuffer();
     const buf = await ac.decodeAudioData(arr);
@@ -360,20 +450,32 @@ export class AudioEngine {
     return best;
   }
 
-  /** Invalidate prepared state for a new song load (call before async load work). */
+  /** Mark in-flight song load; keep cached core/instruments hot when possible. */
   beginSongPrepare(loadToken) {
     this._prepareToken = loadToken;
-    this.prepared = false;
+    if (!this._coreReady) this.prepared = false;
   }
 
-  /** Preload buffers so scheduling can run synchronously (no main-thread backlog). */
-  async preparePlayback(loadToken = this._prepareToken) {
+  async _loadFolderSamples(folder, loadToken) {
+    if (this._loadedFolders.has(folder)) return true;
+    if (loadToken !== this._prepareToken) return false;
+    const zones = await this.loadMelodicZones(folder);
+    if (loadToken !== this._prepareToken) return false;
+    await Promise.all(zones.map((z) => this.loadBuffer(z.file)));
+    if (loadToken !== this._prepareToken) return false;
+    this._loadedFolders.add(folder);
+    return true;
+  }
+
+  /** Drums + acoustic piano once per session. */
+  async ensureCoreSamples(loadToken = this._prepareToken) {
+    if (this._coreReady) return true;
     await this.ensureContext();
     const paths = new Set();
     for (const f of new Set(Object.values(DRUM_MAP))) {
       paths.add(`samples/drums/${f}`);
     }
-    for (const folder of MELODIC_FOLDERS) {
+    for (const folder of CORE_SAMPLE_FOLDERS) {
       if (loadToken !== this._prepareToken) return false;
       const zones = await this.loadMelodicZones(folder);
       for (const z of zones) paths.add(z.file);
@@ -381,27 +483,34 @@ export class AudioEngine {
     if (loadToken !== this._prepareToken) return false;
     await Promise.all([...paths].map((p) => this.loadBuffer(p)));
     if (loadToken !== this._prepareToken) return false;
-    this.prepared = true;
-    if (!this._gmPreloadStarted) {
-      this._gmPreloadStarted = true;
-      void this._preloadGmFallbacks();
+    for (const folder of CORE_SAMPLE_FOLDERS) this._loadedFolders.add(folder);
+    this._coreReady = true;
+    return true;
+  }
+
+  async ensureSampleFoldersForEvents(events, loadToken = this._prepareToken) {
+    for (const folder of foldersNeededForEvents(events)) {
+      const ok = await this._loadFolderSamples(folder, loadToken);
+      if (!ok) return false;
     }
     return true;
   }
 
-  async _preloadGmFallbacks() {
-    const gmNames = new Set(Object.values(GM_FALLBACK_MAP));
-    await Promise.all([
-      ...[...gmNames].map((name) => this.loadGmPlayer(name).catch(() => null)),
-      ...Object.values(MELODIC_SOUNDFONT).map(({ name, group }) =>
-        this.loadSoundfontPlayer(name, group).catch(() => null)),
-    ]);
+  async _getSoundfontModule() {
+    if (!this._soundfontModulePromise) {
+      this._soundfontModulePromise = import('https://esm.sh/soundfont-player@0.12.0');
+    }
+    return this._soundfontModulePromise;
   }
 
   /** Preload soundfonts/GM used by this song so first play is not silent. */
   async prepareInstrumentsForEvents(events, loadToken = this._prepareToken) {
-    const ready = await this.preparePlayback(loadToken);
-    if (!ready) return false;
+    const t0 = typeof performance !== 'undefined' ? performance.now() : 0;
+    const coreOk = await this.ensureCoreSamples(loadToken);
+    if (!coreOk) return false;
+    const samplesOk = await this.ensureSampleFoldersForEvents(events, loadToken);
+    if (!samplesOk) return false;
+
     const sf = new Set();
     const gm = new Set();
     for (const ev of events) {
@@ -422,6 +531,8 @@ export class AudioEngine {
       ...[...gm].map((name) => this.loadGmPlayer(name).catch(() => null)),
     ]);
     if (loadToken !== this._prepareToken) return false;
+    this.prepared = true;
+    if (t0) this._lastPrepareMs = performance.now() - t0;
     return true;
   }
 
@@ -435,7 +546,7 @@ export class AudioEngine {
     const key = `sf:${name}:${group}`;
     if (this.sfPlayers.has(key)) return this.sfPlayers.get(key);
     const ac = await this.ensureContext();
-    const mod = await import('https://esm.sh/soundfont-player@0.12.0');
+    const mod = await this._getSoundfontModule();
     const Soundfont = mod.default || mod;
     const out = ac.createGain();
     this._routeToGroup(out, group);
@@ -581,10 +692,11 @@ export class AudioEngine {
   async loadGmPlayer(name) {
     if (this.gmPlayers.has(name)) return this.gmPlayers.get(name);
     const ac = await this.ensureContext();
-    const mod = await import('https://esm.sh/soundfont-player@0.12.0');
+    const mod = await this._getSoundfontModule();
     const Soundfont = mod.default || mod;
     const file = GM_FALLBACK_MAP[name] || name;
     const url = new URL(`samples/gm-fallback/${file}-mp3.js`, this.baseUrl).href;
+    await cachedFetch(url);
     const out = ac.createGain();
     this._routeToGroup(out, 'other');
     const player = await Soundfont.instrument(ac, url, {
