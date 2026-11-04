@@ -13,7 +13,7 @@ const DRUM_MIDI = {
   ohat: 46,
   pedal: 42,
   ride: 51,
-  bell: 51,
+  bell: 53,
   crash: 49,
 };
 
@@ -53,7 +53,10 @@ export function generate(timeline, opts) {
 
   const dynScale = opts.dynamics === 'p' ? 0.75 : opts.dynamics === 'f' ? 1.15 : 1;
   const humanize = opts.humanize !== false;
-  const want = new Set(opts.generate || ['drums', 'bass', 'piano']);
+  const wantRaw = opts.generate || ['drums', 'bass', 'piano'];
+  const want = new Set(
+    wantRaw.filter((g) => g === 'drums' || g === 'bass' || g === 'piano'),
+  );
   const events = [];
 
   let prevVoicing = null;
@@ -170,6 +173,16 @@ function human(time, vel, on) {
   };
 }
 
+function drumMidiForGrid(name, tok) {
+  if (tok === '.') return null;
+  if (name === 'ride') {
+    if (tok === 'X') return 53;
+    return 51;
+  }
+  const midi = DRUM_MIDI[name];
+  return midi ?? null;
+}
+
 function emitDrums(events, ctx) {
   const {
     grid, steps, stepDur, t0, swing, humanize, dynScale,
@@ -182,13 +195,14 @@ function emitDrums(events, ctx) {
     events.push(drumEv(h.time, 49, Math.min(0.15, stepDur * 2), h.velocity));
   }
 
-  for (const [name, midi] of Object.entries(DRUM_MIDI)) {
+  for (const name of Object.keys(DRUM_MIDI)) {
     const pat = grid[name];
     if (!pat) continue;
     const toks = splitPattern(pat);
     for (let i = 0; i < steps; i++) {
       const tok = toks[i] || '.';
-      if (tok === '.') continue;
+      const midi = drumMidiForGrid(name, tok);
+      if (midi == null) continue;
       const base = (HIT_VEL[tok] ?? 0.5) * MF * dynScale * (velMap[name] ?? 1);
       const h = human(stepTime(t0, i, stepDur, swing, steps), base, humanize);
       events.push(drumEv(h.time, midi, Math.min(stepDur * 0.9, 0.25), h.velocity));

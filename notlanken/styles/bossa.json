@@ -17,7 +17,8 @@
   "A": {
     "kick": "x . . x x . . x",
     "rim": "x . . x . . x .",
-    "hat": "x o x o x o x o",
+    "hat": ". o . o . o . o",
+    "ride": "x o x o x o x o",
     "bass": "R - - R 5 - - 5",
     "piano": "C - . c - . c ."
   },

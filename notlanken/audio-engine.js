@@ -64,7 +64,7 @@ const DRUM_MAP = {
   46: '46-open-hat.ogg',
   49: '49-crash.ogg',
   51: '51-ride.ogg',
-  53: '51-ride.ogg', // ride bell
+  53: '53-ride-bell.ogg',
 };
 
 function drumSampleFile(midi) {
