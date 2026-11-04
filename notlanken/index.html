@@ -72,11 +72,9 @@
 
       <div class="transport-block">
         <div class="transport">
-          <button type="button" id="btn-play" class="btn-round btn-play-main" disabled aria-label="Spela" aria-pressed="false" title="Spela (mellanslag)">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-          </button>
-          <button type="button" id="btn-pause" class="btn-round secondary" disabled aria-label="Paus" aria-pressed="false" title="Paus (mellanslag)">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
+          <button type="button" id="btn-play-pause" class="btn-round btn-play-main" disabled aria-label="Spela" aria-pressed="false" title="Spela (mellanslag)">
+            <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+            <svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true" hidden><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
           </button>
           <button type="button" id="btn-stop" class="btn-round secondary" disabled aria-label="Stopp" title="Stopp">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6h12v12H6z"/></svg>
@@ -102,8 +100,7 @@
         </div>
       </div>
 
-      <div class="notes-panel nl-module">
-        <p class="section-label">Anteckningar till arrangören</p>
+      <div class="notes-panel">
         <div class="notes-toolbar">
           <div class="note-add" id="note-add" role="group" aria-label="Ny anteckning vid aktuell position">
             <button type="button" data-type="bug" class="note-add-btn note-bug">+ Fel <kbd>B</kbd></button>

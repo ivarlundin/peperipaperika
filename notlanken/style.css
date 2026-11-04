@@ -1,25 +1,39 @@
 :root {
   --bg: #1a2840;
   --bg-deep: #0e1628;
-  --surface: #6d9475;
-  --surface-2: #5a8263;
-  --surface-3: #4a6b52;
-  --panel-green: #6d9475;
+  --surface: #b0b8c4;
+  --surface-2: #9aa3b0;
+  --surface-3: #7a8490;
+  --panel-metal: #a8b0bc;
+  --metal-brush:
+    repeating-linear-gradient(
+      -14deg,
+      rgba(255, 255, 255, 0.05) 0 2px,
+      rgba(0, 0, 0, 0.04) 2px 4px
+    ),
+    linear-gradient(180deg, #eceff4 0%, #c5ccd8 38%, #959dab 100%);
+  --metal-brush-deep:
+    repeating-linear-gradient(
+      -14deg,
+      rgba(255, 255, 255, 0.035) 0 2px,
+      rgba(0, 0, 0, 0.05) 2px 4px
+    ),
+    linear-gradient(180deg, #c8ced8 0%, #889098 42%, #505860 100%);
   --metal-light: #e8ecf2;
   --metal-mid: #b8c0cc;
   --metal-dark: #6a7380;
-  --control: #c5d4c8;
-  --border: #8aa892;
+  --control: #d8dce4;
+  --border: #8a939f;
   --text: #0f1a24;
   --text-on-metal: #1a2530;
-  --muted: #2a3d32;
+  --muted: #4a5560;
   --accent: #2b7fd4;
   --accent-hover: #4a9ef0;
   --accent-warm: #c45c4a;
   --lcd-bg: #c8d9c4;
   --lcd-text: #142030;
   --lcd-glow: #e8f2e4;
-  /** Readable copy on the navy page backdrop (outside metal/green panels) */
+  /** Readable copy on the navy page backdrop (outside metal panels) */
   --text-on-nav-bg: #e2ebe6;
   --text-on-nav-bg-muted: #c5d4dc;
   --radius: 14px;
@@ -269,8 +283,8 @@ button.ghost.small {
   min-height: 1.65rem;
   padding: 0;
   border-radius: 999px;
-  border: 2px solid #3d5844;
-  background: linear-gradient(180deg, #5a6a5e 0%, #3d5844 100%);
+  border: 2px solid var(--metal-dark);
+  background: linear-gradient(180deg, #8a939f 0%, #5a6270 100%);
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.35);
   cursor: pointer;
 }
@@ -320,9 +334,9 @@ button.ghost.small {
   min-height: 2.35rem;
   padding: 0.35rem 0.75rem;
   border-radius: 999px;
-  border: 2px solid #3d5844;
-  background: linear-gradient(180deg, #e8f0ea 0%, #a8c0ae 100%);
-  color: #1a3024;
+  border: 2px solid var(--metal-dark);
+  background: linear-gradient(180deg, #f4f6fa 0%, #c5ccd8 100%);
+  color: var(--text-on-metal);
   font: inherit;
   font-weight: 700;
   cursor: pointer;
@@ -457,12 +471,11 @@ button.ghost.small {
 
 .lane-glass {
   border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  background:
-    linear-gradient(180deg, rgba(145, 185, 155, 0.55) 0%, rgba(55, 90, 68, 0.72) 38%, rgba(28, 48, 38, 0.88) 100%);
+  border: 2px solid #7a8490;
+  background: var(--metal-brush-deep);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.38),
-    inset 0 -3px 8px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    inset 0 -3px 8px rgba(0, 0, 0, 0.32),
     0 4px 14px rgba(0, 0, 0, 0.22);
 }
 
@@ -565,11 +578,12 @@ button.ghost.small {
   padding: 0.1rem 0.5rem;
   border: none;
   border-radius: 999px;
-  background: #3f5a3a;
-  color: #d8f0cf;
+  background: linear-gradient(180deg, #6a7380 0%, #4a5560 100%);
+  color: #eef2f8;
   font-size: 0.72rem;
   font-weight: 600;
   white-space: nowrap;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 .lane-section {
@@ -580,7 +594,7 @@ button.ghost.small {
   left: 4px;
   z-index: 2;
   pointer-events: none;
-  background: #55784e;
+  background: linear-gradient(180deg, #8a939f 0%, #5a6270 100%);
 }
 
 .lane-note {
@@ -618,12 +632,11 @@ button.ghost.small {
 
 .timeline-glass {
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background:
-    linear-gradient(180deg, rgba(140, 178, 148, 0.5) 0%, rgba(45, 75, 58, 0.75) 45%, rgba(22, 40, 32, 0.85) 100%);
+  border: 2px solid #8a939f;
+  background: var(--metal-brush-deep);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.35),
-    inset 0 -2px 6px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.28),
     0 3px 10px rgba(0, 0, 0, 0.18);
 }
 
@@ -662,7 +675,7 @@ button.ghost.small {
 
 .timeline-marker.section {
   top: 0.15rem;
-  color: #a3be8c;
+  color: #c5ccd8;
 }
 
 .timeline.overview .timeline-marker.section {
@@ -672,7 +685,7 @@ button.ghost.small {
   max-width: none;
   padding: 0;
   font-size: 0;
-  background: #5f8a56;
+  background: #6a7380;
   overflow: hidden;
 }
 
@@ -1020,8 +1033,11 @@ button.ghost.small {
 
 /* —— Notes —— */
 .notes-panel {
-  border-top: 1px solid var(--border);
-  padding-top: var(--space);
+  margin-bottom: var(--space);
+  padding: 0;
+  border: none;
+  background: transparent;
+  box-shadow: none;
 }
 
 .notes-toolbar {
@@ -1040,13 +1056,14 @@ button.ghost.small {
 .note-add-btn {
   flex: 1 1 auto;
   padding: 0.55rem 0.7rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--control);
-  color: var(--text);
+  border: 2px solid var(--metal-dark);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #f4f6fa 0%, #c5ccd8 100%);
+  color: var(--text-on-metal);
   font-size: 0.8rem;
-  font-weight: 500;
+  font-weight: 700;
   cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), inset 0 1px 0 #fff;
 }
 
 .note-add-btn.note-bug { border-left: 3px solid var(--bug); }
@@ -1298,7 +1315,11 @@ button.ghost.small {
 }
 
 .transport-block {
+  width: 100%;
   margin-bottom: var(--space);
+  padding: 0;
+  background: none;
+  box-shadow: none;
 }
 
 .transport-block .control-hint {
@@ -1311,9 +1332,9 @@ button.ghost.small {
     position: sticky;
     top: 0;
     z-index: 5;
-    padding: 0.5rem 0 0.35rem;
-    margin: 0 -0.25rem var(--space);
-    background: linear-gradient(180deg, var(--surface) 70%, transparent);
+    padding: 0.35rem 0;
+    margin: 0 0 var(--space);
+    background: transparent;
   }
 
   .komp-bar {
@@ -1325,6 +1346,13 @@ button.ghost.small {
     flex: 1 1 auto;
     width: 100%;
   }
+
+  .btn-round.secondary {
+    width: 2.75rem;
+    height: 2.75rem;
+    min-width: 44px;
+    min-height: 44px;
+  }
 }
 
 .notes-panel .section-label {
@@ -1335,7 +1363,7 @@ button.ghost.small {
   margin-bottom: 0.5rem;
 }
 
-/* —— Early-2000s skin (LCD + brushed metal + green modules) —— */
+/* —— Early-2000s skin (LCD + brushed metal modules) —— */
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -1460,22 +1488,21 @@ button.ghost.small {
   margin-bottom: var(--space);
   padding: 0.65rem 0.75rem;
   border-radius: 12px;
-  background:
-    linear-gradient(180deg, #7fa888 0%, var(--panel-green) 35%, #4f7358 100%);
-  border: 2px solid #3d5844;
+  background: var(--metal-brush);
+  border: 2px solid var(--metal-dark);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
     0 4px 10px rgba(0, 0, 0, 0.2);
-  color: #0f1a14;
+  color: var(--text-on-metal);
 }
 
 .nl-module .section-label,
 .komp-bar .section-label {
-  color: rgba(15, 26, 20, 0.75);
+  color: rgba(26, 37, 48, 0.75);
 }
 
 .nl-module .control-hint {
-  color: rgba(15, 26, 20, 0.8);
+  color: rgba(26, 37, 48, 0.8);
 }
 
 .topbar {
@@ -1505,10 +1532,12 @@ button.ghost {
 .transport {
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 0.65rem 0.85rem;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+  width: 100%;
   margin-bottom: 0;
+  padding: 0 0.1rem;
 }
 
 .transport-block .transport button,
@@ -1560,6 +1589,25 @@ button.ghost {
   margin-left: 0.15rem;
 }
 
+.btn-play-main .icon-pause {
+  margin-left: 0;
+}
+
+.btn-round.is-active,
+.btn-round[aria-pressed="true"]:not(:disabled) {
+  box-shadow:
+    0 0 0 3px rgba(43, 127, 212, 0.5),
+    0 0 16px rgba(43, 127, 212, 0.55),
+    0 4px 10px rgba(0, 0, 0, 0.35),
+    inset 0 2px 4px rgba(255, 255, 255, 0.7);
+}
+
+.btn-play-main[aria-pressed="true"]:not(:disabled) {
+  background:
+    radial-gradient(circle at 35% 28%, #b8e4ff 0%, var(--accent) 42%, #1a5080 100%);
+  color: #fff;
+}
+
 .btn-round.secondary {
   width: 2.85rem;
   height: 2.85rem;
@@ -1579,9 +1627,9 @@ button.ghost {
 .chip,
 .nl-knob-chip {
   border-radius: 999px;
-  border: 2px solid #3d5844;
-  background: linear-gradient(180deg, #e8f0ea 0%, #a8c0ae 100%);
-  color: #1a3024;
+  border: 2px solid var(--metal-dark);
+  background: linear-gradient(180deg, #f4f6fa 0%, #c5ccd8 100%);
+  color: var(--text-on-metal);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
@@ -1697,32 +1745,4 @@ button.ghost {
 .song-list .song-btn[aria-current="true"] {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
-}
-
-.transport-block.is-playing .btn-pause {
-  box-shadow:
-    0 0 0 3px rgba(43, 127, 212, 0.45),
-    0 4px 10px rgba(0, 0, 0, 0.35);
-}
-
-.transport-block.is-playing .btn-play-main {
-  opacity: 0.72;
-}
-
-@media (max-width: 520px) {
-  .transport-block {
-    position: sticky;
-    top: 0;
-    z-index: 5;
-    padding: 0.5rem 0 0.35rem;
-    margin: 0 -0.25rem var(--space);
-    background: linear-gradient(180deg, rgba(168, 176, 188, 0.95) 70%, transparent);
-  }
-
-  .btn-round.secondary {
-    width: 2.75rem;
-    height: 2.75rem;
-    min-width: 44px;
-    min-height: 44px;
-  }
 }

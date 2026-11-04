@@ -42,8 +42,9 @@ const nowPlaying = $('now-playing');
 const lcdTitle = $('lcd-title');
 const lcdTitleDisplay = createLcdTitle(lcdTitle);
 const chordLine = $('chord-line');
-const btnPlay = $('btn-play');
-const btnPause = $('btn-pause');
+const btnPlayPause = $('btn-play-pause');
+const btnPlayPauseIconPlay = btnPlayPause?.querySelector('.icon-play');
+const btnPlayPauseIconPause = btnPlayPause?.querySelector('.icon-pause');
 const btnStop = $('btn-stop');
 const timeline = $('timeline');
 const lane = $('lane');
@@ -179,7 +180,10 @@ function isModuleDialogOpen() {
 function bindModuleDialog(dialog, trigger, closeBtn) {
   if (!dialog) return;
   const syncExpanded = () => {
-    if (trigger) trigger.setAttribute('aria-expanded', String(dialog.open));
+    if (trigger) {
+      trigger.setAttribute('aria-expanded', String(dialog.open));
+      trigger.classList.toggle('is-active', dialog.open);
+    }
   };
   dialog.addEventListener('close', syncExpanded);
   dialog.addEventListener('click', (e) => {
@@ -842,13 +846,15 @@ function updatePositionUi() {
 
 function updateTransportUi() {
   const ready = !!midi && !audioBusy;
-  btnPlay.disabled = !ready || isPlaying;
-  btnPause.disabled = !midi || !isPlaying || audioBusy;
+  if (btnPlayPause) {
+    btnPlayPause.disabled = !ready;
+    btnPlayPause.setAttribute('aria-pressed', String(isPlaying));
+    btnPlayPause.setAttribute('aria-label', isPlaying ? 'Paus' : 'Spela');
+    btnPlayPause.title = isPlaying ? 'Paus (mellanslag)' : 'Spela (mellanslag)';
+    if (btnPlayPauseIconPlay) btnPlayPauseIconPlay.hidden = isPlaying;
+    if (btnPlayPauseIconPause) btnPlayPauseIconPause.hidden = !isPlaying;
+  }
   btnStop.disabled = !midi || audioBusy;
-  btnPlay.setAttribute('aria-pressed', String(isPlaying));
-  btnPause.setAttribute('aria-pressed', String(isPlaying));
-  const block = document.querySelector('.transport-block');
-  if (block) block.classList.toggle('is-playing', isPlaying);
   if (lcdTitle && currentSong) {
     lcdTitle.dataset.state = isPlaying ? 'spelar' : audioBusy ? 'laddar' : 'paus';
   }
@@ -1252,11 +1258,11 @@ function bindTimeline() {
   });
 }
 
-btnPlay.addEventListener('click', async () => {
+btnPlayPause?.addEventListener('click', async () => {
   await engine.ensureContext();
-  await startPlayback(position);
+  if (isPlaying) pause();
+  else await startPlayback(position);
 });
-btnPause.addEventListener('click', () => pause());
 btnStop.addEventListener('click', () => stop());
 
 bindModuleDialog(speedDialog, btnSpeed, speedClose);
@@ -1373,8 +1379,7 @@ document.addEventListener('keydown', (e) => {
 
   if (e.code === 'Space') {
     e.preventDefault();
-    if (isPlaying) pause();
-    else btnPlay.click();
+    btnPlayPause?.click();
     return;
   }
   if (e.key === 'ArrowLeft' && midi) {

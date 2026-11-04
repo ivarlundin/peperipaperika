@@ -24,7 +24,7 @@ test('load timing — core warm + song switch', async ({ page }) => {
   } else {
     await songs.first().click();
   }
-  await expect(page.locator('#btn-play:not([disabled])')).toBeVisible({ timeout: 120_000 });
+  await expect(page.locator('#btn-play-pause:not([disabled])')).toBeVisible({ timeout: 120_000 });
   const modalVisible = await page.locator('#loading-modal').isVisible();
   const switchMs = Date.now() - t1;
 
