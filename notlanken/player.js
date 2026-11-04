@@ -130,10 +130,8 @@ let kompDirectives = { style: null, sectionStyles: new Map() };
 let audioBusy = false;
 let playbackSeq = 0;
 
-const MIXER_HINT_KEY = 'notlanken-mixer-hint-v1';
 /** @type {string} */
 let listHighlightFile = '';
-let mixerHintTimer = 0;
 
 function cancelInFlightPlayback() {
   playbackSeq += 1;
@@ -157,18 +155,13 @@ const GROUP_ICONS = {
 };
 
 function setStatus(msg, isError = false) {
+  if (isPlayerView() && !isError) {
+    statusEl.textContent = '';
+    statusEl.classList.remove('error');
+    return;
+  }
   statusEl.textContent = msg || '';
   statusEl.classList.toggle('error', isError);
-}
-
-function maybeShowMixerHint() {
-  if (localStorage.getItem(MIXER_HINT_KEY)) return;
-  localStorage.setItem(MIXER_HINT_KEY, '1');
-  setStatus('Tips: volym per spår finns under fliken Mixer.');
-  clearTimeout(mixerHintTimer);
-  mixerHintTimer = window.setTimeout(() => {
-    if (statusEl.textContent.startsWith('Tips: volym')) setStatus('');
-  }, 9000);
 }
 
 function copySongLink() {
@@ -470,7 +463,6 @@ async function openSong(song) {
     updatePositionUi();
     setStatus('');
     renderSongList(songFilter?.value || '');
-    maybeShowMixerHint();
   } catch (e) {
     if (!songLoadGuard.isActive(loadToken)) return;
     hideLoadingModal(`Kunde inte ladda: ${e.message}`);

@@ -16,12 +16,12 @@ Strukturen är tydlig (LCD, transport, autokomp, lane, tidslinje). Kvarvarande p
 
 | # | Fynd | Status |
 |---|------|--------|
-| 1 | Transport visar inte tydligt att det spelar | ✅ PR #51 — `aria-pressed`, `is-playing`, LCD `data-state` |
-| 2 | Första tonen uteblev vid async soundfonts | ✅ PR #51 + #52 — `prepareInstrumentsForEvents`, load guard |
-| 3 | Mixer svår att upptäcka | ✅ PR #51 `title` + PR #53 engångstips (localStorage), `aria-label` |
-| 4 | Autokomp-variant A/B oklar | ✅ PR #51 statusrad + PR #53 `aria-label` på chip |
-| 5 | Tidslinje utan tangentbord vid fokus | ✅ PR #51 |
-| 6 | Aktiv låt syns inte i listan vid tillbaka | ✅ PR #51 + PR #53 `listHighlightFile` i listvy |
+| 1 | Transport visar inte tydligt att det spelar | [ok] PR #51 — `aria-pressed`, `is-playing`, LCD `data-state` |
+| 2 | Första tonen uteblev vid async soundfonts | [ok] PR #51 + #52 — `prepareInstrumentsForEvents`, load guard |
+| 3 | Mixer svår att upptäcka | [ok] PR #51 `title` + PR #53 engångstips (localStorage), `aria-label` |
+| 4 | Autokomp-variant A/B oklar | [ok] PR #51 statusrad + PR #53 `aria-label` på chip |
+| 5 | Tidslinje utan tangentbord vid fokus | [ok] PR #51 |
+| 6 | Aktiv låt syns inte i listan vid tillbaka | [ok] PR #51 + PR #53 `listHighlightFile` i listvy |
 
 ---
 
@@ -31,31 +31,31 @@ Strukturen är tydlig (LCD, transport, autokomp, lane, tidslinje). Kvarvarande p
 
 | # | Problem | Status |
 |---|---------|--------|
-| 1 | Sök/filter låtlista | ✅ |
-| 2 | Autokomp-etiketter | ✅ |
-| 3 | Transport-genvägar hint | ✅ |
-| 4 | Lane-skubb hint | ✅ |
-| 5 | Titel Notlänken ™ | ✅ |
-| 6 | Sektionsrubriker i spelvy | ✅ |
-| 7 | Sticky transport mobil | ✅ |
-| 8 | Tidslinje `aria-valuenow` / `aria-valuetext` | ✅ |
+| 1 | Sök/filter låtlista | [ok] |
+| 2 | Autokomp-etiketter | [ok] |
+| 3 | Transport-genvägar hint | [ok] |
+| 4 | Lane-skubb hint | [ok] |
+| 5 | Titel Notlänken ™ | [ok] |
+| 6 | Sektionsrubriker i spelvy | [ok] |
+| 7 | Sticky transport mobil | [ok] |
+| 8 | Tidslinje `aria-valuenow` / `aria-valuetext` | [ok] |
 
 ### P2 — implementerat eller medvetet enkelt
 
 | # | Problem | Status |
 |---|---------|--------|
-| 9 | Mixer dold | ✅ Tips vid första låtöppning; `title` + `aria-label` (ingen badge — undviker visuellt brus) |
-| 10 | Variant A/B | ✅ Statusrad + chip `aria-label` |
-| 11 | Anteckningar lätt att missa | ✅ Rubrik + localStorage-hint |
-| 12 | Många hastighetsknappar | ✅ Grupper **Långsam / Normal / Snabb**, alla värden kvar |
-| 13 | Ackordrad kontext | ✅ `aria-live` på LCD |
+| 9 | Mixer dold | [ok] Tips vid första låtöppning; `title` + `aria-label` (ingen badge — undviker visuellt brus) |
+| 10 | Variant A/B | [ok] Statusrad + chip `aria-label` |
+| 11 | Anteckningar lätt att missa | [ok] Rubrik + localStorage-hint |
+| 12 | Många hastighetsknappar | [ok] Grupper **Långsam / Normal / Snabb**, alla värden kvar |
+| 13 | Ackordrad kontext | [ok] `aria-live` på LCD |
 
 ### P3 — nice to have
 
 | # | Problem | Status |
 |---|---------|--------|
-| 14 | ”Spelar nu” i listan | ✅ `aria-current` via hash + senast öppnad låt efter ← Låtar |
-| 15 | Dela deep link | ✅ Knapp **Kopiera länk** i spelvy (hash-URL) |
+| 14 | ”Spelar nu” i listan | [ok] `aria-current` via hash + senast öppnad låt efter ← Låtar |
+| 15 | Dela deep link | [ok] Knapp **Kopiera länk** i spelvy (hash-URL) |
 | 16 | Första ljudstart kräver klick | ⏭️ Behålls (browser policy, korrekt) |
 
 ### Övrigt (PR #52, parallell agent)
