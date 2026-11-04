@@ -11,7 +11,7 @@ async function waitForSongReady(page) {
 test.describe('Notlänken playback', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(BASE);
-    await expect(page.locator('.song-btn')).toHaveCount(2, { timeout: 30_000 });
+    await expect(page.locator('.song-btn')).toHaveCount(3, { timeout: 30_000 });
   });
 
   test('logo visible on player view and home link returns to list', async ({ page }) => {

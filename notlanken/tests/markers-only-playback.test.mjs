@@ -182,6 +182,29 @@ function generateFor(midi, duration) {
   assert(need.length === 0 && ev.length === 0, `${file}: no autokomp`);
 }
 
+// --- LC utan komp: melody + markers → autokomp fills drums/bass/piano ---
+{
+  const file = 'last-christmas-d-v03-utan-komp.mid';
+  const midi = loadMidi(file);
+  assert(midi.tracks.length === 1, `${file}: single melody track`);
+  assert(midi.tracks[0].notes.length > 100, `${file}: melody notes present`);
+  const meta = parseSongMeta(midi);
+  assert(meta.chords.length >= 50, `${file}: chords (${meta.chords.length})`);
+  const writtenEvents = [];
+  for (const t of midi.tracks) {
+    for (const n of t.notes) writtenEvents.push({ time: n.time, group: 'brass' });
+  }
+  const duration = songDurationSeconds(midi, {
+    writtenEvents,
+    chords: meta.chords,
+    sections: meta.sections,
+  });
+  const { need, ev, written } = generateFor(midi, duration);
+  assert(!written.drums && !written.bass && !written.piano, `${file}: no rhythm written`);
+  assert(need.join(',') === 'drums,bass,piano', `${file}: autokomp need (${need})`);
+  assert(ev.length > 1000, `${file}: autokomp notes (${ev.length})`);
+}
+
 // --- Mid-play style swap: generate fromTime must not treat that bar as song start ---
 {
   const file = 'last-christmas-d-v03-markers.mid';
