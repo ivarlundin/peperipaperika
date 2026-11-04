@@ -1222,11 +1222,15 @@ button.ghost {
   margin-bottom: 0.35rem;
 }
 
-.transport button {
+.transport-block .transport button,
+.transport .btn-round {
   flex: none;
   min-height: auto;
-  border: none;
   padding: 0;
+  border-radius: 50%;
+  background: unset;
+  font-size: inherit;
+  font-weight: inherit;
 }
 
 .btn-round {
