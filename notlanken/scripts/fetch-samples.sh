@@ -62,7 +62,8 @@ fetch_drums() {
 
 fetch_gm_js() {
   # Self-hosted gleitz FluidR3 .js bundles for GM fallback (lazy-loaded by player)
-  local names=(violin flute clarinet acoustic_guitar_nylon string_ensemble_1 choir_aahs synth_strings_1)
+  local names=(violin flute clarinet acoustic_guitar_nylon string_ensemble_1 choir_aahs synth_strings_1
+    electric_bass_finger trumpet trombone tenor_sax brass_section)
   mkdir -p "$SAMPLES/gm-fallback"
   for n in "${names[@]}"; do
     curl -fsSL "$GLEITZ/${n}-mp3.js" -o "$SAMPLES/gm-fallback/${n}-mp3.js"
