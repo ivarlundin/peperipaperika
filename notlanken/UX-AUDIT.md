@@ -1,71 +1,66 @@
 # UX-granskning — Notlänken
 
-Datum: 2025-11-04 (autonom granskning inför förbättringar utan visuell rebrand).
+Senast uppdaterad: 2025-11-04
 
-## Metod
+## Metod (design-review, humbleteam)
 
-Genomgång av låtlistan, spelaren, autokomp, transport, tidslinjer, mixer, hastighet och anteckningar utifrån flöde, tydlighet, touch/mobil och tillgänglighet. Jämförelse mot typiska behov: snabbt hitta låt, höra arrangemang, styra autokomp, skrubba i tid, lämna feedback till arrangör.
+Granskning enligt [humbleteam/design-review](https://github.com/humbleteam/design-review) (MIT): rubric 0–4, max 6 prioriterade fynd med Before/After/Why. Endast **användbarhet, konventioner, tillgänglighet och buggar** — ingen visuell rebrand (ägaren vill behålla early-2000s-skin).
 
-## Sammanfattning
+**Underlag:** live https://labs.ivarlundin.se/notlanken/ (desktop + ~390px mobil), kodgenomgång, `npm test`.
 
-Appen är funktionellt rik men packad vertikalt utan tydliga avsnittsgränser. Flera kraftfulla interaktioner (lane-skubb, översiktstidslinje, mixer) saknar förklaring. Autokomp benämns otydligt som bara ”Komp”. På mobil hamnar transport långt från tummen när man scrollar. Ljudladdning är redan tydlig via modal.
+## Notlänken spelare — score **3/4**
 
-## Prioriterade fynd
+Strukturen är tydlig (LCD, transport, autokomp, lane, tidslinje). Kvarvarande problem är mest feedback/states och ett uppspelningsrace, inte layout eller varumärke.
 
-### P1 — Måste fixas (implementerat i denna PR)
+### 1. Transport visar inte tydligt att det spelar
 
-| # | Problem | Rekommendation | Status |
-|---|---------|----------------|--------|
-| 1 | Ingen sökning/filter när låtlistan växer | Sökfält ovanför listan, filtrerar titel/filnamn | ✅ |
-| 2 | Autokomp oklart (“Komp”) | Rubrik ”Autokomp”, checkbox ”Aktivera autokomp”, befintlig statusrad kvar | ✅ |
-| 3 | Transport/genvägar osynliga | Kort hint under transport (mellanslag, pilar) | ✅ |
-| 4 | Lane-skubb inte uppenbar | Hint ”Dra vågrätt…” + behållen `aria-label` | ✅ |
-| 5 | `<title>` sa ”Notlåda” | ”Notlänken ™” i HTML och dynamisk titel | ✅ |
-| 6 | Spelvyn saknar struktur | Små sektionsetiketter (Transport, Nästa takter, Hela låten, Anteckningar…) | ✅ |
-| 7 | Mobil: transport försvinner vid scroll | Sticky transport-block överst på smal skärm | ✅ |
-| 8 | Tidslinje svår att förstå för skärmläsare | `aria-valuenow` / `aria-valuetext` uppdateras vid position | ✅ |
+- **Before:** Spela- och pausknappar ser likadana ut oavsett om uppspelning pågår; bara paus blir enabled.
+- **After:** `aria-pressed` på spela/paus, klass `is-playing` på transport (paus får fokusring, spela dämpas), LCD `data-state` för skärmläsare.
+- **Why:** Nielsen heuristic #1 (Visibility of system status) — användaren ska se att ljudmotor och transport är i läget ”spelar”.
 
-### P2 — Bör fixas (delvis / nästa steg)
+### 2. Första tonen uteblev när soundfonts laddades i bakgrunden (Willo m.fl.)
 
-| # | Problem | Rekommendation | Status |
-|---|---------|----------------|--------|
-| 9 | Mixer dold — användare vet inte att volym finns | Ev. badge eller första-besök-hint; nu oförändrat (låg risk att störa) | ⏳ |
-| 10 | Variant A/B utan förklaring | Tooltip eller hjälptext i status (”Auto växlar mönster per sektion”) | ⏳ |
-| 11 | Anteckningar längst ner lätt att missa | Sektionsrubrik + hint om localStorage | ✅ rubrik/hint |
-| 12 | Hastighetsknappar många | Behåll alla (övningsbehov); ev. gruppera ”Långsam / Normal / Snabb” senare | ⏳ |
-| 13 | Ackordrad utan kontext | `aria-live="polite"` när ackord byts | ✅ |
+- **Before:** `preparePlayback` markerade klar efter piano/trummor; FluidR3 för trumpet/bas laddades asynkront → första `play` kunde tysta blås/bas.
+- **After:** `prepareInstrumentsForEvents(events)` efter autokomp-merge laddar soundfonts/GM som låten faktiskt använder innan modal stängs; samma vid sen `startPlayback` om nödvändigt.
+- **Why:** Nielsen heuristic #1 — systemet ska vara redo innan primär åtgärd (Spela) presenteras som klar.
 
-### P3 — Nice to have
+### 3. Mixer svår att upptäcka
 
-| # | Problem | Rekommendation |
-|---|---------|----------------|
-| 14 | Ingen ”spelar nu”-indikator i listan | Markera aktiv låt via hash |
-| 15 | Deep link delas sällan | Hash-URL fungerar redan; ev. kopiera-länk-knapp |
-| 16 | Första ljudstart kräver klick (browser policy) | Behåll `ensureContext()` på låtval — korrekt |
+- **Before:** Endast textknappen ”Mixer” utan förklaring att volym/reverb finns där.
+- **After:** `title="Volym och reverb per spår"` (ingen visuell ändring).
+- **Why:** Nielsen heuristic #6 (Recognition rather than recall) — funktion ska framgå utan att användaren minns dokumentation.
 
-## Flödeskartor (förenklad)
+### 4. Autokomp-variant A/B oklar
 
-**Lista → spel**
+- **Before:** Knapparna Auto/A/B utan kontext när autokomp är aktiv.
+- **After:** Statusrad utökas med ”Auto växlar variant A/B efter sektion” när stilmenyn är aktiv.
+- **Why:** Nielsen heuristic #10 (Help and documentation) — kort, uppgiftsnära hjälp.
 
-1. Välj låt (sök valfritt) → hash → ladda MIDI + samples → spelvy.
+### 5. Tidslinje saknade tangentbordsstöd när fokuserad
 
-**Spel → feedback**
+- **Before:** `role="slider"` men pilar/Home/End gällde bara globalt, inte när fokus låg på tidslinjen.
+- **After:** Pilar, Home och End på `#timeline` när den har fokus (samma hopp som globala genvägar).
+- **Why:** WCAG 2.2 SC 2.1.1 (Keyboard) — fokuserbart kontroll ska kunna styras med tangentbord.
 
-1. Spela/paus → skrubba lane eller hela låten → ev. autokomp-stil → anteckning → kopiera till urklipp.
+### 6. Aktiv låt syns inte i listan vid tillbaka-navigering
 
-## Ljud (parallellt spår)
+- **Before:** Hash-deep link fungerade men listan markerade inte vilken låt som öppnades.
+- **After:** `aria-current="true"` på aktiv låtknapp (outline i befintlig accentfärg).
+- **Why:** Nielsen heuristic #1 — synlig position i navigering.
 
-Separat från UX men påverkar upplevd kvalitet: akustiskt piano som standard, bättre sample-interpolation mellan zoner, synkron GM-fallback efter preload, mild lowpass per grupp, förbättrad envelope.
+**Fix this first:** Soundfont-race (#2) — påverkar tillit och upplevd kvalitet direkt; övriga är polish som minskar friktion.
 
-## Visuell rebrand
+---
 
-Genomförd i denna PR: tidig-2000-tals **skinned app**-känsla (WinBoost/avast/Pentaphonic-inspirerad) — borstad metall, grön modulpanel, LCD-display för titel/takt/tid, stora runda transportknappar. **Inte** Windows 95-grått.
+## Tidigare rundor (sammanfattning)
 
-## Låtlista
-
-Publikt syns endast **Last Christmas (D) v0.3** och **Willo Intro 2026 v1**. Övriga MIDI-filer ligger kvar i `midi/archive/` (ej raderade).
+- Titel **Notlänken ™**, sök i låtlista, autokomp-etiketter, sektionsrubriker, sticky transport mobil, lane-bredd/staplade ackord, LCD, early-2000s-skin (oförändrat i denna runda).
+- Publikt: **Last Christmas (D) v0.3** och **Willo Intro 2026 v1**; övriga MIDI i `midi/archive/`.
 
 ## Verifiering
 
-- `cd notlanken && npm test`
-- Manuell test i webbläsare: flera låtar, alla fem autokomp-stilar (Pop/Rock, Blues, Jazz, Bossa, Funk), mobilbredd (~390px).
+```bash
+cd notlanken && npm test
+```
+
+Manuellt: Last Christmas + Willo Intro, mobil ~390px, mellanslag spela/paus, mixer, autokomp på Willo, lane-ackord läsbara.

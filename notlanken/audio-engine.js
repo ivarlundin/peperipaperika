@@ -236,14 +236,7 @@ export class AudioEngine {
       }
     }
     this.activeSources.clear();
-    if (this.ac) {
-      for (const g of GROUPS) {
-        const nodes = this.groupNodes[g];
-        if (!nodes) continue;
-        nodes.dry.gain.cancelScheduledValues(now);
-        nodes.send.gain.cancelScheduledValues(now);
-      }
-    }
+    this._applyLevels();
     this.sessionId += 1;
   }
 
@@ -361,6 +354,29 @@ export class AudioEngine {
       ...[...gmNames].map((name) => this.loadGmPlayer(name).catch(() => null)),
       ...Object.values(MELODIC_SOUNDFONT).map(({ name, group }) =>
         this.loadSoundfontPlayer(name, group).catch(() => null)),
+    ]);
+  }
+
+  /** Preload soundfonts/GM used by this song so first play is not silent. */
+  async prepareInstrumentsForEvents(events) {
+    await this.preparePlayback();
+    const sf = new Set();
+    const gm = new Set();
+    for (const ev of events) {
+      const kind = ev.voice?.kind;
+      if (kind && MELODIC_SOUNDFONT[kind]) {
+        sf.add(kind);
+      } else if (kind === 'gm') {
+        const name = gmInstrumentName(ev.program ?? 0);
+        gm.add(GM_FALLBACK_MAP[name] || 'violin');
+      }
+    }
+    await Promise.all([
+      ...[...sf].map((kind) => {
+        const spec = MELODIC_SOUNDFONT[kind];
+        return this.loadSoundfontPlayer(spec.name, spec.group);
+      }),
+      ...[...gm].map((name) => this.loadGmPlayer(name).catch(() => null)),
     ]);
   }
 
