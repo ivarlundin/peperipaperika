@@ -99,9 +99,8 @@
             </div>
           </div>
 
-          <div class="notes-panel nl-module">
-            <p class="section-label">Anteckningar till arrangören</p>
-            <div class="notes-toolbar">
+          <div class="notes-panel notes-panel-free">
+            <div class="notes-toolbar notes-toolbar-free">
               <div class="note-add" id="note-add" role="group" aria-label="Ny anteckning vid aktuell position">
                 <button type="button" data-type="bug" class="note-add-btn note-bug">+ Fel <kbd>B</kbd></button>
                 <button type="button" data-type="onske" class="note-add-btn note-onske">+ Önskemål <kbd>Ö</kbd><kbd>W</kbd></button>
@@ -154,12 +153,11 @@
               <button type="button" id="btn-prev" class="transport-icon-btn" disabled aria-label="Föregående takt" title="Föregående takt">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
               </button>
-              <button type="button" id="btn-play" class="btn-round btn-play-main" disabled aria-label="Spela" aria-pressed="false" title="Spela (mellanslag)">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+              <button type="button" id="btn-play" class="btn-round btn-play-main btn-transport-toggle" disabled aria-label="Spela" aria-pressed="false" title="Spela (mellanslag)">
+                <svg class="transport-icon transport-icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                <svg class="transport-icon transport-icon-pause" viewBox="0 0 24 24" aria-hidden="true" hidden><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
               </button>
-              <button type="button" id="btn-pause" class="btn-round btn-play-main btn-pause-main" disabled aria-label="Paus" aria-pressed="false" title="Paus (mellanslag)" hidden>
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
-              </button>
+              <button type="button" id="btn-pause" class="visually-hidden" disabled aria-hidden="true" tabindex="-1">Paus</button>
               <button type="button" id="btn-next" class="transport-icon-btn" disabled aria-label="Nästa takt" title="Nästa takt">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 18h2V6h-2zm-11-7 8.5-6v12z"/></svg>
               </button>

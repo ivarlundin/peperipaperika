@@ -43,6 +43,14 @@ test.describe('Notlänken player v2 layout', () => {
     await expect(page.locator('#master-vol')).toBeVisible();
   });
 
+  test('noter tab has floating note actions without section heading', async ({ page }) => {
+    await page.locator('.song-btn').nth(1).click();
+    await waitForSongReady(page);
+    await page.locator('#player-tab-btn-noter').click();
+    await expect(page.locator('#player-tab-noter .section-label')).toHaveCount(0);
+    await expect(page.locator('#note-add')).toBeVisible();
+  });
+
   test('segment tabs switch spelvy and noter', async ({ page }) => {
     await page.locator('.song-btn').nth(1).click();
     await waitForSongReady(page);

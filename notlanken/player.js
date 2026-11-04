@@ -51,6 +51,8 @@ const btnKompQuick = $('btn-komp-quick');
 const transportKompKey = $('transport-komp-key');
 const btnPlay = $('btn-play');
 const btnPause = $('btn-pause');
+const btnPlayIconPlay = btnPlay?.querySelector('.transport-icon-play');
+const btnPlayIconPause = btnPlay?.querySelector('.transport-icon-pause');
 const btnStop = $('btn-stop');
 const timeline = $('timeline');
 const lane = $('lane');
@@ -954,15 +956,20 @@ function updatePositionUi() {
 
 function updateTransportUi() {
   const ready = !!midi && !audioBusy;
-  btnPlay.disabled = !ready || isPlaying;
-  btnPause.disabled = !midi || !isPlaying || audioBusy;
+  btnPlay.disabled = !ready;
   btnStop.disabled = !midi || audioBusy;
   btnPrev.disabled = !midi || audioBusy;
   btnNext.disabled = !midi || audioBusy;
-  btnPlay.hidden = isPlaying;
-  btnPause.hidden = !isPlaying;
   btnPlay.setAttribute('aria-pressed', String(isPlaying));
-  btnPause.setAttribute('aria-pressed', String(isPlaying));
+  btnPlay.setAttribute('aria-label', isPlaying ? 'Paus' : 'Spela');
+  btnPlay.title = isPlaying ? 'Paus (mellanslag)' : 'Spela (mellanslag)';
+  btnPlay.classList.toggle('is-active', isPlaying);
+  if (btnPlayIconPlay) btnPlayIconPlay.hidden = isPlaying;
+  if (btnPlayIconPause) btnPlayIconPause.hidden = !isPlaying;
+  if (btnPause) {
+    btnPause.disabled = !midi || !isPlaying || audioBusy;
+    btnPause.setAttribute('aria-pressed', String(isPlaying));
+  }
   const block = document.querySelector('.transport-block');
   if (block) block.classList.toggle('is-playing', isPlaying);
   if (lcdTitle && currentSong) {
@@ -1239,7 +1246,7 @@ function buildMixerUi() {
         </div>
       </div>
       <div class="mixer-track-actions">
-        <button type="button" class="mixer-more-btn" data-more="${g}" aria-expanded="false" aria-label="Spårmeny ${label}" title="Mute och solo">⋯</button>
+        <button type="button" class="mixer-more-btn" data-more="${g}" aria-expanded="false" aria-label="Spårmeny ${label}" title="Mute och solo"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="6" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="18" r="1.6"/></svg></button>
         <div class="mixer-more-menu" hidden>
           <button type="button" class="mute-big" data-mute="${g}" aria-pressed="${m.mute}" aria-label="Tysta ${label}">${m.mute ? 'Tyst' : 'Ljud'}</button>
           <button type="button" class="chip icon" data-solo="${g}" aria-pressed="${m.solo}" aria-label="Solo ${label}" title="Solo">S</button>
@@ -1396,10 +1403,14 @@ function bindTimeline() {
 }
 
 btnPlay.addEventListener('click', async () => {
+  if (isPlaying) {
+    pause();
+    return;
+  }
   await engine.ensureContext();
   await startPlayback(position);
 });
-btnPause.addEventListener('click', () => pause());
+btnPause?.addEventListener('click', () => pause());
 btnStop.addEventListener('click', () => stop());
 btnPrev?.addEventListener('click', () => {
   if (!midi) return;
