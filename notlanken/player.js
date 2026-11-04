@@ -104,6 +104,7 @@ let styleMap = new Map();
 let kompOn = true;
 let kompVariantPref = 'auto';
 let kompDirectives = { style: null, sectionStyles: new Map() };
+let audioBusy = false;
 
 const GROUP_LABELS = {
   piano: 'Piano',
@@ -138,6 +139,7 @@ function showListView() {
   playerEl.hidden = true;
   viewList.hidden = false;
   document.title = 'Notlänken ™';
+  renderSongList(songFilter?.value || '');
   songFilter?.focus({ preventScroll: true });
 }
 
@@ -184,6 +186,9 @@ function renderSongList(filter = '') {
       engine.ensureContext();
       location.hash = encodeURIComponent(song.file);
     });
+    if (currentSong?.file === song.file && isPlayerView()) {
+      btn.setAttribute('aria-current', 'true');
+    }
     li.appendChild(btn);
     songList.appendChild(li);
   }
@@ -230,13 +235,6 @@ async function openSong(song) {
     showLoadingModal('Laddar ljudmotor…');
     setStatus('Laddar ljud…');
     engine.prepared = false;
-    try {
-      await engine.preparePlayback();
-    } catch (err) {
-      hideLoadingModal(`Kunde inte ladda ljud: ${err.message || err}`);
-      throw err;
-    }
-    hideLoadingModal();
     if (currentSong !== song) return;
     kompDirectives = parseKompDirectives(midi);
     const stil = resolveStyleId(styleCatalog, kompDirectives.style);
@@ -249,6 +247,14 @@ async function openSong(song) {
     sessionNotes = loadNotes(song.file);
     position = 0;
     rebuildEvents({ reschedule: false });
+    try {
+      await engine.prepareInstrumentsForEvents(events);
+    } catch (err) {
+      hideLoadingModal(`Kunde inte ladda ljud: ${err.message || err}`);
+      throw err;
+    }
+    hideLoadingModal();
+    if (currentSong !== song) return;
     buildMixerUi();
 
     if (currentSong !== song) return;
@@ -258,6 +264,7 @@ async function openSong(song) {
     updateTransportUi();
     updatePositionUi();
     setStatus('');
+    renderSongList(songFilter?.value || '');
   } catch (e) {
     hideLoadingModal(`Kunde inte ladda: ${e.message}`);
     setStatus(`Kunde inte ladda: ${e.message}`, true);
@@ -661,9 +668,17 @@ function updatePositionUi() {
 }
 
 function updateTransportUi() {
-  btnPlay.disabled = !midi;
-  btnPause.disabled = !midi || !isPlaying;
-  btnStop.disabled = !midi;
+  const ready = !!midi && !audioBusy;
+  btnPlay.disabled = !ready || isPlaying;
+  btnPause.disabled = !midi || !isPlaying || audioBusy;
+  btnStop.disabled = !midi || audioBusy;
+  btnPlay.setAttribute('aria-pressed', String(isPlaying));
+  btnPause.setAttribute('aria-pressed', String(isPlaying));
+  const block = document.querySelector('.transport-block');
+  if (block) block.classList.toggle('is-playing', isPlaying);
+  if (lcdTitle && currentSong) {
+    lcdTitle.dataset.state = isPlaying ? 'spelar' : audioBusy ? 'laddar' : 'paus';
+  }
 }
 
 function currentPositionFromClock() {
@@ -685,16 +700,22 @@ function tick() {
 }
 
 async function startPlayback(fromSeconds) {
-  if (!midi) return;
+  if (!midi || audioBusy) return;
+  audioBusy = true;
+  updateTransportUi();
+  setStatus('Förbereder uppspelning…');
   await engine.ensureContext();
-  if (!engine.prepared) {
-    try {
-      await engine.preparePlayback();
-    } catch (err) {
-      setStatus(`Kunde inte ladda ljud: ${err.message || err}`, true);
-      return;
+  try {
+    if (!engine.prepared) {
+      await engine.prepareInstrumentsForEvents(events.length ? events : writtenEvents);
     }
+  } catch (err) {
+    audioBusy = false;
+    updateTransportUi();
+    setStatus(`Kunde inte ladda ljud: ${err.message || err}`, true);
+    return;
   }
+  setStatus('');
   engine.stopAll();
   position = Math.max(0, Math.min(duration, fromSeconds));
   playStartPos = position;
@@ -705,10 +726,12 @@ async function startPlayback(fromSeconds) {
     engine.schedule(events, position, duration + 1);
   } catch (err) {
     isPlaying = false;
+    audioBusy = false;
     updateTransportUi();
     setStatus(`Kunde inte starta uppspelning: ${err.message || err}`, true);
     return;
   }
+  audioBusy = false;
   cancelAnimationFrame(raf);
   raf = requestAnimationFrame(tick);
 }
@@ -794,9 +817,11 @@ function rebuildEvents({ reschedule = true } = {}) {
   if (duration && events.length) {
     duration = Math.max(duration, events[events.length - 1].time + 0.5);
   }
-  const parts = needLabel();
-  kompStatus.textContent = parts;
   const canGenerate = !!(kompOn && chords.length && missingTracks(writtenTracks).length);
+  const parts = needLabel();
+  kompStatus.textContent = canGenerate && kompOn
+    ? `${parts} · Auto växlar variant A/B efter sektion.`
+    : parts;
   kompStyle.disabled = !canGenerate;
   kompStyle.title = canGenerate
     ? ''
@@ -988,6 +1013,22 @@ function bindTimeline() {
   timeline.addEventListener('click', (e) => {
     if (e.target.closest('.timeline-marker')) return;
     seekTo(timelineClientToTime(e.clientX), isPlaying);
+  });
+  timeline.addEventListener('keydown', (e) => {
+    if (!duration || !midi) return;
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      seekTo(jumpBars(midi, position, -1), isPlaying);
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      seekTo(jumpBars(midi, position, 1), isPlaying);
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      seekTo(0, isPlaying);
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      seekTo(duration, isPlaying);
+    }
   });
 }
 

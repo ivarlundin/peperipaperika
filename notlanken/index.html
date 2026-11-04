@@ -27,7 +27,7 @@
     <section id="player" class="view player nl-panel" hidden>
       <header class="topbar">
         <button type="button" id="btn-back" class="nl-btn nl-btn-pill" aria-label="Tillbaka till låtlistan">← Låtar</button>
-        <button type="button" id="btn-mixer" class="nl-btn nl-btn-pill" aria-expanded="false" aria-controls="mixer-panel">Mixer</button>
+        <button type="button" id="btn-mixer" class="nl-btn nl-btn-pill" aria-expanded="false" aria-controls="mixer-panel" title="Volym och reverb per spår">Mixer</button>
       </header>
 
       <div class="nl-lcd" aria-live="polite">
@@ -89,10 +89,10 @@
       <div class="transport-block nl-module">
         <p class="section-label">Transport</p>
         <div class="transport">
-          <button type="button" id="btn-play" class="btn-round btn-play-main" disabled aria-label="Spela" title="Spela (mellanslag)">
+          <button type="button" id="btn-play" class="btn-round btn-play-main" disabled aria-label="Spela" aria-pressed="false" title="Spela (mellanslag)">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
           </button>
-          <button type="button" id="btn-pause" class="btn-round secondary" disabled aria-label="Paus" title="Paus (mellanslag)">
+          <button type="button" id="btn-pause" class="btn-round secondary" disabled aria-label="Paus" aria-pressed="false" title="Paus (mellanslag)">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
           </button>
           <button type="button" id="btn-stop" class="btn-round secondary" disabled aria-label="Stopp" title="Stopp">
