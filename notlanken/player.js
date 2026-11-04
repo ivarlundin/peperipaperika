@@ -24,6 +24,7 @@ import {
 } from './autokomp.js';
 import { createSongLoadGuard } from './song-load-guard.js';
 import { applyMixerSettings, saveMixerSettings } from './mixer-settings.js';
+import { createLcdTitle } from './lcd-display.js';
 
 const engine = getAudioEngine(new URL('./', import.meta.url).href);
 const songLoadGuard = createSongLoadGuard();
@@ -39,6 +40,7 @@ const btnCopyLink = $('btn-copy-link');
 const siteHome = $('site-home');
 const nowPlaying = $('now-playing');
 const lcdTitle = $('lcd-title');
+const lcdTitleDisplay = createLcdTitle(lcdTitle);
 const chordLine = $('chord-line');
 const btnPlay = $('btn-play');
 const btnPause = $('btn-pause');
@@ -267,7 +269,7 @@ async function openSong(song) {
   listHighlightFile = song.file;
   document.title = `${song.title} – Notlänken ™`;
   nowPlaying.textContent = song.title;
-  if (lcdTitle) lcdTitle.textContent = song.title;
+  lcdTitleDisplay.setText(song.title);
   showPlayerView();
   updateTransportUi();
   setStatus('Laddar MIDI…');
