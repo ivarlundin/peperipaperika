@@ -1,10 +1,32 @@
-/* Notlänken — persistent cache for samples and soundfont bundles (same origin). */
-/* Keep CACHE_NAME in sync with sample-asset-version.js */
-const CACHE_NAME = 'notlanken-assets-v2';
+import {
+  SAMPLE_ASSET_CACHE_NAME,
+  SAMPLE_URL_VERSION,
+  PRECACHE_REL_PATHS,
+} from './sample-asset-version.js';
+
+const CACHE_NAME = SAMPLE_ASSET_CACHE_NAME;
+const BASE = new URL('./', self.location.href);
+
+function sampleUrl(rel) {
+  return new URL(`${rel}?v=${encodeURIComponent(SAMPLE_URL_VERSION)}`, BASE).href;
+}
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
-  event.waitUntil(caches.open(CACHE_NAME));
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(async (cache) => {
+      await Promise.all(
+        PRECACHE_REL_PATHS.map(async (rel) => {
+          try {
+            const res = await fetch(sampleUrl(rel));
+            if (res.ok) await cache.put(sampleUrl(rel), res);
+          } catch {
+            /* precache best-effort */
+          }
+        }),
+      );
+    }),
+  );
 });
 
 self.addEventListener('activate', (event) => {
@@ -18,7 +40,7 @@ self.addEventListener('activate', (event) => {
 function isCacheable(url) {
   if (url.origin !== self.location.origin) return false;
   const p = url.pathname;
-  return p.includes('/samples/') || p.includes('/midi/');
+  return p.includes('/samples/') || p.includes('/midi/') || p.includes('/vendor/');
 }
 
 self.addEventListener('fetch', (event) => {

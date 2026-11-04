@@ -35,7 +35,7 @@ Spelaren kan generera **trummor, bas och piano** från ackord- och delmarkörer.
 
 ## Ljud
 
-Självhostade samples under `samples/` (Salamander-piano, trummor m.m.). **Bas, blås och sax** spelas via FluidR3 soundfonts (laddas från `samples/gm-fallback/` om filen finns, annars gleitz CDN). Se `samples/LICENSES.md` och `scripts/fetch-samples.sh`.
+Självhostade **mono Opus OGG** under `samples/` (sparse zones, pitch-shifted). Endast låtens instrument laddas, parallellt, med service worker-precache. Sällsynta GM-program faller tillbaka på piano-zoner. Se `sample-manifest.js`, `samples/LICENSES.md` och `scripts/fetch-samples.sh`.
 
 ## Tangenter (desktop)
 

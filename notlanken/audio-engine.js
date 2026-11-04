@@ -1,7 +1,7 @@
 import { resolveVoice } from './instruments.js';
-import { gmInstrumentName } from './gm-programs.js';
 import { cachedFetch } from './asset-cache.js';
 import { SAMPLE_URL_VERSION } from './sample-asset-version.js';
+import { SAMPLE_MANIFEST, samplePathsForEvents } from './sample-manifest.js';
 
 const GROUPS = ['piano', 'bass', 'drums', 'brass', 'other'];
 
@@ -33,17 +33,6 @@ const GROUP_MIN_HOLD = {
   other: 0.08,
 };
 
-/** FluidR3 soundfonts (gleitz) — full multisample, no sparse-zone pitch shift. */
-const MELODIC_SOUNDFONT = {
-  bass: { name: 'electric_bass_finger', group: 'bass' },
-  trumpet: { name: 'trumpet', group: 'brass' },
-  trombone: { name: 'trombone', group: 'brass' },
-  tenor_sax: { name: 'tenor_sax', group: 'brass' },
-  brass_section: { name: 'brass_section', group: 'brass' },
-};
-
-const SOUNDFONT_CDN = 'https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM';
-
 /** Per-group gain before velocity (keeps dense arrangements under headroom) */
 const GROUP_HEADROOM = {
   piano: 0.32,
@@ -57,17 +46,17 @@ const GROUP_HEADROOM = {
 export const DRUM_MAP = {
   35: '36-kick.ogg',
   36: '36-kick.ogg',
-  37: '38-snare.ogg', // side stick / rim → snare sample
+  37: '38-snare.ogg',
   38: '38-snare.ogg',
-  39: '38-snare.ogg', // hand clap → snare
-  40: '38-snare.ogg', // electric snare
+  39: '38-snare.ogg',
+  40: '38-snare.ogg',
   42: '42-closed-hat.ogg',
-  44: '42-closed-hat.ogg', // pedal hat
+  44: '42-closed-hat.ogg',
   46: '46-open-hat.ogg',
   49: '49-crash.ogg',
   51: '51-ride.ogg',
   53: '53-ride-bell.ogg',
-  57: '49-crash.ogg', // crash 2
+  57: '49-crash.ogg',
 };
 
 /** Relative gain vs other drums (linear; ~0.28 ≈ −11 dB). */
@@ -80,25 +69,6 @@ const DRUM_SAMPLE_GAIN = {
 function drumSampleFile(midi) {
   return DRUM_MAP[midi] || null;
 }
-
-const GM_FALLBACK_MAP = {
-  violin: 'violin',
-  viola: 'violin',
-  cello: 'violin',
-  contrabass: 'violin',
-  string_ensemble_1: 'string_ensemble_1',
-  string_ensemble_2: 'string_ensemble_1',
-  synth_strings_1: 'synth_strings_1',
-  synth_strings_2: 'synth_strings_1',
-  acoustic_guitar_nylon: 'acoustic_guitar_nylon',
-  acoustic_guitar_steel: 'acoustic_guitar_nylon',
-  electric_guitar_jazz: 'acoustic_guitar_nylon',
-  flute: 'flute',
-  clarinet: 'clarinet',
-  oboe: 'flute',
-  choir_aahs: 'choir_aahs',
-  voice_oohs: 'choir_aahs',
-};
 
 function voiceToGroup(voice) {
   if (voice.kind === 'piano') return 'piano';
@@ -124,7 +94,7 @@ function generateImpulseResponse(ac, duration = 1.15, decay = 5.4, level = 0.26)
   return buf;
 }
 
-/** Sample folders required for these events (excluding core piano+drums). */
+/** Sample folders required for these events (excluding core piano). */
 export function foldersNeededForEvents(events) {
   const folders = new Set();
   for (const ev of events) {
@@ -149,7 +119,7 @@ export function foldersNeededForEvents(events) {
 
 let sharedEngine = null;
 
-/** One AudioEngine per page session (samples + soundfonts stay in memory). */
+/** One AudioEngine per page session (decoded buffers stay in memory). */
 export function getAudioEngine(baseUrl) {
   if (!sharedEngine) sharedEngine = new AudioEngine(baseUrl);
   return sharedEngine;
@@ -162,7 +132,7 @@ function scaledGain(velocity, group) {
 }
 
 /**
- * Hold at peak from `when`, then exponential release. Samples/soundfonts already
+ * Hold at peak from `when`, then exponential release. Samples already
  * contain attack transients — do not fade in (avoids reverse-swell artefact).
  * @param {AudioParam} gainParam
  */
@@ -176,7 +146,7 @@ export function scheduleHeldGainEnvelope(gainParam, when, peak, holdSec, release
   gainParam.exponentialRampToValueAtTime(0.0001, when + h + r);
 }
 
-/** @returns {{ hold: number, release: number }} sustain + ADSR release for soundfont-player */
+/** @returns {{ hold: number, release: number }} sustain + release for held envelopes */
 export function noteHoldAndRelease(duration, rate, group) {
   const release = GROUP_RELEASE[group] ?? 0.35;
   const hold = duration > 0
@@ -198,9 +168,6 @@ export class AudioEngine {
     this.reverbDry = null;
     this.groupNodes = {};
     this.buffers = new Map();
-    this.gmPlayers = new Map();
-    /** @type {Map<string, import('soundfont-player').Instrument>} */
-    this.sfPlayers = new Map();
     this.melodicZones = new Map();
     this.sessionId = 0;
     /** @type {Set<AudioBufferSourceNode>} */
@@ -210,11 +177,11 @@ export class AudioEngine {
     this.prepared = false;
     this._coreReady = false;
     /** @type {Set<string>} */
+    this._loadedPaths = new Set();
+    /** @type {Set<string>} */
     this._loadedFolders = new Set();
     /** @type {Promise<void> | null} */
     this._warmPromise = null;
-    /** @type {Promise<typeof import('soundfont-player')> | null} */
-    this._soundfontModulePromise = null;
     this._lastPrepareMs = 0;
     /** @type {number} Latest song-load token allowed to mark prepared. */
     this._prepareToken = 0;
@@ -227,7 +194,6 @@ export class AudioEngine {
     }
     this.masterVolume = 0.72;
     this.reverbAmount = 0.08;
-    /** Prefer acoustic piano for written charts; Rhodes still available via voice.sample. */
     this.pianoSample = 'acoustic';
     /** @type {Record<string, BiquadFilterNode>} */
     this.groupFilters = {};
@@ -305,32 +271,27 @@ export class AudioEngine {
       coreReady: this._coreReady,
       lastPrepareMs: this._lastPrepareMs,
       bufferCount: this.buffers.size,
-      soundfontCount: this.sfPlayers.size,
     };
   }
 
   willLoadNewInstruments(events) {
-    for (const ev of events) {
-      const kind = ev.voice?.kind;
-      if (kind && MELODIC_SOUNDFONT[kind]) {
-        const spec = MELODIC_SOUNDFONT[kind];
-        const key = `sf:${spec.name}:${spec.group}`;
-        if (!this.sfPlayers.has(key)) return true;
-      } else if (kind === 'gm') {
-        const name = gmInstrumentName(ev.program ?? 0);
-        const fb = GM_FALLBACK_MAP[name] || 'violin';
-        if (!this.gmPlayers.has(fb)) return true;
-      }
-    }
-    for (const folder of foldersNeededForEvents(events)) {
-      if (!this._loadedFolders.has(folder)) return true;
+    for (const p of samplePathsForEvents(events, Object.values(DRUM_MAP))) {
+      if (!this._loadedPaths.has(p)) return true;
     }
     return false;
   }
 
   warmupCore() {
     if (this._warmPromise) return this._warmPromise;
-    this._warmPromise = this.ensureCoreSamples(this._prepareToken).finally(() => {
+    this._warmPromise = this._loadPaths(
+      samplePathsForEvents([], Object.values(DRUM_MAP)),
+      this._prepareToken,
+    ).then((ok) => {
+      if (ok) {
+        this._coreReady = true;
+        this._loadedFolders.add('samples/piano');
+      }
+    }).finally(() => {
       this._warmPromise = null;
     });
     return this._warmPromise;
@@ -407,10 +368,10 @@ export class AudioEngine {
   }
 
   _noteNameToMidi(name) {
-    const m = name.match(/^([A-G])(s)?(\d+)$/i);
+    const m = name.match(/^([A-G])(s|#)?(\d+)$/i) || name.match(/^([A-G])(s)?(\d+)$/i);
     if (!m) return null;
     const letter = m[1].toUpperCase();
-    const sharp = m[2] ? 1 : 0;
+    const sharp = (m[2] && (m[2].toLowerCase() === 's' || m[2] === '#')) ? 1 : 0;
     const oct = parseInt(m[3], 10);
     const base = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 }[letter];
     if (base == null) return null;
@@ -418,17 +379,8 @@ export class AudioEngine {
   }
 
   async _listFolder(folder) {
-    const manifest = {
-      piano: ['A1', 'C2', 'Ds2', 'Fs2', 'A2', 'C3', 'Ds3', 'Fs3', 'A3', 'C4', 'Ds4', 'Fs4', 'A4', 'C5', 'Ds5', 'Fs5', 'A5', 'C6'],
-      rhodes: ['C2', 'E2', 'G2', 'C3', 'E3', 'G3', 'C4', 'E4', 'G4', 'C5', 'E5'],
-      bass: ['C2', 'E2', 'G2', 'C3', 'E3', 'G3', 'C4', 'E4', 'G4', 'C5'],
-      trumpet: ['C2', 'E2', 'G2', 'C3', 'E3', 'G3', 'C4', 'E4', 'G4', 'C5'],
-      trombone: ['C2', 'E2', 'G2', 'C3', 'E3', 'G3', 'C4', 'E4', 'G4', 'C5'],
-      tenor_sax: ['C2', 'E2', 'G2', 'C3', 'E3', 'G3', 'C4', 'E4', 'G4', 'C5'],
-      brass_section: ['C2', 'E2', 'G2', 'C3', 'E3', 'G3', 'C4', 'E4', 'G4', 'C5'],
-    };
     const key = folder.replace('samples/', '');
-    const notes = manifest[key] || [];
+    const notes = SAMPLE_MANIFEST[key] || [];
     return notes.map((n) => `${n}.ogg`);
   }
 
@@ -461,155 +413,56 @@ export class AudioEngine {
     return best;
   }
 
-  /** Mark in-flight song load; keep cached core/instruments hot when possible. */
   beginSongPrepare(loadToken) {
     this._prepareToken = loadToken;
     if (!this._coreReady) this.prepared = false;
   }
 
-  async _loadFolderSamples(folder, loadToken) {
-    if (this._loadedFolders.has(folder)) return true;
+  async _loadPaths(paths, loadToken) {
     if (loadToken !== this._prepareToken) return false;
-    const zones = await this.loadMelodicZones(folder);
+    const pending = paths.filter((p) => !this._loadedPaths.has(p));
+    await Promise.all(pending.map(async (p) => {
+      if (loadToken !== this._prepareToken) return;
+      await this.loadBuffer(p);
+      if (loadToken !== this._prepareToken) return;
+      this._loadedPaths.add(p);
+      const folder = p.replace(/\/[^/]+\.ogg$/, '');
+      if (folder.startsWith('samples/') && folder !== 'samples/drums') {
+        await this.loadMelodicZones(folder);
+        this._loadedFolders.add(folder);
+      }
+    }));
     if (loadToken !== this._prepareToken) return false;
-    await Promise.all(zones.map((z) => this.loadBuffer(z.file)));
-    if (loadToken !== this._prepareToken) return false;
-    this._loadedFolders.add(folder);
     return true;
   }
 
-  /** Drums + acoustic piano once per session. */
+  /** Drums + acoustic piano once per session (background warm). */
   async ensureCoreSamples(loadToken = this._prepareToken) {
     if (this._coreReady) return true;
-    await this.ensureContext();
-    const paths = new Set();
-    for (const f of new Set(Object.values(DRUM_MAP))) {
-      paths.add(`samples/drums/${f}`);
-    }
-    for (const folder of CORE_SAMPLE_FOLDERS) {
-      if (loadToken !== this._prepareToken) return false;
-      const zones = await this.loadMelodicZones(folder);
-      for (const z of zones) paths.add(z.file);
-    }
-    if (loadToken !== this._prepareToken) return false;
-    await Promise.all([...paths].map((p) => this.loadBuffer(p)));
-    if (loadToken !== this._prepareToken) return false;
-    for (const folder of CORE_SAMPLE_FOLDERS) this._loadedFolders.add(folder);
+    const paths = samplePathsForEvents([], Object.values(DRUM_MAP));
+    const ok = await this._loadPaths(paths, loadToken);
+    if (!ok) return false;
     this._coreReady = true;
+    this._loadedFolders.add('samples/piano');
     return true;
   }
 
   async ensureSampleFoldersForEvents(events, loadToken = this._prepareToken) {
-    for (const folder of foldersNeededForEvents(events)) {
-      const ok = await this._loadFolderSamples(folder, loadToken);
-      if (!ok) return false;
-    }
-    return true;
+    const paths = samplePathsForEvents(events, Object.values(DRUM_MAP));
+    return this._loadPaths(paths, loadToken);
   }
 
-  async _getSoundfontModule() {
-    if (!this._soundfontModulePromise) {
-      this._soundfontModulePromise = import('https://esm.sh/soundfont-player@0.12.0');
-    }
-    return this._soundfontModulePromise;
-  }
-
-  /** Preload soundfonts/GM used by this song so first play is not silent. */
+  /** Preload samples used by this song (parallel fetch + decode). */
   async prepareInstrumentsForEvents(events, loadToken = this._prepareToken) {
     const t0 = typeof performance !== 'undefined' ? performance.now() : 0;
-    const coreOk = await this.ensureCoreSamples(loadToken);
-    if (!coreOk) return false;
-    const samplesOk = await this.ensureSampleFoldersForEvents(events, loadToken);
-    if (!samplesOk) return false;
-
-    const sf = new Set();
-    const gm = new Set();
-    for (const ev of events) {
-      if (loadToken !== this._prepareToken) return false;
-      const kind = ev.voice?.kind;
-      if (kind && MELODIC_SOUNDFONT[kind]) {
-        sf.add(kind);
-      } else if (kind === 'gm') {
-        const name = gmInstrumentName(ev.program ?? 0);
-        gm.add(GM_FALLBACK_MAP[name] || 'violin');
-      }
-    }
-    await Promise.all([
-      ...[...sf].map((kind) => {
-        const spec = MELODIC_SOUNDFONT[kind];
-        return this.loadSoundfontPlayer(spec.name, spec.group).catch(() => null);
-      }),
-      ...[...gm].map((name) => this.loadGmPlayer(name).catch(() => null)),
-    ]);
-    if (loadToken !== this._prepareToken) return false;
+    await this.ensureContext();
+    const paths = samplePathsForEvents(events, Object.values(DRUM_MAP));
+    const ok = await this._loadPaths(paths, loadToken);
+    if (!ok) return false;
+    this._coreReady = true;
     this.prepared = true;
     if (t0) this._lastPrepareMs = performance.now() - t0;
     return true;
-  }
-
-  _soundfontUrls(name) {
-    const local = new URL(`samples/gm-fallback/${name}-mp3.js`, this.baseUrl).href;
-    const remote = `${SOUNDFONT_CDN}/${name}-mp3.js`;
-    return [local, remote];
-  }
-
-  async loadSoundfontPlayer(name, group) {
-    const key = `sf:${name}:${group}`;
-    if (this.sfPlayers.has(key)) return this.sfPlayers.get(key);
-    const ac = await this.ensureContext();
-    const mod = await this._getSoundfontModule();
-    const Soundfont = mod.default || mod;
-    const out = ac.createGain();
-    this._routeToGroup(out, group);
-    let player = null;
-    for (const url of this._soundfontUrls(name)) {
-      try {
-        player = await Promise.race([
-          Soundfont.instrument(ac, url, { destination: out, gain: 1 }),
-          new Promise((_, reject) => {
-            setTimeout(() => reject(new Error('Soundfont timeout')), 8000);
-          }),
-        ]);
-        break;
-      } catch {
-        /* try next URL */
-      }
-    }
-    if (!player) throw new Error(`Soundfont saknas: ${name}`);
-    this.sfPlayers.set(key, player);
-    return player;
-  }
-
-  _sfPlayerForVoice(voiceKind) {
-    const spec = MELODIC_SOUNDFONT[voiceKind];
-    if (!spec) return null;
-    return this.sfPlayers.get(`sf:${spec.name}:${spec.group}`) || null;
-  }
-
-  _triggerSoundfontVoice(voiceKind, midi, when, duration, velocity) {
-    const spec = MELODIC_SOUNDFONT[voiceKind];
-    if (!spec) return false;
-    const player = this._sfPlayerForVoice(voiceKind);
-    if (!player) return false;
-    const group = spec.group;
-    const { hold, release } = noteHoldAndRelease(duration, this.rate, group);
-    try {
-      const node = player.play(midi, when, {
-        duration: hold,
-        gain: scaledGain(velocity, group),
-        attack: 0.001,
-        decay: 0.01,
-        sustain: 1,
-        release,
-      });
-      if (node?.stop) {
-        this.activeSources.add(node);
-        node.onended = () => this.activeSources.delete(node);
-      }
-      return true;
-    } catch {
-      return false;
-    }
   }
 
   _routeToGroup(gainNode, group) {
@@ -701,49 +554,9 @@ export class AudioEngine {
     src.onended = () => this.activeSources.delete(src);
   }
 
-  async loadGmPlayer(name) {
-    if (this.gmPlayers.has(name)) return this.gmPlayers.get(name);
-    const ac = await this.ensureContext();
-    const mod = await this._getSoundfontModule();
-    const Soundfont = mod.default || mod;
-    const file = GM_FALLBACK_MAP[name] || name;
-    const url = new URL(`samples/gm-fallback/${file}-mp3.js`, this.baseUrl).href;
-    await cachedFetch(url);
-    const out = ac.createGain();
-    this._routeToGroup(out, 'other');
-    const player = await Soundfont.instrument(ac, url, {
-      destination: out,
-      gain: 0.35,
-    });
-    this.gmPlayers.set(name, player);
-    return player;
-  }
-
-  _triggerGm(program, midi, when, duration, velocity) {
-    const name = gmInstrumentName(program);
-    const fallback = GM_FALLBACK_MAP[name] || 'violin';
-    const player = this.gmPlayers.get(fallback);
-    if (!player) {
-      this._triggerMelodic('samples/piano', midi, when, duration, velocity * 0.6, 'other');
-      return;
-    }
-    try {
-      const { hold, release } = noteHoldAndRelease(duration, this.rate, 'other');
-      const node = player.play(midi, when, {
-        duration: hold,
-        gain: scaledGain(velocity, 'other'),
-        attack: 0.001,
-        decay: 0.01,
-        sustain: 1,
-        release,
-      });
-      if (node?.stop) {
-        this.activeSources.add(node);
-        node.onended = () => this.activeSources.delete(node);
-      }
-    } catch {
-      this._triggerMelodic('samples/piano', midi, when, duration, velocity * 0.6, 'other');
-    }
+  /** Rare GM programs: soft piano zone fallback (no soundfont bundles). */
+  _triggerGm(_program, midi, when, duration, velocity) {
+    this._triggerMelodic('samples/piano', midi, when, duration, velocity * 0.55, 'other');
   }
 
   /**
@@ -773,11 +586,6 @@ export class AudioEngine {
     return events;
   }
 
-  /**
-   * Lookahead schedule: arm only the next few seconds of notes.
-   * Markers-only autokomp can emit 4000+ events; creating that many
-   * AudioBufferSourceNodes up front is silent-failure-prone on some browsers.
-   */
   schedule(events, startSeconds, endSeconds) {
     if (!this.prepared) return false;
     const ac = this.ac;
@@ -806,7 +614,7 @@ export class AudioEngine {
       return;
     }
 
-    const LOOKAHEAD_AC = 4.5; // seconds of AudioContext time
+    const LOOKAHEAD_AC = 4.5;
     const horizon = ac.currentTime + LOOKAHEAD_AC;
 
     while (q.index < q.events.length) {
@@ -834,9 +642,6 @@ export class AudioEngine {
           : 'samples/rhodes';
         this._triggerMelodic(folder, ev.midi, when, ev.duration, vel, group);
         continue;
-      }
-      if (MELODIC_SOUNDFONT[voice.kind]) {
-        if (this._triggerSoundfontVoice(voice.kind, ev.midi, when, ev.duration, vel)) continue;
       }
       if (voice.kind === 'bass') {
         this._triggerMelodic('samples/bass', ev.midi, when, ev.duration, vel, group);
