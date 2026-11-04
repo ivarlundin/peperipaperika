@@ -52,41 +52,59 @@
       <div class="scrub-block">
         <div class="lane-block">
           <div class="lane lane-glass" id="lane" aria-label="Rörlig tidslinje — dra vågrätt för att skrubba">
-            <span class="lane-scrub-affordance" aria-hidden="true">↔</span>
             <div class="lane-track" id="lane-track"></div>
             <canvas class="lane-roll" id="lane-roll" aria-hidden="true"></canvas>
             <div class="lane-pinned" id="lane-pinned" hidden></div>
           </div>
         </div>
+      </div>
 
-        <div class="timeline-block">
-          <div class="timeline overview timeline-glass" id="timeline" role="slider" aria-label="Tidslinje, dra för att hoppa" tabindex="0" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <div class="player-transport-stack">
+        <div class="progress-scrub">
+          <span class="progress-time progress-elapsed" id="time-elapsed-dock">0:00</span>
+          <div class="timeline overview timeline-glass timeline-dock" id="timeline" role="slider" aria-label="Tidslinje, dra för att hoppa" tabindex="0" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
             <div class="timeline-rail" id="timeline-rail">
               <div class="timeline-sections" id="timeline-sections"></div>
               <div class="timeline-notes" id="timeline-notes"></div>
               <div class="timeline-playhead" id="timeline-playhead"></div>
             </div>
           </div>
+          <span class="progress-time progress-remaining" id="time-remaining">-0:00</span>
+        </div>
+
+        <div class="transport-block">
+          <div class="transport transport-v2">
+            <div class="transport-side transport-side-left">
+              <button type="button" id="btn-speed" class="btn-round secondary btn-aux transport-aux" aria-haspopup="dialog" aria-controls="speed-dialog" aria-expanded="false" title="Uppspelningshastighet" aria-label="Hastighet">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10h-2A8 8 0 1 1 12 4V2zm1 5v5.25l4.5 2.67-.75 1.23L11 13V7h2z"/></svg>
+              </button>
+              <button type="button" id="btn-mixer" class="btn-round secondary btn-aux transport-aux" aria-haspopup="dialog" aria-controls="mixer-dialog" aria-expanded="false" title="Volym per spår och master" aria-label="Mixer — volym per spår och master">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18V6h2v12H4zm7 0V3h2v15h-2zm7 0V9h2v9h-2z"/></svg>
+              </button>
+            </div>
+            <div class="transport-center">
+              <button type="button" id="btn-prev" class="transport-icon-btn" disabled aria-label="Föregående takt" title="Föregående takt">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6h2v12H6V6zm9.5 6L10 6v12l5.5-6z"/></svg>
+              </button>
+              <button type="button" id="btn-play-pause" class="btn-round btn-play-main" disabled aria-label="Spela" aria-pressed="false" title="Spela (mellanslag)">
+                <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                <svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true" hidden><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
+              </button>
+              <button type="button" id="btn-next" class="transport-icon-btn" disabled aria-label="Nästa takt" title="Nästa takt">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18l8.5-6L6 6v12zM16 6h2v12h-2V6z"/></svg>
+              </button>
+            </div>
+            <div class="transport-side transport-side-right">
+              <button type="button" id="btn-komp-quick" class="transport-komp-chip" hidden aria-label="Autokomp och stil" title="Autokomp">
+                <span class="transport-komp-key" id="transport-komp-key">—</span>
+                <span class="transport-komp-label">Komp</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="transport-block">
-        <div class="transport">
-          <button type="button" id="btn-play-pause" class="btn-round btn-play-main" disabled aria-label="Spela" aria-pressed="false" title="Spela (mellanslag)">
-            <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-            <svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true" hidden><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
-          </button>
-          <button type="button" id="btn-stop" class="btn-round secondary" disabled aria-label="Stopp" title="Stopp">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6h12v12H6z"/></svg>
-          </button>
-          <button type="button" id="btn-mixer" class="btn-round secondary btn-aux" aria-haspopup="dialog" aria-controls="mixer-dialog" aria-expanded="false" title="Volym per spår och master" aria-label="Mixer — volym per spår och master">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18V6h2v12H4zm7 0V3h2v15h-2zm7 0V9h2v9h-2z"/></svg>
-          </button>
-          <button type="button" id="btn-speed" class="btn-round secondary btn-aux" aria-haspopup="dialog" aria-controls="speed-dialog" aria-expanded="false" title="Uppspelningshastighet" aria-label="Hastighet">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10h-2A8 8 0 1 1 12 4V2zm1 5v5.25l4.5 2.67-.75 1.23L11 13V7h2z"/></svg>
-          </button>
-        </div>
-      </div>
+      <button type="button" id="btn-stop" class="visually-hidden" disabled aria-label="Stopp" tabindex="-1">Stopp</button>
 
       <div class="komp-bar nl-module" id="komp-bar" hidden>
         <div class="komp-toggle-row">
@@ -115,7 +133,7 @@
         <ul id="notes-list" class="notes-list"></ul>
       </div>
 
-      <p id="status" class="status" role="status" aria-live="polite"></p>
+      <p id="status" class="status visually-hidden" role="status" aria-live="polite"></p>
     </section>
   </main>
 
@@ -125,23 +143,33 @@
       <button type="button" id="mixer-close" class="nl-dialog-close" aria-label="Stäng">×</button>
     </div>
     <div id="mixer-panel" class="mixer-panel">
-      <div class="mixer-strips">
-        <div id="mixer-groups" class="mixer-groups"></div>
-        <div class="strip strip-aux">
-          <span class="strip-label">Reverb</span>
-          <div class="strip-ms-spacer" aria-hidden="true"></div>
-          <div class="fader">
-            <input type="range" id="reverb" min="0" max="100" value="8" aria-label="Reverb, gemensam våt nivå">
+      <div class="mixer-strips mixer-strips-inline">
+        <div id="mixer-groups" class="mixer-track-list"></div>
+        <div class="mixer-track-row strip-aux" data-mixer-aux="reverb">
+          <span class="mixer-track-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-9 9v7h2v-7a7 7 0 0 1 14 0v7h2v-7a9 9 0 0 0-9-9zm-1 16h2v3h-2z"/></svg>
+          </span>
+          <div class="mixer-track-main">
+            <span class="mixer-track-label">Reverb</span>
+            <div class="fader fader-h">
+              <input type="range" id="reverb" min="0" max="100" value="8" aria-label="Reverb, gemensam våt nivå">
+              <span class="fader-bubble" id="reverb-bubble" hidden>8%</span>
+            </div>
           </div>
-          <span class="strip-val" id="reverb-val">8%</span>
+          <span class="strip-val mixer-track-val" id="reverb-val">8%</span>
         </div>
-        <div class="strip strip-aux strip-master">
-          <span class="strip-label">Master</span>
-          <div class="strip-ms-spacer" aria-hidden="true"></div>
-          <div class="fader">
-            <input type="range" id="master-vol" min="0" max="100" value="72" aria-label="Master volym">
+        <div class="mixer-track-row strip-aux strip-master" data-mixer-aux="master">
+          <span class="mixer-track-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 18V6h2v12H4zm7 0V3h2v15h-2zm7 0V9h2v9h-2z"/></svg>
+          </span>
+          <div class="mixer-track-main">
+            <span class="mixer-track-label">Master</span>
+            <div class="fader fader-h">
+              <input type="range" id="master-vol" min="0" max="100" value="72" aria-label="Master volym">
+              <span class="fader-bubble" id="master-vol-bubble" hidden>72%</span>
+            </div>
           </div>
-          <span class="strip-val" id="master-vol-val">72%</span>
+          <span class="strip-val mixer-track-val" id="master-vol-val">72%</span>
         </div>
       </div>
     </div>

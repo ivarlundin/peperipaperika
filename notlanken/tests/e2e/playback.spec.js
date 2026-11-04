@@ -100,7 +100,7 @@ test.describe('Notlänken playback', () => {
     await expect(page.locator('#komp-style-picker')).toBeVisible();
   });
 
-  test('player layout: scrub before transport before autokomp', async ({ page }) => {
+  test('player layout: lane before transport dock before autokomp', async ({ page }) => {
     await page.locator('.song-btn').nth(1).click();
     await waitForSongReady(page);
     const laneBeforeTransport = await page.evaluate(() => {
@@ -108,10 +108,10 @@ test.describe('Notlänken playback', () => {
       const transport = document.querySelector('.transport-block');
       return lane.compareDocumentPosition(transport) & Node.DOCUMENT_POSITION_FOLLOWING;
     });
-    const timelineBeforeTransport = await page.evaluate(() => {
-      const timeline = document.querySelector('#timeline');
+    const scrubBeforeTransport = await page.evaluate(() => {
+      const scrub = document.querySelector('.progress-scrub');
       const transport = document.querySelector('.transport-block');
-      return timeline.compareDocumentPosition(transport) & Node.DOCUMENT_POSITION_FOLLOWING;
+      return scrub.compareDocumentPosition(transport) & Node.DOCUMENT_POSITION_FOLLOWING;
     });
     const transportBeforeKomp = await page.evaluate(() => {
       const transport = document.querySelector('.transport-block');
@@ -119,7 +119,7 @@ test.describe('Notlänken playback', () => {
       return transport.compareDocumentPosition(komp) & Node.DOCUMENT_POSITION_FOLLOWING;
     });
     expect(laneBeforeTransport).toBeTruthy();
-    expect(timelineBeforeTransport).toBeTruthy();
+    expect(scrubBeforeTransport).toBeTruthy();
     expect(transportBeforeKomp).toBeTruthy();
   });
 

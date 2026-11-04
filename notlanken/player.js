@@ -58,6 +58,12 @@ const timelinePlayhead = $('timeline-playhead');
 const timeBarBeat = $('time-barbeat');
 const timeElapsed = $('time-elapsed');
 const timeTotal = $('time-total');
+const timeElapsedDock = $('time-elapsed-dock');
+const timeRemaining = $('time-remaining');
+const btnPrev = $('btn-prev');
+const btnNext = $('btn-next');
+const btnKompQuick = $('btn-komp-quick');
+const transportKompKey = $('transport-komp-key');
 const speedOptions = $('speed-options');
 const reverbSlider = $('reverb');
 const reverbVal = $('reverb-val');
@@ -137,9 +143,65 @@ const GROUP_LABELS = {
   other: 'Övrigt',
 };
 
+const GROUP_ICONS = {
+  piano: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5h16v14H4zm2-2h2v-2H6v2zm0-4h2V9H6v4zm4 4h2v-2h-2v2zm0-4h2V9h-2v4zm4 4h2v-2h-2v2zm0-4h2V9h-2v4z"/></svg>',
+  bass: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18c0-2.5 1.5-4.5 3.5-6L7 6.5 8.5 5l3.5 5.5C14 9 16 8 18 8v2c-1.8 0-3.5.8-4.7 2.1 1.8 1.4 2.7 3.3 2.7 5.9H7z"/></svg>',
+  drums: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 10V7h12v3H6zm0 2h12v3H6v-3zm-2 5h16v2H4v-2z"/></svg>',
+  brass: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 17c-2.2 0-4-1.3-4.8-3.2L4 12l-.8-1.8C4 8.3 5.8 7 8 7h8c2.2 0 4 1.3 4.8 3.2L20 12l.8 1.8C20 15.7 18.2 17 16 17H8zm0-2h8c1.1 0 2-.6 2.4-1.5L17 12l.4-1.5C17.6 9.6 16.9 9 16 9H8c-1.1 0-2 .6-2.4 1.5L5 12l-.4 1.5C5.4 14.4 6.1 15 8 15z"/></svg>',
+  other: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0-9 9v7h2v-7a7 7 0 0 1 14 0v7h2v-7a9 9 0 0 0-9-9zm-1 16h2v3h-2z"/></svg>',
+};
+
 function setStatus(msg, isError = false) {
+  if (isPlayerView() && !isError) {
+    statusEl.textContent = '';
+    statusEl.classList.remove('error');
+    return;
+  }
   statusEl.textContent = msg || '';
   statusEl.classList.toggle('error', isError);
+  statusEl.classList.toggle('visually-hidden', !msg && !isError);
+}
+
+function positionFaderBubble(input, bubble) {
+  if (!input || !bubble) return;
+  const min = Number(input.min) || 0;
+  const max = Number(input.max) || 100;
+  const val = Number(input.value);
+  const pct = max > min ? (val - min) / (max - min) : 0;
+  bubble.style.left = `${pct * 100}%`;
+  bubble.textContent = `${Math.round(val)}%`;
+}
+
+function bindHorizontalFader(input, bubble, onInput) {
+  if (!input) return;
+  const show = () => {
+    if (bubble) {
+      positionFaderBubble(input, bubble);
+      bubble.hidden = false;
+      input.closest('.mixer-track-row')?.classList.add('is-fader-active');
+    }
+  };
+  const hide = () => {
+    if (bubble) bubble.hidden = true;
+    input.closest('.mixer-track-row')?.classList.remove('is-fader-active');
+  };
+  input.addEventListener('input', () => {
+    show();
+    onInput?.();
+  });
+  input.addEventListener('pointerdown', show);
+  input.addEventListener('pointerup', hide);
+  input.addEventListener('pointercancel', hide);
+  input.addEventListener('blur', hide);
+}
+
+function syncTransportKompKey() {
+  if (!transportKompKey || !chords.length) {
+    if (transportKompKey) transportKompKey.textContent = '—';
+    return;
+  }
+  const chord = chordAtTime(chords, position);
+  transportKompKey.textContent = chord || '—';
 }
 
 function copySongLink() {
@@ -818,7 +880,13 @@ function updatePositionUi() {
     timeline.setAttribute('aria-valuetext', `${formatClock(position)} av ${formatClock(duration)}`);
   }
   updateLane();
-  timeElapsed.textContent = formatClock(position);
+  const elapsed = formatClock(position);
+  timeElapsed.textContent = elapsed;
+  if (timeElapsedDock) timeElapsedDock.textContent = elapsed;
+  if (timeRemaining) {
+    const left = Math.max(0, duration - position);
+    timeRemaining.textContent = `-${formatClock(left)}`;
+  }
   if (midi) timeBarBeat.textContent = formatBarBeat(midi, position);
   const chord = chordAtTime(chords, position);
   if (chord) {
@@ -828,6 +896,7 @@ function updatePositionUi() {
     chordLine.hidden = true;
     chordLine.textContent = '';
   }
+  syncTransportKompKey();
 }
 
 function updateTransportUi() {
@@ -837,10 +906,16 @@ function updateTransportUi() {
     btnPlayPause.setAttribute('aria-pressed', String(isPlaying));
     btnPlayPause.setAttribute('aria-label', isPlaying ? 'Paus' : 'Spela');
     btnPlayPause.title = isPlaying ? 'Paus (mellanslag)' : 'Spela (mellanslag)';
+    btnPlayPause.classList.toggle('is-active', isPlaying);
     if (btnPlayPauseIconPlay) btnPlayPauseIconPlay.hidden = isPlaying;
     if (btnPlayPauseIconPause) btnPlayPauseIconPause.hidden = !isPlaying;
   }
   btnStop.disabled = !midi || audioBusy;
+  if (btnPrev) btnPrev.disabled = !midi || audioBusy;
+  if (btnNext) btnNext.disabled = !midi || audioBusy;
+  const block = document.querySelector('.transport-block');
+  if (block) block.classList.toggle('is-playing', isPlaying);
+  if (btnKompQuick) btnKompQuick.hidden = !autokompApplies();
   if (lcdTitle && currentSong) {
     lcdTitle.dataset.state = isPlaying ? 'spelar' : audioBusy ? 'laddar' : 'paus';
   }
@@ -994,6 +1069,7 @@ function updateAutokompUi() {
   if (kompSwitch) kompSwitch.setAttribute('aria-checked', String(kompOn));
   if (kompStylePicker) kompStylePicker.hidden = !kompOn;
   syncKompStyleTriggerLabel();
+  if (btnKompQuick) btnKompQuick.hidden = !applies;
 }
 
 /** Coalesce komp UI refreshes so rapid style swaps stay responsive. */
@@ -1102,25 +1178,34 @@ function buildMixerUi() {
     const m = engine.mixer[g];
     const vol = Math.round(m.volume * 100);
     const strip = document.createElement('div');
-    strip.className = 'strip' + (auto ? ' strip-auto' : '');
+    strip.className = 'mixer-track-row' + (auto ? ' strip-auto' : '');
     strip.innerHTML = `
-      <span class="strip-label">${label}</span>
-      <div class="strip-ms">
-        <button type="button" class="mute-big" data-mute="${g}" aria-pressed="${m.mute}" aria-label="Tysta ${label}">${m.mute ? 'Tyst' : 'Ljud'}</button>
-        <button type="button" class="chip icon" data-solo="${g}" aria-pressed="${m.solo}" aria-label="Solo ${label}" title="Solo">S</button>
+      <span class="mixer-track-icon">${GROUP_ICONS[g] || GROUP_ICONS.other}</span>
+      <div class="mixer-track-main">
+        <span class="mixer-track-label">${label}</span>
+        <div class="fader fader-h">
+          <input type="range" min="0" max="100" value="${vol}" data-vol="${g}" aria-label="${label} volym">
+          <span class="fader-bubble" hidden>${vol}%</span>
+        </div>
       </div>
-      <div class="fader">
-        <input type="range" min="0" max="100" value="${vol}" data-vol="${g}" aria-label="${label} volym">
+      <div class="mixer-track-actions">
+        <button type="button" class="mixer-more-btn" data-more="${g}" aria-expanded="false" aria-label="Spårmeny ${label}" title="Mute och solo"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="6" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="18" r="1.6"/></svg></button>
+        <div class="mixer-more-menu" hidden>
+          <button type="button" class="mute-big" data-mute="${g}" aria-pressed="${m.mute}" aria-label="Tysta ${label}">${m.mute ? 'Tyst' : 'Ljud'}</button>
+          <button type="button" class="chip icon" data-solo="${g}" aria-pressed="${m.solo}" aria-label="Solo ${label}" title="Solo">S</button>
+        </div>
       </div>
-      <span class="strip-val" data-vol-val="${g}">${vol}</span>
+      <span class="strip-val mixer-track-val" data-vol-val="${g}">${vol}%</span>
     `;
     mixerGroups.appendChild(strip);
   }
 
   mixerGroups.querySelectorAll('[data-vol]').forEach((el) => {
-    el.addEventListener('input', () => {
+    const bubble = el.parentElement?.querySelector('.fader-bubble');
+    bindHorizontalFader(el, bubble, () => {
       const g = el.getAttribute('data-vol');
-      mixerGroups.querySelector(`[data-vol-val="${g}"]`).textContent = el.value;
+      const valEl = mixerGroups.querySelector(`[data-vol-val="${g}"]`);
+      if (valEl) valEl.textContent = `${el.value}%`;
       engine.setGroupMixer(g, { volume: el.value / 100 });
       saveMixerSettings(engine, { masterVol, reverb: reverbSlider });
     });
@@ -1140,6 +1225,22 @@ function buildMixerUi() {
       el.setAttribute('aria-pressed', String(on));
       engine.setGroupMixer(el.getAttribute('data-solo'), { solo: on });
       saveMixerSettings(engine, { masterVol, reverb: reverbSlider });
+    });
+  });
+  mixerGroups.querySelectorAll('.mixer-more-btn').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const menu = btn.parentElement?.querySelector('.mixer-more-menu');
+      if (!menu) return;
+      const willOpen = menu.hidden;
+      mixerGroups.querySelectorAll('.mixer-more-menu').forEach((m) => { m.hidden = true; });
+      mixerGroups.querySelectorAll('.mixer-more-btn').forEach((b) => {
+        b.setAttribute('aria-expanded', 'false');
+      });
+      if (willOpen) {
+        menu.hidden = false;
+        btn.setAttribute('aria-expanded', 'true');
+      }
     });
   });
 }
@@ -1250,9 +1351,29 @@ btnPlayPause?.addEventListener('click', async () => {
   else await startPlayback(position);
 });
 btnStop.addEventListener('click', () => stop());
+btnPrev?.addEventListener('click', () => {
+  if (!midi) return;
+  seekTo(jumpBars(midi, position, -1), isPlaying);
+});
+btnNext?.addEventListener('click', () => {
+  if (!midi) return;
+  seekTo(jumpBars(midi, position, 1), isPlaying);
+});
+btnKompQuick?.addEventListener('click', () => {
+  if (!kompBar || kompBar.hidden) return;
+  kompBar.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  kompSwitch?.focus();
+});
 
 bindModuleDialog(speedDialog, btnSpeed, speedClose);
 bindModuleDialog(mixerDialog, btnMixer, mixerClose);
+
+document.addEventListener('click', () => {
+  mixerGroups?.querySelectorAll('.mixer-more-menu').forEach((m) => { m.hidden = true; });
+  mixerGroups?.querySelectorAll('.mixer-more-btn').forEach((b) => {
+    b.setAttribute('aria-expanded', 'false');
+  });
+});
 
 const SPEED_GROUPS = [
   { label: 'Långsam', speeds: [0.5, 0.75] },
@@ -1296,13 +1417,13 @@ for (const group of SPEED_GROUPS) {
   speedOptions.appendChild(wrap);
 }
 
-reverbSlider.addEventListener('input', () => {
+bindHorizontalFader(reverbSlider, $('reverb-bubble'), () => {
   reverbVal.textContent = `${reverbSlider.value}%`;
   engine.setReverbAmount(Number(reverbSlider.value) / 100);
   saveMixerSettings(engine, { masterVol, reverb: reverbSlider });
 });
 
-masterVol.addEventListener('input', () => {
+bindHorizontalFader(masterVol, $('master-vol-bubble'), () => {
   masterVolVal.textContent = `${masterVol.value}%`;
   engine.setMasterVolume(Number(masterVol.value) / 100);
   saveMixerSettings(engine, { masterVol, reverb: reverbSlider });
