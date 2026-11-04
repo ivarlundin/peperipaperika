@@ -34,6 +34,7 @@ const songFilter = $('song-filter');
 const viewList = $('view-list');
 const playerEl = $('player');
 const btnBack = $('btn-back');
+const btnCopyLink = $('btn-copy-link');
 const siteHome = $('site-home');
 const nowPlaying = $('now-playing');
 const lcdTitle = $('lcd-title');
@@ -110,6 +111,11 @@ let kompDirectives = { style: null, sectionStyles: new Map() };
 let audioBusy = false;
 let playbackSeq = 0;
 
+const MIXER_HINT_KEY = 'notlanken-mixer-hint-v1';
+/** @type {string} */
+let listHighlightFile = '';
+let mixerHintTimer = 0;
+
 function cancelInFlightPlayback() {
   playbackSeq += 1;
   audioBusy = false;
@@ -126,6 +132,26 @@ const GROUP_LABELS = {
 function setStatus(msg, isError = false) {
   statusEl.textContent = msg || '';
   statusEl.classList.toggle('error', isError);
+}
+
+function maybeShowMixerHint() {
+  if (localStorage.getItem(MIXER_HINT_KEY)) return;
+  localStorage.setItem(MIXER_HINT_KEY, '1');
+  setStatus('Tips: volym och reverb per spår finns under Mixer.');
+  clearTimeout(mixerHintTimer);
+  mixerHintTimer = window.setTimeout(() => {
+    if (statusEl.textContent.startsWith('Tips: volym')) setStatus('');
+  }, 9000);
+}
+
+function copySongLink() {
+  if (!currentSong) return;
+  const url = new URL(location.href);
+  url.hash = encodeURIComponent(currentSong.file);
+  navigator.clipboard.writeText(url.href).then(
+    () => setStatus('Länk kopierad — dela med arrangör eller band.'),
+    () => setStatus('Kunde inte kopiera länk.', true),
+  );
 }
 
 function isTypingTarget() {
@@ -146,6 +172,7 @@ function showListView() {
   songLoadGuard.bump();
   cancelInFlightPlayback();
   stop();
+  if (currentSong?.file) listHighlightFile = currentSong.file;
   currentSong = null;
   playerEl.hidden = true;
   viewList.hidden = false;
@@ -197,7 +224,8 @@ function renderSongList(filter = '') {
       engine.ensureContext();
       location.hash = encodeURIComponent(song.file);
     });
-    if (currentSong?.file === song.file && isPlayerView()) {
+    const markerFile = isPlayerView() ? currentSong?.file : listHighlightFile;
+    if (markerFile && markerFile === song.file) {
       btn.setAttribute('aria-current', 'true');
     }
     li.appendChild(btn);
@@ -228,6 +256,7 @@ async function openSong(song) {
 
   midi = null;
   currentSong = song;
+  listHighlightFile = song.file;
   document.title = `${song.title} – Notlänken ™`;
   nowPlaying.textContent = song.title;
   if (lcdTitle) lcdTitle.textContent = song.title;
@@ -322,6 +351,7 @@ async function openSong(song) {
     updatePositionUi();
     setStatus('');
     renderSongList(songFilter?.value || '');
+    maybeShowMixerHint();
   } catch (e) {
     if (!songLoadGuard.isActive(loadToken)) return;
     hideLoadingModal(`Kunde inte ladda: ${e.message}`);
@@ -1148,7 +1178,11 @@ btnPlay.addEventListener('click', async () => {
 btnPause.addEventListener('click', () => pause());
 btnStop.addEventListener('click', () => stop());
 
-const SPEEDS = [0.5, 0.75, 1, 1.1, 1.25, 1.5, 2, 3];
+const SPEED_GROUPS = [
+  { label: 'Långsam', speeds: [0.5, 0.75] },
+  { label: 'Normal', speeds: [1, 1.1, 1.25] },
+  { label: 'Snabb', speeds: [1.5, 2, 3] },
+];
 
 function formatSpeed(s) {
   return `${String(s).replace('.', ',')}x`;
@@ -1163,15 +1197,30 @@ function setSpeed(speed) {
   if (resumeAt != null) startPlayback(resumeAt);
 }
 
-for (const s of SPEEDS) {
-  const b = document.createElement('button');
-  b.type = 'button';
-  b.className = 'chip';
-  b.dataset.speed = String(s);
-  b.textContent = formatSpeed(s);
-  b.setAttribute('aria-pressed', String(s === 1));
-  b.addEventListener('click', () => setSpeed(s));
-  speedOptions.appendChild(b);
+for (const group of SPEED_GROUPS) {
+  const wrap = document.createElement('div');
+  wrap.className = 'speed-group';
+  wrap.setAttribute('role', 'group');
+  wrap.setAttribute('aria-label', group.label);
+  const lab = document.createElement('span');
+  lab.className = 'speed-group-label';
+  lab.textContent = group.label;
+  const chips = document.createElement('div');
+  chips.className = 'speed-group-chips';
+  for (const s of group.speeds) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'chip';
+    b.dataset.speed = String(s);
+    b.textContent = formatSpeed(s);
+    b.setAttribute('aria-pressed', String(s === 1));
+    b.setAttribute('aria-label', `${formatSpeed(s)} hastighet`);
+    b.addEventListener('click', () => setSpeed(s));
+    chips.appendChild(b);
+  }
+  wrap.appendChild(lab);
+  wrap.appendChild(chips);
+  speedOptions.appendChild(wrap);
 }
 
 reverbSlider.addEventListener('input', () => {
@@ -1188,7 +1237,10 @@ btnMixer.addEventListener('click', () => {
   const open = mixerPanel.hidden;
   mixerPanel.hidden = !open;
   btnMixer.setAttribute('aria-expanded', String(open));
+  if (open && statusEl.textContent.startsWith('Tips: volym')) setStatus('');
 });
+
+btnCopyLink?.addEventListener('click', copySongLink);
 
 noteAdd.querySelectorAll('button').forEach((b) => {
   b.addEventListener('click', () => openNoteDialog(b.getAttribute('data-type')));
