@@ -1423,7 +1423,10 @@ applyMixerSettings(engine, {
 });
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register(new URL('sw.js', import.meta.url), { scope: './' }).catch(() => {});
+  navigator.serviceWorker
+    .register(new URL('sw.js', import.meta.url), { scope: './' })
+    .then((reg) => reg.update())
+    .catch(() => {});
 }
 
 async function initKompUi() {

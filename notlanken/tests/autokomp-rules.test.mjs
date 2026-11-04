@@ -82,6 +82,13 @@ function drumEvents(styleId, variant) {
       ev.every((e) => !['trumpet', 'tenor_sax', 'trombone', 'brass_section', 'gm'].includes(e.voice?.kind)),
       `${id}: autokomp must not emit horn voices`,
     );
+    const piano = ev.filter((e) => e.group === 'piano');
+    if (piano.length) {
+      assert(
+        piano.every((e) => e.voice?.sample === 'acoustic' && (e.program ?? 0) === 0),
+        `${id}: autokomp piano must be acoustic grand (Salamander)`,
+      );
+    }
   }
 }
 

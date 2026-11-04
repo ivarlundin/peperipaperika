@@ -1,6 +1,7 @@
 import { resolveVoice } from './instruments.js';
 import { gmInstrumentName } from './gm-programs.js';
 import { cachedFetch } from './asset-cache.js';
+import { SAMPLE_URL_VERSION } from './sample-asset-version.js';
 
 const GROUPS = ['piano', 'bass', 'drums', 'brass', 'other'];
 
@@ -53,18 +54,27 @@ const GROUP_HEADROOM = {
 };
 
 /** Kick, snare, hats, cymbals only — toms/toys are not played. */
-const DRUM_MAP = {
+export const DRUM_MAP = {
   35: '36-kick.ogg',
   36: '36-kick.ogg',
-  37: '38-snare.ogg', // rim → snare
+  37: '38-snare.ogg', // side stick / rim → snare sample
   38: '38-snare.ogg',
-  39: '38-snare.ogg', // clap → snare
+  39: '38-snare.ogg', // hand clap → snare
+  40: '38-snare.ogg', // electric snare
   42: '42-closed-hat.ogg',
   44: '42-closed-hat.ogg', // pedal hat
   46: '46-open-hat.ogg',
   49: '49-crash.ogg',
   51: '51-ride.ogg',
   53: '53-ride-bell.ogg',
+  57: '49-crash.ogg', // crash 2
+};
+
+/** Relative gain vs other drums (linear; ~0.28 ≈ −11 dB). */
+const DRUM_SAMPLE_GAIN = {
+  '51-ride.ogg': 0.28,
+  '53-ride-bell.ogg': 0.26,
+  '49-crash.ogg': 0.55,
 };
 
 function drumSampleFile(midi) {
@@ -372,7 +382,8 @@ export class AudioEngine {
   async loadBuffer(path) {
     if (this.buffers.has(path)) return this.buffers.get(path);
     const ac = await this.ensureContext();
-    const res = await cachedFetch(this.baseUrl + path);
+    const url = `${this.baseUrl}${path}?v=${encodeURIComponent(SAMPLE_URL_VERSION)}`;
+    const res = await cachedFetch(url);
     if (!res.ok) throw new Error(`Sample saknas: ${path}`);
     const arr = await res.arrayBuffer();
     const buf = await ac.decodeAudioData(arr);
@@ -675,7 +686,8 @@ export class AudioEngine {
     const src = ac.createBufferSource();
     src.buffer = buf;
     const g = ac.createGain();
-    const peak = scaledGain(velocity, 'drums');
+    const drumMul = DRUM_SAMPLE_GAIN[file] ?? 1;
+    const peak = scaledGain(velocity, 'drums') * drumMul;
     g.gain.setValueAtTime(0.0001, when);
     g.gain.exponentialRampToValueAtTime(Math.max(peak, 0.0001), when + 0.002);
     src.connect(g);

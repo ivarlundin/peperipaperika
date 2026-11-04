@@ -1,5 +1,6 @@
 /* Notlänken — persistent cache for samples and soundfont bundles (same origin). */
-const CACHE_NAME = 'notlanken-assets-v1';
+/* Keep CACHE_NAME in sync with sample-asset-version.js */
+const CACHE_NAME = 'notlanken-assets-v2';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();

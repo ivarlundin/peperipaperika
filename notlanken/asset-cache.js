@@ -1,11 +1,13 @@
-const CACHE_NAME = 'notlanken-assets-v1';
+import { SAMPLE_ASSET_CACHE_NAME } from './sample-asset-version.js';
+
+export { SAMPLE_ASSET_CACHE_NAME as CACHE_NAME };
 
 /** @type {Promise<Cache> | null} */
 let cacheReady = null;
 
 function openCache() {
   if (!cacheReady) {
-    cacheReady = caches.open(CACHE_NAME);
+    cacheReady = caches.open(SAMPLE_ASSET_CACHE_NAME);
   }
   return cacheReady;
 }
@@ -31,5 +33,3 @@ export async function cachedFetch(url) {
     return fetch(url);
   }
 }
-
-export { CACHE_NAME };

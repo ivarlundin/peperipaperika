@@ -182,18 +182,15 @@ function generateFor(midi, duration) {
   assert(need.length === 0 && ev.length === 0, `${file}: no autokomp`);
 }
 
-// --- LC utan komp: melody + markers → autokomp fills drums/bass/piano ---
+// --- LC utan komp: markers only → autokomp fills drums/bass/piano (no written notes) ---
 {
   const file = 'last-christmas-d-v03-utan-komp.mid';
   const midi = loadMidi(file);
-  assert(midi.tracks.length === 1, `${file}: single melody track`);
-  assert(midi.tracks[0].notes.length > 100, `${file}: melody notes present`);
+  const noteCount = midi.tracks.reduce((n, t) => n + t.notes.length, 0);
+  assert(noteCount === 0, `${file}: zero note events (${noteCount})`);
   const meta = parseSongMeta(midi);
   assert(meta.chords.length >= 50, `${file}: chords (${meta.chords.length})`);
   const writtenEvents = [];
-  for (const t of midi.tracks) {
-    for (const n of t.notes) writtenEvents.push({ time: n.time, group: 'brass' });
-  }
   const duration = songDurationSeconds(midi, {
     writtenEvents,
     chords: meta.chords,
@@ -203,6 +200,10 @@ function generateFor(midi, duration) {
   assert(!written.drums && !written.bass && !written.piano, `${file}: no rhythm written`);
   assert(need.join(',') === 'drums,bass,piano', `${file}: autokomp need (${need})`);
   assert(ev.length > 1000, `${file}: autokomp notes (${ev.length})`);
+  assert(
+    ev.every((e) => ['drums', 'bass', 'piano'].includes(e.group)),
+    `${file}: autokomp groups only trio`,
+  );
 }
 
 // --- Mid-play style swap: generate fromTime must not treat that bar as song start ---

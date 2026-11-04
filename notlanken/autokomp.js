@@ -346,8 +346,9 @@ function emitPiano(events, ctx) {
 function pianoEv(time, midi, duration, velocity) {
   return {
     time, duration, midi, velocity,
-    channel: 0, program: 4, // electric piano / Rhodes
-    voice: { kind: 'piano', sample: 'rhodes' },
+    channel: 0,
+    program: 0, // acoustic grand — Salamander zones in samples/piano
+    voice: { kind: 'piano', sample: 'acoustic' },
     group: 'piano',
     source: 'auto',
   };
