@@ -746,6 +746,11 @@ function rebuildEvents({ reschedule = true } = {}) {
   kompStatus.textContent = parts;
   const canGenerate = !!(kompOn && chords.length && missingTracks(writtenTracks).length);
   kompStyle.disabled = !canGenerate;
+  kompStyle.title = canGenerate
+    ? ''
+    : 'Stil gäller bara när autokomp fyller saknade trummor, bas eller piano i filen.';
+  const styleHint = document.getElementById('komp-style-hint');
+  if (styleHint) styleHint.hidden = canGenerate;
   if (kompVariant) {
     kompVariant.querySelectorAll('button').forEach((b) => { b.disabled = !canGenerate; });
   }
