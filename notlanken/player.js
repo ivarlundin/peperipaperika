@@ -22,8 +22,10 @@ import {
   parseKompDirectives,
   resolveStyleId,
 } from './autokomp.js';
+import { createSongLoadGuard } from './song-load-guard.js';
 
 const engine = new AudioEngine(new URL('./', import.meta.url).href);
+const songLoadGuard = createSongLoadGuard();
 
 const $ = (id) => document.getElementById(id);
 
@@ -32,6 +34,7 @@ const songFilter = $('song-filter');
 const viewList = $('view-list');
 const playerEl = $('player');
 const btnBack = $('btn-back');
+const siteHome = $('site-home');
 const nowPlaying = $('now-playing');
 const lcdTitle = $('lcd-title');
 const chordLine = $('chord-line');
@@ -105,6 +108,12 @@ let kompOn = true;
 let kompVariantPref = 'auto';
 let kompDirectives = { style: null, sectionStyles: new Map() };
 let audioBusy = false;
+let playbackSeq = 0;
+
+function cancelInFlightPlayback() {
+  playbackSeq += 1;
+  audioBusy = false;
+}
 
 const GROUP_LABELS = {
   piano: 'Piano',
@@ -134,6 +143,8 @@ function isPlayerView() {
 }
 
 function showListView() {
+  songLoadGuard.bump();
+  cancelInFlightPlayback();
   stop();
   currentSong = null;
   playerEl.hidden = true;
@@ -208,6 +219,9 @@ if (songFilter) {
 
 async function openSong(song) {
   await kompReady;
+  const loadToken = songLoadGuard.bump();
+  cancelInFlightPlayback();
+  audioBusy = true;
   engine.stopAll();
   isPlaying = false;
   cancelAnimationFrame(raf);
@@ -223,20 +237,71 @@ async function openSong(song) {
 
   try {
     const res = await fetch(`midi/${encodeURIComponent(song.file)}`);
+    if (!songLoadGuard.isActive(loadToken)) return;
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const buf = await res.arrayBuffer();
-    midi = new Midi(buf);
-    writtenEvents = engine.buildEvents(midi);
-    writtenTracks = detectWrittenTracks(midi);
-    const meta = parseSongMeta(midi);
-    sections = meta.sections;
-    chords = meta.chords;
-    // Markers-only charts: @tonejs/midi duration is -Infinity — use markers/tempo.
-    duration = songDurationSeconds(midi, { writtenEvents, chords, sections });
+    if (!songLoadGuard.isActive(loadToken)) return;
+
+    const loadMidi = new Midi(buf);
+    const loadWrittenEvents = engine.buildEvents(loadMidi);
+    const loadWrittenTracks = detectWrittenTracks(loadMidi);
+    const meta = parseSongMeta(loadMidi);
+    const loadSections = meta.sections;
+    const loadChords = meta.chords;
+    const loadDuration = songDurationSeconds(loadMidi, {
+      writtenEvents: loadWrittenEvents,
+      chords: loadChords,
+      sections: loadSections,
+    });
+
     showLoadingModal('Laddar ljudmotor…');
     setStatus('Laddar ljud…');
-    engine.prepared = false;
-    if (currentSong !== song) return;
-    kompDirectives = parseKompDirectives(midi);
+    if (!songLoadGuard.isActive(loadToken)) return;
+
+    const loadKompDirectives = parseKompDirectives(loadMidi);
+    let loadEvents = loadWrittenEvents;
+    if (kompOn && loadChords.length && styleMap.size) {
+      const need = missingTracks(loadWrittenTracks);
+      if (need.length) {
+        const styleId = resolveStyleId(styleCatalog, kompStyle.value || 'pop-rock');
+        const bars = barStarts(loadMidi, loadDuration);
+        const auto = generateAutokomp(
+          { barStarts: bars, chords: loadChords, sections: loadSections, duration: loadDuration },
+          {
+            styleId,
+            variant: kompVariantPref,
+            humanize: true,
+            generate: need,
+            dynamics: 'mf',
+            styles: styleMap,
+            resolveStyleId: (id) => resolveStyleId(styleCatalog, id),
+          },
+        );
+        loadEvents = [...loadWrittenEvents, ...auto].sort((a, b) => a.time - b.time);
+      }
+    }
+
+    engine.beginSongPrepare(loadToken);
+    try {
+      const ready = await engine.prepareInstrumentsForEvents(loadEvents, loadToken);
+      if (!ready && songLoadGuard.isActive(loadToken)) {
+        throw new Error('Ljudladdning avbröts');
+      }
+    } catch (err) {
+      if (!songLoadGuard.isActive(loadToken)) return;
+      hideLoadingModal(`Kunde inte ladda ljud: ${err.message || err}`);
+      throw err;
+    }
+    hideLoadingModal();
+    if (!songLoadGuard.isActive(loadToken)) return;
+
+    midi = loadMidi;
+    writtenEvents = loadWrittenEvents;
+    writtenTracks = loadWrittenTracks;
+    sections = loadSections;
+    chords = loadChords;
+    duration = loadDuration;
+    kompDirectives = loadKompDirectives;
     const stil = resolveStyleId(styleCatalog, kompDirectives.style);
     if (stil && styleMap.has(stil)) {
       kompStyle.value = stil;
@@ -247,17 +312,9 @@ async function openSong(song) {
     sessionNotes = loadNotes(song.file);
     position = 0;
     rebuildEvents({ reschedule: false });
-    try {
-      await engine.prepareInstrumentsForEvents(events);
-    } catch (err) {
-      hideLoadingModal(`Kunde inte ladda ljud: ${err.message || err}`);
-      throw err;
-    }
-    hideLoadingModal();
-    if (currentSong !== song) return;
     buildMixerUi();
 
-    if (currentSong !== song) return;
+    if (!songLoadGuard.isActive(loadToken)) return;
     timeTotal.textContent = formatClock(duration);
     renderTimeline();
     renderNotesList();
@@ -266,8 +323,14 @@ async function openSong(song) {
     setStatus('');
     renderSongList(songFilter?.value || '');
   } catch (e) {
+    if (!songLoadGuard.isActive(loadToken)) return;
     hideLoadingModal(`Kunde inte ladda: ${e.message}`);
     setStatus(`Kunde inte ladda: ${e.message}`, true);
+  } finally {
+    if (songLoadGuard.isActive(loadToken)) {
+      audioBusy = false;
+      updateTransportUi();
+    }
   }
 }
 
@@ -701,18 +764,47 @@ function tick() {
 
 async function startPlayback(fromSeconds) {
   if (!midi || audioBusy) return;
+  const playToken = ++playbackSeq;
   audioBusy = true;
   updateTransportUi();
   setStatus('Förbereder uppspelning…');
   await engine.ensureContext();
+  if (playToken !== playbackSeq) {
+    audioBusy = false;
+    updateTransportUi();
+    return;
+  }
   try {
     if (!engine.prepared) {
-      await engine.prepareInstrumentsForEvents(events.length ? events : writtenEvents);
+      const ready = await engine.prepareInstrumentsForEvents(
+        events.length ? events : writtenEvents,
+      );
+      if (playToken !== playbackSeq) {
+        audioBusy = false;
+        updateTransportUi();
+        return;
+      }
+      if (!ready) {
+        audioBusy = false;
+        updateTransportUi();
+        setStatus('Ljudmotorn håller på att ladda…', true);
+        return;
+      }
     }
   } catch (err) {
+    if (playToken !== playbackSeq) {
+      audioBusy = false;
+      updateTransportUi();
+      return;
+    }
     audioBusy = false;
     updateTransportUi();
     setStatus(`Kunde inte ladda ljud: ${err.message || err}`, true);
+    return;
+  }
+  if (playToken !== playbackSeq) {
+    audioBusy = false;
+    updateTransportUi();
     return;
   }
   setStatus('');
@@ -720,23 +812,35 @@ async function startPlayback(fromSeconds) {
   position = Math.max(0, Math.min(duration, fromSeconds));
   playStartPos = position;
   playStartAc = engine.ac.currentTime;
-  isPlaying = true;
-  updateTransportUi();
   try {
-    engine.schedule(events, position, duration + 1);
+    const scheduled = engine.schedule(events, position, duration + 1);
+    if (!scheduled) {
+      audioBusy = false;
+      updateTransportUi();
+      setStatus('Kunde inte starta uppspelning — ljudmotorn är inte redo.', true);
+      return;
+    }
   } catch (err) {
-    isPlaying = false;
     audioBusy = false;
     updateTransportUi();
     setStatus(`Kunde inte starta uppspelning: ${err.message || err}`, true);
     return;
   }
+  if (playToken !== playbackSeq) {
+    engine.stopAll();
+    audioBusy = false;
+    updateTransportUi();
+    return;
+  }
+  isPlaying = true;
   audioBusy = false;
+  updateTransportUi();
   cancelAnimationFrame(raf);
   raf = requestAnimationFrame(tick);
 }
 
 function pause() {
+  cancelInFlightPlayback();
   if (isPlaying && engine.ac) {
     position = currentPositionFromClock();
   }
@@ -842,7 +946,12 @@ function rebuildEvents({ reschedule = true } = {}) {
       ...writtenEvents.filter((e) => e.time >= p - 0.001),
       ...autoEvents.filter((e) => e.time >= from - 0.001),
     ].sort((a, b) => a.time - b.time);
-    engine.schedule(mixed, p, duration + 1);
+    if (!engine.schedule(mixed, p, duration + 1)) {
+      isPlaying = false;
+      updateTransportUi();
+      setStatus('Kunde inte fortsätta uppspelning — ljudmotorn är inte redo.', true);
+      return;
+    }
     // Keep the transport RAF alive across stopAll/reschedule.
     cancelAnimationFrame(raf);
     raf = requestAnimationFrame(tick);
@@ -1085,11 +1194,22 @@ noteAdd.querySelectorAll('button').forEach((b) => {
   b.addEventListener('click', () => openNoteDialog(b.getAttribute('data-type')));
 });
 
-btnBack.addEventListener('click', () => {
+function goHome() {
   if (location.hash) location.hash = '';
   else showListView();
+}
+
+btnBack.addEventListener('click', goHome);
+siteHome?.addEventListener('click', (e) => {
+  e.preventDefault();
+  goHome();
 });
 window.addEventListener('hashchange', routeFromHash);
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState !== 'visible') return;
+  if (isPlaying) void engine.ensureContext();
+});
 
 noteForm.addEventListener('submit', (e) => {
   e.preventDefault();

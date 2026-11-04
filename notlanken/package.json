@@ -3,9 +3,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node tests/autokomp.test.mjs && node tests/markers-only-playback.test.mjs"
+    "test": "node tests/autokomp.test.mjs && node tests/markers-only-playback.test.mjs && node tests/song-load-guard.test.mjs",
+    "test:e2e": "playwright test"
   },
   "devDependencies": {
+    "@playwright/test": "^1.56.0",
     "@tonejs/midi": "2.0.28"
   }
 }
