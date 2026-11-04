@@ -5,18 +5,18 @@ const GROUPS = ['piano', 'bass', 'drums', 'brass', 'other'];
 
 /** Natural release tail after MIDI note-off (seconds). */
 const GROUP_RELEASE = {
-  piano: 0.42,
-  bass: 0.55,
+  piano: 0.4,
+  bass: 0.48,
   drums: 0,
-  brass: 0.58,
-  other: 0.5,
+  brass: 0.3,
+  other: 0.42,
 };
 
 /** Minimum held time so staccato MIDI still has body (seconds). */
 const GROUP_MIN_HOLD = {
   piano: 0.05,
   bass: 0.07,
-  brass: 0.09,
+  brass: 0.045,
   other: 0.08,
 };
 
@@ -112,6 +112,30 @@ function scaledGain(velocity, group) {
   return v * head;
 }
 
+/**
+ * Hold at peak from `when`, then exponential release. Samples/soundfonts already
+ * contain attack transients — do not fade in (avoids reverse-swell artefact).
+ * @param {AudioParam} gainParam
+ */
+export function scheduleHeldGainEnvelope(gainParam, when, peak, holdSec, releaseSec) {
+  const h = Math.max(0, holdSec);
+  const r = Math.max(0.06, releaseSec);
+  const p = Math.max(peak, 0.0001);
+  gainParam.cancelScheduledValues(when);
+  gainParam.setValueAtTime(p, when);
+  if (h > 0) gainParam.setValueAtTime(p, when + h);
+  gainParam.exponentialRampToValueAtTime(0.0001, when + h + r);
+}
+
+/** @returns {{ hold: number, release: number }} sustain + ADSR release for soundfont-player */
+export function noteHoldAndRelease(duration, rate, group) {
+  const release = GROUP_RELEASE[group] ?? 0.35;
+  const hold = duration > 0
+    ? Math.max(duration / rate, GROUP_MIN_HOLD[group] ?? 0.05)
+    : 0.35;
+  return { hold, release };
+}
+
 export class AudioEngine {
   constructor(baseUrl) {
     this.baseUrl = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
@@ -142,7 +166,12 @@ export class AudioEngine {
     /** @type {null | { events: any[], startSeconds: number, endSeconds: number, index: number, originAc: number, originSong: number, sid: number }} */
     this._schedQueue = null;
     for (const g of GROUPS) {
-      this.mixer[g] = { volume: 0.75, mute: false, solo: false, reverbSend: 0.2 };
+      this.mixer[g] = {
+        volume: 0.75,
+        mute: false,
+        solo: false,
+        reverbSend: g === 'brass' ? 0.12 : 0.2,
+      };
     }
     this.masterVolume = 0.72;
     this.reverbAmount = 0.12;
@@ -441,15 +470,14 @@ export class AudioEngine {
     const player = this._sfPlayerForVoice(voiceKind);
     if (!player) return false;
     const group = spec.group;
-    const hold = duration > 0
-      ? Math.max(duration / this.rate, GROUP_MIN_HOLD[group] ?? 0.08)
-      : 0.45;
-    const release = GROUP_RELEASE[group] ?? 0.45;
+    const { hold, release } = noteHoldAndRelease(duration, this.rate, group);
     try {
       const node = player.play(midi, when, {
-        duration: hold + release,
+        duration: hold,
         gain: scaledGain(velocity, group),
-        attack: 0.012,
+        attack: 0.001,
+        decay: 0.01,
+        sustain: 1,
         release,
       });
       if (node?.stop) {
@@ -468,14 +496,7 @@ export class AudioEngine {
   }
 
   _applyHeldEnvelope(gainNode, when, peak, holdSec, releaseSec) {
-    const h = Math.max(0.008, holdSec);
-    const r = Math.max(0.12, releaseSec);
-    gainNode.gain.cancelScheduledValues(when);
-    gainNode.gain.setValueAtTime(0.0001, when);
-    gainNode.gain.exponentialRampToValueAtTime(Math.max(peak, 0.0001), when + 0.01);
-    gainNode.gain.setValueAtTime(peak, when + 0.01);
-    gainNode.gain.setValueAtTime(peak, when + h);
-    gainNode.gain.exponentialRampToValueAtTime(0.0001, when + h + r);
+    scheduleHeldGainEnvelope(gainNode.gain, when, peak, holdSec, releaseSec);
   }
 
   _startMelodicSample(buf, zoneMidi, targetMidi, when, holdSec, releaseSec, peak, group) {
@@ -583,14 +604,13 @@ export class AudioEngine {
       return;
     }
     try {
-      const hold = duration > 0
-        ? Math.max(duration / this.rate, GROUP_MIN_HOLD.other)
-        : 0.45;
-      const release = GROUP_RELEASE.other;
+      const { hold, release } = noteHoldAndRelease(duration, this.rate, 'other');
       const node = player.play(midi, when, {
-        duration: hold + release,
+        duration: hold,
         gain: scaledGain(velocity, 'other'),
-        attack: 0.012,
+        attack: 0.001,
+        decay: 0.01,
+        sustain: 1,
         release,
       });
       if (node?.stop) {
