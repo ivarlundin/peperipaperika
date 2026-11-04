@@ -32,8 +32,6 @@
       <header class="topbar">
         <button type="button" id="btn-back" class="nl-btn nl-btn-pill" aria-label="Tillbaka till låtlistan">← Låtar</button>
         <button type="button" id="btn-copy-link" class="nl-btn nl-btn-pill ghost" title="Kopiera länk till denna låt">Kopiera länk</button>
-        <button type="button" id="btn-speed" class="nl-btn nl-btn-pill" aria-haspopup="dialog" aria-controls="speed-dialog">Hastighet</button>
-        <button type="button" id="btn-mixer" class="nl-btn nl-btn-pill" aria-expanded="false" aria-controls="mixer-panel" title="Volym per spår och master" aria-label="Mixer — volym per spår och master">Mixer</button>
       </header>
 
       <div class="nl-lcd" aria-live="polite">
@@ -51,29 +49,28 @@
         <p class="now-playing visually-hidden" id="now-playing"></p>
       </div>
 
-      <div id="mixer-panel" class="mixer-panel" hidden>
-        <div class="mixer-strips">
-          <div id="mixer-groups" class="mixer-groups"></div>
-          <div class="strip strip-aux">
-            <span class="strip-label">Reverb</span>
-            <div class="strip-ms-spacer" aria-hidden="true"></div>
-            <div class="fader">
-              <input type="range" id="reverb" min="0" max="100" value="8" aria-label="Reverb, gemensam våt nivå">
-            </div>
-            <span class="strip-val" id="reverb-val">8%</span>
+      <div class="scrub-block">
+        <div class="lane-block">
+          <div class="lane lane-glass" id="lane" aria-label="Rörlig tidslinje — dra vågrätt för att skrubba">
+            <span class="lane-scrub-affordance" aria-hidden="true">↔</span>
+            <div class="lane-track" id="lane-track"></div>
+            <canvas class="lane-roll" id="lane-roll" aria-hidden="true"></canvas>
+            <div class="lane-pinned" id="lane-pinned" hidden></div>
           </div>
-          <div class="strip strip-aux strip-master">
-            <span class="strip-label">Master</span>
-            <div class="strip-ms-spacer" aria-hidden="true"></div>
-            <div class="fader">
-              <input type="range" id="master-vol" min="0" max="100" value="72" aria-label="Master volym">
+        </div>
+
+        <div class="timeline-block">
+          <div class="timeline overview timeline-glass" id="timeline" role="slider" aria-label="Tidslinje, dra för att hoppa" tabindex="0" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div class="timeline-rail" id="timeline-rail">
+              <div class="timeline-sections" id="timeline-sections"></div>
+              <div class="timeline-notes" id="timeline-notes"></div>
+              <div class="timeline-playhead" id="timeline-playhead"></div>
             </div>
-            <span class="strip-val" id="master-vol-val">72%</span>
           </div>
         </div>
       </div>
 
-      <div class="transport-block nl-module">
+      <div class="transport-block">
         <div class="transport">
           <button type="button" id="btn-play" class="btn-round btn-play-main" disabled aria-label="Spela" aria-pressed="false" title="Spela (mellanslag)">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
@@ -84,37 +81,24 @@
           <button type="button" id="btn-stop" class="btn-round secondary" disabled aria-label="Stopp" title="Stopp">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6h12v12H6z"/></svg>
           </button>
-        </div>
-      </div>
-
-      <div class="lane-block">
-        <div class="lane lane-glass" id="lane" aria-label="Rörlig tidslinje — dra vågrätt för att skrubba">
-          <span class="lane-scrub-affordance" aria-hidden="true">↔</span>
-          <div class="lane-track" id="lane-track"></div>
-          <canvas class="lane-roll" id="lane-roll" aria-hidden="true"></canvas>
-          <div class="lane-pinned" id="lane-pinned" hidden></div>
+          <button type="button" id="btn-mixer" class="btn-round secondary btn-aux" aria-haspopup="dialog" aria-controls="mixer-dialog" aria-expanded="false" title="Volym per spår och master" aria-label="Mixer — volym per spår och master">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18V6h2v12H4zm7 0V3h2v15h-2zm7 0V9h2v9h-2z"/></svg>
+          </button>
+          <button type="button" id="btn-speed" class="btn-round secondary btn-aux" aria-haspopup="dialog" aria-controls="speed-dialog" aria-expanded="false" title="Uppspelningshastighet" aria-label="Hastighet">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10h-2A8 8 0 1 1 12 4V2zm1 5v5.25l4.5 2.67-.75 1.23L11 13V7h2z"/></svg>
+          </button>
         </div>
       </div>
 
       <div class="komp-bar nl-module" id="komp-bar" hidden>
-        <label class="komp-toggle">
-          <input type="checkbox" id="komp-enabled" checked>
-          <span>Autokomp</span>
-        </label>
+        <div class="komp-toggle-row">
+          <span class="komp-toggle-label" id="komp-toggle-label">Autokomp</span>
+          <button type="button" id="komp-switch" class="nl-ios-switch" role="switch" aria-checked="true" aria-labelledby="komp-toggle-label"></button>
+        </div>
         <div class="komp-style-picker" id="komp-style-picker" hidden>
           <select id="komp-style" class="visually-hidden" tabindex="-1" aria-hidden="true"></select>
           <button type="button" id="komp-style-trigger" class="nl-select-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="komp-style-list"></button>
           <ul id="komp-style-list" class="nl-select-menu" role="listbox" hidden></ul>
-        </div>
-      </div>
-
-      <div class="timeline-block">
-        <div class="timeline overview timeline-glass" id="timeline" role="slider" aria-label="Tidslinje, dra för att hoppa" tabindex="0" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-          <div class="timeline-rail" id="timeline-rail">
-            <div class="timeline-sections" id="timeline-sections"></div>
-            <div class="timeline-notes" id="timeline-notes"></div>
-            <div class="timeline-playhead" id="timeline-playhead"></div>
-          </div>
         </div>
       </div>
 
@@ -138,10 +122,38 @@
     </section>
   </main>
 
+  <dialog id="mixer-dialog" class="mixer-dialog nl-dialog">
+    <div class="dialog-head">
+      <p class="dialog-title">Mixer</p>
+      <button type="button" id="mixer-close" class="nl-dialog-close" aria-label="Stäng">×</button>
+    </div>
+    <div id="mixer-panel" class="mixer-panel">
+      <div class="mixer-strips">
+        <div id="mixer-groups" class="mixer-groups"></div>
+        <div class="strip strip-aux">
+          <span class="strip-label">Reverb</span>
+          <div class="strip-ms-spacer" aria-hidden="true"></div>
+          <div class="fader">
+            <input type="range" id="reverb" min="0" max="100" value="8" aria-label="Reverb, gemensam våt nivå">
+          </div>
+          <span class="strip-val" id="reverb-val">8%</span>
+        </div>
+        <div class="strip strip-aux strip-master">
+          <span class="strip-label">Master</span>
+          <div class="strip-ms-spacer" aria-hidden="true"></div>
+          <div class="fader">
+            <input type="range" id="master-vol" min="0" max="100" value="72" aria-label="Master volym">
+          </div>
+          <span class="strip-val" id="master-vol-val">72%</span>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
   <dialog id="speed-dialog" class="speed-dialog nl-dialog">
     <div class="dialog-head">
       <p class="dialog-title">Hastighet</p>
-      <button type="button" id="speed-close" class="nl-btn nl-btn-pill" aria-label="Stäng">Stäng</button>
+      <button type="button" id="speed-close" class="nl-dialog-close" aria-label="Stäng">×</button>
     </div>
     <div class="speed-options" id="speed-options"></div>
   </dialog>

@@ -91,8 +91,46 @@ test.describe('Notlänken playback', () => {
     await page.locator('.song-btn').nth(1).click();
     await waitForSongReady(page);
     await expect(page.locator('#komp-bar')).toBeVisible();
-    await expect(page.locator('#komp-enabled')).toBeChecked();
+    await expect(page.locator('#komp-switch')).toHaveAttribute('aria-checked', 'true');
     await expect(page.locator('#komp-style-picker')).toBeVisible();
+  });
+
+  test('player layout: scrub before transport before autokomp', async ({ page }) => {
+    await page.locator('.song-btn').nth(1).click();
+    await waitForSongReady(page);
+    const laneBeforeTransport = await page.evaluate(() => {
+      const lane = document.querySelector('#lane');
+      const transport = document.querySelector('.transport-block');
+      return lane.compareDocumentPosition(transport) & Node.DOCUMENT_POSITION_FOLLOWING;
+    });
+    const timelineBeforeTransport = await page.evaluate(() => {
+      const timeline = document.querySelector('#timeline');
+      const transport = document.querySelector('.transport-block');
+      return timeline.compareDocumentPosition(transport) & Node.DOCUMENT_POSITION_FOLLOWING;
+    });
+    const transportBeforeKomp = await page.evaluate(() => {
+      const transport = document.querySelector('.transport-block');
+      const komp = document.querySelector('#komp-bar');
+      return transport.compareDocumentPosition(komp) & Node.DOCUMENT_POSITION_FOLLOWING;
+    });
+    expect(laneBeforeTransport).toBeTruthy();
+    expect(timelineBeforeTransport).toBeTruthy();
+    expect(transportBeforeKomp).toBeTruthy();
+  });
+
+  test('mixer opens in modal with overlay dismiss', async ({ page }) => {
+    await page.locator('.song-btn').first().click();
+    await waitForSongReady(page);
+    await expect(page.locator('#mixer-dialog')).not.toBeVisible();
+    await page.locator('#btn-mixer').click();
+    const dialog = page.locator('#mixer-dialog');
+    await expect(dialog).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(dialog).not.toBeVisible();
+    await page.locator('#btn-mixer').click();
+    await expect(dialog).toBeVisible();
+    await page.locator('#mixer-dialog').click({ position: { x: 4, y: 4 } });
+    await expect(dialog).not.toBeVisible();
   });
 
   test('speed opens in modal with grouped rows', async ({ page }) => {
@@ -104,6 +142,10 @@ test.describe('Notlänken playback', () => {
     await expect(dialog).toBeVisible();
     await expect(dialog.locator('.speed-group')).toHaveCount(3);
     await page.locator('#speed-close').click();
+    await expect(dialog).not.toBeVisible();
+    await page.locator('#btn-speed').click();
+    await expect(dialog).toBeVisible();
+    await page.keyboard.press('Escape');
     await expect(dialog).not.toBeVisible();
   });
 
