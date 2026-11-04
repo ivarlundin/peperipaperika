@@ -76,7 +76,7 @@ const noteText = $('note-text');
 const noteDialogMeta = $('note-dialog-meta');
 const noteDialogTitle = $('note-dialog-title');
 const noteCancel = $('note-cancel');
-const kompEnabled = $('komp-enabled');
+const kompSwitch = $('komp-switch');
 const kompStyle = $('komp-style');
 const kompBar = $('komp-bar');
 const kompStylePicker = $('komp-style-picker');
@@ -85,6 +85,8 @@ const kompStyleList = $('komp-style-list');
 const btnSpeed = $('btn-speed');
 const speedDialog = $('speed-dialog');
 const speedClose = $('speed-close');
+const mixerDialog = $('mixer-dialog');
+const mixerClose = $('mixer-close');
 
 /** @type {{ file: string, title: string } | null} */
 let currentSong = null;
@@ -167,6 +169,28 @@ function isTypingTarget() {
   if (!el) return false;
   const tag = el.tagName;
   return tag === 'INPUT' || tag === 'TEXTAREA' || el.isContentEditable;
+}
+
+function isModuleDialogOpen() {
+  return !!(speedDialog?.open || mixerDialog?.open);
+}
+
+/** Modal: Esc (native), overlay click, and explicit close control. */
+function bindModuleDialog(dialog, trigger, closeBtn) {
+  if (!dialog) return;
+  const syncExpanded = () => {
+    if (trigger) trigger.setAttribute('aria-expanded', String(dialog.open));
+  };
+  dialog.addEventListener('close', syncExpanded);
+  dialog.addEventListener('click', (e) => {
+    if (e.target === dialog) dialog.close();
+  });
+  closeBtn?.addEventListener('click', () => dialog.close());
+  trigger?.addEventListener('click', () => {
+    if (dialog.open) dialog.close();
+    else dialog.showModal();
+    syncExpanded();
+  });
 }
 
 /** @type {{ file: string, title: string }[]} */
@@ -975,7 +999,7 @@ function updateAutokompUi() {
     closeKompStyleMenu();
     return;
   }
-  if (kompEnabled) kompEnabled.checked = kompOn;
+  if (kompSwitch) kompSwitch.setAttribute('aria-checked', String(kompOn));
   if (kompStylePicker) kompStylePicker.hidden = !kompOn;
   syncKompStyleTriggerLabel();
 }
@@ -1235,8 +1259,8 @@ btnPlay.addEventListener('click', async () => {
 btnPause.addEventListener('click', () => pause());
 btnStop.addEventListener('click', () => stop());
 
-btnSpeed?.addEventListener('click', () => speedDialog?.showModal());
-speedClose?.addEventListener('click', () => speedDialog?.close());
+bindModuleDialog(speedDialog, btnSpeed, speedClose);
+bindModuleDialog(mixerDialog, btnMixer, mixerClose);
 
 const SPEED_GROUPS = [
   { label: 'Långsam', speeds: [0.5, 0.75] },
@@ -1292,11 +1316,8 @@ masterVol.addEventListener('input', () => {
   saveMixerSettings(engine, { masterVol, reverb: reverbSlider });
 });
 
-btnMixer.addEventListener('click', () => {
-  const open = mixerPanel.hidden;
-  mixerPanel.hidden = !open;
-  btnMixer.setAttribute('aria-expanded', String(open));
-  if (open && statusEl.textContent.startsWith('Tips: volym')) setStatus('');
+mixerDialog?.addEventListener('close', () => {
+  if (statusEl.textContent.startsWith('Tips: volym')) setStatus('');
 });
 
 btnCopyLink?.addEventListener('click', copySongLink);
@@ -1347,7 +1368,7 @@ btnClearNotes.addEventListener('click', () => {
 
 document.addEventListener('keydown', (e) => {
   if (!isPlayerView()) return;
-  if (noteDialogOpen) return;
+  if (noteDialogOpen || isModuleDialogOpen()) return;
   if (isTypingTarget()) return;
 
   if (e.code === 'Space') {
@@ -1432,7 +1453,7 @@ if ('serviceWorker' in navigator) {
 }
 
 async function initKompUi() {
-  if (!kompStyle || !kompEnabled) return;
+  if (!kompStyle || !kompSwitch) return;
   const base = new URL('./', import.meta.url).href;
   const loaded = await loadStyles(base);
   styleCatalog = loaded.catalog;
@@ -1461,8 +1482,8 @@ async function initKompUi() {
   }
   kompStyle.value = 'pop-rock';
   syncKompStyleTriggerLabel();
-  kompEnabled.addEventListener('change', () => {
-    kompOn = kompEnabled.checked;
+  kompSwitch.addEventListener('click', () => {
+    kompOn = kompSwitch.getAttribute('aria-checked') !== 'true';
     updateAutokompUi();
     requestKompRefresh();
   });
