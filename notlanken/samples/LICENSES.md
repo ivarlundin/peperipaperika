@@ -19,11 +19,13 @@ All files in this folder are redistributable in this public repository. Keep thi
 | File | Source |
 |------|--------|
 | `36-kick`, `38-snare`, `42-closed-hat`, `45-low-tom`, `47-mid-tom`, `50-high-tom`, `41-floor-tom`, `43-high-floor-tom`, `46-open-hat` | [Tone.js Audio – acoustic-kit](https://github.com/Tonejs/audio/tree/master/drum-samples/acoustic-kit) (cwilso/web-audio-samples lineage) |
-| `49-crash` | FluidR3 `reverse_cymbal` C5 (gleitz mirror), OGG |
-| `51-ride` | FluidR3 `reverse_cymbal` C4 (gleitz mirror), OGG — ride body (GM 51) |
-| `53-ride-bell` | FluidR3 `reverse_cymbal` C6 (gleitz mirror), OGG — ride bell (GM 53) |
+| `49-crash`, `51-ride`, `53-ride-bell` | [Salamander Drumkit](https://archive.org/details/SalamanderDrumkit) by Alexander Holm — `OH/crash1_OH_FF_1.wav`, `OH/ride1_OH_FF_1.wav`, `OH/ride1Bell_OH_F_1.wav`, converted to mono OGG |
 
-Verify acoustic-kit terms before replacing; if unclear, swap for CC0 Kenney impacts via `scripts/fetch-samples.sh`.
+**Salamander Drumkit license:** CC-BY-SA 3.0 originally; author placed the library in the **public domain** (April 2022). Credit: Alexander Holm / Salamander Drumkit.
+
+Do **not** use FluidR3 `reverse_cymbal` or other GM effect presets for play-along drums — they swell in backwards (GM program 120).
+
+Unused tom OGG files in this folder are legacy; autokomp/playback only load the files listed in `DRUM_MAP` in `audio-engine.js`.
 
 ## GM fallback (`gm-fallback/*.js`)
 

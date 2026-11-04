@@ -45,7 +45,7 @@ fetch_melodic_sparse() {
 }
 
 fetch_drums() {
-  # Acoustic kit (see LICENSES.md) + short hat; cymbals from Kenney CC0 impacts
+  # Acoustic one-shots (Tone.js / cwilso lineage) for kick, snare, hats
   local kit="$TONE/drum-samples/acoustic-kit"
   curl -fsSL "$kit/kick.mp3" -o /tmp/kick.mp3 && to_ogg /tmp/kick.mp3 "$SAMPLES/drums/36-kick.ogg"
   curl -fsSL "$kit/snare.mp3" -o /tmp/snare.mp3 && to_ogg /tmp/snare.mp3 "$SAMPLES/drums/38-snare.ogg"
@@ -54,11 +54,14 @@ fetch_drums() {
   curl -fsSL "$kit/tom1.mp3" -o /tmp/t1.mp3 && to_ogg /tmp/t1.mp3 "$SAMPLES/drums/45-low-tom.ogg"
   curl -fsSL "$kit/tom2.mp3" -o /tmp/t2.mp3 && to_ogg /tmp/t2.mp3 "$SAMPLES/drums/47-mid-tom.ogg"
   curl -fsSL "$kit/tom3.mp3" -o /tmp/t3.mp3 && to_ogg /tmp/t3.mp3 "$SAMPLES/drums/50-high-tom.ogg"
-  curl -fsSL "$GLEITZ/reverse_cymbal-mp3/C5.mp3" -o /tmp/crash.mp3 && to_ogg /tmp/crash.mp3 "$SAMPLES/drums/49-crash.ogg"
-  curl -fsSL "$GLEITZ/reverse_cymbal-mp3/C4.mp3" -o /tmp/ride.mp3 && to_ogg /tmp/ride.mp3 "$SAMPLES/drums/51-ride.ogg"
-  curl -fsSL "$GLEITZ/reverse_cymbal-mp3/C6.mp3" -o /tmp/bell.mp3 && to_ogg /tmp/bell.mp3 "$SAMPLES/drums/53-ride-bell.ogg"
   curl -fsSL "$kit/tom2.mp3" -o /tmp/floor.mp3 && to_ogg /tmp/floor.mp3 "$SAMPLES/drums/41-floor-tom.ogg"
   curl -fsSL "$kit/tom1.mp3" -o /tmp/ht.mp3 && to_ogg /tmp/ht.mp3 "$SAMPLES/drums/43-high-floor-tom.ogg"
+
+  # Cymbals: Salamander Drumkit (Alexander Holm) — real ride/crash, not FluidR3 reverse_cymbal
+  local sal="https://archive.org/download/SalamanderDrumkit"
+  curl -fsSL "$sal/OH/ride1_OH_FF_1.wav" -o /tmp/ride.wav && to_ogg /tmp/ride.wav "$SAMPLES/drums/51-ride.ogg"
+  curl -fsSL "$sal/OH/ride1Bell_OH_F_1.wav" -o /tmp/bell.wav && to_ogg /tmp/bell.wav "$SAMPLES/drums/53-ride-bell.ogg"
+  curl -fsSL "$sal/OH/crash1_OH_FF_1.wav" -o /tmp/crash.wav && to_ogg /tmp/crash.wav "$SAMPLES/drums/49-crash.ogg"
 }
 
 fetch_gm_js() {
