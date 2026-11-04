@@ -134,6 +134,8 @@ export class AudioEngine {
     this.rate = 1;
     this.mixer = {};
     this.prepared = false;
+    /** @type {number} Latest song-load token allowed to mark prepared. */
+    this._prepareToken = 0;
     /** @type {ReturnType<typeof setInterval> | null} */
     this._schedTimer = null;
     this._gmPreloadStarted = false;
@@ -329,23 +331,33 @@ export class AudioEngine {
     return best;
   }
 
+  /** Invalidate prepared state for a new song load (call before async load work). */
+  beginSongPrepare(loadToken) {
+    this._prepareToken = loadToken;
+    this.prepared = false;
+  }
+
   /** Preload buffers so scheduling can run synchronously (no main-thread backlog). */
-  async preparePlayback() {
+  async preparePlayback(loadToken = this._prepareToken) {
     await this.ensureContext();
     const paths = new Set();
     for (const f of new Set(Object.values(DRUM_MAP))) {
       paths.add(`samples/drums/${f}`);
     }
     for (const folder of MELODIC_FOLDERS) {
+      if (loadToken !== this._prepareToken) return false;
       const zones = await this.loadMelodicZones(folder);
       for (const z of zones) paths.add(z.file);
     }
+    if (loadToken !== this._prepareToken) return false;
     await Promise.all([...paths].map((p) => this.loadBuffer(p)));
+    if (loadToken !== this._prepareToken) return false;
     this.prepared = true;
     if (!this._gmPreloadStarted) {
       this._gmPreloadStarted = true;
       void this._preloadGmFallbacks();
     }
+    return true;
   }
 
   async _preloadGmFallbacks() {
@@ -358,11 +370,13 @@ export class AudioEngine {
   }
 
   /** Preload soundfonts/GM used by this song so first play is not silent. */
-  async prepareInstrumentsForEvents(events) {
-    await this.preparePlayback();
+  async prepareInstrumentsForEvents(events, loadToken = this._prepareToken) {
+    const ready = await this.preparePlayback(loadToken);
+    if (!ready) return false;
     const sf = new Set();
     const gm = new Set();
     for (const ev of events) {
+      if (loadToken !== this._prepareToken) return false;
       const kind = ev.voice?.kind;
       if (kind && MELODIC_SOUNDFONT[kind]) {
         sf.add(kind);
@@ -374,10 +388,12 @@ export class AudioEngine {
     await Promise.all([
       ...[...sf].map((kind) => {
         const spec = MELODIC_SOUNDFONT[kind];
-        return this.loadSoundfontPlayer(spec.name, spec.group);
+        return this.loadSoundfontPlayer(spec.name, spec.group).catch(() => null);
       }),
       ...[...gm].map((name) => this.loadGmPlayer(name).catch(() => null)),
     ]);
+    if (loadToken !== this._prepareToken) return false;
+    return true;
   }
 
   _soundfontUrls(name) {
@@ -397,7 +413,12 @@ export class AudioEngine {
     let player = null;
     for (const url of this._soundfontUrls(name)) {
       try {
-        player = await Soundfont.instrument(ac, url, { destination: out, gain: 1 });
+        player = await Promise.race([
+          Soundfont.instrument(ac, url, { destination: out, gain: 1 }),
+          new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('Soundfont timeout')), 8000);
+          }),
+        ]);
         break;
       } catch {
         /* try next URL */
@@ -614,9 +635,9 @@ export class AudioEngine {
    * AudioBufferSourceNodes up front is silent-failure-prone on some browsers.
    */
   schedule(events, startSeconds, endSeconds) {
-    if (!this.prepared) return;
+    if (!this.prepared) return false;
     const ac = this.ac;
-    if (!ac) return;
+    if (!ac) return false;
     this._clearScheduleTimer();
     this._schedQueue = {
       events,
@@ -630,6 +651,7 @@ export class AudioEngine {
     this._pumpSchedule();
     for (let i = 0; i < 8; i++) this._pumpSchedule();
     this._schedTimer = setInterval(() => this._pumpSchedule(), 100);
+    return true;
   }
 
   _pumpSchedule() {

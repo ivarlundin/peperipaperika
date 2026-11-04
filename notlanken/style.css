@@ -62,6 +62,29 @@ main.nl-shell {
     inset 0 -3px 8px rgba(0, 0, 0, 0.12);
 }
 
+.nl-site-brand {
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.nl-brand-link {
+  display: inline-block;
+  text-decoration: none;
+  color: inherit;
+  border-radius: var(--radius-sm);
+  padding: 0.15rem 0.35rem;
+}
+
+.nl-brand-link:hover h1,
+.nl-brand-link:focus-visible h1 {
+  color: #fff8e8;
+}
+
+.nl-brand-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
 .nl-header h1 {
   font-family: "Kaushan Script", "Segoe Script", cursive;
   font-size: clamp(1.65rem, 5vw, 2.1rem);
@@ -77,8 +100,12 @@ main.nl-shell {
 .sub {
   color: #2a3540;
   font-size: 0.9rem;
-  margin: 0 0 1rem;
+  margin: 0 0 0.35rem;
   font-weight: 600;
+}
+
+#view-list .sub {
+  margin-bottom: 0;
 }
 
 h1 {
