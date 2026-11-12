@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="Ivar Lundin — lekplats-portfolio (utkast).">
+  <title>Ivar Lundin · lekplats</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Hoppa till innehåll</a>
+
+  <motion-shell class="playground" data-hue="240">
+    <div class="playground__bg" aria-hidden="true">
+      <span class="orb orb--a"></span>
+      <span class="orb orb--b"></span>
+      <span class="orb orb--c"></span>
+    </div>
+
+    <header class="site-header">
+      <p class="eyebrow">Utkast · inte indexeras</p>
+      <h1 class="site-title">
+        <span class="site-title__name">Ivar Lundin</span>
+        <span class="site-title__tag">UX · musik · lek</span>
+      </h1>
+      <p class="lede">
+        En personlig lekplats — inte ett CV. Här testar jag idéer, rörelse och struktur
+        innan riktiga projekt flyttar in.
+      </p>
+      <nav class="section-nav" aria-label="Sektioner">
+        <a class="section-nav__link" href="#ux">UX-arbete</a>
+        <a class="section-nav__link" href="#music">Musik</a>
+      </nav>
+      <p class="hint" id="play-hint">
+        <kbd aria-hidden="true">←</kbd>
+        <kbd aria-hidden="true">→</kbd>
+        byter stämning (fungerar utan mus också)
+      </p>
+    </header>
+
+    <main id="main">
+      <section id="ux" class="panel" aria-labelledby="ux-heading">
+        <motion-header class="panel__header">
+          <h2 id="ux-heading">UX-arbete</h2>
+          <p class="panel__intro">Platshållare för case, prototyper och experiment.</p>
+        </motion-header>
+        <ul class="card-grid" role="list">
+          <li>
+            <article class="card" tabindex="0">
+              <div class="card__shape" aria-hidden="true"></div>
+              <h3 class="card__title">Case · platshållare A</h3>
+              <p class="card__meta">Kommer: projektnamn, roll, utfall</p>
+              <p class="card__body">Innehåll läggs in senare — ingen påhittad kund eller fakta här.</p>
+              <span class="card__chip" aria-hidden="true">Draft</span>
+            </article>
+          </li>
+          <li>
+            <article class="card" tabindex="0">
+              <div class="card__shape card__shape--diamond" aria-hidden="true"></div>
+              <h3 class="card__title">Prototyp · platshållare B</h3>
+              <p class="card__meta">Kommer: länk eller inbäddning</p>
+              <p class="card__body">Kort för interaktion, tillgänglighet eller flödesstudier.</p>
+              <span class="card__chip" aria-hidden="true">Draft</span>
+            </article>
+          </li>
+          <li>
+            <article class="card" tabindex="0">
+              <div class="card__shape card__shape--ring" aria-hidden="true"></div>
+              <h3 class="card__title">Skiss · platshållare C</h3>
+              <p class="card__meta">Kommer: bilder eller anteckningar</p>
+              <p class="card__body">Utrymme för tidiga idéer och ”vad om”-utforskande.</p>
+              <span class="card__chip" aria-hidden="true">Draft</span>
+            </article>
+          </li>
+        </ul>
+      </section>
+
+      <section id="music" class="panel" aria-labelledby="music-heading">
+        <motion-header class="panel__header">
+          <h2 id="music-heading">Musik</h2>
+          <p class="panel__intro">Platshållare för spelningar, arrangemang och ljudexperiment.</p>
+        </motion-header>
+        <ul class="card-grid card-grid--music" role="list">
+          <li>
+            <article class="card card--music" tabindex="0">
+              <svg class="card__keys" viewBox="0 0 120 48" aria-hidden="true" focusable="false">
+                <rect class="key key--white" x="4" y="8" width="14" height="36" rx="2"/>
+                <rect class="key key--white" x="20" y="8" width="14" height="36" rx="2"/>
+                <rect class="key key--white" x="36" y="8" width="14" height="36" rx="2"/>
+                <rect class="key key--black" x="13" y="8" width="10" height="22" rx="1"/>
+                <rect class="key key--black" x="29" y="8" width="10" height="22" rx="1"/>
+                <rect class="key key--white" x="52" y="8" width="14" height="36" rx="2"/>
+                <rect class="key key--white" x="68" y="8" width="14" height="36" rx="2"/>
+                <rect class="key key--black" x="61" y="8" width="10" height="22" rx="1"/>
+              </svg>
+              <h3 class="card__title">Live · platshållare</h3>
+              <p class="card__meta">Kommer: datum, plats, roll</p>
+              <p class="card__body">Kort för band, keyboard och scen — utan påhittade gig.</p>
+            </article>
+          </li>
+          <li>
+            <article class="card card--music" tabindex="0">
+              <svg class="card__wave" viewBox="0 0 120 40" aria-hidden="true" focusable="false">
+                <path d="M4 20 Q20 4, 36 20 T68 20 T100 20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                <circle cx="100" cy="20" r="4" fill="currentColor"/>
+              </svg>
+              <h3 class="card__title">Arrangemang · platshållare</h3>
+              <p class="card__meta">Kommer: låtar, verktyg, process</p>
+              <p class="card__body">Här kan noter, MIDI eller ljudklipp länkas senare.</p>
+            </article>
+          </li>
+          <li>
+            <article class="card card--music" tabindex="0">
+              <div class="card__shape card__shape--pulse" aria-hidden="true"></div>
+              <h3 class="card__title">Låda av idéer · platshållare</h3>
+              <p class="card__meta">Kommer: demos &amp; pågående</p>
+              <p class="card__body">Utrymme för det som inte är ”färdigt” men ändå värt att visa.</p>
+            </article>
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Byggt som statisk sida i <code>x/portfolio/</code> — flyttas till eget repo och domän senare.</p>
+    </footer>
+  </motion-shell>
+
+  <script src="js/main.js" defer></script>
+</body>
+</html>
