@@ -1,42 +1,49 @@
 # Ivar Lundin — portfolio (dev skeleton)
 
-Hidden static playground under **`x/portfolio/`** on the peperipaperika GitHub Pages site (`labs.ivarlundin.se`). Not linked from the root site and marked `noindex, nofollow`.
+Hidden static site under **`x/portfolio/`** on GitHub Pages (`labs.ivarlundin.se`). Not linked from the labs root; every page uses `noindex, nofollow`.
 
-## Structure
+## Pages
 
-| Path | Purpose |
+| File | Purpose |
 |------|---------|
-| `index.html` | Landing: UX + music sections, placeholder cards |
-| `css/styles.css` | Layout, theme, motion (respects `prefers-reduced-motion`) |
-| `js/main.js` | Hue playground (arrow keys), light pointer parallax |
-| `favicon.svg` | Simple mark, no raster assets |
+| `index.html` | Home — **Type roll** typographic step sequencer + intro copy |
+| `design.html` | Design work — Fiona-style placeholder list |
+| `music.html` | Music — same list pattern, static placeholders |
+| `css/styles.css` | Shared monochrome layout (Inter variable) |
+| `js/site.js` | Cursor/scroll → display weight on headings |
+| `js/home.js` | Sequencer grid, optional Web Audio |
+| `favicon.svg` | Monochrome mark |
 
-All asset URLs are **relative** so the folder works at a subpath now and at a domain root later.
+Contact is **`mailto:hello@ivarlundin.se`** from the nav (no separate contact page).
+
+All asset paths are **relative** for subpath hosting now and domain-root hosting later.
+
+## Front-page interaction
+
+**Type roll** — a 16×8 step sequencer styled like a piano roll. Each cell shows a letter from a repeating “IVAR LUNDIN UX MUSIC” string with a row-specific Inter **wght** (lighter on top, blacker on bottom). Click or keyboard toggles steps; **Play** runs the playhead; **Sound off** (default) gates Web Audio sine blips per row (pitch labeled C–B + I). Horizontal pointer position and light scroll nudge the intro title weight via Inter’s axis.
 
 ## Local preview
 
-From this directory:
-
 ```bash
+cd x/portfolio
 python3 -m http.server 8765
 ```
 
-Open `http://localhost:8765/` (trailing slash matters for relative paths).
+Open **http://localhost:8765/** (trailing slash keeps relative URLs correct).
 
-## Visibility / SEO
+## Visibility
 
-- Every page uses `<meta name="robots" content="noindex, nofollow">`.
-- Not added to any sitemap.
-- Root `robots.txt` was **not** updated with a `Disallow` for this path: a Disallow line advertises the URL to anyone who reads `robots.txt`. Meta `noindex` keeps the path out of search indexes without listing it publicly (same choice as avoiding a sitemap entry).
+- `noindex, nofollow` on every HTML page
+- Not in any sitemap
+- Root `robots.txt` unchanged (no `Disallow` line, to avoid advertising the path)
 
-## Move to own repo + custom domain
+## Move to own repo + domain
 
-1. Copy this entire folder to a new repository root (or keep the files at repo root).
-2. Enable GitHub Pages on that repo (branch `main`, folder `/` or `/docs` if you prefer).
-3. Point DNS (A/CNAME) to GitHub Pages; set the custom domain in repo settings.
-4. No build step required. If you later add a bundler, keep deploy output as static HTML/CSS/JS with root-relative or relative paths consistent with hosting.
-5. Remove or archive the copy under `peperipaperika/x/portfolio/` once the new site is live, if you no longer need the labs preview.
+1. Copy this folder to a new repo root.
+2. Enable GitHub Pages (static, no build).
+3. Point DNS to GitHub; set custom domain in repo settings.
+4. Remove the labs copy when the new site is live, if desired.
 
 ## Labs URL (after merge)
 
-`https://labs.ivarlundin.se/x/portfolio/`
+**https://labs.ivarlundin.se/x/portfolio/**
