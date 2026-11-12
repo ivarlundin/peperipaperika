@@ -391,13 +391,10 @@ body.is-scrolled .site-bar {
 }
 
 .home-intro__role {
-  margin: 0 0 var(--space-4);
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.35em 0.5em;
-  line-height: 1.2;
+  margin: 0 0 var(--space-3);
+  line-height: 1.45;
   letter-spacing: -0.02em;
+  max-width: 36ch;
 }
 
 .role-caps {
@@ -407,26 +404,32 @@ body.is-scrolled .site-bar {
   text-transform: uppercase;
 }
 
-.role-sep {
-  font-size: var(--text-sm);
-  color: var(--muted);
-  font-variation-settings: "wght" 400;
-}
-
 .role-plain {
   font-size: var(--text-sm);
-  color: var(--muted);
-  font-variation-settings: "wght" 480;
-  letter-spacing: 0.02em;
+  color: var(--fg);
+  font-variation-settings: "wght" var(--wght-display);
 }
 
-.home-intro__tagline {
+.home-intro__employer {
   margin: 0;
   font-size: var(--text-sm);
   color: var(--muted);
-  font-variation-settings: "wght" 420;
-  max-width: 32ch;
+  font-variation-settings: "wght" 430;
   line-height: 1.55;
+}
+
+.home-intro__employer a {
+  color: var(--fg);
+  font-variation-settings: "wght" 560;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+  transition: font-variation-settings var(--dur-fast) var(--ease-out);
+}
+
+.home-intro__employer a:hover,
+.home-intro__employer a:focus-visible {
+  font-variation-settings: "wght" 720;
 }
 
 /* —— List pages —— */
