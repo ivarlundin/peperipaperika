@@ -1,28 +1,71 @@
 (function () {
   "use strict";
 
-  // A major pentatonic across two octaves (pleasant for typing riffs)
-  var FREQ = [220.0, 246.94, 277.18, 329.63, 369.99, 440.0, 493.88, 554.37, 659.25, 739.99];
+  var MOBILE_MAX = 639;
+  var WHITE_ORDER = ["C", "D", "E", "F", "G", "A", "B"];
+  var BLACK_AFTER = { C: "C#", D: "D#", F: "F#", G: "G#", A: "A#" };
 
-  var REST_WGHT = 240;
-  var PEAK_WGHT = 900;
-  var EASE_MS = 520;
-  var EASE_MS_REDUCED = 80;
+  var PC_KEYS = {
+    a: { off: 0, black: false },
+    w: { off: 0, black: true },
+    s: { off: 1, black: false },
+    e: { off: 1, black: true },
+    d: { off: 2, black: false },
+    f: { off: 3, black: false },
+    t: { off: 3, black: true },
+    g: { off: 4, black: false },
+    y: { off: 4, black: true },
+    h: { off: 5, black: false },
+    u: { off: 5, black: true },
+    j: { off: 6, black: false },
+  };
 
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var keys = document.querySelectorAll(".name-key");
-  var btnSound = document.getElementById("btn-sound");
-  var statusEl = document.getElementById("name-status");
-  var hintEl = document.getElementById("name-hint");
+  var pianoEl = document.getElementById("piano");
+  var hintEl = document.getElementById("piano-hint");
+  var statusEl = document.getElementById("piano-status");
 
-  if (!keys.length) return;
+  if (!pianoEl) return;
 
   var audioCtx = null;
-  var soundOn = false;
-  var lastTrigger = 0;
+  var audioReady = false;
+  var baseMidi = 60;
+  var octaves = 1;
+  var keyByMidi = {};
+  var pointerNotes = {};
+  var pcHeld = {};
+  var pcBaseMidi = 60;
+  var resizeTimer;
 
-  function setStatus(msg) {
-    if (statusEl) statusEl.textContent = msg;
+  function midiToFreq(midi) {
+    return 440 * Math.pow(2, (midi - 69) / 12);
+  }
+
+  function noteName(midi) {
+    var names = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+    var n = names[midi % 12];
+    var o = Math.floor(midi / 12) - 1;
+    return n + o;
+  }
+
+  function octaveCount() {
+    var w = window.innerWidth;
+    if (w <= MOBILE_MAX) return 1;
+    var minWhitePx = 34;
+    var maxOct = 7;
+    var fit = Math.floor(w / (7 * minWhitePx));
+    return Math.min(maxOct, Math.max(2, fit));
+  }
+
+  function computeLayout() {
+    octaves = octaveCount();
+    if (octaves === 1) {
+      baseMidi = 60;
+      pcBaseMidi = 60;
+    } else {
+      baseMidi = 48;
+      pcBaseMidi = 60;
+    }
   }
 
   function ensureAudio() {
@@ -30,103 +73,191 @@
       var Ctx = window.AudioContext || window.webkitAudioContext;
       if (Ctx) audioCtx = new Ctx();
     }
-    if (audioCtx && audioCtx.state === "suspended") audioCtx.resume();
+    if (audioCtx && audioCtx.state === "suspended") {
+      return audioCtx.resume().then(function () {
+        audioReady = true;
+      });
+    }
+    audioReady = !!audioCtx;
+    return Promise.resolve();
   }
 
-  function playNote(noteIndex) {
-    if (!soundOn || !audioCtx) return;
-    var freq = FREQ[noteIndex];
-    if (!freq) return;
-    var osc = audioCtx.createOscillator();
-    var gain = audioCtx.createGain();
-    osc.type = "triangle";
-    osc.frequency.value = freq;
-    gain.gain.value = 0.0001;
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
+  function playNote(midi) {
+    if (!audioCtx) return;
+    var freq = midiToFreq(midi);
     var t = audioCtx.currentTime;
-    var dur = reduced ? 0.12 : 0.22;
-    gain.gain.exponentialRampToValueAtTime(0.14, t + 0.012);
+    var dur = reduced ? 0.35 : 0.55;
+
+    var osc = audioCtx.createOscillator();
+    var osc2 = audioCtx.createOscillator();
+    var filter = audioCtx.createBiquadFilter();
+    var gain = audioCtx.createGain();
+
+    osc.type = "triangle";
+    osc2.type = "sine";
+    osc.frequency.value = freq;
+    osc2.frequency.value = freq * 2;
+    osc2.detune.value = 4;
+
+    filter.type = "lowpass";
+    filter.frequency.value = Math.min(4000, 600 + freq * 2);
+    filter.Q.value = 0.6;
+
+    gain.gain.value = 0.0001;
+    osc.connect(filter);
+    osc2.connect(filter);
+    filter.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    gain.gain.exponentialRampToValueAtTime(0.22, t + 0.008);
+    gain.gain.exponentialRampToValueAtTime(0.08, t + 0.12);
     gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+
     osc.start(t);
-    osc.stop(t + dur + 0.03);
+    osc2.start(t);
+    osc.stop(t + dur + 0.05);
+    osc2.stop(t + dur + 0.05);
   }
 
-  function easeBack(btn) {
-    var ms = reduced ? EASE_MS_REDUCED : EASE_MS;
-    window.setTimeout(function () {
-      btn.style.fontVariationSettings = '"wght" ' + REST_WGHT;
-    }, reduced ? 0 : 40);
-    btn.dataset.easeTimer = String(
+  function glowKey(btn) {
+    btn.classList.remove("is-lit-fade");
+    btn.classList.add("is-lit");
+    void btn.offsetWidth;
+    btn.classList.add("is-lit-fade");
+
+    if (reduced) {
       window.setTimeout(function () {
-        btn.classList.remove("is-easing");
-      }, ms + 60)
-    );
+        btn.classList.remove("is-lit", "is-lit-fade");
+      }, 120);
+      return;
+    }
+
+    window.setTimeout(function () {
+      btn.classList.remove("is-lit");
+    }, 40);
+    window.setTimeout(function () {
+      btn.classList.remove("is-lit-fade");
+    }, 520);
   }
 
-  function strike(btn) {
-    var now = Date.now();
-    if (now - lastTrigger < 35) return;
-    lastTrigger = now;
-
-    var noteIndex = Number(btn.getAttribute("data-note"));
-    if (Number.isNaN(noteIndex)) return;
-
-    var existing = Number(btn.dataset.easeTimer);
-    if (existing) window.clearTimeout(existing);
-
-    btn.classList.add("is-easing");
-    btn.style.fontVariationSettings = '"wght" ' + PEAK_WGHT;
-    playNote(noteIndex);
-    easeBack(btn);
+  function strikeMidi(midi) {
+    var btn = keyByMidi[midi];
+    if (!btn) return;
+    ensureAudio().then(function () {
+      playNote(midi);
+      glowKey(btn);
+    });
+    if (statusEl) statusEl.textContent = "Played " + noteName(midi);
   }
 
-  keys.forEach(function (btn) {
-    btn.style.fontVariationSettings = '"wght" ' + REST_WGHT;
+  function onPointerDown(event) {
+    var btn = event.currentTarget;
+    event.preventDefault();
+    btn.setPointerCapture(event.pointerId);
+    var midi = Number(btn.dataset.midi);
+    pointerNotes[event.pointerId] = midi;
+    strikeMidi(midi);
+  }
 
-    btn.addEventListener("pointerenter", function (event) {
-      if (event.pointerType === "mouse") strike(btn);
-    });
+  function onPointerUp(event) {
+    delete pointerNotes[event.pointerId];
+  }
 
-    btn.addEventListener("pointerdown", function (event) {
-      if (event.pointerType !== "mouse") {
-        event.preventDefault();
-        strike(btn);
+  function buildPiano() {
+    computeLayout();
+    pianoEl.innerHTML = "";
+    keyByMidi = {};
+
+    var whitesWrap = document.createElement("div");
+    whitesWrap.className = "piano__whites";
+
+    var blacksWrap = document.createElement("div");
+    blacksWrap.className = "piano__blacks";
+    var whiteIndex = 0;
+    var totalWhites = octaves * 7;
+
+    for (var o = 0; o < octaves; o++) {
+      var octaveRoot = baseMidi + o * 12;
+      for (var wi = 0; wi < WHITE_ORDER.length; wi++) {
+        var letter = WHITE_ORDER[wi];
+        var midi = octaveRoot + [0, 2, 4, 5, 7, 9, 11][wi];
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "piano-key piano-key--white";
+        btn.dataset.midi = String(midi);
+        btn.style.setProperty("--white-i", String(whiteIndex));
+        btn.setAttribute("aria-label", noteName(midi));
+        btn.addEventListener("pointerdown", onPointerDown);
+        btn.addEventListener("pointerup", onPointerUp);
+        btn.addEventListener("pointercancel", onPointerUp);
+        whitesWrap.appendChild(btn);
+        keyByMidi[midi] = btn;
+        whiteIndex++;
+
+        if (BLACK_AFTER[letter]) {
+          var bMidi = midi + 1;
+          var black = document.createElement("button");
+          black.type = "button";
+          black.className = "piano-key piano-key--black";
+          black.dataset.midi = String(bMidi);
+          black.style.setProperty(
+            "--black-pos",
+            String((whiteIndex - 1 + 0.68) / totalWhites)
+          );
+          black.setAttribute("aria-label", noteName(bMidi));
+          black.addEventListener("pointerdown", onPointerDown);
+          black.addEventListener("pointerup", onPointerUp);
+          black.addEventListener("pointercancel", onPointerUp);
+          blacksWrap.appendChild(black);
+          keyByMidi[bMidi] = black;
+        }
       }
-    });
+    }
 
-    btn.addEventListener("click", function (event) {
-      if (event.pointerType === "mouse") {
-        strike(btn);
-      }
-    });
+    pianoEl.appendChild(whitesWrap);
+    pianoEl.appendChild(blacksWrap);
+    pianoEl.style.setProperty("--white-count", String(totalWhites));
+  }
 
-    btn.addEventListener("keydown", function (event) {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        strike(btn);
-      }
+  function resolvePcKey(code) {
+    var spec = PC_KEYS[code];
+    if (!spec) return null;
+    var midi = pcBaseMidi + spec.off;
+    if (spec.black) midi += 1;
+    return midi;
+  }
+
+  document.addEventListener("keydown", function (event) {
+    if (event.repeat) return;
+    if (event.metaKey || event.ctrlKey || event.altKey) return;
+    var tag = event.target && event.target.tagName;
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+
+    var code = event.key.length === 1 ? event.key.toLowerCase() : "";
+    if (!PC_KEYS[code]) return;
+
+    event.preventDefault();
+    var midi = resolvePcKey(code);
+    pcHeld[code] = midi;
+    ensureAudio().then(function () {
+      strikeMidi(midi);
     });
   });
 
-  function setSound(on) {
-    soundOn = on;
-    btnSound.setAttribute("aria-pressed", on ? "true" : "false");
-    btnSound.textContent = on ? "Sound on" : "Sound off";
-    if (on) ensureAudio();
-    setStatus(on ? "Sound on" : "Sound off");
-  }
+  document.addEventListener("keyup", function (event) {
+    var code = event.key.length === 1 ? event.key.toLowerCase() : "";
+    delete pcHeld[code];
+  });
 
-  if (btnSound) {
-    btnSound.addEventListener("click", function () {
-      setSound(!soundOn);
-    });
-  }
+  window.addEventListener("resize", function () {
+    window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(buildPiano, 150);
+  });
 
-  setSound(false);
+  buildPiano();
 
   if (reduced && hintEl) {
     hintEl.textContent =
-      "Focus a letter and press Enter, or tap. Weight snaps quickly; sound stays off until you enable it.";
+      "Tap or click keys to play. Computer keyboard mapping uses the A row and W row for sharps.";
   }
 })();
