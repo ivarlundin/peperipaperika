@@ -24,52 +24,40 @@
     </nav>
   </header>
 
-  <main id="main" class="home-main">
-    <section class="name-stage" aria-labelledby="name-keyboard-label" data-reveal>
-      <div class="name-stage__top">
-        <p id="name-keyboard-label" class="name-stage__label">Your name is a keyboard</p>
-        <button
-          type="button"
-          class="sound-toggle"
-          id="btn-sound"
-          aria-pressed="false"
-        >
-          Sound off
-        </button>
+  <main id="main">
+    <div class="home-main">
+      <header class="home-hero" data-reveal>
+        <h1 class="home-hero__title">Ivar Lundin</h1>
+      </header>
+    </div>
+
+    <div class="piano-bleed" data-reveal style="--reveal-delay: 80ms">
+      <div class="piano-shell">
+        <div
+          class="piano"
+          id="piano"
+          role="group"
+          aria-label="Piano keyboard"
+        ></div>
+        <p class="piano-hint" id="piano-hint">
+          Tap or click keys to play. Computer keys <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd>
+          <kbd>F</kbd> <kbd>G</kbd> <kbd>H</kbd> <kbd>J</kbd> and
+          <kbd>W</kbd> <kbd>E</kbd> <kbd>T</kbd> <kbd>Y</kbd> <kbd>U</kbd> for sharps.
+        </p>
+        <p role="status" class="visually-hidden" id="piano-status" aria-live="polite"></p>
       </div>
+    </div>
 
-      <h1 class="name-keyboard" id="name-keyboard" data-reveal style="--reveal-delay: 80ms">
-        <span class="name-keyboard__word">
-          <button type="button" class="name-key" data-note="0" aria-label="Play note, letter I">I</button>
-          <button type="button" class="name-key" data-note="1" aria-label="Play note, letter V">V</button>
-          <button type="button" class="name-key" data-note="2" aria-label="Play note, letter A">A</button>
-          <button type="button" class="name-key" data-note="3" aria-label="Play note, letter R">R</button>
-        </span>
-        <span class="name-keyboard__gap" aria-hidden="true"></span>
-        <span class="name-keyboard__word">
-          <button type="button" class="name-key" data-note="4" aria-label="Play note, letter L">L</button>
-          <button type="button" class="name-key" data-note="5" aria-label="Play note, letter U">U</button>
-          <button type="button" class="name-key" data-note="6" aria-label="Play note, letter N">N</button>
-          <button type="button" class="name-key" data-note="7" aria-label="Play note, letter D">D</button>
-          <button type="button" class="name-key" data-note="8" aria-label="Play note, letter I">I</button>
-          <button type="button" class="name-key" data-note="9" aria-label="Play note, letter N">N</button>
-        </span>
-      </h1>
-
-      <p class="name-stage__hint" id="name-hint">
-        Hover, tap, or focus a letter and press <kbd>Enter</kbd>. Mash keys for a riff. Weight always moves; sound is optional.
-      </p>
-      <p role="status" class="visually-hidden" id="name-status" aria-live="polite"></p>
-    </section>
-
-    <header class="home-intro" data-reveal style="--reveal-delay: 160ms">
-      <p class="home-intro__role" id="wght-role">
-        <span class="role-caps">Senior UX</span><span class="role-plain"> Designer and musician based in Southern Sweden.</span>
-      </p>
-      <p class="home-intro__employer">
-        Works at <a href="https://www.visma.com" target="_blank" rel="noopener noreferrer">Visma</a>.
-      </p>
-    </header>
+    <div class="home-main">
+      <header class="home-intro" data-reveal style="--reveal-delay: 160ms">
+        <p class="home-intro__role" id="wght-role">
+          <span class="role-caps">Senior UX</span><span class="role-plain"> Designer and musician based in Southern Sweden.</span>
+        </p>
+        <p class="home-intro__employer">
+          Works at <a href="https://www.visma.com" target="_blank" rel="noopener noreferrer">Visma</a>.
+        </p>
+      </header>
+    </div>
   </main>
 
   <footer class="site-foot">

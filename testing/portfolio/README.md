@@ -6,12 +6,12 @@ Hidden static site under **`testing/portfolio/`** on GitHub Pages (`labs.ivarlun
 
 | File | Purpose |
 |------|---------|
-| `index.html` | Home — **name keyboard** headline + intro copy |
+| `index.html` | Home — static title + full-bleed piano keyboard + intro |
 | `design.html` | Design work — Fiona-style placeholder list |
 | `music.html` | Music — same list pattern, static placeholders |
 | `css/styles.css` | Shared monochrome layout (Inter variable) |
 | `js/site.js` | Scroll reveals, sticky nav, cursor/scroll → Inter weight on headings |
-| `js/home.js` | Playable “IVAR LUNDIN” letters, optional Web Audio |
+| `js/home.js` | Responsive piano keyboard, Web Audio on first key press |
 | `favicon.svg` | Monochrome mark |
 
 Contact is **`mailto:hello@ivarlundin.se`** from the nav (no separate contact page).
@@ -20,7 +20,7 @@ All asset paths are **relative** for subpath hosting now and domain-root hosting
 
 ## Front-page interaction
 
-**Your name is a keyboard** — the large headline **IVAR LUNDIN** is the instrument. Each letter is a button: **hover** (mouse), **tap** (touch), or **focus + Enter/Space** hits a note mapped to an **A major pentatonic** scale (two octaves). Inter **wght** jumps to 900 and eases back to thin (~520ms; shortened when `prefers-reduced-motion`). **Sound off** by default; the small toggle enables triangle-wave Web Audio. Mashing letters plays a riff even without sound.
+**Piano keyboard** — line-art keys full-bleed on desktop (more octaves as width allows), one octave on mobile. Sound starts on first tap/click (Web Audio); keys get a soft glow that fades (`prefers-reduced-motion` = instant). Computer mapping: **A–J** naturals, **W E T Y U** sharps.
 
 ## Local preview
 
