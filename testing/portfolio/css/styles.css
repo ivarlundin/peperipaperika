@@ -263,11 +263,27 @@ body.page-home::before {
   content: "";
   position: fixed;
   inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  opacity: 0.34;
+  background-image: var(--noise-bg);
+  background-size: 200px 200px;
+}
+
+body.page-home::after {
+  content: "";
+  position: fixed;
+  inset: 0;
   z-index: -1;
   pointer-events: none;
-  opacity: 0.2;
-  background-image: var(--noise-bg);
-  background-size: 220px 220px;
+  opacity: 0.035;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(12, 12, 12, 0.03) 2px,
+    rgba(12, 12, 12, 0.03) 3px
+  );
 }
 
 body.page-home .site-bar {
@@ -282,10 +298,65 @@ body.page-home .site-bar {
 
 .home-hero__title {
   margin: 0;
-  font-size: var(--text-display);
-  line-height: 0.95;
-  letter-spacing: -0.045em;
-  font-variation-settings: "wght" 820;
+  max-width: 18ch;
+  font-family: var(--font);
+  font-size: clamp(2rem, 6.8vw, 3.35rem);
+  font-weight: 900;
+  line-height: 1.06;
+  letter-spacing: -0.038em;
+  font-variation-settings: "wght" var(--hero-wght, 860), "opsz" var(--hero-opsz, 26);
+  transition: font-variation-settings var(--dur) var(--ease-out);
+}
+
+.home-hero__title.is-weight-pulse {
+  font-variation-settings: "wght" 900, "opsz" 32;
+}
+
+.home-hero__title .vf-char {
+  font-variation-settings: "wght" var(--char-wght, 860), "opsz" var(--hero-opsz, 26);
+  transition: font-variation-settings 120ms var(--ease-out);
+}
+
+.home-hero__meta {
+  display: grid;
+  gap: var(--space-6);
+  margin: var(--space-8) 0 0;
+  padding: 0;
+  grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+}
+
+.home-hero__meta-item {
+  margin: 0;
+}
+
+.home-hero__label {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-xs);
+  font-variation-settings: "wght" 520;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.home-hero__value {
+  margin: 0;
+  font-size: var(--text-sm);
+  font-variation-settings: "wght" 560;
+  color: var(--fg);
+}
+
+.home-hero__value a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.22em;
+  text-decoration-thickness: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-hero__title,
+  .home-hero__title .vf-char {
+    transition: none;
+  }
 }
 
 .piano-bleed {
@@ -314,19 +385,24 @@ body.page-home .site-bar {
 .piano {
   position: relative;
   z-index: 1;
-  --piano-h: clamp(6.75rem, 20vw, 10.5rem);
+  width: 100%;
+  min-height: 6.75rem;
+  --piano-h: clamp(6.75rem, 22vw, 10.5rem);
   --white-count: 7;
   --stroke: 1px;
 }
 
 .piano__whites {
   display: flex;
+  align-items: stretch;
+  width: 100%;
+  min-height: var(--piano-h);
   height: var(--piano-h);
   border: var(--stroke) solid var(--fg);
   border-radius: 8px;
   overflow: hidden;
   background: #fbfbfa;
-  box-shadow: 0 1px 0 color-mix(in srgb, var(--fg) 6%, transparent);
+  box-shadow: 0 1px 0 rgba(12, 12, 12, 0.06);
 }
 
 .piano__blacks {
@@ -350,8 +426,10 @@ body.page-home .site-bar {
 }
 
 .piano-key--white {
-  flex: 1 1 0;
+  flex: 1 1 0%;
   min-width: 0;
+  min-height: var(--piano-h);
+  height: 100%;
   background: #fcfcfb;
   border-right: var(--stroke) solid var(--fg);
 }
@@ -414,9 +492,8 @@ body.page-home .site-bar {
 .piano-hint {
   position: relative;
   z-index: 1;
-  max-width: var(--max-wide);
-  margin: var(--space-5) auto 0;
-  padding: 0 var(--pad-x);
+  margin: var(--space-5) 0 0;
+  padding: 0;
   font-size: var(--text-sm);
   line-height: 1.55;
   color: var(--muted);
@@ -501,9 +578,18 @@ body.page-home .site-bar {
 .list-intro__title {
   margin: 0 0 var(--space-4);
   font-size: var(--text-2xl);
-  letter-spacing: -0.04em;
-  font-variation-settings: "wght" var(--wght-display);
-  line-height: 1.08;
+  font-weight: 900;
+  letter-spacing: -0.045em;
+  font-variation-settings: "wght" var(--wght-display, 900), "opsz" var(--page-opsz, 28);
+  line-height: 1.05;
+  transition: font-variation-settings var(--dur) var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .list-intro__title {
+    transition: none;
+    font-variation-settings: "wght" 900, "opsz" 28;
+  }
 }
 
 .list-intro__sub {

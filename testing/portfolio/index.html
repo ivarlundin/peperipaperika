@@ -4,13 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
-  <meta name="description" content="Ivar Lundin — UX designer and musician (work in progress).">
+  <meta name="description" content="Ivar Lundin — Senior UX designer and musician in Southern Sweden.">
   <title>Ivar Lundin</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css?v=20260319c">
 </head>
 <body class="page-home">
   <a class="skip-link" href="#main">Skip to content</a>
@@ -27,36 +27,42 @@
   <main id="main">
     <div class="home-main">
       <header class="home-hero" data-reveal>
-        <h1 class="home-hero__title">Ivar Lundin</h1>
+        <h1 class="home-hero__title" id="home-hero-title">
+          Senior UX Designer and musician based in Southern Sweden.
+        </h1>
+
+        <dl class="home-hero__meta">
+          <div class="home-hero__meta-item">
+            <dt class="home-hero__label">Works at</dt>
+            <dd class="home-hero__value">
+              <a href="https://www.visma.com" target="_blank" rel="noopener noreferrer">Visma</a>
+            </dd>
+          </div>
+          <div class="home-hero__meta-item">
+            <dt class="home-hero__label">Focus</dt>
+            <dd class="home-hero__value">UX &amp; interaction design</dd>
+          </div>
+          <div class="home-hero__meta-item">
+            <dt class="home-hero__label">Music</dt>
+            <dd class="home-hero__value">Keys</dd>
+          </div>
+        </dl>
       </header>
     </div>
 
-    <div class="piano-bleed" data-reveal style="--reveal-delay: 80ms">
+    <div class="piano-bleed is-revealed" id="piano-bleed">
       <div class="piano-shell">
-        <div
-          class="piano"
-          id="piano"
-          role="group"
-          aria-label="Piano keyboard"
-        ></div>
+        <div class="piano" id="piano" role="group" aria-label="Piano keyboard"></div>
         <p class="piano-hint" id="piano-hint">
-          Tap or click keys to play. Computer keys <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd>
-          <kbd>F</kbd> <kbd>G</kbd> <kbd>H</kbd> <kbd>J</kbd> and
-          <kbd>W</kbd> <kbd>E</kbd> <kbd>T</kbd> <kbd>Y</kbd> <kbd>U</kbd> for sharps.
+          <span class="piano-hint__touch">Tap keys to play.</span>
+          <span class="piano-hint__keys" hidden>
+            Tap or click keys to play. Computer keys
+            <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> <kbd>F</kbd> <kbd>G</kbd> <kbd>H</kbd> <kbd>J</kbd>
+            and <kbd>W</kbd> <kbd>E</kbd> <kbd>T</kbd> <kbd>Y</kbd> <kbd>U</kbd> for sharps.
+          </span>
         </p>
         <p role="status" class="visually-hidden" id="piano-status" aria-live="polite"></p>
       </div>
-    </div>
-
-    <div class="home-main">
-      <header class="home-intro" data-reveal style="--reveal-delay: 160ms">
-        <p class="home-intro__role" id="wght-role">
-          <span class="role-caps">Senior UX</span><span class="role-plain"> Designer and musician based in Southern Sweden.</span>
-        </p>
-        <p class="home-intro__employer">
-          Works at <a href="https://www.visma.com" target="_blank" rel="noopener noreferrer">Visma</a>.
-        </p>
-      </header>
     </div>
   </main>
 
@@ -64,7 +70,7 @@
     <p>Hidden draft · <code>testing/portfolio/</code></p>
   </footer>
 
-  <script src="js/site.js" defer></script>
-  <script src="js/home.js" defer></script>
+  <script src="js/site.js?v=20260319c" defer></script>
+  <script src="js/home.js?v=20260319c" defer></script>
 </body>
 </html>

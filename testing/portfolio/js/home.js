@@ -21,6 +21,8 @@
   };
 
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var coarse =
+    window.matchMedia("(hover: none) and (pointer: coarse)").matches;
   var pianoEl = document.getElementById("piano");
   var hintEl = document.getElementById("piano-hint");
   var statusEl = document.getElementById("piano-status");
@@ -147,13 +149,18 @@
       playNote(midi);
       glowKey(btn);
     });
+    document.dispatchEvent(new CustomEvent("portfolio:piano-note"));
     if (statusEl) statusEl.textContent = "Played " + noteName(midi);
   }
 
   function onPointerDown(event) {
     var btn = event.currentTarget;
     event.preventDefault();
-    btn.setPointerCapture(event.pointerId);
+    try {
+      if (btn.setPointerCapture) btn.setPointerCapture(event.pointerId);
+    } catch (err) {
+      /* iOS Safari may reject capture */
+    }
     var midi = Number(btn.dataset.midi);
     pointerNotes[event.pointerId] = midi;
     strikeMidi(midi);
@@ -254,10 +261,28 @@
     resizeTimer = window.setTimeout(buildPiano, 150);
   });
 
-  buildPiano();
+  function configureHint() {
+    if (!hintEl) return;
+    var touch = hintEl.querySelector(".piano-hint__touch");
+    var keys = hintEl.querySelector(".piano-hint__keys");
+    if (!touch || !keys) return;
+    if (coarse) {
+      touch.hidden = false;
+      keys.hidden = true;
+    } else {
+      touch.hidden = true;
+      keys.hidden = false;
+    }
+  }
 
-  if (reduced && hintEl) {
-    hintEl.textContent =
-      "Tap or click keys to play. Computer keyboard mapping uses the A row and W row for sharps.";
+  function boot() {
+    buildPiano();
+    configureHint();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot);
+  } else {
+    boot();
   }
 })();
