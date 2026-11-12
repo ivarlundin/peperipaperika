@@ -38,6 +38,9 @@
   var pcHeld = {};
   var pcBaseMidi = 60;
   var resizeTimer;
+  var idleTimer = null;
+  var idleInterval = null;
+  var lastInteraction = Date.now();
 
   function midiToFreq(midi) {
     return 440 * Math.pow(2, (midi - 69) / 12);
@@ -151,6 +154,39 @@
     });
     document.dispatchEvent(new CustomEvent("portfolio:piano-note"));
     if (statusEl) statusEl.textContent = "Played " + noteName(midi);
+    markInteraction();
+  }
+
+  function markInteraction() {
+    lastInteraction = Date.now();
+    stopIdleTease();
+    window.clearTimeout(idleTimer);
+    idleTimer = window.setTimeout(startIdleTease, 3200);
+  }
+
+  function stopIdleTease() {
+    if (idleInterval) {
+      window.clearInterval(idleInterval);
+      idleInterval = null;
+    }
+  }
+
+  function startIdleTease() {
+    if (reduced) return;
+    if (Date.now() - lastInteraction < 3000) return;
+    stopIdleTease();
+    idleInterval = window.setInterval(function () {
+      if (Date.now() - lastInteraction < 3000) return;
+      var keys = Object.keys(keyByMidi).map(function (k) {
+        return keyByMidi[k];
+      });
+      if (!keys.length) return;
+      var btn = keys[Math.floor(Math.random() * keys.length)];
+      btn.classList.add("is-idle-tease");
+      window.setTimeout(function () {
+        btn.classList.remove("is-idle-tease");
+      }, 520);
+    }, 1100);
   }
 
   function onPointerDown(event) {
@@ -174,6 +210,9 @@
     computeLayout();
     pianoEl.innerHTML = "";
     keyByMidi = {};
+
+    var keyboardWrap = document.createElement("div");
+    keyboardWrap.className = "piano__keyboard";
 
     var whitesWrap = document.createElement("div");
     whitesWrap.className = "piano__whites";
@@ -207,10 +246,7 @@
           black.type = "button";
           black.className = "piano-key piano-key--black";
           black.dataset.midi = String(bMidi);
-          black.style.setProperty(
-            "--black-pos",
-            String((whiteIndex - 1 + 0.68) / totalWhites)
-          );
+          black.dataset.boundary = String(whiteIndex);
           black.setAttribute("aria-label", noteName(bMidi));
           black.addEventListener("pointerdown", onPointerDown);
           black.addEventListener("pointerup", onPointerUp);
@@ -221,9 +257,34 @@
       }
     }
 
-    pianoEl.appendChild(whitesWrap);
-    pianoEl.appendChild(blacksWrap);
+    keyboardWrap.appendChild(whitesWrap);
+    keyboardWrap.appendChild(blacksWrap);
+    pianoEl.appendChild(keyboardWrap);
     pianoEl.style.setProperty("--white-count", String(totalWhites));
+    layoutBlackKeys(keyboardWrap);
+    window.requestAnimationFrame(function () {
+      layoutBlackKeys(keyboardWrap);
+    });
+  }
+
+  function layoutBlackKeys(keyboardWrap) {
+    var whites = keyboardWrap.querySelectorAll(".piano-key--white");
+    var keyboardRect = keyboardWrap.getBoundingClientRect();
+    keyboardWrap.querySelectorAll(".piano-key--black").forEach(function (black) {
+      var boundary = Number(black.dataset.boundary);
+      if (!boundary) return;
+      var leftWhite = whites[boundary - 1];
+      var rightWhite = whites[boundary];
+      if (!leftWhite || !rightWhite) return;
+      var leftRect = leftWhite.getBoundingClientRect();
+      var rightRect = rightWhite.getBoundingClientRect();
+      var center = (leftRect.right + rightRect.left) / 2 - keyboardRect.left;
+      var whiteW = Math.min(leftRect.width, rightRect.width);
+      var width = Math.max(14, whiteW * 0.58);
+      black.style.left = center + "px";
+      black.style.width = width + "px";
+      black.style.transform = "translateX(-50%)";
+    });
   }
 
   function resolvePcKey(code) {
@@ -258,7 +319,11 @@
 
   window.addEventListener("resize", function () {
     window.clearTimeout(resizeTimer);
-    resizeTimer = window.setTimeout(buildPiano, 150);
+    resizeTimer = window.setTimeout(function () {
+      var kb = pianoEl.querySelector(".piano__keyboard");
+      if (kb && Object.keys(keyByMidi).length) layoutBlackKeys(kb);
+      else buildPiano();
+    }, 150);
   });
 
   function configureHint() {
@@ -278,6 +343,8 @@
   function boot() {
     buildPiano();
     configureHint();
+    window.clearTimeout(idleTimer);
+    idleTimer = window.setTimeout(startIdleTease, 3200);
   }
 
   if (document.readyState === "loading") {
