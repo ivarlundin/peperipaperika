@@ -10,7 +10,7 @@ Hidden static site under **`testing/portfolio/`** on GitHub Pages (`labs.ivarlun
 | `design.html` | Design work — Fiona-style placeholder list |
 | `music.html` | Music — same list pattern, static placeholders |
 | `css/styles.css` | Shared monochrome layout (Inter variable) |
-| `js/site.js` | Cursor/scroll → weight on subpage titles and home role line |
+| `js/site.js` | Scroll reveals, sticky nav, cursor/scroll → Inter weight on headings |
 | `js/home.js` | Playable “IVAR LUNDIN” letters, optional Web Audio |
 | `favicon.svg` | Monochrome mark |
 
