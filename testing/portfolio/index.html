@@ -10,43 +10,62 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=20260319c">
+  <link rel="stylesheet" href="css/styles.css?v=20260319e">
 </head>
 <body class="page-home">
   <a class="skip-link" href="#main">Skip to content</a>
 
   <header class="site-bar">
-    <a class="site-bar__mark" href="index.html">Ivar Lundin</a>
-    <nav class="site-bar__nav" aria-label="Site">
+    <a class="site-bar__logo" href="index.html" aria-label="Home"></a>
+    <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="site-menu">
+      <span class="nav-toggle__bars" aria-hidden="true"></span>
+      <span class="visually-hidden">Open menu</span>
+    </button>
+    <nav class="site-bar__nav site-bar__nav--desktop" aria-label="Site">
       <a href="design.html">Design</a>
       <a href="music.html">Music</a>
       <a class="site-bar__contact" href="mailto:hello@ivarlundin.se">Contact</a>
     </nav>
   </header>
 
+  <div class="site-menu" id="site-menu" hidden>
+    <div class="site-menu__panel" role="dialog" aria-modal="true" aria-label="Menu">
+      <button type="button" class="site-menu__close" id="nav-close">Close</button>
+      <nav class="site-menu__nav" aria-label="Mobile">
+        <a href="design.html">Design</a>
+        <a href="music.html">Music</a>
+        <a href="mailto:hello@ivarlundin.se">Contact</a>
+      </nav>
+    </div>
+  </div>
+
   <main id="main">
     <div class="home-main">
       <header class="home-hero" data-reveal>
         <h1 class="home-hero__title" id="home-hero-title">
-          Senior UX Designer and musician based in Southern Sweden.
+          I'm Ivar Lundin, Senior UX Designer @Visma
         </h1>
 
-        <dl class="home-hero__meta">
-          <div class="home-hero__meta-item">
-            <dt class="home-hero__label">Works at</dt>
-            <dd class="home-hero__value">
-              <a href="https://www.visma.com" target="_blank" rel="noopener noreferrer">Visma</a>
-            </dd>
-          </div>
-          <div class="home-hero__meta-item">
-            <dt class="home-hero__label">Focus</dt>
-            <dd class="home-hero__value">UX &amp; interaction design</dd>
-          </div>
-          <div class="home-hero__meta-item">
-            <dt class="home-hero__label">Music</dt>
-            <dd class="home-hero__value">Keys</dd>
-          </div>
-        </dl>
+        <ul class="home-hero__facts" role="list">
+          <li class="home-hero__fact">
+            <svg class="home-hero__icon" width="20" height="14" viewBox="0 0 20 14" aria-hidden="true" focusable="false">
+              <rect width="20" height="14" fill="#e6dcc8"/>
+              <rect x="8" width="3" height="14" fill="#0c0c0c"/>
+              <rect y="5.5" width="20" height="3" fill="#0c0c0c"/>
+            </svg>
+            Southern Sweden
+          </li>
+          <li class="home-hero__fact">
+            <svg class="home-hero__icon" width="18" height="14" viewBox="0 0 18 14" aria-hidden="true" focusable="false">
+              <rect x="1" y="1" width="4" height="12" rx="0.5" fill="none" stroke="#0c0c0c" stroke-width="1"/>
+              <rect x="6" y="1" width="4" height="12" rx="0.5" fill="none" stroke="#0c0c0c" stroke-width="1"/>
+              <rect x="11" y="1" width="4" height="12" rx="0.5" fill="none" stroke="#0c0c0c" stroke-width="1"/>
+              <rect x="4" y="1" width="3" height="7" fill="#0c0c0c"/>
+              <rect x="9" y="1" width="3" height="7" fill="#0c0c0c"/>
+            </svg>
+            Musician
+          </li>
+        </ul>
       </header>
     </div>
 
@@ -70,7 +89,7 @@
     <p>Hidden draft · <code>testing/portfolio/</code></p>
   </footer>
 
-  <script src="js/site.js?v=20260319c" defer></script>
-  <script src="js/home.js?v=20260319c" defer></script>
+  <script src="js/site.js?v=20260319e" defer></script>
+  <script src="js/home.js?v=20260319e" defer></script>
 </body>
 </html>

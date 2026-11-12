@@ -136,6 +136,70 @@
     }
   }
 
+  function initMobileNav() {
+    var toggle = document.getElementById("nav-toggle");
+    var menu = document.getElementById("site-menu");
+    var closeBtn = document.getElementById("nav-close");
+    var panel = menu && menu.querySelector(".site-menu__panel");
+    if (!toggle || !menu || !panel) return;
+
+    var lastFocus = null;
+
+    function focusables() {
+      return panel.querySelectorAll(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+    }
+
+    function trapFocus(event) {
+      if (menu.hidden || event.key !== "Tab") return;
+      var nodes = focusables();
+      if (!nodes.length) return;
+      var first = nodes[0];
+      var last = nodes[nodes.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+
+    function openMenu() {
+      lastFocus = document.activeElement;
+      menu.hidden = false;
+      document.body.classList.add("nav-open");
+      toggle.setAttribute("aria-expanded", "true");
+      closeBtn.focus();
+      document.addEventListener("keydown", trapFocus);
+    }
+
+    function closeMenu() {
+      menu.hidden = true;
+      document.body.classList.remove("nav-open");
+      toggle.setAttribute("aria-expanded", "false");
+      document.removeEventListener("keydown", trapFocus);
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    }
+
+    toggle.addEventListener("click", openMenu);
+    closeBtn.addEventListener("click", closeMenu);
+    menu.addEventListener("click", function (event) {
+      if (event.target === menu) closeMenu();
+    });
+    document.addEventListener("keydown", function (event) {
+      if (!menu.hidden && event.key === "Escape") {
+        event.preventDefault();
+        closeMenu();
+      }
+    });
+    panel.querySelectorAll("a").forEach(function (link) {
+      link.addEventListener("click", closeMenu);
+    });
+  }
+
   initPageTitles();
   initHeroTitle();
+  initMobileNav();
 })();
