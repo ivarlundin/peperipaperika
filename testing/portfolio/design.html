@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
-  <meta name="description" content="Design work — placeholders.">
+  <meta name="description" content="Design — playful projects by Ivar Lundin.">
   <title>Design — Ivar Lundin</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,7 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="page-list">
+<body class="page-list page-design">
   <a class="skip-link" href="#main">Skip to content</a>
 
   <header class="site-bar">
@@ -24,42 +24,49 @@
     </nav>
   </header>
 
-  <main id="main" class="list-main">
-  <header class="list-intro">
-    <h1 class="list-intro__title" id="wght-heading">Design</h1>
-    <p class="list-intro__sub">Placeholder projects — labels only, no invented clients.</p>
-  </header>
+  <main id="main" class="list-main list-main--wide">
+    <header class="list-intro list-intro--design">
+      <h1 class="list-intro__title" id="wght-heading">Design</h1>
+      <p class="list-intro__sub">Playful side projects — no screenshots, just type that bites.</p>
+    </header>
 
-  <ul class="project-list" role="list">
-    <li class="project-list__item">
-      <a class="project-list__link" href="#" aria-disabled="true" tabindex="-1">
-        <span class="project-list__meta">2026 · Placeholder</span>
-        <span class="project-list__name">Case study slot A</span>
-        <span class="project-list__note">Title, role, and outcome to be added</span>
-      </a>
-    </li>
-    <li class="project-list__item">
-      <a class="project-list__link" href="#" aria-disabled="true" tabindex="-1">
-        <span class="project-list__meta">2026 · Placeholder</span>
-        <span class="project-list__name">Prototype slot B</span>
-        <span class="project-list__note">Interaction or flow study — link TBD</span>
-      </a>
-    </li>
-    <li class="project-list__item">
-      <a class="project-list__link" href="#" aria-disabled="true" tabindex="-1">
-        <span class="project-list__meta">2025 · Placeholder</span>
-        <span class="project-list__name">Experiment slot C</span>
-        <span class="project-list__note">Early UX sketch or audit — content TBD</span>
-      </a>
-    </li>
-    <li class="project-list__item">
-      <a class="project-list__link" href="#" aria-disabled="true" tabindex="-1">
-        <span class="project-list__meta">2025 · Placeholder</span>
-        <span class="project-list__name">Writing slot D</span>
-        <span class="project-list__note">Article or talk — not written yet</span>
-      </a>
-    </li>
-  </ul>
+    <div class="cases" role="list">
+      <article class="cases__item cases__item--strike" role="listitem">
+        <a
+          class="cases__link"
+          href="https://labs.ivarlundin.se/ns-midihelper/"
+        >
+          <span class="cases__index" aria-hidden="true">01</span>
+          <span class="cases__body">
+            <span class="cases__kind">Web app</span>
+            <span class="cases__name">NordHelper</span>
+            <span class="cases__desc">
+              A basic web app to help program MainStage patches for the Nord Stage (X).
+            </span>
+          </span>
+          <span class="cases__out" aria-hidden="true">Open</span>
+        </a>
+      </article>
+
+      <article class="cases__item cases__item--invert" role="listitem">
+        <a
+          class="cases__link"
+          href="https://halvfjorton.se/"
+        >
+          <span class="cases__index" aria-hidden="true">02</span>
+          <span class="cases__body">
+            <span class="cases__kind">Band site</span>
+            <span class="cases__name">halvfjorton.se</span>
+            <span class="cases__desc">
+              A simple website for my band.
+            </span>
+          </span>
+          <span class="cases__out" aria-hidden="true">Open</span>
+        </a>
+      </article>
+    </div>
+
+    <p class="cases__footer-note">More cases land here when they are ready to show.</p>
   </main>
 
   <footer class="site-foot">
