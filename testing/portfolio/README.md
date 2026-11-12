@@ -1,17 +1,17 @@
 # Ivar Lundin — portfolio (dev skeleton)
 
-Hidden static site under **`x/portfolio/`** on GitHub Pages (`labs.ivarlundin.se`). Not linked from the labs root; every page uses `noindex, nofollow`.
+Hidden static site under **`testing/portfolio/`** on GitHub Pages (`labs.ivarlundin.se`). Not linked from the labs root; every page uses `noindex, nofollow`.
 
 ## Pages
 
 | File | Purpose |
 |------|---------|
-| `index.html` | Home — **Type roll** typographic step sequencer + intro copy |
+| `index.html` | Home — **name keyboard** headline + intro copy |
 | `design.html` | Design work — Fiona-style placeholder list |
 | `music.html` | Music — same list pattern, static placeholders |
 | `css/styles.css` | Shared monochrome layout (Inter variable) |
-| `js/site.js` | Cursor/scroll → display weight on headings |
-| `js/home.js` | Sequencer grid, optional Web Audio |
+| `js/site.js` | Cursor/scroll → weight on subpage titles and home role line |
+| `js/home.js` | Playable “IVAR LUNDIN” letters, optional Web Audio |
 | `favicon.svg` | Monochrome mark |
 
 Contact is **`mailto:hello@ivarlundin.se`** from the nav (no separate contact page).
@@ -20,12 +20,12 @@ All asset paths are **relative** for subpath hosting now and domain-root hosting
 
 ## Front-page interaction
 
-**Type roll** — a 16×8 step sequencer styled like a piano roll. Each cell shows a letter from a repeating “IVAR LUNDIN UX MUSIC” string with a row-specific Inter **wght** (lighter on top, blacker on bottom). Click or keyboard toggles steps; **Play** runs the playhead; **Sound off** (default) gates Web Audio sine blips per row (pitch labeled C–B + I). Horizontal pointer position and light scroll nudge the intro title weight via Inter’s axis.
+**Your name is a keyboard** — the large headline **IVAR LUNDIN** is the instrument. Each letter is a button: **hover** (mouse), **tap** (touch), or **focus + Enter/Space** hits a note mapped to an **A major pentatonic** scale (two octaves). Inter **wght** jumps to 900 and eases back to thin (~520ms; shortened when `prefers-reduced-motion`). **Sound off** by default; the small toggle enables triangle-wave Web Audio. Mashing letters plays a riff even without sound.
 
 ## Local preview
 
 ```bash
-cd x/portfolio
+cd testing/portfolio
 python3 -m http.server 8765
 ```
 
@@ -46,4 +46,4 @@ Open **http://localhost:8765/** (trailing slash keeps relative URLs correct).
 
 ## Labs URL (after merge)
 
-**https://labs.ivarlundin.se/x/portfolio/**
+**https://labs.ivarlundin.se/testing/portfolio/**

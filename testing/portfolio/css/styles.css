@@ -177,23 +177,16 @@ body {
 
 .home-intro {
   max-width: var(--max);
-  margin-bottom: 2.5rem;
-}
-
-.home-intro__name {
-  margin: 0 0 0.35rem;
-  font-size: var(--text-small);
-  font-variation-settings: "wght" var(--wght-display);
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  color: var(--muted);
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--line);
 }
 
 .home-intro__role {
   margin: 0 0 0.5rem;
-  font-size: clamp(1.5rem, 4vw, 2.35rem);
-  line-height: 1.15;
-  letter-spacing: -0.03em;
+  font-size: var(--text-small);
+  line-height: 1.35;
+  letter-spacing: -0.01em;
   font-variation-settings: "wght" var(--wght-display);
 }
 
@@ -205,160 +198,123 @@ body {
   max-width: 28ch;
 }
 
-/* —— Sequencer (bold interactive moment) —— */
+/* —— Name keyboard (home) —— */
 
-.sequencer {
-  border-top: 1px solid var(--line);
-  padding-top: 2rem;
+.name-stage {
+  padding-top: 0.5rem;
 }
 
-.sequencer__title {
-  margin: 0 0 0.5rem;
-  font-size: var(--text-small);
-  font-variation-settings: "wght" 800;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-}
-
-.sequencer__lede {
-  margin: 0 0 1.25rem;
-  max-width: 40ch;
-  font-size: var(--text-small);
-  color: var(--muted);
-  font-variation-settings: "wght" 430;
-}
-
-.sequencer__toolbar {
+.name-stage__top {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1.25rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  margin-bottom: 1rem;
 }
 
-.seq-btn {
+.name-stage__label {
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-variation-settings: "wght" 480;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.sound-toggle {
   font-family: var(--font);
-  font-size: var(--text-small);
-  font-variation-settings: "wght" 580;
-  padding: 0.45rem 0.85rem;
-  border: 1px solid var(--fg);
+  font-size: 0.72rem;
+  font-variation-settings: "wght" 560;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--line);
   border-radius: var(--radius);
   background: transparent;
   color: var(--fg);
   cursor: pointer;
 }
 
-.seq-btn:hover:not(:disabled) {
-  font-variation-settings: "wght" 750;
-  background: var(--fg);
-  color: var(--invert);
+.sound-toggle:hover {
+  border-color: var(--fg);
+  font-variation-settings: "wght" 700;
 }
 
-.seq-btn:focus-visible {
+.sound-toggle:focus-visible {
   outline: 2px solid var(--fg);
   outline-offset: 2px;
 }
 
-.seq-btn:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-}
-
-.seq-btn[aria-pressed="true"] {
+.sound-toggle[aria-pressed="true"] {
+  border-color: var(--fg);
   background: var(--fg);
   color: var(--invert);
-  font-variation-settings: "wght" 720;
+  font-variation-settings: "wght" 650;
 }
 
-.sequencer__grid-wrap {
-  overflow-x: auto;
-  padding-bottom: 0.5rem;
-  -webkit-overflow-scrolling: touch;
-}
-
-.sequencer__steps {
-  display: grid;
-  grid-template-columns: 2.25rem repeat(16, minmax(2rem, 1fr));
-  gap: 2px;
-  margin-bottom: 4px;
-  min-width: min(100%, 38rem);
-}
-
-.sequencer__step-num {
-  font-size: 0.65rem;
-  font-variation-settings: "wght" 500;
-  color: var(--muted);
-  text-align: center;
-}
-
-.sequencer__step-num.is-active {
-  color: var(--fg);
-  font-variation-settings: "wght" 850;
-}
-
-.sequencer__grid {
-  display: grid;
-  grid-template-columns: 2.25rem repeat(16, minmax(2rem, 1fr));
-  gap: 2px;
-  min-width: min(100%, 38rem);
-}
-
-.seq-row-label {
+.name-keyboard {
+  margin: 0;
   display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding-right: 0.35rem;
-  font-size: 0.7rem;
-  font-variation-settings: "wght" 600;
-  color: var(--muted);
-  user-select: none;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.08em 0.2em;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
 }
 
-.seq-cell {
-  aspect-ratio: 1;
-  min-height: 2.25rem;
-  padding: 0;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--bg);
+.name-keyboard__word {
+  display: inline-flex;
+  flex-wrap: wrap;
+}
+
+.name-keyboard__gap {
+  display: inline-block;
+  width: 0.35em;
+}
+
+.name-key {
+  margin: 0;
+  padding: 0.02em 0.04em;
+  border: 0;
+  background: transparent;
   color: var(--fg);
   font-family: var(--font);
-  font-size: clamp(0.65rem, 2.2vw, 0.85rem);
-  font-variation-settings: "wght" 350;
+  font-size: clamp(3rem, 14vw, 7.5rem);
+  font-variation-settings: "wght" 240;
+  line-height: 0.9;
   cursor: pointer;
-  transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
-.seq-cell:hover {
-  border-color: var(--fg);
-  font-variation-settings: "wght" 620;
+.name-key.is-easing {
+  transition: font-variation-settings 520ms cubic-bezier(0.22, 0.95, 0.2, 1);
 }
 
-.seq-cell:focus-visible {
+@media (prefers-reduced-motion: reduce) {
+  .name-key.is-easing {
+    transition: font-variation-settings 80ms linear;
+  }
+}
+
+.name-key:hover {
+  color: var(--fg);
+}
+
+.name-key:focus-visible {
   outline: 2px solid var(--fg);
-  outline-offset: 1px;
-  z-index: 1;
+  outline-offset: 4px;
+  border-radius: 2px;
 }
 
-.seq-cell.is-on {
-  background: var(--fg);
-  color: var(--invert);
-  border-color: var(--fg);
-  font-variation-settings: "wght" 900;
-}
-
-.seq-cell.is-playhead {
-  box-shadow: inset 0 0 0 2px var(--invert);
-}
-
-.sequencer__hint {
-  margin: 1.25rem 0 0;
+.name-stage__hint {
+  margin: 1.5rem 0 0;
+  max-width: 42ch;
   font-size: 0.72rem;
   color: var(--muted);
-  font-variation-settings: "wght" 450;
-  max-width: 48ch;
+  font-variation-settings: "wght" 430;
 }
 
-.sequencer__hint kbd {
+.name-stage__hint kbd {
   font-family: var(--font);
   font-size: 0.95em;
   font-variation-settings: "wght" 600;
@@ -448,15 +404,4 @@ body {
 .project-list__link[aria-disabled="true"] {
   pointer-events: none;
   opacity: 0.85;
-}
-
-@media (max-width: 480px) {
-  .sequencer__grid,
-  .sequencer__steps {
-    grid-template-columns: 1.75rem repeat(16, minmax(1.6rem, 1fr));
-  }
-
-  .seq-cell {
-    min-height: 1.75rem;
-  }
 }

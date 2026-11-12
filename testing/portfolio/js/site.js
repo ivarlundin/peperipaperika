@@ -27,7 +27,7 @@
     document.documentElement.style.setProperty("--wght-display", String(Math.round(base)));
   }
 
-  var targets = ["wght-name", "wght-role", "wght-heading"];
+  var targets = ["wght-role", "wght-heading"];
   var hasTarget = targets.some(function (id) {
     return document.getElementById(id);
   });
