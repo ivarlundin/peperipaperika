@@ -12,8 +12,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const STORAGE_KEY = 'ns-midihelper-stage-model';
 
-    /** Ported from KeyboardBuddy src/models/nordStage4.ts */
+    /**
+     * Nord Stage 4 program banks A–H only (512 programs, 8×8 pages per bank).
+     * Source: Nord Stage 4 User Manual v1.6X, “Programs” + “Program Change operations”
+     * (MSB 0, LSB 0–3, PC 0–127 for Program row). Matches KeyboardBuddy nordStage4.ts.
+     */
     const STAGE4_BANK_LETTERS = 'ABCDEFGH';
+
+    /** Nord Stage 3 program banks A–P (see assets/programs.json). */
+    const STAGE3_BANK_LETTERS = 'ABCDEFGHIJKLMNOP';
 
     /** @returns {number|null} program index 0–63 within bank */
     function stage4SlotToProgramInBank(slot) {
@@ -47,8 +54,40 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentLetter = '';
     let currentNumber = '';
 
-    const STAGE3_BANKS = new Set(['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P']);
+    const STAGE3_BANKS = new Set(STAGE3_BANK_LETTERS.split(''));
     const STAGE4_BANKS = new Set(STAGE4_BANK_LETTERS.split(''));
+
+    function bankRangeLabel() {
+        return stageModel === '4' ? 'A–H' : 'A–P';
+    }
+
+    function bankErrorMessage(letter) {
+        const bank = letter.toUpperCase();
+        if (stageModel === '4') {
+            if (STAGE3_BANKS.has(bank) && !STAGE4_BANKS.has(bank)) {
+                return (
+                    `Bank ${bank} is not on Nord Stage 4 (program banks A–H only). ` +
+                    'Switch to Stage 3 for banks I–P.'
+                );
+            }
+            return `Bank ${bank} is not valid for Nord Stage 4 (use ${bankRangeLabel()}).`;
+        }
+        return `Bank ${bank} is not valid for Nord Stage 3 (use ${bankRangeLabel()}).`;
+    }
+
+    function slotErrorMessage(letter, number) {
+        const loc = `${letter}${number}`;
+        if (stageModel === '4') {
+            return (
+                `Program ${loc} is not valid for Nord Stage 4 ` +
+                '(use panel slots 11–18, 21–28, … 81–88).'
+            );
+        }
+        return (
+            `Program ${loc} is not valid for Nord Stage 3 ` +
+            '(use panel slots 11–15, 21–25, … 51–55).'
+        );
+    }
 
     const STAGE3_NUMBERS = new Set([
         '11','12','13','14','15',
@@ -164,8 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const inputLetter = e.key.toUpperCase();
 
             if (!validBanks().has(inputLetter)) {
-                const range = stageModel === '4' ? 'A–H' : 'A–P';
-                showError(`Bank ${inputLetter} does not exist (${range}). Please try again.`);
+                showError(bankErrorMessage(inputLetter));
                 return;
             } else {
                 clearError();
@@ -188,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (validNumbers().has(currentNumber)) {
                     searchProgram();
                 } else {
-                    showError(`Program ${currentLetter}${currentNumber} does not exist. Please try again.`);
+                    showError(slotErrorMessage(currentLetter, currentNumber));
                     resetNumber();
                 }
             }
@@ -206,9 +244,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     letterInput.addEventListener('input', () => {
-        const val = letterInput.value.trim().toUpperCase();
-        if (!val) return;
-        if (validBanks().has(val) && val !== currentLetter) {
+        const val = letterInput.value.trim().toUpperCase().slice(0, 1);
+        letterInput.value = val;
+        if (!val) {
+            currentLetter = '';
+            resetNumber();
+            clearError();
+            return;
+        }
+        if (!validBanks().has(val)) {
+            showError(bankErrorMessage(val));
+            letterInput.value = currentLetter;
+            return;
+        }
+        if (val !== currentLetter) {
             currentLetter = val;
             resetNumber();
             clearError();
