@@ -72,6 +72,20 @@ main {
     width: 100%;
     max-width: 1000px;
 }
+
+.page-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.page-header h1 {
+    margin: 0;
+}
 main .wrapper {
     position: relative;
     max-width: 1440px;
@@ -127,23 +141,26 @@ button {
 .stage-model-toggle {
     display: flex;
     flex-direction: row;
-    gap: 0.5rem;
-    width: 100%;
-    max-width: 420px;
-    margin: 0 auto 1.5rem;
-    padding: 0 1.5rem;
+    flex-wrap: nowrap;
+    gap: 0.35rem;
+    width: auto;
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
 }
 
 .stage-model-btn {
-    flex: 1;
+    flex: 0 0 auto;
     width: auto;
     background-color: var(--tile-background-color);
     color: var(--text-color);
     font-weight: 600;
-    border: 2px solid var(--border-color);
+    font-size: 0.75rem;
+    padding: 0.35rem 0.6rem;
+    border-radius: 0.35rem;
+    border: 1px solid var(--border-color);
     text-transform: uppercase;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.01em;
 }
 
 .stage-model-btn.is-selected {
@@ -203,11 +220,15 @@ button {
         width: 100%;
         margin-top: 1rem
     }
-    h1 {
-        left: 2rem;
-        top: 1rem;
+    .page-header {
+        margin-bottom: 2.5rem;
+    }
+    .page-header .stage-model-toggle {
+        flex: 1 1 100%;
+        justify-content: flex-end;
+    }
+    .page-header h1 {
         font-size: 1.5rem;
-        margin-bottom: 3rem;
     }
     h2 {
         font-size: 1.25rem;
@@ -251,10 +272,16 @@ button {
     #submit-button {
         display: none;
     }
-    h1 {
+    .page-header {
         position: absolute;
-        left: 2rem;
         top: 1rem;
+        left: 2rem;
+        right: 2rem;
+        width: auto;
+        max-width: none;
+        margin-bottom: 0;
+    }
+    .page-header h1 {
         font-size: 1.5rem;
     }
     h2 {
