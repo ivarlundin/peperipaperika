@@ -1,0 +1,122 @@
+{
+  "version": 1,
+  "generated": true,
+  "images": [
+    {
+      "id": "gallery/byggbil-projekt.svg",
+      "label": "byggbil-projekt.svg",
+      "default": "/testing/jutestromsbygg/assets/img/gallery/byggbil-projekt.svg",
+      "variants": {
+        "default": "/testing/jutestromsbygg/assets/img/gallery/byggbil-projekt.svg"
+      },
+      "srcset": "",
+      "alt": "Platsh\u00e5llarbild byggbil vid projekt"
+    },
+    {
+      "id": "gallery/hero.svg",
+      "label": "hero.svg",
+      "default": "/testing/jutestromsbygg/assets/img/gallery/hero.svg",
+      "variants": {
+        "default": "/testing/jutestromsbygg/assets/img/gallery/hero.svg"
+      },
+      "srcset": ""
+    },
+    {
+      "id": "gallery/projekt-01.svg",
+      "label": "projekt-01.svg",
+      "default": "/testing/jutestromsbygg/assets/img/gallery/projekt-01.svg",
+      "variants": {
+        "default": "/testing/jutestromsbygg/assets/img/gallery/projekt-01.svg"
+      },
+      "srcset": "",
+      "alt": "Platsh\u00e5llarbild projekt 1"
+    },
+    {
+      "id": "gallery/projekt-02.svg",
+      "label": "projekt-02.svg",
+      "default": "/testing/jutestromsbygg/assets/img/gallery/projekt-02.svg",
+      "variants": {
+        "default": "/testing/jutestromsbygg/assets/img/gallery/projekt-02.svg"
+      },
+      "srcset": "",
+      "alt": "Platsh\u00e5llarbild projekt 2"
+    },
+    {
+      "id": "gallery/projekt-03.svg",
+      "label": "projekt-03.svg",
+      "default": "/testing/jutestromsbygg/assets/img/gallery/projekt-03.svg",
+      "variants": {
+        "default": "/testing/jutestromsbygg/assets/img/gallery/projekt-03.svg"
+      },
+      "srcset": "",
+      "alt": "Platsh\u00e5llarbild projekt 3"
+    },
+    {
+      "id": "gallery/projekt-04.svg",
+      "label": "projekt-04.svg",
+      "default": "/testing/jutestromsbygg/assets/img/gallery/projekt-04.svg",
+      "variants": {
+        "default": "/testing/jutestromsbygg/assets/img/gallery/projekt-04.svg"
+      },
+      "srcset": "",
+      "alt": "Platsh\u00e5llarbild projekt 4"
+    },
+    {
+      "id": "gallery/projekt-05.svg",
+      "label": "projekt-05.svg",
+      "default": "/testing/jutestromsbygg/assets/img/gallery/projekt-05.svg",
+      "variants": {
+        "default": "/testing/jutestromsbygg/assets/img/gallery/projekt-05.svg"
+      },
+      "srcset": "",
+      "alt": "Platsh\u00e5llarbild projekt 5"
+    },
+    {
+      "id": "gallery/projekt-06.svg",
+      "label": "projekt-06.svg",
+      "default": "/testing/jutestromsbygg/assets/img/gallery/projekt-06.svg",
+      "variants": {
+        "default": "/testing/jutestromsbygg/assets/img/gallery/projekt-06.svg"
+      },
+      "srcset": "",
+      "alt": "Platsh\u00e5llarbild projekt 6"
+    },
+    {
+      "id": "gallery/sam-portratt.svg",
+      "label": "sam-portratt.svg",
+      "default": "/testing/jutestromsbygg/assets/img/gallery/sam-portratt.svg",
+      "variants": {
+        "default": "/testing/jutestromsbygg/assets/img/gallery/sam-portratt.svg"
+      },
+      "srcset": "",
+      "alt": "Platsh\u00e5llarbild #1"
+    },
+    {
+      "id": "logo-black.svg",
+      "label": "logo-black.svg",
+      "default": "/testing/jutestromsbygg/assets/img/logo-black.svg",
+      "variants": {
+        "default": "/testing/jutestromsbygg/assets/img/logo-black.svg"
+      },
+      "srcset": ""
+    },
+    {
+      "id": "logo-dark.svg",
+      "label": "logo-dark.svg",
+      "default": "/testing/jutestromsbygg/assets/img/logo-dark.svg",
+      "variants": {
+        "default": "/testing/jutestromsbygg/assets/img/logo-dark.svg"
+      },
+      "srcset": ""
+    },
+    {
+      "id": "logo-inverted.svg",
+      "label": "logo-inverted.svg",
+      "default": "/testing/jutestromsbygg/assets/img/logo-inverted.svg",
+      "variants": {
+        "default": "/testing/jutestromsbygg/assets/img/logo-inverted.svg"
+      },
+      "srcset": ""
+    }
+  ]
+}
