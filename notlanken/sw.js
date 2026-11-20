@@ -43,11 +43,33 @@ function isCacheable(url) {
   return p.includes('/samples/') || p.includes('/midi/') || p.includes('/vendor/');
 }
 
+/** Song list changes often; must not be cache-first like .mid files and samples. */
+function isSongsManifest(url) {
+  return url.pathname.endsWith('/midi/songs.json');
+}
+
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (!isCacheable(url)) return;
+
+  if (isSongsManifest(url)) {
+    event.respondWith(
+      caches.open(CACHE_NAME).then(async (cache) => {
+        try {
+          const res = await fetch(req, { cache: 'no-store' });
+          if (res.ok) void cache.put(req, res.clone());
+          return res;
+        } catch {
+          const hit = await cache.match(req);
+          if (hit) return hit;
+          throw new Error('songs.json unavailable offline');
+        }
+      }),
+    );
+    return;
+  }
 
   event.respondWith(
     caches.open(CACHE_NAME).then(async (cache) => {
