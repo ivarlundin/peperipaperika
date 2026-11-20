@@ -321,7 +321,7 @@ function renderSongList(filter = '') {
 }
 
 async function loadManifest() {
-  const res = await fetch('midi/songs.json');
+  const res = await fetch('midi/songs.json', { cache: 'no-store' });
   songs = await res.json();
   renderSongList(songFilter?.value || '');
   routeFromHash();
